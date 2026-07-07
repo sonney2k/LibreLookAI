@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Образи</string>
     <string name="nav_wardrobe">Гардероб</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Примірки</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Закрити</string>
     <string name="action_delete">Видалити</string>
     <string name="action_save">Зберегти</string>
     <string name="action_edit">Редагувати</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Зняти вибір</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Увійдіть, щоб керувати гардеробом</string>
-    <string name="sign_in_button">Увійти через Google</string>
-    <string name="sign_in_error_not_registered">Помилка входу: цей додаток не авторизовано Google.</string>
-    <string name="sign_in_error_network">Помилка входу: немає зв’язку з мережею.</string>
-    <string name="sign_in_error_generic">Помилка входу (код %1$d). Спробуйте ще раз.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Профіль</string>
     <string name="settings_tab_display">Екран</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Стильові вподобання</string>
     <string name="settings_style_placeholder">Опишіть, що ви любите носити, для яких подій одягаєтесь, улюблені кольори та бренди…</string>
     <string name="settings_saved">Вподобання збережено</string>
-    <string name="settings_api_key_title">Ключ Gemini API</string>
-    <string name="settings_api_key_desc">Для функцій ШІ потрібен ключ Gemini API. Отримайте безкоштовно на aistudio.google.com.</string>
-    <string name="settings_api_key_label">Ключ API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Теги гардероба</string>
     <string name="settings_data_tags_desc">Перекласифікувати всі речі за допомогою ШІ. Це перезапише ручні правки.</string>
     <string name="settings_rescan_button">Пересканувати всі теги</string>
@@ -320,15 +306,7 @@
     <string name="composer_enhancing">Запитую Gemini…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s токенів</string>
-    <string name="confirm_spend_title">Використати AI-кредити?</string>
-    <string name="confirm_spend_body">Це використає %1$d кредитів.</string>
-    <string name="confirm_spend_body_bulk">Це використає %1$d кредитів для %2$d елементів.</string>
-    <string name="confirm_spend_continue">Продовжити</string>
-    <string name="insufficient_credits_title">Недостатньо кредитів</string>
-    <string name="insufficient_credits_body">Потрібно %1$d кредитів, але є %2$d. Поповніть, щоб продовжити.</string>
-    <string name="insufficient_credits_buy">Купити кредити</string>
     <string name="coins_balance_label">Баланс: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Використовується ваш ключ Gemini — кредити не витрачаються.</string>
     <!-- Bulk translation 2026-05-17 -->
@@ -425,18 +403,6 @@
     <string name="composer_weather_temp">Температура</string>
     <string name="composer_weather_title">Погода</string>
     <string name="composer_weather_unknown">Дані про погоду недоступні</string>
-    <string name="credits_action_bg_removal">Видалення фону</string>
-    <string name="credits_action_classify">Авто-тегування</string>
-    <string name="credits_action_style">Порада образу</string>
-    <string name="credits_action_travel">Список речей для подорожі</string>
-    <string name="credits_balance_label">Залишок кредитів ШІ</string>
-    <string name="credits_best_value">Найвигідніше</string>
-    <string name="credits_buy">Купити</string>
-    <string name="credits_cost_each">%d кредитів</string>
-    <string name="credits_cost_title">Вартість кредитів за дію</string>
-    <string name="credits_pack_label">%d кредитів</string>
-    <string name="credits_packs_title">Пакети поповнення</string>
-    <string name="credits_packs_unavailable">Пакети кредитів недоступні на цьому пристрої</string>
     <string name="dedupe_dialog_cancel">Скасувати</string>
     <string name="dedupe_dialog_desc">Ми знайшли %1$d річ(ей) у вашому гардеробі, які виглядають дуже схоже на це фото.</string>
     <string name="dedupe_dialog_import_anyway">Імпортувати все одно</string>
@@ -456,9 +422,6 @@
     <string name="import_preview_select_all">Вибрати все</string>
     <string name="import_preview_similar_badge">Схоже</string>
     <string name="import_preview_title">Перевірте %1$d річ(ей)</string>
-    <string name="job_notif_channel_name">Фонова обробка</string>
-    <string name="job_notif_text">Обробка речей гардероба…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">Використати це вирізання</string>
     <string name="local_bg_failed">Не вдалося обчислити вирізання — спробуйте перемістити приціл.</string>
     <string name="local_bg_hint">Перетягніть приціл на річ, яку хочете залишити.</string>
@@ -1025,10 +988,6 @@
     <string name="error_no_refinement">Не повернуто придатного уточнення.</string>
     <string name="error_enter_destination">Введіть пункт призначення.</string>
     <string name="error_weather_fetch_failed">Не вдалося отримати погоду для \"%1$s\". Перевірте назву пункту призначення.</string>
-    <string name="error_billing">Помилка оплати: %1$s</string>
-    <string name="error_purchase_verify_failed">Не вдалося підтвердити покупку — зверніться до підтримки.</string>
-    <string name="credits_added">Додано +%1$d кредитів!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Додати образ до календаря</string>
     <string name="calendar_add_pick">Виберіть образ</string>

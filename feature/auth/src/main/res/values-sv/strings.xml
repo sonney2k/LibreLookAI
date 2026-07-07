@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Logga in för att hantera din garderob</string>
+    <string name="sign_in_button">Logga in med Google</string>
+    <string name="sign_in_error_not_registered">Inloggning misslyckades: denna app-version är inte auktoriserad av Google. Om du är utvecklare, registrera signeringsnyckelns fingeravtryck i Firebase Console.</string>
+    <string name="sign_in_error_network">Inloggning misslyckades: ingen nätverksanslutning. Kontrollera din internetanslutning och försök igen.</string>
+    <string name="sign_in_error_generic">Inloggning misslyckades (kod %1$d). Försök igen eller kontakta support.</string>
+</resources>

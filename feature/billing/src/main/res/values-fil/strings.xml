@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">Kailangan ng Gemini API key ng lahat ng AI feature (tagging, mungkahi ng outfit, pag-aalis ng background). Kumuha ng libreng key sa aistudio.google.com → \"Get API key\". Ang iyong key ay nakaimbak lamang sa device na ito.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Natitirang AI Credits</string>
+    <string name="credits_cost_title">Halaga ng credit bawat aksyon</string>
+    <string name="credits_action_bg_removal">Pag-aalis ng background</string>
+    <string name="credits_action_classify">Auto-tag item</string>
+    <string name="credits_action_style">Mungkahi ng outfit</string>
+    <string name="credits_action_travel">Travel packing list</string>
+    <string name="credits_cost_each">%d credits</string>
+    <string name="credits_packs_title">Mga top-up pack</string>
+    <string name="credits_packs_unavailable">Walang credit packs sa device na ito</string>
+    <string name="credits_pack_label">%d credits</string>
+    <string name="credits_best_value">Pinakasulit</string>
+    <string name="credits_buy">Bilhin</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Gumamit ng mga AI credit?</string>
+    <string name="confirm_spend_body">Gagamit ito ng %1$d na credit.</string>
+    <string name="confirm_spend_body_bulk">Gagamit ito ng %1$d na credit para sa %2$d na item.</string>
+    <string name="confirm_spend_continue">Magpatuloy</string>
+    <string name="insufficient_credits_title">Hindi sapat ang mga credit</string>
+    <string name="insufficient_credits_body">Kailangan mo ng %1$d na credit ngunit mayroon kang %2$d. Mag-top up para magpatuloy.</string>
+    <string name="insufficient_credits_buy">Bumili ng mga credit</string>
+    <string name="error_billing">Error sa pagsingil: %1$s</string>
+    <string name="error_purchase_verify_failed">Hindi ma-verify ang pagbili — makipag-ugnayan sa suporta.</string>
+    <string name="credits_added">+%1$d credits ang naidagdag!</string>
+</resources>

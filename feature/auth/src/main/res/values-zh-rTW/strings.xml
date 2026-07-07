@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">登入以管理您的衣櫥</string>
+    <string name="sign_in_button">使用 Google 登入</string>
+    <string name="sign_in_error_not_registered">登入失敗：此應用程式版本未經 Google 授權。</string>
+    <string name="sign_in_error_network">登入失敗：無網路連接。請檢查網路後重試。</string>
+    <string name="sign_in_error_generic">登入失敗 (代碼 %1$d)。請重試。</string>
+</resources>

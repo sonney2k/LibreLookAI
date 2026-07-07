@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">Převést do WebP</string>
     <string name="action_clear_selection">Zrušit výběr</string>
     <string name="sel_count">Vybráno: %1$d</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Zavřít</string>
 </resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">Các tính năng AI yêu cầu Gemini API key. Lấy khóa miễn phí tại aistudio.google.com.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Sử dụng tín dụng AI?</string>
+    <string name="confirm_spend_body">Việc này sẽ dùng %1$d tín dụng.</string>
+    <string name="confirm_spend_body_bulk">Việc này sẽ dùng %1$d tín dụng cho %2$d mục.</string>
+    <string name="confirm_spend_continue">Tiếp tục</string>
+    <string name="insufficient_credits_title">Không đủ tín dụng</string>
+    <string name="insufficient_credits_body">Bạn cần %1$d tín dụng nhưng chỉ có %2$d. Nạp thêm để tiếp tục.</string>
+    <string name="insufficient_credits_buy">Mua tín dụng</string>
+    <string name="credits_action_bg_removal">Xóa nền</string>
+    <string name="credits_action_classify">Tự động gắn thẻ</string>
+    <string name="credits_action_style">Gợi ý trang phục</string>
+    <string name="credits_action_travel">Danh sách đồ du lịch</string>
+    <string name="credits_balance_label">Điểm AI còn lại</string>
+    <string name="credits_best_value">Tiết kiệm nhất</string>
+    <string name="credits_buy">Mua</string>
+    <string name="credits_cost_each">%d điểm</string>
+    <string name="credits_cost_title">Chi phí điểm mỗi hành động</string>
+    <string name="credits_pack_label">%d điểm</string>
+    <string name="credits_packs_title">Gói nạp</string>
+    <string name="credits_packs_unavailable">Gói điểm không khả dụng trên thiết bị này</string>
+    <string name="error_billing">Lỗi thanh toán: %1$s</string>
+    <string name="error_purchase_verify_failed">Không thể xác minh giao dịch mua — vui lòng liên hệ bộ phận hỗ trợ.</string>
+    <string name="credits_added">Đã thêm +%1$d tín dụng!</string>
+</resources>

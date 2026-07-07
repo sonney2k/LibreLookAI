@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API कुंजी</string>
+    <string name="settings_api_key_desc">सभी AI सुविधाओं के लिए Gemini API कुंजी की आवश्यकता होती है। aistudio.google.com से मुफ़्त कुंजी प्राप्त करें। आपकी कुंजी केवल इसी डिवाइस पर संग्रहीत है।</string>
+    <string name="settings_api_key_label">API कुंजी</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">AI क्रेडिट उपयोग करें?</string>
+    <string name="confirm_spend_body">इसमें %1$d क्रेडिट लगेंगे.</string>
+    <string name="confirm_spend_body_bulk">इसमें %2$d आइटम के लिए %1$d क्रेडिट लगेंगे.</string>
+    <string name="confirm_spend_continue">जारी रखें</string>
+    <string name="insufficient_credits_title">पर्याप्त क्रेडिट नहीं हैं</string>
+    <string name="insufficient_credits_body">आपको %1$d क्रेडिट चाहिए लेकिन आपके पास %2$d हैं. जारी रखने के लिए टॉप-अप करें.</string>
+    <string name="insufficient_credits_buy">क्रेडिट खरीदें</string>
+    <string name="credits_action_bg_removal">बैकग्राउंड हटाना</string>
+    <string name="credits_action_classify">ऑटो-टैग आइटम</string>
+    <string name="credits_action_style">आउटफ़िट सुझाव</string>
+    <string name="credits_action_travel">यात्रा पैकिंग सूची</string>
+    <string name="credits_balance_label">शेष AI क्रेडिट</string>
+    <string name="credits_best_value">सर्वोत्तम मूल्य</string>
+    <string name="credits_buy">खरीदें</string>
+    <string name="credits_cost_each">%d क्रेडिट</string>
+    <string name="credits_cost_title">प्रति क्रिया क्रेडिट लागत</string>
+    <string name="credits_pack_label">%d क्रेडिट</string>
+    <string name="credits_packs_title">टॉप-अप पैक</string>
+    <string name="credits_packs_unavailable">इस डिवाइस पर क्रेडिट पैक उपलब्ध नहीं</string>
+    <string name="error_billing">बिलिंग त्रुटि: %1$s</string>
+    <string name="error_purchase_verify_failed">खरीद सत्यापित नहीं हो सकी — कृपया सहायता से संपर्क करें।</string>
+    <string name="credits_added">+%1$d क्रेडिट जोड़े गए!</string>
+</resources>

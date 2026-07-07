@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Kirjaudu sisään hallinnoidaksesi vaatekaappiasi</string>
+    <string name="sign_in_button">Kirjaudu Googlella</string>
+    <string name="sign_in_error_not_registered">Kirjautuminen epäonnistui: tämä sovellusversio ei ole Googlen valtuuttama. Jos olet kehittäjä, rekisteröi allekirjoitusavaimen sormenjälki Firebase Consolessa.</string>
+    <string name="sign_in_error_network">Kirjautuminen epäonnistui: ei verkkoyhteyttä. Tarkista internet-yhteys ja yritä uudelleen.</string>
+    <string name="sign_in_error_generic">Kirjautuminen epäonnistui (koodi %1$d). Yritä uudelleen tai ota yhteyttä tukeen.</string>
+</resources>

@@ -119,7 +119,7 @@ internal fun SuggestTagsDialog(
                     }
                 } else {
                     TextButton(onClick = onDismiss, enabled = !state.isSaving) {
-                        Text(stringResource(R.string.action_ok))
+                        Text(stringResource(DsR.string.action_ok))
                     }
                 }
             }

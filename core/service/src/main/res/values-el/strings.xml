@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="job_notif_channel_name">Επεξεργασία στο παρασκήνιο</string>
+    <string name="job_notif_title">LibreLookAI</string>
+    <string name="job_notif_text">Επεξεργασία ειδών ντουλάπας…</string>
+</resources>

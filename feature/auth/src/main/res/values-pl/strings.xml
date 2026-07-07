@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Zaloguj się, aby zarządzać garderobą</string>
+    <string name="sign_in_button">Zaloguj się przez Google</string>
+    <string name="sign_in_error_not_registered">Logowanie nieudane: ta wersja aplikacji nie jest autoryzowana przez Google. Jeśli jesteś programistą, zarejestruj odcisk klucza podpisywania w Firebase Console.</string>
+    <string name="sign_in_error_network">Logowanie nieudane: brak połączenia sieciowego. Sprawdź internet i spróbuj ponownie.</string>
+    <string name="sign_in_error_generic">Logowanie nieudane (kod %1$d). Spróbuj ponownie lub skontaktuj się z pomocą.</string>
+</resources>

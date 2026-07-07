@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Trip
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.settings.ProfileViewModel
@@ -180,7 +181,7 @@ internal fun TravelPlannerContent(
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(start = 8.dp, end = 8.dp, top = 64.dp),
-                action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
+                action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(DsR.string.action_ok)) } },
             ) { Text(msg) }
         }
         } // Box

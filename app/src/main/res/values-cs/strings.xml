@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Outfity</string>
     <string name="nav_wardrobe">Šatník</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Vyzkoušení</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Zavřít</string>
     <string name="action_delete">Smazat</string>
     <string name="action_save">Uložit</string>
     <string name="action_edit">Upravit</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Zrušit výběr</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Přihlaste se pro správu svého šatníku</string>
-    <string name="sign_in_button">Přihlásit se přes Google</string>
-    <string name="sign_in_error_not_registered">Přihlášení se nezdařilo: tato verze aplikace není autorizována Googlem. Pokud jste vývojář, zaregistrujte otisk podpisového klíče v konzoli Firebase.</string>
-    <string name="sign_in_error_network">Přihlášení se nezdařilo: žádné připojení k síti. Zkontrolujte prosím své internetové připojení a zkuste to znovu.</string>
-    <string name="sign_in_error_generic">Přihlášení se nezdařilo (kód %1$d). Zkuste to prosím znovu nebo kontaktujte podporu.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_display">Zobrazení</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Preference outfitů</string>
     <string name="settings_style_placeholder">Popište, co rádi nosíte, příležitosti, pro které se oblékáte, oblíbené barvy, značky nebo cokoli jiného, co pomůže personalizovat návrhy outfitů…</string>
     <string name="settings_saved">Preference uloženy</string>
-    <string name="settings_api_key_title">Gemini API klíč</string>
-    <string name="settings_api_key_desc">Všechny funkce AI (tagování, návrhy outfitů, odstraňování pozadí) vyžadují klíč Gemini API. Získejte bezplatný klíč na aistudio.google.com → \"Get API key\". Váš klíč je uložen pouze v tomto zařízení.</string>
-    <string name="settings_api_key_label">API klíč</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Štítky šatníku</string>
     <string name="settings_data_tags_desc">Znovu klasifikujte každou položku ve svém šatníku pomocí Gemini. Tím se přepíší všechny ruční úpravy štítků.</string>
     <string name="settings_rescan_button">Znovu naskenovat všechny štítky</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">Navrhování alternativ…</string>
 
     <!-- Credits / Managed Mode -->
-    <string name="credits_balance_label">Zbývající AI kredity</string>
-    <string name="credits_cost_title">Cena v kreditech za akci</string>
-    <string name="credits_action_bg_removal">Odstranění pozadí</string>
-    <string name="credits_action_classify">Automatické označení položky</string>
-    <string name="credits_action_style">Návrh outfitu</string>
-    <string name="credits_action_travel">Cestovní seznam věcí</string>
-    <string name="credits_cost_each">%d kreditů</string>
-    <string name="credits_packs_title">Balíčky kreditů</string>
-    <string name="credits_packs_unavailable">Balíčky kreditů nejsou v tomto zařízení dostupné</string>
-    <string name="credits_pack_label">%d kreditů</string>
-    <string name="credits_best_value">Nejvýhodnější</string>
-    <string name="credits_buy">Koupit</string>
-
     <!-- AI overlay -->
     <string name="ai_working">AI pracuje…</string>
     <string name="ai_fetching_weather">Zjišťování počasí…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">Sestavování outfitu…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">Zpracování na pozadí</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Zpracování položek šatníku…</string>
-
     <!-- Battery optimization exemption dialog -->
     <string name="battery_exempt_title">Vyžadováno zpracování na pozadí</string>
     <string name="battery_exempt_text">LibreLookAI potřebuje neomezené zpracování na pozadí, aby mohl bezpečně importovat fotografie, odstraňovat pozadí a označovat vaše oblečení pomocí AI.\n\nBez tohoto povolení může Android aplikaci uprostřed procesu ukončit, což může vést ke ztrátě dat — částečně importovaným položkám, chybějícím štítkům nebo poškozeným souborům.\n\nZakažte prosím optimalizaci baterie pro LibreLookAI, abyste mohli pokračovat.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">Skenování %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokenů</string>
-    <string name="confirm_spend_title">Použít AI kredity?</string>
-    <string name="confirm_spend_body">Použije se %1$d kreditů.</string>
-    <string name="confirm_spend_body_bulk">Použije se %1$d kreditů na %2$d položek.</string>
-    <string name="confirm_spend_continue">Pokračovat</string>
-    <string name="insufficient_credits_title">Nedostatek kreditů</string>
-    <string name="insufficient_credits_body">Potřebujete %1$d kreditů, ale máte %2$d. Dobijte pro pokračování.</string>
-    <string name="insufficient_credits_buy">Koupit kredity</string>
     <string name="coins_balance_label">Zůstatek: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Používáte vlastní klíč Gemini — žádné kredity se neutrácí.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">Nebylo vráceno žádné použitelné vylepšení.</string>
     <string name="error_enter_destination">Zadejte cíl.</string>
     <string name="error_weather_fetch_failed">Nelze načíst počasí pro „%1$s\". Zkontrolujte název cíle.</string>
-    <string name="error_billing">Chyba účtování: %1$s</string>
-    <string name="error_purchase_verify_failed">Nákup nelze ověřit — kontaktujte podporu.</string>
-    <string name="credits_added">Přidáno +%1$d kreditů!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Přidat outfit do kalendáře</string>
     <string name="calendar_add_pick">Vyberte outfit</string>

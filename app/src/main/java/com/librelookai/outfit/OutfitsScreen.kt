@@ -32,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.AppScreenHeader
 import com.librelookai.LocationButton
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.WearSource
 import com.librelookai.settings.ProfileViewModel
@@ -346,7 +347,7 @@ fun OutfitsScreen(
                 },
                 dismissAction = {
                     TextButton(onClick = outfitsViewModel::clearPendingWear) {
-                        Text(stringResource(R.string.action_dismiss))
+                        Text(stringResource(DsR.string.action_dismiss))
                     }
                 },
             ) {

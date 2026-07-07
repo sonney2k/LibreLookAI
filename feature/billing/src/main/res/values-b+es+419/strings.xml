@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Clave de API de Gemini</string>
+    <string name="settings_api_key_desc">Todas las funciones de IA (etiquetado, sugerencias de outfits, eliminación de fondo) requieren una clave de API de Gemini. Obtén una clave gratuita en aistudio.google.com → \"Get API key\". Tu clave se almacena solo en este dispositivo.</string>
+    <string name="settings_api_key_label">Clave de API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Créditos de IA restantes</string>
+    <string name="credits_cost_title">Costo en créditos por acción</string>
+    <string name="credits_action_bg_removal">Eliminación de fondo</string>
+    <string name="credits_action_classify">Auto-etiquetar prenda</string>
+    <string name="credits_action_style">Sugerencia de outfit</string>
+    <string name="credits_action_travel">Lista de viaje</string>
+    <string name="credits_cost_each">%d créditos</string>
+    <string name="credits_packs_title">Paquetes de recarga</string>
+    <string name="credits_packs_unavailable">Paquetes de créditos no disponibles en este dispositivo</string>
+    <string name="credits_pack_label">%d créditos</string>
+    <string name="credits_best_value">Mejor valor</string>
+    <string name="credits_buy">Comprar</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">¿Usar créditos de IA?</string>
+    <string name="confirm_spend_body">Esto usará %1$d créditos.</string>
+    <string name="confirm_spend_body_bulk">Esto usará %1$d créditos en %2$d elementos.</string>
+    <string name="confirm_spend_continue">Continuar</string>
+    <string name="insufficient_credits_title">Créditos insuficientes</string>
+    <string name="insufficient_credits_body">Necesitas %1$d créditos pero tienes %2$d. Recarga para continuar.</string>
+    <string name="insufficient_credits_buy">Comprar créditos</string>
+    <string name="error_billing">Error de facturación: %1$s</string>
+    <string name="error_purchase_verify_failed">No se pudo verificar la compra: contacta con soporte.</string>
+    <string name="credits_added">¡+%1$d créditos agregados!</string>
+</resources>

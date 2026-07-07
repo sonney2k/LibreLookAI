@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Gardırobunuzu yönetmek için giriş yapın</string>
+    <string name="sign_in_button">Google ile giriş yap</string>
+    <string name="sign_in_error_not_registered">Giriş başarısız: bu uygulama sürümü Google ile yetkilendirilmemiş. Eğer geliştiriciyseniz, imzalama anahtarı parmak izini Firebase Konsolu\'na kaydedin.</string>
+    <string name="sign_in_error_network">Giriş başarısız: ağ bağlantısı yok. Lütfen internetinizi kontrol edin ve tekrar deneyin.</string>
+    <string name="sign_in_error_generic">Giriş başarısız (kod %1$d). Lütfen tekrar deneyin veya destekle iletişime geçin.</string>
+</resources>

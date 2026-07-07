@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">מפתח Gemini API</string>
+    <string name="settings_api_key_desc">כל יכולות ה-AI דורשות מפתח Gemini API (הוסף כאן או בהגדרה הראשונית). מפתח חינמי מכסה תיוג והצעות תלבושות; מדידה וירטואלית והסרת רקע דורשות מפתח בתשלום עם חיוב מופעל. המפתח נשמר במכשיר זה בלבד.</string>
+    <string name="settings_api_key_label">מפתח API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">יתרת קרדיטים</string>
+    <string name="credits_cost_title">עלות פעולה</string>
+    <string name="credits_action_bg_removal">הסרת רקע</string>
+    <string name="credits_action_classify">תיוג אוטומטי</string>
+    <string name="credits_action_style">הצעת אאוטפיט</string>
+    <string name="credits_action_travel">רשימת אריזה</string>
+    <string name="credits_cost_each">%d קרדיטים</string>
+    <string name="credits_packs_title">חבילות קרדיט</string>
+    <string name="credits_packs_unavailable">חבילות לא זמינות במכשיר זה</string>
+    <string name="credits_pack_label">%d קרדיטים</string>
+    <string name="credits_best_value">הכי משתלם</string>
+    <string name="credits_buy">קנה</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">להשתמש בקרדיטים של AI?</string>
+    <string name="confirm_spend_body">פעולה זו תשתמש ב-%1$d קרדיטים.</string>
+    <string name="confirm_spend_body_bulk">פעולה זו תשתמש ב-%1$d קרדיטים עבור %2$d פריטים.</string>
+    <string name="confirm_spend_continue">המשך</string>
+    <string name="insufficient_credits_title">אין מספיק קרדיטים</string>
+    <string name="insufficient_credits_body">אתה צריך %1$d קרדיטים אך יש לך %2$d. טען כדי להמשיך.</string>
+    <string name="insufficient_credits_buy">קנה קרדיטים</string>
+    <string name="error_billing">שגיאת חיוב: %1$s</string>
+    <string name="error_purchase_verify_failed">לא ניתן לאמת את הרכישה — פנה לתמיכה.</string>
+    <string name="credits_added">נוספו %1$d קרדיטים!</string>
+</resources>

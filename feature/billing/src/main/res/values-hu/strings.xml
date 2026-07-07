@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API kulcs</string>
+    <string name="settings_api_key_desc">Minden AI funkcióhoz Gemini API kulcs szükséges. Ingyenes kulcsot az aistudio.google.com oldalon szerezhetsz be. A kulcsod csak ezen az eszközön tárolódik.</string>
+    <string name="settings_api_key_label">API kulcs</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">AI-kreditek használata?</string>
+    <string name="confirm_spend_body">Ez %1$d kreditet fog felhasználni.</string>
+    <string name="confirm_spend_body_bulk">Ez %1$d kreditet fog felhasználni %2$d elemre.</string>
+    <string name="confirm_spend_continue">Folytatás</string>
+    <string name="insufficient_credits_title">Nincs elég kredit</string>
+    <string name="insufficient_credits_body">%1$d kreditre van szükséged, de csak %2$d van. Tölts fel a folytatáshoz.</string>
+    <string name="insufficient_credits_buy">Kredit vásárlás</string>
+    <string name="credits_action_bg_removal">Háttéreltávolítás</string>
+    <string name="credits_action_classify">Automatikus címkézés</string>
+    <string name="credits_action_style">Szettjavaslat</string>
+    <string name="credits_action_travel">Utazási csomagolási lista</string>
+    <string name="credits_balance_label">Maradék AI-kreditek</string>
+    <string name="credits_best_value">Legjobb ár-érték</string>
+    <string name="credits_buy">Vásárlás</string>
+    <string name="credits_cost_each">%d kredit</string>
+    <string name="credits_cost_title">Kreditköltség műveletenként</string>
+    <string name="credits_pack_label">%d kredit</string>
+    <string name="credits_packs_title">Feltöltőcsomagok</string>
+    <string name="credits_packs_unavailable">A kreditcsomagok nem érhetők el ezen az eszközön</string>
+    <string name="error_billing">Számlázási hiba: %1$s</string>
+    <string name="error_purchase_verify_failed">A vásárlás nem ellenőrizhető — fordulj az ügyfélszolgálathoz.</string>
+    <string name="credits_added">+%1$d kredit hozzáadva!</string>
+</resources>

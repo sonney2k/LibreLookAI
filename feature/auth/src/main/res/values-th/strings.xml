@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">ลงชื่อเข้าใช้เพื่อจัดการตู้เสื้อผ้าของคุณ</string>
+    <string name="sign_in_button">ลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="sign_in_error_not_registered">การลงชื่อเข้าใช้ล้มเหลว: แอปเวอร์ชันนี้ไม่ได้รับอนุญาตจาก Google</string>
+    <string name="sign_in_error_network">การลงชื่อเข้าใช้ล้มเหลว: ไม่มีการเชื่อมต่อเครือข่าย โปรดตรวจสอบอินเทอร์เน็ตของคุณ</string>
+    <string name="sign_in_error_generic">การลงชื่อเข้าใช้ล้มเหลว (รหัส %1$d) โปรดลองอีกครั้ง</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API-nøgle</string>
+    <string name="settings_api_key_desc">Alle AI-funktioner (tagging, outfit-forslag, baggrundsfjernelse) kræver en Gemini API-nøgle. Få en gratis nøgle på aistudio.google.com → \"Get API key\". Din nøgle gemmes kun på denne enhed.</string>
+    <string name="settings_api_key_label">API-nøgle</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Resterende AI-kreditter</string>
+    <string name="credits_cost_title">Kreditomkostning pr. handling</string>
+    <string name="credits_action_bg_removal">Baggrundsfjernelse</string>
+    <string name="credits_action_classify">Auto-tag stykke</string>
+    <string name="credits_action_style">Outfit-forslag</string>
+    <string name="credits_action_travel">Pakkeliste til rejse</string>
+    <string name="credits_cost_each">%d kreditter</string>
+    <string name="credits_packs_title">Optankningspakker</string>
+    <string name="credits_packs_unavailable">Kreditpakker er ikke tilgængelige på denne enhed</string>
+    <string name="credits_pack_label">%d kreditter</string>
+    <string name="credits_best_value">Bedste værdi</string>
+    <string name="credits_buy">Køb</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Brug AI-kreditter?</string>
+    <string name="confirm_spend_body">Dette vil bruge %1$d kreditter.</string>
+    <string name="confirm_spend_body_bulk">Dette vil bruge %1$d kreditter på tværs af %2$d emner.</string>
+    <string name="confirm_spend_continue">Fortsæt</string>
+    <string name="insufficient_credits_title">Ikke nok kreditter</string>
+    <string name="insufficient_credits_body">Du har brug for %1$d kreditter, men har %2$d. Påfyld for at fortsætte.</string>
+    <string name="insufficient_credits_buy">Køb kreditter</string>
+    <string name="error_billing">Faktureringsfejl: %1$s</string>
+    <string name="error_purchase_verify_failed">Kunne ikke bekræfte købet — kontakt support.</string>
+    <string name="credits_added">+%1$d kreditter tilføjet!</string>
+</resources>

@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">Átalakítás WebP-re</string>
     <string name="action_clear_selection">Kijelölés törlése</string>
     <string name="sel_count">%1$d kijelölve</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Bezárás</string>
 </resources>

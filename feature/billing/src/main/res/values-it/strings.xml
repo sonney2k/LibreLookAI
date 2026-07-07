@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Chiave API Gemini</string>
+    <string name="settings_api_key_desc">Tutte le funzioni IA (etichettatura, suggerimenti outfit, rimozione sfondo) richiedono una chiave API Gemini. Ottieni una chiave gratuita su aistudio.google.com → \"Get API key\". La tua chiave è memorizzata solo su questo dispositivo.</string>
+    <string name="settings_api_key_label">Chiave API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Crediti IA rimanenti</string>
+    <string name="credits_cost_title">Costo crediti per azione</string>
+    <string name="credits_action_bg_removal">Rimozione sfondo</string>
+    <string name="credits_action_classify">Auto-etichettatura capo</string>
+    <string name="credits_action_style">Suggerimento outfit</string>
+    <string name="credits_action_travel">Lista valigia viaggio</string>
+    <string name="credits_cost_each">%d crediti</string>
+    <string name="credits_packs_title">Pacchetti di ricarica</string>
+    <string name="credits_packs_unavailable">Pacchetti di crediti non disponibili su questo dispositivo</string>
+    <string name="credits_pack_label">%d crediti</string>
+    <string name="credits_best_value">Miglior valore</string>
+    <string name="credits_buy">Acquista</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Usare crediti IA?</string>
+    <string name="confirm_spend_body">Verranno usati %1$d crediti.</string>
+    <string name="confirm_spend_body_bulk">Verranno usati %1$d crediti per %2$d elementi.</string>
+    <string name="confirm_spend_continue">Continua</string>
+    <string name="insufficient_credits_title">Crediti insufficienti</string>
+    <string name="insufficient_credits_body">Servono %1$d crediti ma ne hai %2$d. Ricarica per continuare.</string>
+    <string name="insufficient_credits_buy">Acquista crediti</string>
+    <string name="error_billing">Errore di fatturazione: %1$s</string>
+    <string name="error_purchase_verify_failed">Impossibile verificare l\'acquisto — contatta l\'assistenza.</string>
+    <string name="credits_added">+%1$d crediti aggiunti!</string>
+</resources>

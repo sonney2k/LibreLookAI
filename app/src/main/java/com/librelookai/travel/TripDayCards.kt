@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
@@ -103,7 +104,7 @@ internal fun TripMetaSection(
                         renaming = false
                         keyboardController?.hide()
                     }) {
-                        Icon(Icons.Default.Check, contentDescription = stringResource(R.string.action_ok))
+                        Icon(Icons.Default.Check, contentDescription = stringResource(DsR.string.action_ok))
                     }
                 } else {
                     Text(

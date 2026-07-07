@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">היכנס כדי לנהל את המלתחה שלך</string>
+    <string name="sign_in_button">התחבר עם Google</string>
+    <string name="sign_in_error_not_registered">התחברות נכשלה: גרסת אפליקציה זו אינה מורשית על ידי Google.</string>
+    <string name="sign_in_error_network">התחברות נכשלה: אין חיבור לרשת. אנא בדוק את האינטרנט שלך.</string>
+    <string name="sign_in_error_generic">התחברות נכשלה (קוד %1$d). אנא נסה שוב.</string>
+</resources>

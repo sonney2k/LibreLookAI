@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">وارڈروب مینیج کرنے کے لیے سائن ان کریں</string>
+    <string name="sign_in_button">Google کے ساتھ سائن ان کریں</string>
+    <string name="sign_in_error_not_registered">سائن ان ناکام: یہ ایپ گوگل سے منظور شدہ نہیں ہے۔</string>
+    <string name="sign_in_error_network">سائن ان ناکام: انٹرنیٹ کنکشن نہیں ہے۔</string>
+    <string name="sign_in_error_generic">سائن ان ناکام (کوڈ %1$d)۔ دوبارہ کوشش کریں۔</string>
+</resources>

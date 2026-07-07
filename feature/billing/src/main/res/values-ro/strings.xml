@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Cheie API Gemini</string>
+    <string name="settings_api_key_desc">Toate funcțiile AI necesită o cheie Gemini API. Obține una gratuită la aistudio.google.com.</string>
+    <string name="settings_api_key_label">Cheie API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Folosești credite AI?</string>
+    <string name="confirm_spend_body">Aceasta va folosi %1$d credite.</string>
+    <string name="confirm_spend_body_bulk">Aceasta va folosi %1$d credite pentru %2$d articole.</string>
+    <string name="confirm_spend_continue">Continuă</string>
+    <string name="insufficient_credits_title">Credite insuficiente</string>
+    <string name="insufficient_credits_body">Ai nevoie de %1$d credite, dar ai %2$d. Reîncarcă pentru a continua.</string>
+    <string name="insufficient_credits_buy">Cumpără credite</string>
+    <string name="credits_action_bg_removal">Eliminare fundal</string>
+    <string name="credits_action_classify">Etichetare automată</string>
+    <string name="credits_action_style">Sugestie ținută</string>
+    <string name="credits_action_travel">Listă de bagaje</string>
+    <string name="credits_balance_label">Credite AI rămase</string>
+    <string name="credits_best_value">Cea mai bună valoare</string>
+    <string name="credits_buy">Cumpără</string>
+    <string name="credits_cost_each">%d credite</string>
+    <string name="credits_cost_title">Cost credite per acțiune</string>
+    <string name="credits_pack_label">%d credite</string>
+    <string name="credits_packs_title">Pachete de reîncărcare</string>
+    <string name="credits_packs_unavailable">Pachetele de credite nu sunt disponibile pe acest dispozitiv</string>
+    <string name="error_billing">Eroare de facturare: %1$s</string>
+    <string name="error_purchase_verify_failed">Achiziția nu a putut fi verificată — contactează asistența.</string>
+    <string name="credits_added">+%1$d credite adăugate!</string>
+</resources>

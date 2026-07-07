@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">Tukar ke WebP</string>
     <string name="action_clear_selection">Kosongkan pilihan</string>
     <string name="sel_count">%1$d dipilih</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Tutup</string>
 </resources>

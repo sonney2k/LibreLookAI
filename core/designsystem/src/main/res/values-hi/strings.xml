@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">WebP में बदलें</string>
     <string name="action_clear_selection">चयन हटाएँ</string>
     <string name="sel_count">%1$d चयनित</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">ठीक है</string>
+    <string name="action_dismiss">खारिज करें</string>
 </resources>

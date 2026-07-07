@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Anmelden zur Verwaltung Ihrer Garderobe</string>
+    <string name="sign_in_button">Mit Google anmelden</string>
+    <string name="sign_in_error_not_registered">Anmeldung fehlgeschlagen: Diese App-Version ist bei Google nicht autorisiert. Wenn Sie Entwickler sind, registrieren Sie den Signaturschlüssel-Fingerabdruck in der Firebase Console.</string>
+    <string name="sign_in_error_network">Anmeldung fehlgeschlagen: Keine Netzwerkverbindung. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
+    <string name="sign_in_error_generic">Anmeldung fehlgeschlagen (Code %1$d). Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.</string>
+</resources>

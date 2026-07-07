@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">تحويل إلى WebP</string>
     <string name="action_clear_selection">مسح التحديد</string>
     <string name="sel_count">%1$d محدد</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">موافق</string>
+    <string name="action_dismiss">تجاهل</string>
 </resources>

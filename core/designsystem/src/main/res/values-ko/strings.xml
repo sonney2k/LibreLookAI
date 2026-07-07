@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">WebP로 변환</string>
     <string name="action_clear_selection">선택 해제</string>
     <string name="sel_count">%1$d개 선택됨</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">확인</string>
+    <string name="action_dismiss">닫기</string>
 </resources>

@@ -33,6 +33,9 @@ dependencies {
     // Call.await() exposes OkHttp types in its signature.
     api(libs.okhttp)
     implementation(libs.kotlinx.coroutines.android)
+    // Analytics (sunk in § 1 slice 5 so the extracted feature modules can log events).
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics.ktx)
 
     testImplementation(libs.junit)
 }

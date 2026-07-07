@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">الأزياء</string>
     <string name="nav_wardrobe">خزانة الملابس</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">التجارب</string>
 
     <!-- Common actions -->
-    <string name="action_ok">موافق</string>
-    <string name="action_dismiss">تجاهل</string>
     <string name="action_delete">حذف</string>
     <string name="action_save">حفظ</string>
     <string name="action_edit">تعديل</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">إلغاء تحديد الكل</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">سجل الدخول لإدارة خزانة ملابسك</string>
-    <string name="sign_in_button">تسجيل الدخول باستخدام Google</string>
-    <string name="sign_in_error_not_registered">فشل تسجيل الدخول: نسخة التطبيق هذه غير مصرح لها من قِبل Google. إذا كنت مطورًا، فقم بتسجيل بصمة مفتاح التوقيع في Firebase Console.</string>
-    <string name="sign_in_error_network">فشل تسجيل الدخول: لا يوجد اتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.</string>
-    <string name="sign_in_error_generic">فشل تسجيل الدخول (كود %1$d). يرجى المحاولة مرة أخرى أو الاتصال بالدعم.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">الملف الشخصي</string>
     <string name="settings_tab_display">العرض</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">تفضيلات الأطقم</string>
     <string name="settings_style_placeholder">صف ما تحب ارتداءه، والمناسبات التي ترتدي الملابس لها، وألوانك المفضلة، وعلاماتك التجارية، أو أي شيء آخر يساعد في تخصيص توصيات الأطقم الخاصة بك…</string>
     <string name="settings_saved">تم حفظ التفضيلات</string>
-    <string name="settings_api_key_title">مفتاح Gemini API</string>
-    <string name="settings_api_key_desc">تتطلب جميع ميزات الذكاء الاصطناعي مفتاح Gemini API. احصل على مفتاح مجاني من aistudio.google.com ← \"Get API key\". يتم تخزين مفتاحك على هذا الجهاز فقط.</string>
-    <string name="settings_api_key_label">مفتاح API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">وسوم الخزانة</string>
     <string name="settings_data_tags_desc">أعد تصنيف كل صنف في خزانة ملابسك باستخدام Gemini. سيؤدي هذا إلى الكتابة فوق أي تعديلات يدوية للوسوم.</string>
     <string name="settings_rescan_button">إعادة مسح جميع الوسوم</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">جاري اقتراح بدائل…</string>
 
     <!-- Credits / Managed Mode -->
-    <string name="credits_balance_label">رصيد الذكاء الاصطناعي المتبقي</string>
-    <string name="credits_cost_title">تكلفة الرصيد لكل إجراء</string>
-    <string name="credits_action_bg_removal">إزالة الخلفية</string>
-    <string name="credits_action_classify">وسم الصنف تلقائيًا</string>
-    <string name="credits_action_style">اقتراح طقم</string>
-    <string name="credits_action_travel">قائمة توضيب سفر</string>
-    <string name="credits_cost_each">%d رصيد</string>
-    <string name="credits_packs_title">حزم الشحن</string>
-    <string name="credits_packs_unavailable">حزم الرصيد غير متوفرة على هذا الجهاز</string>
-    <string name="credits_pack_label">%d رصيد</string>
-    <string name="credits_best_value">أفضل قيمة</string>
-    <string name="credits_buy">شراء</string>
-
     <!-- AI overlay -->
     <string name="ai_working">الذكاء الاصطناعي يعمل…</string>
     <string name="ai_fetching_weather">جاري جلب الطقس…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">جاري تكوين طقم…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">المعالجة الخلفية</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">جاري معالجة أصناف الخزانة…</string>
-
     <!-- Battery optimization exemption dialog -->
     <string name="battery_exempt_title">المعالجة الخلفية مطلوبة</string>
     <string name="battery_exempt_text">يحتاج LibreLookAI إلى معالجة خلفية غير مقيدة لاستيراد الصور وإزالة الخلفيات ووسم ملابسك بالذكاء الاصطناعي بأمان.\n\nبدون هذا الإذن، قد يقوم أندرويد بإغلاق التطبيق في منتصف العملية، مما قد يؤدي إلى فقدان البيانات — أصناف مستوردة جزئيًا، أو وسوم مفقودة، أو ملفات تالفة.\n\nيرجى تعطيل تحسين البطارية لـ LibreLookAI للمتابعة.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">جاري المسح %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s رمز</string>
-    <string name="confirm_spend_title">استخدام أرصدة الذكاء الاصطناعي؟</string>
-    <string name="confirm_spend_body">سيستخدم هذا %1$d أرصدة.</string>
-    <string name="confirm_spend_body_bulk">سيستخدم هذا %1$d أرصدة عبر %2$d عناصر.</string>
-    <string name="confirm_spend_continue">متابعة</string>
-    <string name="insufficient_credits_title">أرصدة غير كافية</string>
-    <string name="insufficient_credits_body">تحتاج إلى %1$d أرصدة ولكن لديك %2$d. أعد التعبئة للمتابعة.</string>
-    <string name="insufficient_credits_buy">شراء أرصدة</string>
     <string name="coins_balance_label">الرصيد: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">تستخدم مفتاح Gemini الخاص بك — لا يتم إنفاق أي أرصدة.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">لم يتم إرجاع تحسين قابل للاستخدام.</string>
     <string name="error_enter_destination">يرجى إدخال وجهة.</string>
     <string name="error_weather_fetch_failed">تعذّر جلب الطقس لـ \"%1$s\". تحقق من اسم الوجهة.</string>
-    <string name="error_billing">خطأ في الفوترة: %1$s</string>
-    <string name="error_purchase_verify_failed">تعذّر التحقق من الشراء — يرجى التواصل مع الدعم.</string>
-    <string name="credits_added">تمت إضافة %1$d رصيد!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">أضف الزي إلى التقويم</string>
     <string name="calendar_add_pick">اختر زيًا</string>

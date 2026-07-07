@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Masuk untuk mengelola lemari Anda</string>
+    <string name="sign_in_button">Masuk dengan Google</string>
+    <string name="sign_in_error_not_registered">Masuk gagal: versi aplikasi ini tidak terdaftar di Google.</string>
+    <string name="sign_in_error_network">Masuk gagal: tidak ada koneksi internet. Silakan coba lagi.</string>
+    <string name="sign_in_error_generic">Masuk gagal (kode %1$d). Silakan coba lagi.</string>
+</resources>

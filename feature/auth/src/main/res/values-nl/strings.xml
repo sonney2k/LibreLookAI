@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Meld je aan om je garderobe te beheren</string>
+    <string name="sign_in_button">Aanmelden met Google</string>
+    <string name="sign_in_error_not_registered">Aanmelden mislukt: deze app-versie is niet geautoriseerd door Google. Ben je ontwikkelaar? Registreer de signing key fingerprint in Firebase Console.</string>
+    <string name="sign_in_error_network">Aanmelden mislukt: geen netwerkverbinding. Controleer je internet en probeer opnieuw.</string>
+    <string name="sign_in_error_generic">Aanmelden mislukt (code %1$d). Probeer opnieuw of neem contact op met support.</string>
+</resources>

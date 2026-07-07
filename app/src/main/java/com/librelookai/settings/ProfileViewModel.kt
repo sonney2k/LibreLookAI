@@ -47,7 +47,6 @@ class ProfileViewModel @Inject constructor(
 ) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
-    private val langPrefs = app.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
 
     private val _state = MutableStateFlow(
         ProfileUiState(
@@ -70,57 +69,27 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    /**
-     * First-run language defaults to the device locale if it matches a supported [AppLanguage]
-     * option, otherwise falls back to English. Once the user explicitly picks a language in
-     * Settings, that choice is persisted in [LANG_PREFS] and wins over the system locale.
-     */
-    private fun cachedLanguage(): String {
-        langPrefs.getString(KEY_LANGUAGE, null)?.let { return it }
-        return AppLanguage.fromSystemLocale(java.util.Locale.getDefault())
-    }
+    // The synchronous pre-load mirror lives in core/common (PreloadedUiPrefs, § 1 slice 5) so
+    // Context.localized() and the extracted modules can read it; this VM stays the only writer.
+    private fun cachedLanguage(): String = PreloadedUiPrefs.cachedLanguage(getApplication())
 
-    private fun cacheLanguage(language: String) {
-        langPrefs.edit().putString(KEY_LANGUAGE, language).apply()
-    }
+    private fun cacheLanguage(language: String) =
+        PreloadedUiPrefs.cacheLanguage(getApplication(), language)
 
-    private fun cachedTheme(): String = cachedTheme(getApplication())
+    private fun cachedTheme(): String = PreloadedUiPrefs.cachedTheme(getApplication())
 
-    private fun cacheTheme(theme: String) {
-        langPrefs.edit().putString(KEY_THEME, theme).apply()
-    }
+    private fun cacheTheme(theme: String) = PreloadedUiPrefs.cacheTheme(getApplication(), theme)
 
-    private fun cachedFont(): String = cachedFont(getApplication())
+    private fun cachedFont(): String = PreloadedUiPrefs.cachedFont(getApplication())
 
-    private fun cacheFont(font: String) {
-        langPrefs.edit().putString(KEY_FONT, font).apply()
-    }
+    private fun cacheFont(font: String) = PreloadedUiPrefs.cacheFont(getApplication(), font)
 
     companion object {
-        private const val LANG_PREFS = "librelookai_lang"
-        private const val KEY_LANGUAGE = "language"
-        private const val KEY_THEME = "wardrobe_theme"
-        private const val KEY_FONT = "app_font"
+        fun cachedLanguage(context: Context): String = PreloadedUiPrefs.cachedLanguage(context)
 
-        /**
-         * Last-saved UI language, available synchronously to non-Compose layers (ViewModels)
-         * so strings they resolve honour the user's in-app language override rather than the
-         * device locale. Falls back to the best-fit device language. See [Context.localized].
-         */
-        fun cachedLanguage(context: Context): String =
-            context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
-                .getString(KEY_LANGUAGE, null)
-                ?: AppLanguage.fromSystemLocale(java.util.Locale.getDefault())
+        fun cachedTheme(context: Context): String = PreloadedUiPrefs.cachedTheme(context)
 
-        /** Last-saved theme id, available before any user data is loaded from Drive. */
-        fun cachedTheme(context: Context): String =
-            context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
-                .getString(KEY_THEME, null) ?: UserPreferences().wardrobeTheme
-
-        /** Last-saved font id, available before any user data is loaded from Drive. */
-        fun cachedFont(context: Context): String =
-            context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
-                .getString(KEY_FONT, null) ?: UserPreferences().appFont
+        fun cachedFont(context: Context): String = PreloadedUiPrefs.cachedFont(context)
     }
 
     fun loadPreferences() {

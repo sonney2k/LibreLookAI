@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">轉換為 WebP</string>
     <string name="action_clear_selection">清除選取</string>
     <string name="sel_count">已選 %1$d 項</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">確定</string>
+    <string name="action_dismiss">關閉</string>
 </resources>

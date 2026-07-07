@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Inicia sesión para gestionar tu armario</string>
+    <string name="sign_in_button">Iniciar sesión con Google</string>
+    <string name="sign_in_error_not_registered">Inicio de sesión fallido: esta versión de la app no está autorizada con Google. Si eres desarrollador, registra la huella de la clave de firma en la consola de Firebase.</string>
+    <string name="sign_in_error_network">Inicio de sesión fallido: sin conexión a la red. Comprueba tu conexión a Internet e inténtalo de nuevo.</string>
+    <string name="sign_in_error_generic">Inicio de sesión fallido (código %1$d). Inténtalo de nuevo o ponte en contacto con el soporte.</string>
+</resources>

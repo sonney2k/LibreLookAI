@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Stylizacje</string>
     <string name="nav_wardrobe">Garderoba</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Przymiarki</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Odrzuć</string>
     <string name="action_delete">Usuń</string>
     <string name="action_save">Zapisz</string>
     <string name="action_edit">Edytuj</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Odznacz wszystko</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Zaloguj się, aby zarządzać garderobą</string>
-    <string name="sign_in_button">Zaloguj się przez Google</string>
-    <string name="sign_in_error_not_registered">Logowanie nieudane: ta wersja aplikacji nie jest autoryzowana przez Google. Jeśli jesteś programistą, zarejestruj odcisk klucza podpisywania w Firebase Console.</string>
-    <string name="sign_in_error_network">Logowanie nieudane: brak połączenia sieciowego. Sprawdź internet i spróbuj ponownie.</string>
-    <string name="sign_in_error_generic">Logowanie nieudane (kod %1$d). Spróbuj ponownie lub skontaktuj się z pomocą.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_display">Wyświetlanie</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Preferencje stylizacji</string>
     <string name="settings_style_placeholder">Opisz, co lubisz nosić, okazje, na które się ubierasz, ulubione kolory, marki lub cokolwiek innego, co pomoże spersonalizować rekomendacje stylizacji…</string>
     <string name="settings_saved">Preferencje zapisane</string>
-    <string name="settings_api_key_title">Klucz API Gemini</string>
-    <string name="settings_api_key_desc">Wszystkie funkcje AI (tagowanie, sugestie stylizacji, usuwanie tła) wymagają klucza API Gemini. Pobierz darmowy klucz na aistudio.google.com → „Get API key". Klucz przechowywany tylko na tym urządzeniu.</string>
-    <string name="settings_api_key_label">Klucz API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Tagi garderoby</string>
     <string name="settings_data_tags_desc">Sklasyfikuj ponownie każdy element w garderobie za pomocą Gemini. Nadpisze to ręczne edycje tagów.</string>
     <string name="settings_rescan_button">Skanuj ponownie wszystkie tagi</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">Proponowanie zamienników…</string>
 
     <!-- Credits / Managed Mode -->
-    <string name="credits_balance_label">Pozostałe kredyty AI</string>
-    <string name="credits_cost_title">Koszt kredytów za akcję</string>
-    <string name="credits_action_bg_removal">Usuwanie tła</string>
-    <string name="credits_action_classify">Automatyczne tagowanie elementu</string>
-    <string name="credits_action_style">Sugestia stylizacji</string>
-    <string name="credits_action_travel">Lista pakowania na podróż</string>
-    <string name="credits_cost_each">%d kredytów</string>
-    <string name="credits_packs_title">Pakiety doładowań</string>
-    <string name="credits_packs_unavailable">Pakiety kredytów niedostępne na tym urządzeniu</string>
-    <string name="credits_pack_label">%d kredytów</string>
-    <string name="credits_best_value">Najlepsza wartość</string>
-    <string name="credits_buy">Kup</string>
-
     <!-- AI overlay -->
     <string name="ai_working">AI pracuje…</string>
     <string name="ai_fetching_weather">Pobieranie pogody…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">Komponowanie stylizacji…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">Przetwarzanie w tle</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Przetwarzanie elementów garderoby…</string>
-
     <!-- Battery optimization exemption dialog -->
     <string name="battery_exempt_title">Wymagane przetwarzanie w tle</string>
     <string name="battery_exempt_text">LibreLookAI potrzebuje nieograniczonego przetwarzania w tle, aby bezpiecznie importować zdjęcia, usuwać tła i tagować ubrania z AI.\n\nBez tego uprawnienia Android może zabić aplikację w trakcie pracy, co może prowadzić do utraty danych — częściowo zaimportowanych elementów, brakujących tagów lub uszkodzonych plików.\n\nWyłącz optymalizację baterii dla LibreLookAI, aby kontynuować.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">Skanowanie %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokenów</string>
-    <string name="confirm_spend_title">Użyć kredytów AI?</string>
-    <string name="confirm_spend_body">Spowoduje to użycie %1$d kredytów.</string>
-    <string name="confirm_spend_body_bulk">Spowoduje to użycie %1$d kredytów dla %2$d elementów.</string>
-    <string name="confirm_spend_continue">Kontynuuj</string>
-    <string name="insufficient_credits_title">Za mało kredytów</string>
-    <string name="insufficient_credits_body">Potrzebujesz %1$d kredytów, ale masz %2$d. Doładuj, aby kontynuować.</string>
-    <string name="insufficient_credits_buy">Kup kredyty</string>
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Używasz własnego klucza Gemini — kredyty nie są wydawane.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">Nie zwrócono użytecznego udoskonalenia.</string>
     <string name="error_enter_destination">Wprowadź cel podróży.</string>
     <string name="error_weather_fetch_failed">Nie można pobrać pogody dla „%1$s\". Sprawdź nazwę celu.</string>
-    <string name="error_billing">Błąd płatności: %1$s</string>
-    <string name="error_purchase_verify_failed">Nie można zweryfikować zakupu — skontaktuj się z pomocą techniczną.</string>
-    <string name="credits_added">Dodano +%1$d kredytów!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Dodaj stylizację do kalendarza</string>
     <string name="calendar_add_pick">Wybierz stylizację</string>

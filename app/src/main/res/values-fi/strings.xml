@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigointi -->
     <string name="nav_styles">Asut</string>
     <string name="nav_wardrobe">Vaatekaappi</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Sovitukset</string>
 
     <!-- Yleiset toiminnot -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Hylkää</string>
     <string name="action_delete">Poista</string>
     <string name="action_save">Tallenna</string>
     <string name="action_edit">Muokkaa</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Poista valinnat</string>
 
     <!-- Kirjautuminen -->
-    <string name="sign_in_prompt">Kirjaudu sisään hallinnoidaksesi vaatekaappiasi</string>
-    <string name="sign_in_button">Kirjaudu Googlella</string>
-    <string name="sign_in_error_not_registered">Kirjautuminen epäonnistui: tämä sovellusversio ei ole Googlen valtuuttama. Jos olet kehittäjä, rekisteröi allekirjoitusavaimen sormenjälki Firebase Consolessa.</string>
-    <string name="sign_in_error_network">Kirjautuminen epäonnistui: ei verkkoyhteyttä. Tarkista internet-yhteys ja yritä uudelleen.</string>
-    <string name="sign_in_error_generic">Kirjautuminen epäonnistui (koodi %1$d). Yritä uudelleen tai ota yhteyttä tukeen.</string>
-
     <!-- Asetukset -->
     <string name="settings_tab_profile">Profiili</string>
     <string name="settings_tab_display">Näyttö</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Asusuosikit</string>
     <string name="settings_style_placeholder">Kuvaile mitä mielelläsi pukeudut, tilaisuuksia, joihin pukeudut, suosikkivärejäsi, brändejäsi tai mitä tahansa muuta, mikä auttaa personoimaan asusuosituksia…</string>
     <string name="settings_saved">Asetukset tallennettu</string>
-    <string name="settings_api_key_title">Gemini API-avain</string>
-    <string name="settings_api_key_desc">Kaikki tekoälytoiminnot (merkitseminen, asuehdotukset, taustanpoisto) vaativat Gemini API-avaimen. Hanki ilmainen avain osoitteesta aistudio.google.com → \"Get API key\". Avaimesi tallennetaan vain tälle laitteelle.</string>
-    <string name="settings_api_key_label">API-avain</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Vaatekaappitunnisteet</string>
     <string name="settings_data_tags_desc">Luokittele jokainen vaatekaappisi vaate uudelleen Geminillä. Tämä korvaa kaikki manuaaliset tunnistemuokkaukset.</string>
     <string name="settings_rescan_button">Skannaa kaikki tunnisteet uudelleen</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">Ehdotetaan korvauksia…</string>
 
     <!-- Krediitit / Hallittu tila -->
-    <string name="credits_balance_label">Jäljellä olevat tekoälykrediitit</string>
-    <string name="credits_cost_title">Krediittikustannus toimintoa kohden</string>
-    <string name="credits_action_bg_removal">Taustanpoisto</string>
-    <string name="credits_action_classify">Vaatteen automerkintä</string>
-    <string name="credits_action_style">Asuehdotus</string>
-    <string name="credits_action_travel">Matkan pakkauslista</string>
-    <string name="credits_cost_each">%d krediittiä</string>
-    <string name="credits_packs_title">Lisäyspaketit</string>
-    <string name="credits_packs_unavailable">Krediittipaketit eivät ole saatavilla tällä laitteella</string>
-    <string name="credits_pack_label">%d krediittiä</string>
-    <string name="credits_best_value">Paras arvo</string>
-    <string name="credits_buy">Osta</string>
-
     <!-- Tekoälyn peittokuva -->
     <string name="ai_working">Tekoäly työskentelee…</string>
     <string name="ai_fetching_weather">Haetaan säätä…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">Kootaan asua…</string>
 
     <!-- Etualapalvelun ilmoitus -->
-    <string name="job_notif_channel_name">Taustakäsittely</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Käsitellään vaatekaapin vaatteita…</string>
-
     <!-- Akun optimoinnin poikkeusvalintaikkuna -->
     <string name="battery_exempt_title">Taustakäsittely vaaditaan</string>
     <string name="battery_exempt_text">LibreLookAI tarvitsee rajoittamattoman taustakäsittelyn voidakseen tuoda kuvat turvallisesti, poistaa taustoja ja merkitä vaatteet tekoälyllä.\n\nIlman tätä lupaa Android voi sulkea sovelluksen kesken käsittelyn, mikä voi johtaa tietojen menetykseen — osittain tuotuihin vaatteisiin, puuttuviin tunnisteisiin tai vahingoittuneisiin tiedostoihin.\n\nPoista akun optimointi käytöstä LibreLookAI:lle jatkaaksesi.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">Skannataan %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokenia</string>
-    <string name="confirm_spend_title">Käytetäänkö AI-krediittejä?</string>
-    <string name="confirm_spend_body">Tämä käyttää %1$d krediittiä.</string>
-    <string name="confirm_spend_body_bulk">Tämä käyttää %1$d krediittiä %2$d kohteelle.</string>
-    <string name="confirm_spend_continue">Jatka</string>
-    <string name="insufficient_credits_title">Krediittejä ei riitä</string>
-    <string name="insufficient_credits_body">Tarvitset %1$d krediittiä, mutta sinulla on %2$d. Lataa lisää jatkaaksesi.</string>
-    <string name="insufficient_credits_buy">Osta krediittejä</string>
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Käytät omaa Gemini-avaintasi — krediittejä ei kuluteta.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">Käyttökelpoista hienosäätöä ei palautettu.</string>
     <string name="error_enter_destination">Anna määränpää.</string>
     <string name="error_weather_fetch_failed">Säätä kohteelle \"%1$s\" ei voitu hakea. Tarkista määränpään nimi.</string>
-    <string name="error_billing">Laskutusvirhe: %1$s</string>
-    <string name="error_purchase_verify_failed">Ostoa ei voitu vahvistaa — ota yhteyttä tukeen.</string>
-    <string name="credits_added">+%1$d krediittiä lisätty!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Lisää asu kalenteriin</string>
     <string name="calendar_add_pick">Valitse asu</string>

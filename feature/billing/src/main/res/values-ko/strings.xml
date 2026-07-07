@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API 키</string>
+    <string name="settings_api_key_desc">모든 AI 기능(태그 지정, 코디 제안, 배경 제거)에는 Gemini API 키가 필요합니다. aistudio.google.com → \"Get API key\"에서 무료 키를 받을 수 있습니다. 키는 이 기기에만 저장됩니다.</string>
+    <string name="settings_api_key_label">API 키</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">남은 AI 크레딧</string>
+    <string name="credits_cost_title">액션당 크레딧 비용</string>
+    <string name="credits_action_bg_removal">배경 제거</string>
+    <string name="credits_action_classify">아이템 자동 태그</string>
+    <string name="credits_action_style">코디 제안</string>
+    <string name="credits_action_travel">여행 패킹 리스트</string>
+    <string name="credits_cost_each">%d 크레딧</string>
+    <string name="credits_packs_title">충전 팩</string>
+    <string name="credits_packs_unavailable">이 기기에서는 크레딧 팩을 사용할 수 없습니다</string>
+    <string name="credits_pack_label">%d 크레딧</string>
+    <string name="credits_best_value">최고 가치</string>
+    <string name="credits_buy">구매</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">AI 크레딧을 사용하시겠습니까?</string>
+    <string name="confirm_spend_body">%1$d 크레딧이 사용됩니다.</string>
+    <string name="confirm_spend_body_bulk">%2$d개 항목에 대해 %1$d 크레딧이 사용됩니다.</string>
+    <string name="confirm_spend_continue">계속</string>
+    <string name="insufficient_credits_title">크레딧이 부족합니다</string>
+    <string name="insufficient_credits_body">%1$d 크레딧이 필요하지만 %2$d만 있습니다. 충전 후 계속하세요.</string>
+    <string name="insufficient_credits_buy">크레딧 구매</string>
+    <string name="error_billing">결제 오류: %1$s</string>
+    <string name="error_purchase_verify_failed">구매를 확인할 수 없습니다 — 지원팀에 문의하세요.</string>
+    <string name="credits_added">+%1$d 크레딧이 추가되었습니다!</string>
+</resources>

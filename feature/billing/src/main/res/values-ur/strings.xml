@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API کلید</string>
+    <string name="settings_api_key_desc">تمام AI خصوصیات کے لیے کلید درکار ہے۔ aistudio.google.com سے حاصل کریں۔</string>
+    <string name="settings_api_key_label">API کلید</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">AI کریڈٹ استعمال کریں؟</string>
+    <string name="confirm_spend_body">اس میں %1$d کریڈٹ استعمال ہوں گے۔</string>
+    <string name="confirm_spend_body_bulk">اس میں %2$d آئٹمز کے لیے %1$d کریڈٹ استعمال ہوں گے۔</string>
+    <string name="confirm_spend_continue">جاری رکھیں</string>
+    <string name="insufficient_credits_title">کریڈٹ ناکافی ہیں</string>
+    <string name="insufficient_credits_body">آپ کو %1$d کریڈٹ درکار ہیں لیکن آپ کے پاس %2$d ہیں۔ جاری رکھنے کے لیے ٹاپ اپ کریں۔</string>
+    <string name="insufficient_credits_buy">کریڈٹ خریدیں</string>
+    <string name="credits_action_bg_removal">پس منظر ہٹانا</string>
+    <string name="credits_action_classify">آٹو-ٹیگ آئٹم</string>
+    <string name="credits_action_style">ملبوسات تجویز</string>
+    <string name="credits_action_travel">سفر کے سامان کی فہرست</string>
+    <string name="credits_balance_label">باقی AI کریڈٹس</string>
+    <string name="credits_best_value">سب سے بہتر قیمت</string>
+    <string name="credits_buy">خریدیں</string>
+    <string name="credits_cost_each">%d کریڈٹس</string>
+    <string name="credits_cost_title">فی عمل کریڈٹ لاگت</string>
+    <string name="credits_pack_label">%d کریڈٹس</string>
+    <string name="credits_packs_title">ٹاپ اپ پیک</string>
+    <string name="credits_packs_unavailable">اس ڈیوائس پر کریڈٹ پیک دستیاب نہیں</string>
+    <string name="error_billing">بلنگ کی خرابی: %1$s</string>
+    <string name="error_purchase_verify_failed">خریداری کی تصدیق نہیں ہو سکی — براہ کرم سپورٹ سے رابطہ کریں۔</string>
+    <string name="credits_added">+%1$d کریڈٹ شامل ہو گئے!</string>
+</resources>

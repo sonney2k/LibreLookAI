@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">แปลงเป็น WebP</string>
     <string name="action_clear_selection">ล้างการเลือก</string>
     <string name="sel_count">เลือก %1$d รายการ</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">ตกลง</string>
+    <string name="action_dismiss">ปิด</string>
 </resources>

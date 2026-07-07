@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Log ind for at administrere din garderobe</string>
+    <string name="sign_in_button">Log ind med Google</string>
+    <string name="sign_in_error_not_registered">Login mislykkedes: denne app-version er ikke autoriseret af Google. Hvis du er udvikler, så registrér signaturnøglens fingeraftryk i Firebase Console.</string>
+    <string name="sign_in_error_network">Login mislykkedes: ingen netværksforbindelse. Tjek dit internet og prøv igen.</string>
+    <string name="sign_in_error_generic">Login mislykkedes (kode %1$d). Prøv igen eller kontakt support.</string>
+</resources>

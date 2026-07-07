@@ -49,11 +49,6 @@ android {
             "\"${localProps.getProperty("shopstyle.publisher.id", "")}\"",
         )
         // Managed-mode: Firebase proxy base URL (e.g. https://us-central1-PROJECT.cloudfunctions.net)
-        buildConfigField(
-            "String",
-            "PROXY_BASE_URL",
-            "\"${localProps.getProperty("firebase.proxy.url", "")}\"",
-        )
         // Firebase web client ID for Google Sign-In → Firebase Auth linking
         buildConfigField(
             "String",
@@ -170,6 +165,10 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
+    implementation(project(":core:weather"))
+    implementation(project(":core:service"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:billing"))
     implementation(project(":core:database"))
     implementation(project(":core:ml"))
     implementation(project(":core:sync"))

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API-avain</string>
+    <string name="settings_api_key_desc">Kaikki tekoälytoiminnot (merkitseminen, asuehdotukset, taustanpoisto) vaativat Gemini API-avaimen. Hanki ilmainen avain osoitteesta aistudio.google.com → \"Get API key\". Avaimesi tallennetaan vain tälle laitteelle.</string>
+    <string name="settings_api_key_label">API-avain</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Jäljellä olevat tekoälykrediitit</string>
+    <string name="credits_cost_title">Krediittikustannus toimintoa kohden</string>
+    <string name="credits_action_bg_removal">Taustanpoisto</string>
+    <string name="credits_action_classify">Vaatteen automerkintä</string>
+    <string name="credits_action_style">Asuehdotus</string>
+    <string name="credits_action_travel">Matkan pakkauslista</string>
+    <string name="credits_cost_each">%d krediittiä</string>
+    <string name="credits_packs_title">Lisäyspaketit</string>
+    <string name="credits_packs_unavailable">Krediittipaketit eivät ole saatavilla tällä laitteella</string>
+    <string name="credits_pack_label">%d krediittiä</string>
+    <string name="credits_best_value">Paras arvo</string>
+    <string name="credits_buy">Osta</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Käytetäänkö AI-krediittejä?</string>
+    <string name="confirm_spend_body">Tämä käyttää %1$d krediittiä.</string>
+    <string name="confirm_spend_body_bulk">Tämä käyttää %1$d krediittiä %2$d kohteelle.</string>
+    <string name="confirm_spend_continue">Jatka</string>
+    <string name="insufficient_credits_title">Krediittejä ei riitä</string>
+    <string name="insufficient_credits_body">Tarvitset %1$d krediittiä, mutta sinulla on %2$d. Lataa lisää jatkaaksesi.</string>
+    <string name="insufficient_credits_buy">Osta krediittejä</string>
+    <string name="error_billing">Laskutusvirhe: %1$s</string>
+    <string name="error_purchase_verify_failed">Ostoa ei voitu vahvistaa — ota yhteyttä tukeen.</string>
+    <string name="credits_added">+%1$d krediittiä lisätty!</string>
+</resources>

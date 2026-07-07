@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">Omzetten naar WebP</string>
     <string name="action_clear_selection">Selectie wissen</string>
     <string name="sel_count">%1$d geselecteerd</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Negeren</string>
 </resources>

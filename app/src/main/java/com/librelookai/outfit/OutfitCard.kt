@@ -351,7 +351,7 @@ internal fun WearDatePickerDialog(
                         onConfirm(LocalDate.ofEpochDay(it / 86_400_000L))
                     }
                     onDismiss()
-                }) { Text(stringResource(R.string.action_ok)) }
+                }) { Text(stringResource(DsR.string.action_ok)) }
             }
         },
         dismissButton = {

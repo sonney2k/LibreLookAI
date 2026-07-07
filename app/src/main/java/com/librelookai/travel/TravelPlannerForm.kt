@@ -366,7 +366,7 @@ private fun DatesAndDaysCard(
                         onUpdateStartDate(LocalDate.ofEpochDay(it / 86_400_000L))
                     }
                     showDialog = false
-                }) { Text(stringResource(R.string.action_ok)) }
+                }) { Text(stringResource(DsR.string.action_ok)) }
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) { Text(stringResource(DsR.string.action_cancel)) }

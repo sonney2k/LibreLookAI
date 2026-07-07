@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">ชุดแต่งกาย</string>
     <string name="nav_wardrobe">ตู้เสื้อผ้า</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">การลองชุด</string>
 
     <!-- Common actions -->
-    <string name="action_ok">ตกลง</string>
-    <string name="action_dismiss">ปิด</string>
     <string name="action_delete">ลบ</string>
     <string name="action_save">บันทึก</string>
     <string name="action_edit">แก้ไข</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">ยกเลิกการเลือกทั้งหมด</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">ลงชื่อเข้าใช้เพื่อจัดการตู้เสื้อผ้าของคุณ</string>
-    <string name="sign_in_button">ลงชื่อเข้าใช้ด้วย Google</string>
-    <string name="sign_in_error_not_registered">การลงชื่อเข้าใช้ล้มเหลว: แอปเวอร์ชันนี้ไม่ได้รับอนุญาตจาก Google</string>
-    <string name="sign_in_error_network">การลงชื่อเข้าใช้ล้มเหลว: ไม่มีการเชื่อมต่อเครือข่าย โปรดตรวจสอบอินเทอร์เน็ตของคุณ</string>
-    <string name="sign_in_error_generic">การลงชื่อเข้าใช้ล้มเหลว (รหัส %1$d) โปรดลองอีกครั้ง</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">โปรไฟล์</string>
     <string name="settings_tab_display">การแสดงผล</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">ความชอบส่วนตัว</string>
     <string name="settings_style_placeholder">อธิบายสิ่งที่คุณชอบใส่, โอกาสที่แต่งตัว, สีที่ชอบ, แบรนด์ หรือสิ่งอื่นๆ ที่ช่วยให้เราแนะนำชุดได้ดีขึ้น…</string>
     <string name="settings_saved">บันทึกความชอบส่วนตัวแล้ว</string>
-    <string name="settings_api_key_title">Gemini API Key</string>
-    <string name="settings_api_key_desc">ฟีเจอร์ AI ทั้งหมดต้องการ Gemini API key รับรหัสฟรีได้ที่ aistudio.google.com รหัสของคุณจะถูกเก็บไว้ในเครื่องนี้เท่านั้น</string>
-    <string name="settings_api_key_label">API Key</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">แท็กตู้เสื้อผ้า</string>
     <string name="settings_data_tags_desc">จัดหมวดหมู่เสื้อผ้าทุกชิ้นใหม่ด้วย Gemini ซึ่งจะทับการแก้ไขแท็กด้วยตนเอง</string>
     <string name="settings_rescan_button">สแกนแท็กใหม่ทั้งหมด</string>
@@ -320,15 +306,7 @@
     <string name="composer_enhancing">กำลังถาม Gemini…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s โทเค็น</string>
-    <string name="confirm_spend_title">ใช้เครดิต AI หรือไม่</string>
-    <string name="confirm_spend_body">การดำเนินการนี้จะใช้ %1$d เครดิต</string>
-    <string name="confirm_spend_body_bulk">การดำเนินการนี้จะใช้ %1$d เครดิตสำหรับ %2$d รายการ</string>
-    <string name="confirm_spend_continue">ดำเนินการต่อ</string>
-    <string name="insufficient_credits_title">เครดิตไม่เพียงพอ</string>
-    <string name="insufficient_credits_body">คุณต้องมี %1$d เครดิตแต่มี %2$d เติมเครดิตเพื่อดำเนินการต่อ</string>
-    <string name="insufficient_credits_buy">ซื้อเครดิต</string>
     <string name="coins_balance_label">ยอดคงเหลือ: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">ใช้คีย์ Gemini ของคุณเอง — ไม่มีเครดิตถูกใช้</string>
     <!-- Bulk translation 2026-05-18 -->
@@ -425,18 +403,6 @@
     <string name="composer_weather_temp">อุณหภูมิ</string>
     <string name="composer_weather_title">สภาพอากาศ</string>
     <string name="composer_weather_unknown">ไม่มีข้อมูลอากาศ</string>
-    <string name="credits_action_bg_removal">ลบพื้นหลัง</string>
-    <string name="credits_action_classify">แท็กรายการอัตโนมัติ</string>
-    <string name="credits_action_style">แนะนำชุด</string>
-    <string name="credits_action_travel">รายการของเดินทาง</string>
-    <string name="credits_balance_label">เครดิต AI คงเหลือ</string>
-    <string name="credits_best_value">คุ้มที่สุด</string>
-    <string name="credits_buy">ซื้อ</string>
-    <string name="credits_cost_each">%d เครดิต</string>
-    <string name="credits_cost_title">ค่าเครดิตต่อการกระทำ</string>
-    <string name="credits_pack_label">%d เครดิต</string>
-    <string name="credits_packs_title">แพ็คเติมเงิน</string>
-    <string name="credits_packs_unavailable">แพ็คเครดิตไม่พร้อมใช้บนอุปกรณ์นี้</string>
     <string name="dedupe_dialog_cancel">ยกเลิก</string>
     <string name="dedupe_dialog_desc">เราพบ %1$d รายการในตู้เสื้อผ้าของคุณที่ดูคล้ายกับรูปนี้มาก</string>
     <string name="dedupe_dialog_import_anyway">นำเข้าต่อไป</string>
@@ -456,9 +422,6 @@
     <string name="import_preview_select_all">เลือกทั้งหมด</string>
     <string name="import_preview_similar_badge">คล้าย</string>
     <string name="import_preview_title">ตรวจสอบ %1$d รายการ</string>
-    <string name="job_notif_channel_name">การประมวลผลพื้นหลัง</string>
-    <string name="job_notif_text">กำลังประมวลผลรายการตู้เสื้อผ้า…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">ใช้การตัดนี้</string>
     <string name="local_bg_failed">ไม่สามารถคำนวณการตัด — ลองเลื่อนกากบาท</string>
     <string name="local_bg_hint">ลากกากบาทไปที่รายการที่คุณต้องการเก็บ</string>
@@ -1025,10 +988,6 @@
     <string name="error_no_refinement">ไม่มีการปรับแต่งที่ใช้ได้กลับมา</string>
     <string name="error_enter_destination">โปรดป้อนจุดหมายปลายทาง</string>
     <string name="error_weather_fetch_failed">ไม่สามารถดึงสภาพอากาศสำหรับ \"%1$s\" ได้ ตรวจสอบชื่อจุดหมายปลายทาง</string>
-    <string name="error_billing">ข้อผิดพลาดในการเรียกเก็บเงิน: %1$s</string>
-    <string name="error_purchase_verify_failed">ไม่สามารถยืนยันการซื้อได้ — โปรดติดต่อฝ่ายสนับสนุน</string>
-    <string name="credits_added">เพิ่ม %1$d เครดิตแล้ว!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">เพิ่มชุดลงในปฏิทิน</string>
     <string name="calendar_add_pick">เลือกชุด</string>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="job_notif_channel_name">Procesamiento en segundo plano</string>
+    <string name="job_notif_title">LibreLookAI</string>
+    <string name="job_notif_text">Procesando prendas del closet…</string>
+</resources>

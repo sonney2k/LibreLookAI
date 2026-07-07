@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API-nyckel</string>
+    <string name="settings_api_key_desc">Alla AI-funktioner (taggning, outfitförslag, bakgrundsborttagning) kräver en Gemini API-nyckel. Skaffa en kostnadsfri nyckel på aistudio.google.com → \"Get API key\". Din nyckel sparas endast på denna enhet.</string>
+    <string name="settings_api_key_label">API-nyckel</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Återstående AI-krediter</string>
+    <string name="credits_cost_title">Kreditkostnad per åtgärd</string>
+    <string name="credits_action_bg_removal">Bakgrundsborttagning</string>
+    <string name="credits_action_classify">Autotagga plagg</string>
+    <string name="credits_action_style">Outfitförslag</string>
+    <string name="credits_action_travel">Packlista för resa</string>
+    <string name="credits_cost_each">%d krediter</string>
+    <string name="credits_packs_title">Påfyllningspaket</string>
+    <string name="credits_packs_unavailable">Kreditpaket är inte tillgängliga på denna enhet</string>
+    <string name="credits_pack_label">%d krediter</string>
+    <string name="credits_best_value">Bästa värdet</string>
+    <string name="credits_buy">Köp</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Använda AI-krediter?</string>
+    <string name="confirm_spend_body">Detta använder %1$d krediter.</string>
+    <string name="confirm_spend_body_bulk">Detta använder %1$d krediter för %2$d objekt.</string>
+    <string name="confirm_spend_continue">Fortsätt</string>
+    <string name="insufficient_credits_title">Inte tillräckligt med krediter</string>
+    <string name="insufficient_credits_body">Du behöver %1$d krediter men har %2$d. Fyll på för att fortsätta.</string>
+    <string name="insufficient_credits_buy">Köp krediter</string>
+    <string name="error_billing">Faktureringsfel: %1$s</string>
+    <string name="error_purchase_verify_failed">Det gick inte att verifiera köpet — kontakta supporten.</string>
+    <string name="credits_added">+%1$d krediter tillagda!</string>
+</resources>

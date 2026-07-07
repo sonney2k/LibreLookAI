@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigazione -->
     <string name="nav_styles">Outfit</string>
     <string name="nav_wardrobe">Guardaroba</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Prove</string>
 
     <!-- Azioni comuni -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Ignora</string>
     <string name="action_delete">Elimina</string>
     <string name="action_save">Salva</string>
     <string name="action_edit">Modifica</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Deseleziona tutto</string>
 
     <!-- Accesso -->
-    <string name="sign_in_prompt">Accedi per gestire il tuo guardaroba</string>
-    <string name="sign_in_button">Accedi con Google</string>
-    <string name="sign_in_error_not_registered">Accesso fallito: questa versione dell\'app non è autorizzata con Google. Se sei uno sviluppatore, registra l\'impronta della chiave di firma nella Console Firebase.</string>
-    <string name="sign_in_error_network">Accesso fallito: nessuna connessione di rete. Controlla la tua connessione internet e riprova.</string>
-    <string name="sign_in_error_generic">Accesso fallito (codice %1$d). Riprova o contatta il supporto.</string>
-
     <!-- Impostazioni -->
     <string name="settings_tab_profile">Profilo</string>
     <string name="settings_tab_display">Visualizzazione</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Preferenze outfit</string>
     <string name="settings_style_placeholder">Descrivi cosa ti piace indossare, le occasioni per cui ti vesti, colori preferiti, marchi o qualsiasi altra cosa che aiuti a personalizzare i suggerimenti di outfit…</string>
     <string name="settings_saved">Preferenze salvate</string>
-    <string name="settings_api_key_title">Chiave API Gemini</string>
-    <string name="settings_api_key_desc">Tutte le funzioni IA (etichettatura, suggerimenti outfit, rimozione sfondo) richiedono una chiave API Gemini. Ottieni una chiave gratuita su aistudio.google.com → \"Get API key\". La tua chiave è memorizzata solo su questo dispositivo.</string>
-    <string name="settings_api_key_label">Chiave API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Etichette guardaroba</string>
     <string name="settings_data_tags_desc">Riclassifica ogni capo del tuo guardaroba con Gemini. Sovrascrive ogni modifica manuale alle etichette.</string>
     <string name="settings_rescan_button">Ri-scansiona tutte le etichette</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">Suggerimento sostituzioni…</string>
 
     <!-- Crediti / Modalità gestita -->
-    <string name="credits_balance_label">Crediti IA rimanenti</string>
-    <string name="credits_cost_title">Costo crediti per azione</string>
-    <string name="credits_action_bg_removal">Rimozione sfondo</string>
-    <string name="credits_action_classify">Auto-etichettatura capo</string>
-    <string name="credits_action_style">Suggerimento outfit</string>
-    <string name="credits_action_travel">Lista valigia viaggio</string>
-    <string name="credits_cost_each">%d crediti</string>
-    <string name="credits_packs_title">Pacchetti di ricarica</string>
-    <string name="credits_packs_unavailable">Pacchetti di crediti non disponibili su questo dispositivo</string>
-    <string name="credits_pack_label">%d crediti</string>
-    <string name="credits_best_value">Miglior valore</string>
-    <string name="credits_buy">Acquista</string>
-
     <!-- Overlay IA -->
     <string name="ai_working">L\'IA sta lavorando…</string>
     <string name="ai_fetching_weather">Recupero meteo…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">Composizione outfit…</string>
 
     <!-- Notifica servizio in primo piano -->
-    <string name="job_notif_channel_name">Elaborazione in background</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Elaborazione capi del guardaroba…</string>
-
     <!-- Dialogo esenzione ottimizzazione batteria -->
     <string name="battery_exempt_title">Elaborazione in background richiesta</string>
     <string name="battery_exempt_text">LibreLookAI necessita di elaborazione in background non limitata per importare foto, rimuovere sfondi ed etichettare i tuoi vestiti con l\'IA in sicurezza.\n\nSenza questa autorizzazione, Android può chiudere l\'app durante il processo, causando perdita di dati — capi importati parzialmente, etichette mancanti o file corrotti.\n\nDisattiva l\'ottimizzazione della batteria per LibreLookAI per continuare.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">Scansione %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s token</string>
-    <string name="confirm_spend_title">Usare crediti IA?</string>
-    <string name="confirm_spend_body">Verranno usati %1$d crediti.</string>
-    <string name="confirm_spend_body_bulk">Verranno usati %1$d crediti per %2$d elementi.</string>
-    <string name="confirm_spend_continue">Continua</string>
-    <string name="insufficient_credits_title">Crediti insufficienti</string>
-    <string name="insufficient_credits_body">Servono %1$d crediti ma ne hai %2$d. Ricarica per continuare.</string>
-    <string name="insufficient_credits_buy">Acquista crediti</string>
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Stai usando la tua chiave Gemini — non vengono spesi crediti.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">Nessun perfezionamento utilizzabile restituito.</string>
     <string name="error_enter_destination">Inserisci una destinazione.</string>
     <string name="error_weather_fetch_failed">Impossibile recuperare il meteo per \"%1$s\". Controlla il nome della destinazione.</string>
-    <string name="error_billing">Errore di fatturazione: %1$s</string>
-    <string name="error_purchase_verify_failed">Impossibile verificare l\'acquisto — contatta l\'assistenza.</string>
-    <string name="credits_added">+%1$d crediti aggiunti!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Aggiungi l\'outfit al calendario</string>
     <string name="calendar_add_pick">Scegli un outfit</string>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- 내비게이션 -->
     <string name="nav_styles">코디</string>
     <string name="nav_wardrobe">옷장</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">착용 시뮬레이션</string>
 
     <!-- 공통 액션 -->
-    <string name="action_ok">확인</string>
-    <string name="action_dismiss">닫기</string>
     <string name="action_delete">삭제</string>
     <string name="action_save">저장</string>
     <string name="action_edit">편집</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">선택 해제</string>
 
     <!-- 로그인 -->
-    <string name="sign_in_prompt">로그인하여 옷장을 관리하세요</string>
-    <string name="sign_in_button">Google로 로그인</string>
-    <string name="sign_in_error_not_registered">로그인 실패: 이 앱 빌드는 Google에서 인증되지 않았습니다. 개발자라면 Firebase Console에 서명 키 지문을 등록하세요.</string>
-    <string name="sign_in_error_network">로그인 실패: 네트워크 연결이 없습니다. 인터넷을 확인하고 다시 시도하세요.</string>
-    <string name="sign_in_error_generic">로그인 실패 (코드 %1$d). 다시 시도하거나 지원팀에 문의하세요.</string>
-
     <!-- 설정 -->
     <string name="settings_tab_profile">프로필</string>
     <string name="settings_tab_display">디스플레이</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">코디 선호</string>
     <string name="settings_style_placeholder">즐겨 입는 스타일, 옷을 차려입는 상황, 좋아하는 색상이나 브랜드 등 코디 추천을 개인화하는 데 도움이 되는 내용을 입력하세요…</string>
     <string name="settings_saved">설정이 저장되었습니다</string>
-    <string name="settings_api_key_title">Gemini API 키</string>
-    <string name="settings_api_key_desc">모든 AI 기능(태그 지정, 코디 제안, 배경 제거)에는 Gemini API 키가 필요합니다. aistudio.google.com → \"Get API key\"에서 무료 키를 받을 수 있습니다. 키는 이 기기에만 저장됩니다.</string>
-    <string name="settings_api_key_label">API 키</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">옷장 태그</string>
     <string name="settings_data_tags_desc">Gemini로 옷장의 모든 아이템을 다시 분류합니다. 수동으로 편집한 태그는 덮어쓰여집니다.</string>
     <string name="settings_rescan_button">모든 태그 다시 스캔</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">대안 제안 중…</string>
 
     <!-- 크레딧 / 관리 모드 -->
-    <string name="credits_balance_label">남은 AI 크레딧</string>
-    <string name="credits_cost_title">액션당 크레딧 비용</string>
-    <string name="credits_action_bg_removal">배경 제거</string>
-    <string name="credits_action_classify">아이템 자동 태그</string>
-    <string name="credits_action_style">코디 제안</string>
-    <string name="credits_action_travel">여행 패킹 리스트</string>
-    <string name="credits_cost_each">%d 크레딧</string>
-    <string name="credits_packs_title">충전 팩</string>
-    <string name="credits_packs_unavailable">이 기기에서는 크레딧 팩을 사용할 수 없습니다</string>
-    <string name="credits_pack_label">%d 크레딧</string>
-    <string name="credits_best_value">최고 가치</string>
-    <string name="credits_buy">구매</string>
-
     <!-- AI 오버레이 -->
     <string name="ai_working">AI 작업 중…</string>
     <string name="ai_fetching_weather">날씨 가져오는 중…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">코디 만드는 중…</string>
 
     <!-- 포그라운드 서비스 알림 -->
-    <string name="job_notif_channel_name">백그라운드 처리</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">옷장 아이템 처리 중…</string>
-
     <!-- 배터리 최적화 면제 대화상자 -->
     <string name="battery_exempt_title">백그라운드 처리 필요</string>
     <string name="battery_exempt_text">LibreLookAI는 사진을 안전하게 가져오고, 배경을 제거하고, AI로 옷에 태그를 지정하기 위해 제한 없는 백그라운드 처리가 필요합니다.\n\n이 권한이 없으면 Android가 처리 중에 앱을 종료할 수 있어 데이터 손실이 발생할 수 있습니다 — 부분적으로 가져온 아이템, 누락된 태그 또는 손상된 파일.\n\n계속하려면 LibreLookAI의 배터리 최적화를 비활성화하세요.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">스캔 중 %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s 토큰</string>
-    <string name="confirm_spend_title">AI 크레딧을 사용하시겠습니까?</string>
-    <string name="confirm_spend_body">%1$d 크레딧이 사용됩니다.</string>
-    <string name="confirm_spend_body_bulk">%2$d개 항목에 대해 %1$d 크레딧이 사용됩니다.</string>
-    <string name="confirm_spend_continue">계속</string>
-    <string name="insufficient_credits_title">크레딧이 부족합니다</string>
-    <string name="insufficient_credits_body">%1$d 크레딧이 필요하지만 %2$d만 있습니다. 충전 후 계속하세요.</string>
-    <string name="insufficient_credits_buy">크레딧 구매</string>
     <string name="coins_balance_label">잔액: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">본인의 Gemini 키 사용 중 — 크레딧이 소모되지 않습니다.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">사용 가능한 개선 결과가 없습니다.</string>
     <string name="error_enter_destination">목적지를 입력하세요.</string>
     <string name="error_weather_fetch_failed">\"%1$s\"의 날씨를 가져올 수 없습니다. 목적지 이름을 확인하세요.</string>
-    <string name="error_billing">결제 오류: %1$s</string>
-    <string name="error_purchase_verify_failed">구매를 확인할 수 없습니다 — 지원팀에 문의하세요.</string>
-    <string name="credits_added">+%1$d 크레딧이 추가되었습니다!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">코디를 캘린더에 추가</string>
     <string name="calendar_add_pick">코디 선택</string>

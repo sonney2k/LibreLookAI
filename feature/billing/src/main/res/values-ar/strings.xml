@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">مفتاح Gemini API</string>
+    <string name="settings_api_key_desc">تتطلب جميع ميزات الذكاء الاصطناعي مفتاح Gemini API. احصل على مفتاح مجاني من aistudio.google.com ← \"Get API key\". يتم تخزين مفتاحك على هذا الجهاز فقط.</string>
+    <string name="settings_api_key_label">مفتاح API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">رصيد الذكاء الاصطناعي المتبقي</string>
+    <string name="credits_cost_title">تكلفة الرصيد لكل إجراء</string>
+    <string name="credits_action_bg_removal">إزالة الخلفية</string>
+    <string name="credits_action_classify">وسم الصنف تلقائيًا</string>
+    <string name="credits_action_style">اقتراح طقم</string>
+    <string name="credits_action_travel">قائمة توضيب سفر</string>
+    <string name="credits_cost_each">%d رصيد</string>
+    <string name="credits_packs_title">حزم الشحن</string>
+    <string name="credits_packs_unavailable">حزم الرصيد غير متوفرة على هذا الجهاز</string>
+    <string name="credits_pack_label">%d رصيد</string>
+    <string name="credits_best_value">أفضل قيمة</string>
+    <string name="credits_buy">شراء</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">استخدام أرصدة الذكاء الاصطناعي؟</string>
+    <string name="confirm_spend_body">سيستخدم هذا %1$d أرصدة.</string>
+    <string name="confirm_spend_body_bulk">سيستخدم هذا %1$d أرصدة عبر %2$d عناصر.</string>
+    <string name="confirm_spend_continue">متابعة</string>
+    <string name="insufficient_credits_title">أرصدة غير كافية</string>
+    <string name="insufficient_credits_body">تحتاج إلى %1$d أرصدة ولكن لديك %2$d. أعد التعبئة للمتابعة.</string>
+    <string name="insufficient_credits_buy">شراء أرصدة</string>
+    <string name="error_billing">خطأ في الفوترة: %1$s</string>
+    <string name="error_purchase_verify_failed">تعذّر التحقق من الشراء — يرجى التواصل مع الدعم.</string>
+    <string name="credits_added">تمت إضافة %1$d رصيد!</string>
+</resources>

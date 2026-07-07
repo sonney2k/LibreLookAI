@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Report translation completeness for every values-<locale>/strings.xml,
 # measured against the default values/strings.xml — aggregated across every
-# module that owns string resources (:app and :core:designsystem after the
-# § 1 res-split).
+# module that owns string resources (:app, :core:designsystem, :core:service,
+# :feature:auth and :feature:billing after the § 1 res-split).
 #
 # Usage:
 #   scripts/translation_status.sh            # table sorted by completeness (worst first)
@@ -18,6 +18,9 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 RES_DIRS=(
     "$REPO_ROOT/app/src/main/res"
     "$REPO_ROOT/core/designsystem/src/main/res"
+    "$REPO_ROOT/core/service/src/main/res"
+    "$REPO_ROOT/feature/auth/src/main/res"
+    "$REPO_ROOT/feature/billing/src/main/res"
 )
 
 for d in "${RES_DIRS[@]}"; do

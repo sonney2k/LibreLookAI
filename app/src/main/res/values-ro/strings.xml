@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Ținute</string>
     <string name="nav_wardrobe">Garderobă</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Probe</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Închide</string>
     <string name="action_delete">Șterge</string>
     <string name="action_save">Salvează</string>
     <string name="action_edit">Editează</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Deselectează tot</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Autentifică-te pentru a-ți gestiona garderoba</string>
-    <string name="sign_in_button">Conectare cu Google</string>
-    <string name="sign_in_error_not_registered">Conectare eșuată: aplicația nu este autorizată de Google.</string>
-    <string name="sign_in_error_network">Conectare eșuată: nu există conexiune la internet.</string>
-    <string name="sign_in_error_generic">Conectare eșuată (cod %1$d). Încearcă din nou.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_display">Afișaj</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Preferințe Stil</string>
     <string name="settings_style_placeholder">Descrie ce îți place să porți, ocazii, culori preferate, branduri, etc…</string>
     <string name="settings_saved">Preferințe salvate</string>
-    <string name="settings_api_key_title">Cheie API Gemini</string>
-    <string name="settings_api_key_desc">Toate funcțiile AI necesită o cheie Gemini API. Obține una gratuită la aistudio.google.com.</string>
-    <string name="settings_api_key_label">Cheie API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Etichete Garderobă</string>
     <string name="settings_data_tags_desc">Reclasifică fiecare articol cu Gemini. Aceasta va suprascrie editările manuale.</string>
     <string name="settings_rescan_button">Rescanează Etichete</string>
@@ -319,15 +305,7 @@
     <string name="composer_enhancing">Se întreabă Gemini…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokenuri</string>
-    <string name="confirm_spend_title">Folosești credite AI?</string>
-    <string name="confirm_spend_body">Aceasta va folosi %1$d credite.</string>
-    <string name="confirm_spend_body_bulk">Aceasta va folosi %1$d credite pentru %2$d articole.</string>
-    <string name="confirm_spend_continue">Continuă</string>
-    <string name="insufficient_credits_title">Credite insuficiente</string>
-    <string name="insufficient_credits_body">Ai nevoie de %1$d credite, dar ai %2$d. Reîncarcă pentru a continua.</string>
-    <string name="insufficient_credits_buy">Cumpără credite</string>
     <string name="coins_balance_label">Sold: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Folosești propria cheie Gemini — nu se consumă credite.</string>
     <!-- Bulk translation 2026-05-17 -->
@@ -424,18 +402,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="composer_weather_temp">Temperatură</string>
     <string name="composer_weather_title">Vreme</string>
     <string name="composer_weather_unknown">Nicio informație despre vreme</string>
-    <string name="credits_action_bg_removal">Eliminare fundal</string>
-    <string name="credits_action_classify">Etichetare automată</string>
-    <string name="credits_action_style">Sugestie ținută</string>
-    <string name="credits_action_travel">Listă de bagaje</string>
-    <string name="credits_balance_label">Credite AI rămase</string>
-    <string name="credits_best_value">Cea mai bună valoare</string>
-    <string name="credits_buy">Cumpără</string>
-    <string name="credits_cost_each">%d credite</string>
-    <string name="credits_cost_title">Cost credite per acțiune</string>
-    <string name="credits_pack_label">%d credite</string>
-    <string name="credits_packs_title">Pachete de reîncărcare</string>
-    <string name="credits_packs_unavailable">Pachetele de credite nu sunt disponibile pe acest dispozitiv</string>
     <string name="dedupe_dialog_cancel">Anulează</string>
     <string name="dedupe_dialog_desc">Am găsit %1$d articol(e) în garderoba ta care arată foarte similar cu această fotografie.</string>
     <string name="dedupe_dialog_import_anyway">Importă oricum</string>
@@ -455,9 +421,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="import_preview_select_all">Selectează tot</string>
     <string name="import_preview_similar_badge">Similar</string>
     <string name="import_preview_title">Verifică %1$d articol(e)</string>
-    <string name="job_notif_channel_name">Procesare în fundal</string>
-    <string name="job_notif_text">Se procesează articolele din garderobă…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">Folosește acest decupaj</string>
     <string name="local_bg_failed">Nu s-a putut calcula decupajul — încearcă să muți reticulul.</string>
     <string name="local_bg_hint">Trage reticulul pe articolul pe care vrei să-l păstrezi.</string>
@@ -1025,10 +988,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="error_no_refinement">Nu a fost returnată nicio rafinare utilizabilă.</string>
     <string name="error_enter_destination">Introdu o destinație.</string>
     <string name="error_weather_fetch_failed">Nu s-a putut obține vremea pentru „%1$s\". Verifică numele destinației.</string>
-    <string name="error_billing">Eroare de facturare: %1$s</string>
-    <string name="error_purchase_verify_failed">Achiziția nu a putut fi verificată — contactează asistența.</string>
-    <string name="credits_added">+%1$d credite adăugate!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Adaugă ținuta în calendar</string>
     <string name="calendar_add_pick">Alege o ținută</string>

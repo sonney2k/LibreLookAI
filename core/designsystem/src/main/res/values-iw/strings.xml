@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">המרה ל-WebP</string>
     <string name="action_clear_selection">ניקוי הבחירה</string>
     <string name="sel_count">%1$d נבחרו</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">אישור</string>
+    <string name="action_dismiss">סגור</string>
 </resources>

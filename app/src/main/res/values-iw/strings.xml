@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">אאוטפיטים</string>
     <string name="nav_wardrobe">מלתחה</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">מדידות</string>
 
     <!-- Common actions -->
-    <string name="action_ok">אישור</string>
-    <string name="action_dismiss">סגור</string>
     <string name="action_delete">מחק</string>
     <string name="action_save">שמור</string>
     <string name="action_edit">ערוך</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">בטל בחירה הכל</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">היכנס כדי לנהל את המלתחה שלך</string>
-    <string name="sign_in_button">התחבר עם Google</string>
-    <string name="sign_in_error_not_registered">התחברות נכשלה: גרסת אפליקציה זו אינה מורשית על ידי Google.</string>
-    <string name="sign_in_error_network">התחברות נכשלה: אין חיבור לרשת. אנא בדוק את האינטרנט שלך.</string>
-    <string name="sign_in_error_generic">התחברות נכשלה (קוד %1$d). אנא נסה שוב.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">פרופיל</string>
     <string name="settings_tab_display">תצוגה</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">העדפות סגנון</string>
     <string name="settings_style_placeholder">תאר מה אתה אוהב ללבוש, אירועים שאתה מתלבש עבורם, צבעים מועדפים, מותגים או כל דבר אחר שעוזר להתאים אישית את המלצות האאוטפיט שלך…</string>
     <string name="settings_saved">העדפות נשמרו</string>
-    <string name="settings_api_key_title">מפתח Gemini API</string>
-    <string name="settings_api_key_desc">כל יכולות ה-AI דורשות מפתח Gemini API (הוסף כאן או בהגדרה הראשונית). מפתח חינמי מכסה תיוג והצעות תלבושות; מדידה וירטואלית והסרת רקע דורשות מפתח בתשלום עם חיוב מופעל. המפתח נשמר במכשיר זה בלבד.</string>
-    <string name="settings_api_key_label">מפתח API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">תגי מלתחה</string>
     <string name="settings_data_tags_desc">סווג מחדש כל פריט במלתחה שלך עם Gemini. פעולה זו תדרוס כל עריכת תג ידנית.</string>
     <string name="settings_rescan_button">סרוק מחדש את כל התגים</string>
@@ -440,19 +426,6 @@
     <string name="replacements_analyzing">מציע חלופות…</string>
 
     <!-- Credits / Managed Mode -->
-    <string name="credits_balance_label">יתרת קרדיטים</string>
-    <string name="credits_cost_title">עלות פעולה</string>
-    <string name="credits_action_bg_removal">הסרת רקע</string>
-    <string name="credits_action_classify">תיוג אוטומטי</string>
-    <string name="credits_action_style">הצעת אאוטפיט</string>
-    <string name="credits_action_travel">רשימת אריזה</string>
-    <string name="credits_cost_each">%d קרדיטים</string>
-    <string name="credits_packs_title">חבילות קרדיט</string>
-    <string name="credits_packs_unavailable">חבילות לא זמינות במכשיר זה</string>
-    <string name="credits_pack_label">%d קרדיטים</string>
-    <string name="credits_best_value">הכי משתלם</string>
-    <string name="credits_buy">קנה</string>
-
     <!-- AI overlay -->
     <string name="ai_working">הבינה המלאכותית עובדת…</string>
     <string name="ai_fetching_weather">מקבל תחזית מזג אוויר…</string>
@@ -462,10 +435,6 @@
     <string name="ai_composing_outfit">מרכיב אאוטפיט…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">עיבוד ברקע</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">מעבד פריטים…</string>
-
     <!-- Battery optimization exemption dialog -->
     <string name="battery_exempt_title">נדרש עיבוד ברקע</string>
     <string name="battery_exempt_text">LibreLookAI זקוקה לעיבוד ברקע כדי לייבא תמונות ולהסיר רקעים בבטחה.</string>
@@ -698,15 +667,7 @@
     <string name="composer_sheet_done">בוצע</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s טוקנים</string>
-    <string name="confirm_spend_title">להשתמש בקרדיטים של AI?</string>
-    <string name="confirm_spend_body">פעולה זו תשתמש ב-%1$d קרדיטים.</string>
-    <string name="confirm_spend_body_bulk">פעולה זו תשתמש ב-%1$d קרדיטים עבור %2$d פריטים.</string>
-    <string name="confirm_spend_continue">המשך</string>
-    <string name="insufficient_credits_title">אין מספיק קרדיטים</string>
-    <string name="insufficient_credits_body">אתה צריך %1$d קרדיטים אך יש לך %2$d. טען כדי להמשיך.</string>
-    <string name="insufficient_credits_buy">קנה קרדיטים</string>
     <string name="coins_balance_label">יתרה: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">משתמש במפתח Gemini משלך — לא מנוצלים קרדיטים.</string>
 
@@ -1055,10 +1016,6 @@
     <string name="error_no_refinement">לא הוחזר שיפור שמיש.</string>
     <string name="error_enter_destination">אנא הזן יעד.</string>
     <string name="error_weather_fetch_failed">לא ניתן היה לקבל מזג אוויר עבור \"%1$s\". בדוק את שם היעד.</string>
-    <string name="error_billing">שגיאת חיוב: %1$s</string>
-    <string name="error_purchase_verify_failed">לא ניתן לאמת את הרכישה — פנה לתמיכה.</string>
-    <string name="credits_added">נוספו %1$d קרדיטים!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">הוסף תלבושת ליומן</string>
     <string name="calendar_add_pick">בחר תלבושת</string>

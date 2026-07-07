@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Entre para gerenciar seu guarda-roupa</string>
+    <string name="sign_in_button">Entrar com Google</string>
+    <string name="sign_in_error_not_registered">Falha no login: esta versão do app não está autorizada com o Google. Se você é desenvolvedor, registre a impressão digital da chave de assinatura no Firebase Console.</string>
+    <string name="sign_in_error_network">Falha no login: sem conexão de rede. Verifique sua internet e tente novamente.</string>
+    <string name="sign_in_error_generic">Falha no login (código %1$d). Tente novamente ou entre em contato com o suporte.</string>
+</resources>

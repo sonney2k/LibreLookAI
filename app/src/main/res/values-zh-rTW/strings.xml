@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">穿搭</string>
     <string name="nav_wardrobe">衣櫥</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">試穿</string>
 
     <!-- Common actions -->
-    <string name="action_ok">確定</string>
-    <string name="action_dismiss">關閉</string>
     <string name="action_delete">刪除</string>
     <string name="action_save">儲存</string>
     <string name="action_edit">編輯</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">取消全選</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">登入以管理您的衣櫥</string>
-    <string name="sign_in_button">使用 Google 登入</string>
-    <string name="sign_in_error_not_registered">登入失敗：此應用程式版本未經 Google 授權。</string>
-    <string name="sign_in_error_network">登入失敗：無網路連接。請檢查網路後重試。</string>
-    <string name="sign_in_error_generic">登入失敗 (代碼 %1$d)。請重試。</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">個人檔案</string>
     <string name="settings_tab_display">顯示</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">穿搭偏好</string>
     <string name="settings_style_placeholder">描述您喜歡穿什麼、穿著場合、喜歡的顏色、品牌等…</string>
     <string name="settings_saved">偏好已儲存</string>
-    <string name="settings_api_key_title">Gemini API 金鑰</string>
-    <string name="settings_api_key_desc">所有 AI 功能皆需 Gemini API 金鑰。請至 aistudio.google.com 獲取免費金鑰。金鑰僅儲存於此設備。</string>
-    <string name="settings_api_key_label">API 金鑰</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">衣櫥標籤</string>
     <string name="settings_data_tags_desc">使用 Gemini 重新分類衣櫥中的每一件單品。這將覆蓋任何手動編輯的標籤。</string>
     <string name="settings_rescan_button">重新掃描所有標籤</string>
@@ -320,15 +306,7 @@
     <string name="composer_enhancing">正在詢問 Gemini…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s token</string>
-    <string name="confirm_spend_title">使用 AI 點數？</string>
-    <string name="confirm_spend_body">此操作將使用 %1$d 點數。</string>
-    <string name="confirm_spend_body_bulk">此操作將為 %2$d 個項目使用 %1$d 點數。</string>
-    <string name="confirm_spend_continue">繼續</string>
-    <string name="insufficient_credits_title">點數不足</string>
-    <string name="insufficient_credits_body">需要 %1$d 點數，但只有 %2$d 點。請儲值後繼續。</string>
-    <string name="insufficient_credits_buy">購買點數</string>
     <string name="coins_balance_label">餘額: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">正在使用您自己的 Gemini 金鑰 — 不會消耗點數。</string>
     <!-- Bulk translation 2026-05-18 -->
@@ -425,18 +403,6 @@
     <string name="composer_weather_temp">氣溫</string>
     <string name="composer_weather_title">天氣</string>
     <string name="composer_weather_unknown">無天氣資料</string>
-    <string name="credits_action_bg_removal">去除背景</string>
-    <string name="credits_action_classify">自動標籤</string>
-    <string name="credits_action_style">穿搭建議</string>
-    <string name="credits_action_travel">旅行打包清單</string>
-    <string name="credits_balance_label">剩餘 AI 點數</string>
-    <string name="credits_best_value">最划算</string>
-    <string name="credits_buy">購買</string>
-    <string name="credits_cost_each">%d 點</string>
-    <string name="credits_cost_title">每項操作的點數費用</string>
-    <string name="credits_pack_label">%d 點</string>
-    <string name="credits_packs_title">加值方案</string>
-    <string name="credits_packs_unavailable">本裝置無法購買點數方案</string>
     <string name="dedupe_dialog_cancel">取消</string>
     <string name="dedupe_dialog_desc">我們在你的衣櫥中找到 %1$d 件看起來與這張相片非常相似的單品。</string>
     <string name="dedupe_dialog_import_anyway">仍要匯入</string>
@@ -456,9 +422,6 @@
     <string name="import_preview_select_all">全選</string>
     <string name="import_preview_similar_badge">相似</string>
     <string name="import_preview_title">檢視 %1$d 件單品</string>
-    <string name="job_notif_channel_name">背景處理</string>
-    <string name="job_notif_text">正在處理衣櫥單品…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">使用此剪裁</string>
     <string name="local_bg_failed">無法計算剪裁——請試著移動十字準星。</string>
     <string name="local_bg_hint">將十字準星拖曳到你想保留的單品上。</string>
@@ -1025,10 +988,6 @@
     <string name="error_no_refinement">未傳回可用的調整結果。</string>
     <string name="error_enter_destination">請輸入目的地。</string>
     <string name="error_weather_fetch_failed">無法取得「%1$s」的天氣。請檢查目的地名稱。</string>
-    <string name="error_billing">帳務錯誤：%1$s</string>
-    <string name="error_purchase_verify_failed">無法驗證購買 — 請聯絡支援。</string>
-    <string name="credits_added">已新增 %1$d 點數！</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">將穿搭加入日曆</string>
     <string name="calendar_add_pick">選擇穿搭</string>

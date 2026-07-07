@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Mag-sign in para pamahalaan ang iyong wardrobe</string>
+    <string name="sign_in_button">Mag-sign in gamit ang Google</string>
+    <string name="sign_in_error_not_registered">Hindi nag-sign in: hindi awtorisado ang build ng app na ito sa Google. Kung ikaw ay developer, irehistro ang signing key fingerprint sa Firebase Console.</string>
+    <string name="sign_in_error_network">Hindi nag-sign in: walang network connection. Pakitingnan ang iyong internet at subukan muli.</string>
+    <string name="sign_in_error_generic">Hindi nag-sign in (code %1$d). Pakisubukan muli o makipag-ugnayan sa support.</string>
+</resources>

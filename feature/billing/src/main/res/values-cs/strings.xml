@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API klíč</string>
+    <string name="settings_api_key_desc">Všechny funkce AI (tagování, návrhy outfitů, odstraňování pozadí) vyžadují klíč Gemini API. Získejte bezplatný klíč na aistudio.google.com → \"Get API key\". Váš klíč je uložen pouze v tomto zařízení.</string>
+    <string name="settings_api_key_label">API klíč</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Zbývající AI kredity</string>
+    <string name="credits_cost_title">Cena v kreditech za akci</string>
+    <string name="credits_action_bg_removal">Odstranění pozadí</string>
+    <string name="credits_action_classify">Automatické označení položky</string>
+    <string name="credits_action_style">Návrh outfitu</string>
+    <string name="credits_action_travel">Cestovní seznam věcí</string>
+    <string name="credits_cost_each">%d kreditů</string>
+    <string name="credits_packs_title">Balíčky kreditů</string>
+    <string name="credits_packs_unavailable">Balíčky kreditů nejsou v tomto zařízení dostupné</string>
+    <string name="credits_pack_label">%d kreditů</string>
+    <string name="credits_best_value">Nejvýhodnější</string>
+    <string name="credits_buy">Koupit</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Použít AI kredity?</string>
+    <string name="confirm_spend_body">Použije se %1$d kreditů.</string>
+    <string name="confirm_spend_body_bulk">Použije se %1$d kreditů na %2$d položek.</string>
+    <string name="confirm_spend_continue">Pokračovat</string>
+    <string name="insufficient_credits_title">Nedostatek kreditů</string>
+    <string name="insufficient_credits_body">Potřebujete %1$d kreditů, ale máte %2$d. Dobijte pro pokračování.</string>
+    <string name="insufficient_credits_buy">Koupit kredity</string>
+    <string name="error_billing">Chyba účtování: %1$s</string>
+    <string name="error_purchase_verify_failed">Nákup nelze ověřit — kontaktujte podporu.</string>
+    <string name="credits_added">Přidáno +%1$d kreditů!</string>
+</resources>

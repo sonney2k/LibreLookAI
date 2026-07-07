@@ -80,6 +80,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.BuildConfig
 import com.librelookai.R
+import com.librelookai.feature.auth.R as AuthR
+import com.librelookai.feature.billing.R as BillingR
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.TryOnSlot
@@ -555,9 +557,9 @@ private fun DriveSignInPage(
 ) {
     val errorMessage = when (signInErrorCode) {
         null -> null
-        10   -> stringResource(R.string.sign_in_error_not_registered)   // DEVELOPER_ERROR
-        7    -> stringResource(R.string.sign_in_error_network)           // NETWORK_ERROR
-        else -> stringResource(R.string.sign_in_error_generic, signInErrorCode)
+        10   -> stringResource(AuthR.string.sign_in_error_not_registered)   // DEVELOPER_ERROR
+        7    -> stringResource(AuthR.string.sign_in_error_network)           // NETWORK_ERROR
+        else -> stringResource(AuthR.string.sign_in_error_generic, signInErrorCode)
     }
     Column(
         Modifier
@@ -887,8 +889,8 @@ private fun ApiKeyPage(
         OutlinedTextField(
             value = apiKey,
             onValueChange = onKey,
-            label = { Text(stringResource(R.string.settings_api_key_label)) },
-            placeholder = { Text(stringResource(R.string.settings_api_key_placeholder)) },
+            label = { Text(stringResource(BillingR.string.settings_api_key_label)) },
+            placeholder = { Text(stringResource(BillingR.string.settings_api_key_placeholder)) },
             singleLine = true,
             isError = apiKey.isNotEmpty() && !looksValid,
             modifier = Modifier.fillMaxWidth(),

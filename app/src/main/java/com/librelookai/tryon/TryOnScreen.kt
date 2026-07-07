@@ -105,7 +105,7 @@ private fun TryOnPageScaffold(
 @Composable
 private fun TryOnErrorDialog(error: String?, errorRes: Int?, onClearError: () -> Unit) {
     val errorTitle = stringResource(R.string.tryon_error)
-    val errorOk = stringResource(R.string.action_ok)
+    val errorOk = stringResource(DsR.string.action_ok)
     val errorMsg = errorRes?.let { stringResource(it) } ?: error
     errorMsg?.let { msg ->
         AlertDialog(

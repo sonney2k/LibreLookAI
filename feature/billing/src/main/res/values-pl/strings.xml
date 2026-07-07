@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Klucz API Gemini</string>
+    <string name="settings_api_key_desc">Wszystkie funkcje AI (tagowanie, sugestie stylizacji, usuwanie tła) wymagają klucza API Gemini. Pobierz darmowy klucz na aistudio.google.com → „Get API key". Klucz przechowywany tylko na tym urządzeniu.</string>
+    <string name="settings_api_key_label">Klucz API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Pozostałe kredyty AI</string>
+    <string name="credits_cost_title">Koszt kredytów za akcję</string>
+    <string name="credits_action_bg_removal">Usuwanie tła</string>
+    <string name="credits_action_classify">Automatyczne tagowanie elementu</string>
+    <string name="credits_action_style">Sugestia stylizacji</string>
+    <string name="credits_action_travel">Lista pakowania na podróż</string>
+    <string name="credits_cost_each">%d kredytów</string>
+    <string name="credits_packs_title">Pakiety doładowań</string>
+    <string name="credits_packs_unavailable">Pakiety kredytów niedostępne na tym urządzeniu</string>
+    <string name="credits_pack_label">%d kredytów</string>
+    <string name="credits_best_value">Najlepsza wartość</string>
+    <string name="credits_buy">Kup</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Użyć kredytów AI?</string>
+    <string name="confirm_spend_body">Spowoduje to użycie %1$d kredytów.</string>
+    <string name="confirm_spend_body_bulk">Spowoduje to użycie %1$d kredytów dla %2$d elementów.</string>
+    <string name="confirm_spend_continue">Kontynuuj</string>
+    <string name="insufficient_credits_title">Za mało kredytów</string>
+    <string name="insufficient_credits_body">Potrzebujesz %1$d kredytów, ale masz %2$d. Doładuj, aby kontynuować.</string>
+    <string name="insufficient_credits_buy">Kup kredyty</string>
+    <string name="error_billing">Błąd płatności: %1$s</string>
+    <string name="error_purchase_verify_failed">Nie można zweryfikować zakupu — skontaktuj się z pomocą techniczną.</string>
+    <string name="credits_added">Dodano +%1$d kredytów!</string>
+</resources>

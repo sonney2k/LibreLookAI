@@ -271,7 +271,7 @@ internal fun ShoppingListTab(
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(start = 8.dp, end = 8.dp, top = 64.dp),
-                action = { TextButton(onClick = shoppingClosetViewModel::clearError) { Text(stringResource(R.string.action_dismiss)) } },
+                action = { TextButton(onClick = shoppingClosetViewModel::clearError) { Text(stringResource(DsR.string.action_dismiss)) } },
             ) { Text(msg) }
         }
 

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Garderobe</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Prøvninger</string>
 
     <!-- Almindelige handlinger -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Afvis</string>
     <string name="action_delete">Slet</string>
     <string name="action_save">Gem</string>
     <string name="action_edit">Redigér</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Fravælg alle</string>
 
     <!-- Log ind -->
-    <string name="sign_in_prompt">Log ind for at administrere din garderobe</string>
-    <string name="sign_in_button">Log ind med Google</string>
-    <string name="sign_in_error_not_registered">Login mislykkedes: denne app-version er ikke autoriseret af Google. Hvis du er udvikler, så registrér signaturnøglens fingeraftryk i Firebase Console.</string>
-    <string name="sign_in_error_network">Login mislykkedes: ingen netværksforbindelse. Tjek dit internet og prøv igen.</string>
-    <string name="sign_in_error_generic">Login mislykkedes (kode %1$d). Prøv igen eller kontakt support.</string>
-
     <!-- Indstillinger -->
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_display">Visning</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Outfit-præferencer</string>
     <string name="settings_style_placeholder">Beskriv, hvad du kan lide at have på, lejligheder du klæder dig op til, yndlingsfarver, mærker eller alt andet, der hjælper med at personliggøre dine outfit-anbefalinger…</string>
     <string name="settings_saved">Præferencer gemt</string>
-    <string name="settings_api_key_title">Gemini API-nøgle</string>
-    <string name="settings_api_key_desc">Alle AI-funktioner (tagging, outfit-forslag, baggrundsfjernelse) kræver en Gemini API-nøgle. Få en gratis nøgle på aistudio.google.com → \"Get API key\". Din nøgle gemmes kun på denne enhed.</string>
-    <string name="settings_api_key_label">API-nøgle</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Garderobetags</string>
     <string name="settings_data_tags_desc">Klassificér hvert stykke i din garderobe på ny med Gemini. Dette overskriver alle manuelle tag-ændringer.</string>
     <string name="settings_rescan_button">Skan alle tags på ny</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">Foreslår erstatninger…</string>
 
     <!-- Kreditter / Administreret tilstand -->
-    <string name="credits_balance_label">Resterende AI-kreditter</string>
-    <string name="credits_cost_title">Kreditomkostning pr. handling</string>
-    <string name="credits_action_bg_removal">Baggrundsfjernelse</string>
-    <string name="credits_action_classify">Auto-tag stykke</string>
-    <string name="credits_action_style">Outfit-forslag</string>
-    <string name="credits_action_travel">Pakkeliste til rejse</string>
-    <string name="credits_cost_each">%d kreditter</string>
-    <string name="credits_packs_title">Optankningspakker</string>
-    <string name="credits_packs_unavailable">Kreditpakker er ikke tilgængelige på denne enhed</string>
-    <string name="credits_pack_label">%d kreditter</string>
-    <string name="credits_best_value">Bedste værdi</string>
-    <string name="credits_buy">Køb</string>
-
     <!-- AI-overlay -->
     <string name="ai_working">AI arbejder…</string>
     <string name="ai_fetching_weather">Henter vejr…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">Sammensætter outfit…</string>
 
     <!-- Forgrundstjeneste-notifikation -->
-    <string name="job_notif_channel_name">Baggrundsbehandling</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Behandler garderobestykker…</string>
-
     <!-- Batterioptimering-undtagelsesdialog -->
     <string name="battery_exempt_title">Baggrundsbehandling påkrævet</string>
     <string name="battery_exempt_text">LibreLookAI har brug for ubegrænset baggrundsbehandling for sikkert at importere fotos, fjerne baggrunde og tagge dit tøj med AI.\n\nUden denne tilladelse kan Android lukke appen midt i behandlingen, hvilket kan føre til tab af data — delvist importerede stykker, manglende tags eller beskadigede filer.\n\nDeaktivér batterioptimering for LibreLookAI for at fortsætte.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">Skanner %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokens</string>
-    <string name="confirm_spend_title">Brug AI-kreditter?</string>
-    <string name="confirm_spend_body">Dette vil bruge %1$d kreditter.</string>
-    <string name="confirm_spend_body_bulk">Dette vil bruge %1$d kreditter på tværs af %2$d emner.</string>
-    <string name="confirm_spend_continue">Fortsæt</string>
-    <string name="insufficient_credits_title">Ikke nok kreditter</string>
-    <string name="insufficient_credits_body">Du har brug for %1$d kreditter, men har %2$d. Påfyld for at fortsætte.</string>
-    <string name="insufficient_credits_buy">Køb kreditter</string>
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Bruger din egen Gemini-nøgle — der bruges ingen kreditter.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">Ingen brugbar forfining returneret.</string>
     <string name="error_enter_destination">Indtast en destination.</string>
     <string name="error_weather_fetch_failed">Kunne ikke hente vejr for \"%1$s\". Tjek destinationsnavnet.</string>
-    <string name="error_billing">Faktureringsfejl: %1$s</string>
-    <string name="error_purchase_verify_failed">Kunne ikke bekræfte købet — kontakt support.</string>
-    <string name="credits_added">+%1$d kreditter tilføjet!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Føj outfit til kalender</string>
     <string name="calendar_add_pick">Vælg et outfit</string>

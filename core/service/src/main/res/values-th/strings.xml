@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="job_notif_channel_name">การประมวลผลพื้นหลัง</string>
+    <string name="job_notif_text">กำลังประมวลผลรายการตู้เสื้อผ้า…</string>
+    <string name="job_notif_title">LibreLookAI</string>
+</resources>

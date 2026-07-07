@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Κλειδί API Gemini</string>
+    <string name="settings_api_key_desc">Όλες οι λειτουργίες AI απαιτούν ένα κλειδί API Gemini. Αποκτήστε ένα δωρεάν κλειδί στο aistudio.google.com → \"Get API key\". Το κλειδί σας αποθηκεύεται μόνο σε αυτήν τη συσκευή.</string>
+    <string name="settings_api_key_label">Κλειδί API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Μονάδες AI που απομένουν</string>
+    <string name="credits_cost_title">Κόστος μονάδων ανά ενέργεια</string>
+    <string name="credits_action_bg_removal">Αφαίρεση φόντου</string>
+    <string name="credits_action_classify">Αυτόματη ετικέτα είδους</string>
+    <string name="credits_action_style">Πρόταση συνόλου</string>
+    <string name="credits_action_travel">Λίστα ταξιδιού</string>
+    <string name="credits_cost_each">%d μονάδες</string>
+    <string name="credits_packs_title">Πακέτα μονάδων</string>
+    <string name="credits_packs_unavailable">Μη διαθέσιμα σε αυτή τη συσκευή</string>
+    <string name="credits_pack_label">%d μονάδες</string>
+    <string name="credits_best_value">Καλύτερη τιμή</string>
+    <string name="credits_buy">Αγορά</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Χρήση πιστώσεων AI;</string>
+    <string name="confirm_spend_body">Αυτό θα χρησιμοποιήσει %1$d πιστώσεις.</string>
+    <string name="confirm_spend_body_bulk">Αυτό θα χρησιμοποιήσει %1$d πιστώσεις σε %2$d στοιχεία.</string>
+    <string name="confirm_spend_continue">Συνέχεια</string>
+    <string name="insufficient_credits_title">Δεν υπάρχουν αρκετές πιστώσεις</string>
+    <string name="insufficient_credits_body">Χρειάζεστε %1$d πιστώσεις αλλά έχετε %2$d. Ανανεώστε για να συνεχίσετε.</string>
+    <string name="insufficient_credits_buy">Αγορά πιστώσεων</string>
+    <string name="error_billing">Σφάλμα χρέωσης: %1$s</string>
+    <string name="error_purchase_verify_failed">Δεν ήταν δυνατή η επαλήθευση της αγοράς — επικοινωνήστε με την υποστήριξη.</string>
+    <string name="credits_added">Προστέθηκαν +%1$d πιστώσεις!</string>
+</resources>

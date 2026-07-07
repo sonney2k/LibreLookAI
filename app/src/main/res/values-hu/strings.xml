@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Szettek</string>
     <string name="nav_wardrobe">Gardrób</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Próbák</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Bezárás</string>
     <string name="action_delete">Törlés</string>
     <string name="action_save">Mentés</string>
     <string name="action_edit">Szerkesztés</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Kijelölés törlése</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Jelentkezz be a gardróbod kezeléséhez</string>
-    <string name="sign_in_button">Bejelentkezés Google-fiókkal</string>
-    <string name="sign_in_error_not_registered">Bejelentkezési hiba: ez az alkalmazásverzió nem engedélyezett a Google által.</string>
-    <string name="sign_in_error_network">Bejelentkezési hiba: nincs hálózati kapcsolat. Ellenőrizd az internetet.</string>
-    <string name="sign_in_error_generic">Bejelentkezési hiba (kód: %1$d). Kérjük, próbáld újra.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_display">Megjelenítés</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Öltözködési preferenciák</string>
     <string name="settings_style_placeholder">Írd le, mit szeretsz hordani, milyen alkalmakra öltözöl, kedvenc színeid, márkáid, vagy bármit, ami segít személyre szabni a szettjavaslatokat…</string>
     <string name="settings_saved">Preferenciák elmentve</string>
-    <string name="settings_api_key_title">Gemini API kulcs</string>
-    <string name="settings_api_key_desc">Minden AI funkcióhoz Gemini API kulcs szükséges. Ingyenes kulcsot az aistudio.google.com oldalon szerezhetsz be. A kulcsod csak ezen az eszközön tárolódik.</string>
-    <string name="settings_api_key_label">API kulcs</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Gardrób címkék</string>
     <string name="settings_data_tags_desc">Minden darab újraosztályozása a Gemini segítségével. Ez felülír minden manuális címkeszerkesztést.</string>
     <string name="settings_rescan_button">Minden címke újraelemzése</string>
@@ -320,15 +306,7 @@
     <string name="composer_enhancing">Kérdezés a Geminitől…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s token</string>
-    <string name="confirm_spend_title">AI-kreditek használata?</string>
-    <string name="confirm_spend_body">Ez %1$d kreditet fog felhasználni.</string>
-    <string name="confirm_spend_body_bulk">Ez %1$d kreditet fog felhasználni %2$d elemre.</string>
-    <string name="confirm_spend_continue">Folytatás</string>
-    <string name="insufficient_credits_title">Nincs elég kredit</string>
-    <string name="insufficient_credits_body">%1$d kreditre van szükséged, de csak %2$d van. Tölts fel a folytatáshoz.</string>
-    <string name="insufficient_credits_buy">Kredit vásárlás</string>
     <string name="coins_balance_label">Egyenleg: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Saját Gemini-kulcsodat használod — nem fogy kredit.</string>
     <!-- Bulk translation 2026-05-18 -->
@@ -425,18 +403,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="composer_weather_temp">Hőmérséklet</string>
     <string name="composer_weather_title">Időjárás</string>
     <string name="composer_weather_unknown">Nincs elérhető időjárás</string>
-    <string name="credits_action_bg_removal">Háttéreltávolítás</string>
-    <string name="credits_action_classify">Automatikus címkézés</string>
-    <string name="credits_action_style">Szettjavaslat</string>
-    <string name="credits_action_travel">Utazási csomagolási lista</string>
-    <string name="credits_balance_label">Maradék AI-kreditek</string>
-    <string name="credits_best_value">Legjobb ár-érték</string>
-    <string name="credits_buy">Vásárlás</string>
-    <string name="credits_cost_each">%d kredit</string>
-    <string name="credits_cost_title">Kreditköltség műveletenként</string>
-    <string name="credits_pack_label">%d kredit</string>
-    <string name="credits_packs_title">Feltöltőcsomagok</string>
-    <string name="credits_packs_unavailable">A kreditcsomagok nem érhetők el ezen az eszközön</string>
     <string name="dedupe_dialog_cancel">Mégse</string>
     <string name="dedupe_dialog_desc">%1$d darabot találtunk a gardróbodban, amely nagyon hasonlít erre a fotóra.</string>
     <string name="dedupe_dialog_import_anyway">Importálás mindenképp</string>
@@ -456,9 +422,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="import_preview_select_all">Összes kijelölése</string>
     <string name="import_preview_similar_badge">Hasonló</string>
     <string name="import_preview_title">%1$d darab átnézése</string>
-    <string name="job_notif_channel_name">Háttér-feldolgozás</string>
-    <string name="job_notif_text">Gardróbdarabok feldolgozása…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">Ennek a kivágásnak a használata</string>
     <string name="local_bg_failed">Nem sikerült kivágást számítani — próbáld áthelyezni a célkeresztet.</string>
     <string name="local_bg_hint">Húzd a célkeresztet a megtartandó darabra.</string>
@@ -1025,10 +988,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="error_no_refinement">Nem érkezett használható finomítás.</string>
     <string name="error_enter_destination">Adj meg egy úti célt.</string>
     <string name="error_weather_fetch_failed">Nem sikerült lekérni az időjárást ehhez: \"%1$s\". Ellenőrizd az úti cél nevét.</string>
-    <string name="error_billing">Számlázási hiba: %1$s</string>
-    <string name="error_purchase_verify_failed">A vásárlás nem ellenőrizhető — fordulj az ügyfélszolgálathoz.</string>
-    <string name="credits_added">+%1$d kredit hozzáadva!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Szett hozzáadása a naptárhoz</string>
     <string name="calendar_add_pick">Válassz egy szettet</string>

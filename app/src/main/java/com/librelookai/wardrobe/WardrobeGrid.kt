@@ -549,7 +549,7 @@ internal fun GridContent(
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(start = 8.dp, end = 8.dp, top = 64.dp),
-                action = { TextButton(onClick = onDismissError) { Text(stringResource(R.string.action_dismiss)) } },
+                action = { TextButton(onClick = onDismissError) { Text(stringResource(DsR.string.action_dismiss)) } },
             ) { Text(msg) }
         }
 

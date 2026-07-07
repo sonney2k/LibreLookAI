@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">In WebP umwandeln</string>
     <string name="action_clear_selection">Auswahl aufheben</string>
     <string name="sel_count">%1$d ausgewählt</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Verwerfen</string>
 </resources>

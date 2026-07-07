@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigatie -->
     <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Garderobe</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Pasbeurten</string>
 
     <!-- Algemene acties -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Negeren</string>
     <string name="action_delete">Verwijderen</string>
     <string name="action_save">Opslaan</string>
     <string name="action_edit">Bewerken</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Niets selecteren</string>
 
     <!-- Aanmelden -->
-    <string name="sign_in_prompt">Meld je aan om je garderobe te beheren</string>
-    <string name="sign_in_button">Aanmelden met Google</string>
-    <string name="sign_in_error_not_registered">Aanmelden mislukt: deze app-versie is niet geautoriseerd door Google. Ben je ontwikkelaar? Registreer de signing key fingerprint in Firebase Console.</string>
-    <string name="sign_in_error_network">Aanmelden mislukt: geen netwerkverbinding. Controleer je internet en probeer opnieuw.</string>
-    <string name="sign_in_error_generic">Aanmelden mislukt (code %1$d). Probeer opnieuw of neem contact op met support.</string>
-
     <!-- Instellingen -->
     <string name="settings_tab_profile">Profiel</string>
     <string name="settings_tab_display">Weergave</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Outfitvoorkeuren</string>
     <string name="settings_style_placeholder">Beschrijf wat je graag draagt, gelegenheden waarvoor je je kleedt, favoriete kleuren, merken of alles anders dat je outfitaanbevelingen persoonlijker maakt…</string>
     <string name="settings_saved">Voorkeuren opgeslagen</string>
-    <string name="settings_api_key_title">Gemini API-sleutel</string>
-    <string name="settings_api_key_desc">Alle AI-functies (taggen, outfitsuggesties, achtergrondverwijdering) hebben een Gemini API-sleutel nodig. Haal een gratis sleutel op via aistudio.google.com → \"Get API key\". Je sleutel wordt alleen op dit toestel opgeslagen.</string>
-    <string name="settings_api_key_label">API-sleutel</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Garderobetags</string>
     <string name="settings_data_tags_desc">Alle items in je garderobe opnieuw classificeren met Gemini. Hiermee worden handmatige tagbewerkingen overschreven.</string>
     <string name="settings_rescan_button">Alle tags opnieuw scannen</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">Vervangers voorstellen…</string>
 
     <!-- Credits / Managed Mode -->
-    <string name="credits_balance_label">Resterende AI-credits</string>
-    <string name="credits_cost_title">Creditkosten per actie</string>
-    <string name="credits_action_bg_removal">Achtergrondverwijdering</string>
-    <string name="credits_action_classify">Item automatisch taggen</string>
-    <string name="credits_action_style">Outfitsuggestie</string>
-    <string name="credits_action_travel">Reispaklijst</string>
-    <string name="credits_cost_each">%d credits</string>
-    <string name="credits_packs_title">Bijvulpakketten</string>
-    <string name="credits_packs_unavailable">Creditpakketten niet beschikbaar op dit toestel</string>
-    <string name="credits_pack_label">%d credits</string>
-    <string name="credits_best_value">Beste waarde</string>
-    <string name="credits_buy">Kopen</string>
-
     <!-- AI-overlay -->
     <string name="ai_working">AI is bezig…</string>
     <string name="ai_fetching_weather">Weer ophalen…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">Outfit samenstellen…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">Achtergrondverwerking</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Garderobe-items verwerken…</string>
-
     <!-- Batterijoptimalisatie-vrijstellingsdialoog -->
     <string name="battery_exempt_title">Achtergrondverwerking vereist</string>
     <string name="battery_exempt_text">LibreLookAI heeft onbeperkte achtergrondverwerking nodig om veilig foto\'s te importeren, achtergronden te verwijderen en je kleding met AI te taggen.\n\nZonder deze toestemming kan Android de app tijdens verwerking stoppen, wat kan leiden tot gegevensverlies — gedeeltelijk geïmporteerde items, ontbrekende tags of beschadigde bestanden.\n\nSchakel batterijoptimalisatie voor LibreLookAI uit om door te gaan.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">Scannen %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokens</string>
-    <string name="confirm_spend_title">AI-credits gebruiken?</string>
-    <string name="confirm_spend_body">Hiervoor worden %1$d credits gebruikt.</string>
-    <string name="confirm_spend_body_bulk">Hiervoor worden %1$d credits gebruikt voor %2$d items.</string>
-    <string name="confirm_spend_continue">Doorgaan</string>
-    <string name="insufficient_credits_title">Onvoldoende credits</string>
-    <string name="insufficient_credits_body">Je hebt %1$d credits nodig, maar hebt er %2$d. Vul aan om door te gaan.</string>
-    <string name="insufficient_credits_buy">Credits kopen</string>
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Eigen Gemini-sleutel — er worden geen credits gebruikt.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">Geen bruikbare verfijning teruggegeven.</string>
     <string name="error_enter_destination">Voer een bestemming in.</string>
     <string name="error_weather_fetch_failed">Kan het weer voor \"%1$s\" niet ophalen. Controleer de bestemmingsnaam.</string>
-    <string name="error_billing">Factureringsfout: %1$s</string>
-    <string name="error_purchase_verify_failed">Kan aankoop niet verifiëren — neem contact op met support.</string>
-    <string name="credits_added">+%1$d credits toegevoegd!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Outfit aan agenda toevoegen</string>
     <string name="calendar_add_pick">Kies een outfit</string>

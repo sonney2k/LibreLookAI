@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">WebP に変換</string>
     <string name="action_clear_selection">選択を解除</string>
     <string name="sel_count">%1$d件選択中</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">閉じる</string>
 </resources>

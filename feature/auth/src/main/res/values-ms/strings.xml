@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_prompt">Log masuk untuk menguruskan almari anda</string>
+    <string name="sign_in_button">Log masuk dengan Google</string>
+    <string name="sign_in_error_not_registered">Log masuk gagal: versi aplikasi ini tidak dibenarkan oleh Google.</string>
+    <string name="sign_in_error_network">Log masuk gagal: tiada sambungan rangkaian. Sila cuba lagi.</string>
+    <string name="sign_in_error_generic">Log masuk gagal (kod %1$d). Sila cuba lagi.</string>
+</resources>

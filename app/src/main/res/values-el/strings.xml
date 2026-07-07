@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Σύνολα</string>
     <string name="nav_wardrobe">Ντουλάπα</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Δοκιμές</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Παράβλεψη</string>
     <string name="action_delete">Διαγραφή</string>
     <string name="action_save">Αποθήκευση</string>
     <string name="action_edit">Επεξεργασία</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Αποεπιλογή όλων</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Συνδεθείτε για να διαχειριστείτε τη ντουλάπα σας</string>
-    <string name="sign_in_button">Σύνδεση με Google</string>
-    <string name="sign_in_error_not_registered">Η σύνδεση απέτυχε: αυτή η έκδοση της εφαρμογής δεν είναι εξουσιοδοτημένη από την Google. Εάν είστε προγραμματιστής, καταχωρίστε το αποτύπωμα του κλειδιού υπογραφής στην κονσόλα Firebase.</string>
-    <string name="sign_in_error_network">Η σύνδεση απέτυχε: δεν υπάρχει σύνδεση δικτύου. Παρακαλούμε ελέγξτε το διαδίκτυο και δοκιμάστε ξανά.</string>
-    <string name="sign_in_error_generic">Η σύνδεση απέτυχε (κωδικός %1$d). Παρακαλούμε δοκιμάστε ξανά ή επικοινωνήστε με την υποστήριξη.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Προφίλ</string>
     <string name="settings_tab_display">Εμφάνιση</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Προτιμήσεις Στιλ</string>
     <string name="settings_style_placeholder">Περιγράψτε τι σας αρέσει να φοράτε, τις περιστάσεις, τα αγαπημένα σας χρώματα, μάρκες ή οτιδήποτε βοηθά στην εξατομίκευση των προτάσεων…</string>
     <string name="settings_saved">Οι προτιμήσεις αποθηκεύτηκαν</string>
-    <string name="settings_api_key_title">Κλειδί API Gemini</string>
-    <string name="settings_api_key_desc">Όλες οι λειτουργίες AI απαιτούν ένα κλειδί API Gemini. Αποκτήστε ένα δωρεάν κλειδί στο aistudio.google.com → \"Get API key\". Το κλειδί σας αποθηκεύεται μόνο σε αυτήν τη συσκευή.</string>
-    <string name="settings_api_key_label">Κλειδί API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Ετικέτες Ντουλάπας</string>
     <string name="settings_data_tags_desc">Επαναταξινόμηση κάθε είδους στη ντουλάπα σας με το Gemini. Αυτό θα αντικαταστήσει τυχόν χειροκίνητες αλλαγές ετικετών.</string>
     <string name="settings_rescan_button">Επανασάρωση Όλων των Ετικετών</string>
@@ -444,19 +430,6 @@
     <string name="replacements_analyzing">Πρόταση εναλλακτικών…</string>
 
     <!-- Credits / Managed Mode -->
-    <string name="credits_balance_label">Μονάδες AI που απομένουν</string>
-    <string name="credits_cost_title">Κόστος μονάδων ανά ενέργεια</string>
-    <string name="credits_action_bg_removal">Αφαίρεση φόντου</string>
-    <string name="credits_action_classify">Αυτόματη ετικέτα είδους</string>
-    <string name="credits_action_style">Πρόταση συνόλου</string>
-    <string name="credits_action_travel">Λίστα ταξιδιού</string>
-    <string name="credits_cost_each">%d μονάδες</string>
-    <string name="credits_packs_title">Πακέτα μονάδων</string>
-    <string name="credits_packs_unavailable">Μη διαθέσιμα σε αυτή τη συσκευή</string>
-    <string name="credits_pack_label">%d μονάδες</string>
-    <string name="credits_best_value">Καλύτερη τιμή</string>
-    <string name="credits_buy">Αγορά</string>
-
     <!-- AI overlay -->
     <string name="ai_working">Η AI εργάζεται…</string>
     <string name="ai_fetching_weather">Λήψη καιρού…</string>
@@ -466,10 +439,6 @@
     <string name="ai_composing_outfit">Σύνθεση συνόλου…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">Επεξεργασία στο παρασκήνιο</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Επεξεργασία ειδών ντουλάπας…</string>
-
     <!-- Battery optimization exemption dialog -->
     <string name="battery_exempt_title">Απαιτείται επεξεργασία στο παρασκήνιο</string>
     <string name="battery_exempt_text">Το LibreLookAI χρειάζεται απεριόριστη επεξεργασία στο παρασκήνιο για την ασφαλή εισαγωγή φωτογραφιών και την επεξεργασία με AI.\n\nΠαρακαλούμε απενεργοποιήστε τη βελτιστοποίηση μπαταρίας για το LibreLookAI.</string>
@@ -722,15 +691,7 @@
     <string name="import_preview_scanning">Σάρωση %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokens</string>
-    <string name="confirm_spend_title">Χρήση πιστώσεων AI;</string>
-    <string name="confirm_spend_body">Αυτό θα χρησιμοποιήσει %1$d πιστώσεις.</string>
-    <string name="confirm_spend_body_bulk">Αυτό θα χρησιμοποιήσει %1$d πιστώσεις σε %2$d στοιχεία.</string>
-    <string name="confirm_spend_continue">Συνέχεια</string>
-    <string name="insufficient_credits_title">Δεν υπάρχουν αρκετές πιστώσεις</string>
-    <string name="insufficient_credits_body">Χρειάζεστε %1$d πιστώσεις αλλά έχετε %2$d. Ανανεώστε για να συνεχίσετε.</string>
-    <string name="insufficient_credits_buy">Αγορά πιστώσεων</string>
     <string name="coins_balance_label">Υπόλοιπο: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Χρησιμοποιείτε το δικό σας κλειδί Gemini — δεν δαπανώνται πιστώσεις.</string>
     <!-- Trips -->
@@ -1051,10 +1012,6 @@
     <string name="error_no_refinement">Δεν επιστράφηκε χρήσιμη βελτίωση.</string>
     <string name="error_enter_destination">Εισαγάγετε προορισμό.</string>
     <string name="error_weather_fetch_failed">Δεν ήταν δυνατή η λήψη καιρού για \"%1$s\". Ελέγξτε το όνομα προορισμού.</string>
-    <string name="error_billing">Σφάλμα χρέωσης: %1$s</string>
-    <string name="error_purchase_verify_failed">Δεν ήταν δυνατή η επαλήθευση της αγοράς — επικοινωνήστε με την υποστήριξη.</string>
-    <string name="credits_added">Προστέθηκαν +%1$d πιστώσεις!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Προσθήκη συνόλου στο ημερολόγιο</string>
     <string name="calendar_add_pick">Επίλεξε ένα σύνολο</string>

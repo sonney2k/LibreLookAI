@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API-sleutel</string>
+    <string name="settings_api_key_desc">Alle AI-functies (taggen, outfitsuggesties, achtergrondverwijdering) hebben een Gemini API-sleutel nodig. Haal een gratis sleutel op via aistudio.google.com → \"Get API key\". Je sleutel wordt alleen op dit toestel opgeslagen.</string>
+    <string name="settings_api_key_label">API-sleutel</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Resterende AI-credits</string>
+    <string name="credits_cost_title">Creditkosten per actie</string>
+    <string name="credits_action_bg_removal">Achtergrondverwijdering</string>
+    <string name="credits_action_classify">Item automatisch taggen</string>
+    <string name="credits_action_style">Outfitsuggestie</string>
+    <string name="credits_action_travel">Reispaklijst</string>
+    <string name="credits_cost_each">%d credits</string>
+    <string name="credits_packs_title">Bijvulpakketten</string>
+    <string name="credits_packs_unavailable">Creditpakketten niet beschikbaar op dit toestel</string>
+    <string name="credits_pack_label">%d credits</string>
+    <string name="credits_best_value">Beste waarde</string>
+    <string name="credits_buy">Kopen</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">AI-credits gebruiken?</string>
+    <string name="confirm_spend_body">Hiervoor worden %1$d credits gebruikt.</string>
+    <string name="confirm_spend_body_bulk">Hiervoor worden %1$d credits gebruikt voor %2$d items.</string>
+    <string name="confirm_spend_continue">Doorgaan</string>
+    <string name="insufficient_credits_title">Onvoldoende credits</string>
+    <string name="insufficient_credits_body">Je hebt %1$d credits nodig, maar hebt er %2$d. Vul aan om door te gaan.</string>
+    <string name="insufficient_credits_buy">Credits kopen</string>
+    <string name="error_billing">Factureringsfout: %1$s</string>
+    <string name="error_purchase_verify_failed">Kan aankoop niet verifiëren — neem contact op met support.</string>
+    <string name="credits_added">+%1$d credits toegevoegd!</string>
+</resources>

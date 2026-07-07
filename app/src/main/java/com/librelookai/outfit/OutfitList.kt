@@ -625,7 +625,7 @@ internal fun OutfitListScreen(
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(start = 8.dp, end = 8.dp, top = 64.dp),
-                action = { TextButton(onClick = onClearPredictionError) { Text(stringResource(R.string.action_ok)) } },
+                action = { TextButton(onClick = onClearPredictionError) { Text(stringResource(DsR.string.action_ok)) } },
             ) { Text(msg) }
         }
     }

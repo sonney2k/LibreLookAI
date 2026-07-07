@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Trang phục</string>
     <string name="nav_wardrobe">Tủ đồ</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Lần thử</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Đóng</string>
     <string name="action_delete">Xóa</string>
     <string name="action_save">Lưu</string>
     <string name="action_edit">Sửa</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Bỏ chọn tất cả</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Đăng nhập để quản lý tủ đồ của bạn</string>
-    <string name="sign_in_button">Đăng nhập bằng Google</string>
-    <string name="sign_in_error_not_registered">Đăng nhập thất bại: bản dựng ứng dụng này chưa được ủy quyền.</string>
-    <string name="sign_in_error_network">Đăng nhập thất bại: không có kết nối mạng.</string>
-    <string name="sign_in_error_generic">Đăng nhập thất bại (mã %1$d). Vui lòng thử lại.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Hồ sơ</string>
     <string name="settings_tab_display">Hiển thị</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Sở thích phong cách</string>
     <string name="settings_style_placeholder">Mô tả những gì bạn thích mặc, màu sắc yêu thích, thương hiệu…</string>
     <string name="settings_saved">Đã lưu sở thích</string>
-    <string name="settings_api_key_title">Gemini API Key</string>
-    <string name="settings_api_key_desc">Các tính năng AI yêu cầu Gemini API key. Lấy khóa miễn phí tại aistudio.google.com.</string>
-    <string name="settings_api_key_label">API Key</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Thẻ tủ đồ</string>
     <string name="settings_data_tags_desc">Phân loại lại mọi món đồ bằng Gemini. Việc này sẽ ghi đè các chỉnh sửa thủ công.</string>
     <string name="settings_rescan_button">Quét lại toàn bộ thẻ</string>
@@ -320,15 +306,7 @@
     <string name="composer_enhancing">Đang hỏi Gemini…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s token</string>
-    <string name="confirm_spend_title">Sử dụng tín dụng AI?</string>
-    <string name="confirm_spend_body">Việc này sẽ dùng %1$d tín dụng.</string>
-    <string name="confirm_spend_body_bulk">Việc này sẽ dùng %1$d tín dụng cho %2$d mục.</string>
-    <string name="confirm_spend_continue">Tiếp tục</string>
-    <string name="insufficient_credits_title">Không đủ tín dụng</string>
-    <string name="insufficient_credits_body">Bạn cần %1$d tín dụng nhưng chỉ có %2$d. Nạp thêm để tiếp tục.</string>
-    <string name="insufficient_credits_buy">Mua tín dụng</string>
     <string name="coins_balance_label">Số dư: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Đang dùng khóa Gemini của bạn — không tốn tín dụng nào.</string>
     <!-- Bulk translation 2026-05-18 -->
@@ -425,18 +403,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="composer_weather_temp">Nhiệt độ</string>
     <string name="composer_weather_title">Thời tiết</string>
     <string name="composer_weather_unknown">Không có dữ liệu thời tiết</string>
-    <string name="credits_action_bg_removal">Xóa nền</string>
-    <string name="credits_action_classify">Tự động gắn thẻ</string>
-    <string name="credits_action_style">Gợi ý trang phục</string>
-    <string name="credits_action_travel">Danh sách đồ du lịch</string>
-    <string name="credits_balance_label">Điểm AI còn lại</string>
-    <string name="credits_best_value">Tiết kiệm nhất</string>
-    <string name="credits_buy">Mua</string>
-    <string name="credits_cost_each">%d điểm</string>
-    <string name="credits_cost_title">Chi phí điểm mỗi hành động</string>
-    <string name="credits_pack_label">%d điểm</string>
-    <string name="credits_packs_title">Gói nạp</string>
-    <string name="credits_packs_unavailable">Gói điểm không khả dụng trên thiết bị này</string>
     <string name="dedupe_dialog_cancel">Hủy</string>
     <string name="dedupe_dialog_desc">Chúng tôi tìm thấy %1$d món trong tủ trông rất giống ảnh này.</string>
     <string name="dedupe_dialog_import_anyway">Vẫn nhập</string>
@@ -456,9 +422,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="import_preview_select_all">Chọn tất cả</string>
     <string name="import_preview_similar_badge">Tương tự</string>
     <string name="import_preview_title">Xem lại %1$d món</string>
-    <string name="job_notif_channel_name">Xử lý nền</string>
-    <string name="job_notif_text">Đang xử lý món trong tủ…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">Dùng phần cắt này</string>
     <string name="local_bg_failed">Không thể tính phần cắt — thử di chuyển dấu chữ thập.</string>
     <string name="local_bg_hint">Kéo dấu chữ thập lên món bạn muốn giữ.</string>
@@ -1025,10 +988,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="error_no_refinement">Không có tinh chỉnh nào khả dụng được trả về.</string>
     <string name="error_enter_destination">Vui lòng nhập điểm đến.</string>
     <string name="error_weather_fetch_failed">Không thể lấy thời tiết cho \"%1$s\". Kiểm tra tên điểm đến.</string>
-    <string name="error_billing">Lỗi thanh toán: %1$s</string>
-    <string name="error_purchase_verify_failed">Không thể xác minh giao dịch mua — vui lòng liên hệ bộ phận hỗ trợ.</string>
-    <string name="credits_added">Đã thêm +%1$d tín dụng!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Thêm trang phục vào lịch</string>
     <string name="calendar_add_pick">Chọn một trang phục</string>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API 金鑰</string>
+    <string name="settings_api_key_desc">所有 AI 功能皆需 Gemini API 金鑰。請至 aistudio.google.com 獲取免費金鑰。金鑰僅儲存於此設備。</string>
+    <string name="settings_api_key_label">API 金鑰</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">使用 AI 點數？</string>
+    <string name="confirm_spend_body">此操作將使用 %1$d 點數。</string>
+    <string name="confirm_spend_body_bulk">此操作將為 %2$d 個項目使用 %1$d 點數。</string>
+    <string name="confirm_spend_continue">繼續</string>
+    <string name="insufficient_credits_title">點數不足</string>
+    <string name="insufficient_credits_body">需要 %1$d 點數，但只有 %2$d 點。請儲值後繼續。</string>
+    <string name="insufficient_credits_buy">購買點數</string>
+    <string name="credits_action_bg_removal">去除背景</string>
+    <string name="credits_action_classify">自動標籤</string>
+    <string name="credits_action_style">穿搭建議</string>
+    <string name="credits_action_travel">旅行打包清單</string>
+    <string name="credits_balance_label">剩餘 AI 點數</string>
+    <string name="credits_best_value">最划算</string>
+    <string name="credits_buy">購買</string>
+    <string name="credits_cost_each">%d 點</string>
+    <string name="credits_cost_title">每項操作的點數費用</string>
+    <string name="credits_pack_label">%d 點</string>
+    <string name="credits_packs_title">加值方案</string>
+    <string name="credits_packs_unavailable">本裝置無法購買點數方案</string>
+    <string name="error_billing">帳務錯誤：%1$s</string>
+    <string name="error_purchase_verify_failed">無法驗證購買 — 請聯絡支援。</string>
+    <string name="credits_added">已新增 %1$d 點數！</string>
+</resources>

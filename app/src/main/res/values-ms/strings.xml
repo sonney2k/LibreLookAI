@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Pakaian</string>
     <string name="nav_wardrobe">Almari</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">Percubaan</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Tutup</string>
     <string name="action_delete">Padam</string>
     <string name="action_save">Simpan</string>
     <string name="action_edit">Edit</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">Nyahpilih semua</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Log masuk untuk menguruskan almari anda</string>
-    <string name="sign_in_button">Log masuk dengan Google</string>
-    <string name="sign_in_error_not_registered">Log masuk gagal: versi aplikasi ini tidak dibenarkan oleh Google.</string>
-    <string name="sign_in_error_network">Log masuk gagal: tiada sambungan rangkaian. Sila cuba lagi.</string>
-    <string name="sign_in_error_generic">Log masuk gagal (kod %1$d). Sila cuba lagi.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_display">Paparan</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">Preferensi Pakaian</string>
     <string name="settings_style_placeholder">Huraikan apa yang anda suka pakai, acara yang dihadiri, warna kegemaran, jenama, dsb…</string>
     <string name="settings_saved">Preferensi disimpan</string>
-    <string name="settings_api_key_title">Kunci API Gemini</string>
-    <string name="settings_api_key_desc">Semua ciri AI memerlukan kunci API Gemini. Dapatkan kunci percuma di aistudio.google.com.</string>
-    <string name="settings_api_key_label">Kunci API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Tag Almari</string>
     <string name="settings_data_tags_desc">Klasifikasikan semula setiap barangan dalam almari anda dengan Gemini. Ini akan menggantikan edit manual.</string>
     <string name="settings_rescan_button">Imbas Semula Semua Tag</string>
@@ -321,15 +307,7 @@
     <string name="composer_enhancing">Bertanya kepada Gemini…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s token</string>
-    <string name="confirm_spend_title">Gunakan kredit AI?</string>
-    <string name="confirm_spend_body">Ini akan menggunakan %1$d kredit.</string>
-    <string name="confirm_spend_body_bulk">Ini akan menggunakan %1$d kredit untuk %2$d item.</string>
-    <string name="confirm_spend_continue">Teruskan</string>
-    <string name="insufficient_credits_title">Kredit tidak mencukupi</string>
-    <string name="insufficient_credits_body">Anda memerlukan %1$d kredit tetapi hanya ada %2$d. Tambah nilai untuk meneruskan.</string>
-    <string name="insufficient_credits_buy">Beli kredit</string>
     <string name="coins_balance_label">Baki: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Menggunakan kunci Gemini anda sendiri — tiada kredit dibelanjakan.</string>
     <!-- Bulk translation 2026-05-18 -->
@@ -425,18 +403,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="composer_weather_temp">Suhu</string>
     <string name="composer_weather_title">Cuaca</string>
     <string name="composer_weather_unknown">Tiada maklumat cuaca</string>
-    <string name="credits_action_bg_removal">Pembuangan latar</string>
-    <string name="credits_action_classify">Auto-tag item</string>
-    <string name="credits_action_style">Cadangan pakaian</string>
-    <string name="credits_action_travel">Senarai pakej perjalanan</string>
-    <string name="credits_balance_label">Baki kredit AI</string>
-    <string name="credits_best_value">Paling berbaloi</string>
-    <string name="credits_buy">Beli</string>
-    <string name="credits_cost_each">%d kredit</string>
-    <string name="credits_cost_title">Kos kredit setiap tindakan</string>
-    <string name="credits_pack_label">%d kredit</string>
-    <string name="credits_packs_title">Pakej tambah nilai</string>
-    <string name="credits_packs_unavailable">Pakej kredit tidak tersedia pada peranti ini</string>
     <string name="dedupe_dialog_cancel">Batal</string>
     <string name="dedupe_dialog_desc">Kami menemui %1$d item dalam almari anda yang kelihatan sangat serupa dengan foto ini.</string>
     <string name="dedupe_dialog_import_anyway">Tetap import</string>
@@ -456,9 +422,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="import_preview_select_all">Pilih semua</string>
     <string name="import_preview_similar_badge">Serupa</string>
     <string name="import_preview_title">Semak %1$d item</string>
-    <string name="job_notif_channel_name">Pemprosesan latar belakang</string>
-    <string name="job_notif_text">Memproses item almari…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">Guna potongan ini</string>
     <string name="local_bg_failed">Tidak dapat mengira potongan — cuba alih reka silang.</string>
     <string name="local_bg_hint">Seret reka silang ke item yang anda mahu simpan.</string>
@@ -1025,10 +988,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="error_no_refinement">Tiada penambahbaikan yang boleh digunakan dikembalikan.</string>
     <string name="error_enter_destination">Sila masukkan destinasi.</string>
     <string name="error_weather_fetch_failed">Tidak dapat mengambil cuaca untuk \"%1$s\". Semak nama destinasi.</string>
-    <string name="error_billing">Ralat pengebilan: %1$s</string>
-    <string name="error_purchase_verify_failed">Tidak dapat mengesahkan pembelian — sila hubungi sokongan.</string>
-    <string name="credits_added">+%1$d kredit ditambah!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Tambah set pakaian ke kalendar</string>
     <string name="calendar_add_pick">Pilih set pakaian</string>

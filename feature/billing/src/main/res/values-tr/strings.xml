@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API Anahtarı</string>
+    <string name="settings_api_key_desc">Tüm yapay zeka özellikleri (etiketleme, kombin önerileri, arka plan kaldırma) bir Gemini API anahtarı gerektirir. aistudio.google.com adresinden \"Get API key\" diyerek ücretsiz bir anahtar alın. Anahtarınız yalnızca bu cihazda saklanır.</string>
+    <string name="settings_api_key_label">API Anahtarı</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">Kalan yapay zeka kredisi</string>
+    <string name="credits_cost_title">Eylem başına kredi maliyeti</string>
+    <string name="credits_action_bg_removal">Arka plan kaldırma</string>
+    <string name="credits_action_classify">Ögeyi otomatik etiketle</string>
+    <string name="credits_action_style">Kombin önerisi</string>
+    <string name="credits_action_travel">Seyahat hazırlık listesi</string>
+    <string name="credits_cost_each">%d kredi</string>
+    <string name="credits_packs_title">Yükleme paketleri</string>
+    <string name="credits_packs_unavailable">Kredi paketleri bu cihazda kullanılamıyor</string>
+    <string name="credits_pack_label">%d kredi</string>
+    <string name="credits_best_value">En iyi değer</string>
+    <string name="credits_buy">Satın al</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">AI kredisi kullanılsın mı?</string>
+    <string name="confirm_spend_body">Bu işlem %1$d kredi kullanacak.</string>
+    <string name="confirm_spend_body_bulk">Bu işlem %2$d öğe için %1$d kredi kullanacak.</string>
+    <string name="confirm_spend_continue">Devam Et</string>
+    <string name="insufficient_credits_title">Yeterli kredi yok</string>
+    <string name="insufficient_credits_body">%1$d krediye ihtiyacınız var, ama %2$d krediniz var. Devam etmek için yükleyin.</string>
+    <string name="insufficient_credits_buy">Kredi satın al</string>
+    <string name="error_billing">Faturalandırma hatası: %1$s</string>
+    <string name="error_purchase_verify_failed">Satın alma doğrulanamadı — lütfen destekle iletişime geçin.</string>
+    <string name="credits_added">+%1$d kredi eklendi!</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Ключ Gemini API</string>
+    <string name="settings_api_key_desc">Для функцій ШІ потрібен ключ Gemini API. Отримайте безкоштовно на aistudio.google.com.</string>
+    <string name="settings_api_key_label">Ключ API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Використати AI-кредити?</string>
+    <string name="confirm_spend_body">Це використає %1$d кредитів.</string>
+    <string name="confirm_spend_body_bulk">Це використає %1$d кредитів для %2$d елементів.</string>
+    <string name="confirm_spend_continue">Продовжити</string>
+    <string name="insufficient_credits_title">Недостатньо кредитів</string>
+    <string name="insufficient_credits_body">Потрібно %1$d кредитів, але є %2$d. Поповніть, щоб продовжити.</string>
+    <string name="insufficient_credits_buy">Купити кредити</string>
+    <string name="credits_action_bg_removal">Видалення фону</string>
+    <string name="credits_action_classify">Авто-тегування</string>
+    <string name="credits_action_style">Порада образу</string>
+    <string name="credits_action_travel">Список речей для подорожі</string>
+    <string name="credits_balance_label">Залишок кредитів ШІ</string>
+    <string name="credits_best_value">Найвигідніше</string>
+    <string name="credits_buy">Купити</string>
+    <string name="credits_cost_each">%d кредитів</string>
+    <string name="credits_cost_title">Вартість кредитів за дію</string>
+    <string name="credits_pack_label">%d кредитів</string>
+    <string name="credits_packs_title">Пакети поповнення</string>
+    <string name="credits_packs_unavailable">Пакети кредитів недоступні на цьому пристрої</string>
+    <string name="error_billing">Помилка оплати: %1$s</string>
+    <string name="error_purchase_verify_failed">Не вдалося підтвердити покупку — зверніться до підтримки.</string>
+    <string name="credits_added">Додано +%1$d кредитів!</string>
+</resources>

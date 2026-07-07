@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="job_notif_channel_name">백그라운드 처리</string>
+    <string name="job_notif_title">LibreLookAI</string>
+    <string name="job_notif_text">옷장 아이템 처리 중…</string>
+</resources>

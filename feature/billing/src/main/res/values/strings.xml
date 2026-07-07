@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">All AI features need a Gemini API key (add it here or during setup). A free key covers tagging and outfit suggestions; virtual try-on and background removal need a billing-enabled (paid) key. Your key is stored only on this device.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="credits_balance_label">AI Credits remaining</string>
+    <string name="credits_cost_title">Credit cost per action</string>
+    <string name="credits_action_bg_removal">Background removal</string>
+    <string name="credits_action_classify">Auto-tag item</string>
+    <string name="credits_action_style">Outfit suggestion</string>
+    <string name="credits_action_travel">Travel packing list</string>
+    <string name="credits_cost_each">%d credits</string>
+    <string name="credits_packs_title">Top-up packs</string>
+    <string name="credits_packs_unavailable">Credit packs not available on this device</string>
+    <string name="credits_pack_label">%d credits</string>
+    <string name="credits_best_value">Best value</string>
+    <string name="credits_buy">Buy</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="cost_legend_title">Cost tiers</string>
+    <string name="cost_legend_hint">Long-press any $-badge for the exact cost.</string>
+    <string name="confirm_spend_title">Use AI credits?</string>
+    <string name="confirm_spend_body">This will use %1$d credits.</string>
+    <string name="confirm_spend_body_bulk">This will use %1$d credits across %2$d items.</string>
+    <string name="confirm_spend_continue">Continue</string>
+    <string name="insufficient_credits_title">Not enough credits</string>
+    <string name="insufficient_credits_body">You need %1$d credits but have %2$d. Top up to continue.</string>
+    <string name="insufficient_credits_buy">Buy credits</string>
+    <string name="credits_added">+%1$d credits added!</string>
+    <string name="error_billing">Billing error: %1$s</string>
+    <string name="error_purchase_verify_failed">Could not verify purchase — please contact support.</string>
+</resources>

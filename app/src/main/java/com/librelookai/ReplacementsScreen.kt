@@ -122,7 +122,7 @@ fun ReplacementsResultDialog(gapViewModel: WardrobeGapViewModel) {
                                 .padding(16.dp),
                             action = {
                                 TextButton(onClick = gapViewModel::clearReplacementsError) {
-                                    Text(stringResource(R.string.action_ok))
+                                    Text(stringResource(DsR.string.action_ok))
                                 }
                             },
                         ) { Text(msg) }

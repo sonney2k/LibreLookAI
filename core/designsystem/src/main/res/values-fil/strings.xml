@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">I-convert sa WebP</string>
     <string name="action_clear_selection">I-clear ang pinili</string>
     <string name="sel_count">%1$d napili</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">I-dismiss</string>
 </resources>

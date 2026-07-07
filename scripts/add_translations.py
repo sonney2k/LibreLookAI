@@ -43,6 +43,9 @@ REPO_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file
 MODULE_RES_DIRS = {
     "app": os.path.join(REPO_ROOT, "app", "src", "main", "res"),
     "designsystem": os.path.join(REPO_ROOT, "core", "designsystem", "src", "main", "res"),
+    "service": os.path.join(REPO_ROOT, "core", "service", "src", "main", "res"),
+    "auth": os.path.join(REPO_ROOT, "feature", "auth", "src", "main", "res"),
+    "billing": os.path.join(REPO_ROOT, "feature", "billing", "src", "main", "res"),
 }
 
 

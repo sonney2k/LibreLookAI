@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Wardrobe</string>
@@ -70,8 +68,6 @@
     <string name="outfits_tab_tryons">Try-Ons</string>
 
     <!-- Common actions -->
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Dismiss</string>
     <string name="action_delete">Delete</string>
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
@@ -104,12 +100,6 @@
     <string name="action_deselect_all">Deselect all</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">Sign in to manage your wardrobe</string>
-    <string name="sign_in_button">Sign in with Google</string>
-    <string name="sign_in_error_not_registered">Sign-in failed: this app build is not authorised with Google. If you are a developer, register the signing key fingerprint in Firebase Console.</string>
-    <string name="sign_in_error_network">Sign-in failed: no network connection. Please check your internet and try again.</string>
-    <string name="sign_in_error_generic">Sign-in failed (code %1$d). Please try again or contact support.</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">Profile</string>
     <string name="settings_tab_display">Display</string>
@@ -141,10 +131,6 @@
     <string name="settings_style_prefs">Outfit Preferences</string>
     <string name="settings_style_placeholder">Describe what you like to wear, occasions you dress for, favourite colours, brands, or anything else that helps personalise your outfit recommendations…</string>
     <string name="settings_saved">Preferences saved</string>
-    <string name="settings_api_key_title">Gemini API Key</string>
-    <string name="settings_api_key_desc">All AI features need a Gemini API key (add it here or during setup). A free key covers tagging and outfit suggestions; virtual try-on and background removal need a billing-enabled (paid) key. Your key is stored only on this device.</string>
-    <string name="settings_api_key_label">API Key</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Wardrobe Tags</string>
     <string name="settings_data_tags_desc">Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.</string>
     <string name="settings_rescan_button">Re-scan All Tags</string>
@@ -517,19 +503,6 @@
     <string name="replacements_analyzing">Suggesting replacements…</string>
 
     <!-- Credits / Managed Mode -->
-    <string name="credits_balance_label">AI Credits remaining</string>
-    <string name="credits_cost_title">Credit cost per action</string>
-    <string name="credits_action_bg_removal">Background removal</string>
-    <string name="credits_action_classify">Auto-tag item</string>
-    <string name="credits_action_style">Outfit suggestion</string>
-    <string name="credits_action_travel">Travel packing list</string>
-    <string name="credits_cost_each">%d credits</string>
-    <string name="credits_packs_title">Top-up packs</string>
-    <string name="credits_packs_unavailable">Credit packs not available on this device</string>
-    <string name="credits_pack_label">%d credits</string>
-    <string name="credits_best_value">Best value</string>
-    <string name="credits_buy">Buy</string>
-
     <!-- AI overlay -->
     <string name="ai_working">AI is working…</string>
     <string name="ai_progress_uploading">Uploading %1$s / %2$s</string>
@@ -542,10 +515,6 @@
     <string name="ai_composing_outfit">Composing outfit…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">Background processing</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Processing wardrobe items…</string>
-
     <!-- Battery optimization exemption dialog -->
     <string name="battery_exempt_title">Background processing required</string>
     <string name="battery_exempt_text">LibreLookAI needs unrestricted background processing to safely import photos, remove backgrounds, and tag your clothes with AI.\n\nWithout this permission, Android may kill the app mid-process, which can lead to data loss — partially imported items, missing tags, or corrupted files.\n\nPlease disable battery optimization for LibreLookAI to continue.</string>
@@ -870,18 +839,8 @@
     <string name="import_preview_scanning">Scanning %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s tokens</string>
     <string name="cost_badge_usd_estimate">~$%1$s</string>
-    <string name="cost_legend_title">Cost tiers</string>
-    <string name="cost_legend_hint">Long-press any $-badge for the exact cost.</string>
-    <string name="confirm_spend_title">Use AI credits?</string>
-    <string name="confirm_spend_body">This will use %1$d credits.</string>
-    <string name="confirm_spend_body_bulk">This will use %1$d credits across %2$d items.</string>
-    <string name="confirm_spend_continue">Continue</string>
-    <string name="insufficient_credits_title">Not enough credits</string>
-    <string name="insufficient_credits_body">You need %1$d credits but have %2$d. Top up to continue.</string>
-    <string name="insufficient_credits_buy">Buy credits</string>
     <string name="coins_balance_label">Balance: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Using your own Gemini key — no credits are spent.</string>
     <!-- Trips -->
@@ -1131,10 +1090,6 @@
     <string name="error_no_refinement">No usable refinement returned.</string>
     <string name="error_enter_destination">Please enter a destination.</string>
     <string name="error_weather_fetch_failed">Could not fetch weather for \"%1$s\". Check the destination name.</string>
-    <string name="credits_added">+%1$d credits added!</string>
-    <string name="error_billing">Billing error: %1$s</string>
-    <string name="error_purchase_verify_failed">Could not verify purchase — please contact support.</string>
-
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
     <string name="fab_outfits_new">New outfit</string>
     <string name="fab_wardrobe_add">Add item</string>

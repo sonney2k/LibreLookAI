@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">Μετατροπή σε WebP</string>
     <string name="action_clear_selection">Εκκαθάριση επιλογής</string>
     <string name="sel_count">%1$d επιλεγμένα</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Παράβλεψη</string>
 </resources>

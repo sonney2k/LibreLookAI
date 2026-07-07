@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">WebP میں تبدیل کریں</string>
     <string name="action_clear_selection">انتخاب صاف کریں</string>
     <string name="sel_count">%1$d منتخب</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">ٹھیک ہے</string>
+    <string name="action_dismiss">خارج کریں</string>
 </resources>

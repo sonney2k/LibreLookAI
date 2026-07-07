@@ -144,4 +144,7 @@
     <string name="settings_convert_confirm">Muunna WebP-muotoon</string>
     <string name="action_clear_selection">Tyhjennä valinta</string>
     <string name="sel_count">%1$d valittu</string>
+    <string name="app_name">LibreLookAI</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Hylkää</string>
 </resources>

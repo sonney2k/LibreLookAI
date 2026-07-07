@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <!-- Navigation -->
     <string name="nav_styles">ملبوسات</string>
     <string name="nav_wardrobe">وارڈروب</string>
@@ -62,8 +60,6 @@
     <string name="outfits_tab_tryons">آزمائشیں</string>
 
     <!-- Common actions -->
-    <string name="action_ok">ٹھیک ہے</string>
-    <string name="action_dismiss">خارج کریں</string>
     <string name="action_delete">حذف کریں</string>
     <string name="action_save">محفوظ کریں</string>
     <string name="action_edit">ترمیم کریں</string>
@@ -83,12 +79,6 @@
     <string name="action_deselect_all">انتخاب ختم کریں</string>
 
     <!-- Sign In -->
-    <string name="sign_in_prompt">وارڈروب مینیج کرنے کے لیے سائن ان کریں</string>
-    <string name="sign_in_button">Google کے ساتھ سائن ان کریں</string>
-    <string name="sign_in_error_not_registered">سائن ان ناکام: یہ ایپ گوگل سے منظور شدہ نہیں ہے۔</string>
-    <string name="sign_in_error_network">سائن ان ناکام: انٹرنیٹ کنکشن نہیں ہے۔</string>
-    <string name="sign_in_error_generic">سائن ان ناکام (کوڈ %1$d)۔ دوبارہ کوشش کریں۔</string>
-
     <!-- Settings -->
     <string name="settings_tab_profile">پروفائل</string>
     <string name="settings_tab_display">ڈسپلے</string>
@@ -120,10 +110,6 @@
     <string name="settings_style_prefs">ملبوسات کی ترجیحات</string>
     <string name="settings_style_placeholder">بتائیں کہ آپ کو کیا پہننا پسند ہے، رنگ، برانڈز وغیرہ…</string>
     <string name="settings_saved">ترجیحات محفوظ ہو گئیں</string>
-    <string name="settings_api_key_title">Gemini API کلید</string>
-    <string name="settings_api_key_desc">تمام AI خصوصیات کے لیے کلید درکار ہے۔ aistudio.google.com سے حاصل کریں۔</string>
-    <string name="settings_api_key_label">API کلید</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">وارڈروب ٹیگز</string>
     <string name="settings_data_tags_desc">Gemini کے ذریعے دوبارہ درجہ بندی کریں۔</string>
     <string name="settings_rescan_button">تمام ٹیگز دوبارہ اسکین کریں</string>
@@ -320,15 +306,7 @@
     <string name="composer_enhancing">Gemini سے پوچھا جا رہا ہے…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s ٹوکن</string>
-    <string name="confirm_spend_title">AI کریڈٹ استعمال کریں؟</string>
-    <string name="confirm_spend_body">اس میں %1$d کریڈٹ استعمال ہوں گے۔</string>
-    <string name="confirm_spend_body_bulk">اس میں %2$d آئٹمز کے لیے %1$d کریڈٹ استعمال ہوں گے۔</string>
-    <string name="confirm_spend_continue">جاری رکھیں</string>
-    <string name="insufficient_credits_title">کریڈٹ ناکافی ہیں</string>
-    <string name="insufficient_credits_body">آپ کو %1$d کریڈٹ درکار ہیں لیکن آپ کے پاس %2$d ہیں۔ جاری رکھنے کے لیے ٹاپ اپ کریں۔</string>
-    <string name="insufficient_credits_buy">کریڈٹ خریدیں</string>
     <string name="coins_balance_label">بیلنس: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">آپ کی اپنی Gemini کلید استعمال ہو رہی ہے — کوئی کریڈٹ خرچ نہیں ہوتا۔</string>
     <!-- Bulk translation 2026-05-18 -->
@@ -425,18 +403,6 @@
     <string name="composer_weather_temp">درجہ حرارت</string>
     <string name="composer_weather_title">موسم</string>
     <string name="composer_weather_unknown">موسم کی معلومات دستیاب نہیں</string>
-    <string name="credits_action_bg_removal">پس منظر ہٹانا</string>
-    <string name="credits_action_classify">آٹو-ٹیگ آئٹم</string>
-    <string name="credits_action_style">ملبوسات تجویز</string>
-    <string name="credits_action_travel">سفر کے سامان کی فہرست</string>
-    <string name="credits_balance_label">باقی AI کریڈٹس</string>
-    <string name="credits_best_value">سب سے بہتر قیمت</string>
-    <string name="credits_buy">خریدیں</string>
-    <string name="credits_cost_each">%d کریڈٹس</string>
-    <string name="credits_cost_title">فی عمل کریڈٹ لاگت</string>
-    <string name="credits_pack_label">%d کریڈٹس</string>
-    <string name="credits_packs_title">ٹاپ اپ پیک</string>
-    <string name="credits_packs_unavailable">اس ڈیوائس پر کریڈٹ پیک دستیاب نہیں</string>
     <string name="dedupe_dialog_cancel">منسوخ کریں</string>
     <string name="dedupe_dialog_desc">ہمیں آپ کے وارڈروب میں %1$d آئٹم ملے جو اس تصویر سے بہت ملتے جلتے ہیں۔</string>
     <string name="dedupe_dialog_import_anyway">پھر بھی درآمد کریں</string>
@@ -456,9 +422,6 @@
     <string name="import_preview_select_all">سب منتخب کریں</string>
     <string name="import_preview_similar_badge">مماثل</string>
     <string name="import_preview_title">%1$d آئٹمز کا جائزہ</string>
-    <string name="job_notif_channel_name">پس منظر پروسیسنگ</string>
-    <string name="job_notif_text">وارڈروب آئٹمز پر کارروائی ہو رہی ہے…</string>
-    <string name="job_notif_title">LibreLookAI</string>
     <string name="local_bg_apply">یہ کٹ آؤٹ استعمال کریں</string>
     <string name="local_bg_failed">کٹ آؤٹ کا حساب نہیں ہو سکا — کراس ہیئر منتقل کریں۔</string>
     <string name="local_bg_hint">جو آئٹم رکھنا چاہتے ہیں اس پر کراس ہیئر گھسیٹیں۔</string>
@@ -1025,10 +988,6 @@
     <string name="error_no_refinement">کوئی قابل استعمال بہتری واپس نہیں آئی۔</string>
     <string name="error_enter_destination">براہ کرم منزل درج کریں۔</string>
     <string name="error_weather_fetch_failed">\"%1$s\" کے لیے موسم حاصل نہیں ہو سکا۔ منزل کا نام چیک کریں۔</string>
-    <string name="error_billing">بلنگ کی خرابی: %1$s</string>
-    <string name="error_purchase_verify_failed">خریداری کی تصدیق نہیں ہو سکی — براہ کرم سپورٹ سے رابطہ کریں۔</string>
-    <string name="credits_added">+%1$d کریڈٹ شامل ہو گئے!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">آؤٹ فٹ کو کیلنڈر میں شامل کریں</string>
     <string name="calendar_add_pick">ایک آؤٹ فٹ منتخب کریں</string>

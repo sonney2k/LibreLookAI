@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">Semua fitur AI membutuhkan Gemini API key. Dapatkan kunci gratis di aistudio.google.com.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">Gunakan kredit AI?</string>
+    <string name="confirm_spend_body">Ini akan menggunakan %1$d kredit.</string>
+    <string name="confirm_spend_body_bulk">Ini akan menggunakan %1$d kredit untuk %2$d item.</string>
+    <string name="confirm_spend_continue">Lanjutkan</string>
+    <string name="insufficient_credits_title">Kredit tidak cukup</string>
+    <string name="insufficient_credits_body">Anda memerlukan %1$d kredit tetapi hanya memiliki %2$d. Isi ulang untuk melanjutkan.</string>
+    <string name="insufficient_credits_buy">Beli kredit</string>
+    <string name="credits_action_bg_removal">Penghapusan latar</string>
+    <string name="credits_action_classify">Auto-tag item</string>
+    <string name="credits_action_style">Saran setelan</string>
+    <string name="credits_action_travel">Daftar bawaan perjalanan</string>
+    <string name="credits_balance_label">Sisa kredit AI</string>
+    <string name="credits_best_value">Paling hemat</string>
+    <string name="credits_buy">Beli</string>
+    <string name="credits_cost_each">%d kredit</string>
+    <string name="credits_cost_title">Biaya kredit per aksi</string>
+    <string name="credits_pack_label">%d kredit</string>
+    <string name="credits_packs_title">Paket isi ulang</string>
+    <string name="credits_packs_unavailable">Paket kredit tidak tersedia di perangkat ini</string>
+    <string name="error_billing">Kesalahan penagihan: %1$s</string>
+    <string name="error_purchase_verify_failed">Tidak dapat memverifikasi pembelian — hubungi dukungan.</string>
+    <string name="credits_added">+%1$d kredit ditambahkan!</string>
+</resources>

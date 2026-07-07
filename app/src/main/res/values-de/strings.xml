@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibreLookAI</string>
-
     <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_shopping">Einkauf</string>
@@ -59,9 +57,6 @@
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>
     <string name="outfits_tab_tryons">Anproben</string>
-
-    <string name="action_ok">OK</string>
-    <string name="action_dismiss">Verwerfen</string>
     <string name="action_delete">Löschen</string>
     <string name="action_save">Speichern</string>
     <string name="action_edit">Bearbeiten</string>
@@ -79,13 +74,6 @@
     <string name="wardrobe_progress_moving">Wird in neuen Standort verschoben…</string>
     <string name="action_select_all">Alle auswählen</string>
     <string name="action_deselect_all">Auswahl aufheben</string>
-
-    <string name="sign_in_prompt">Anmelden zur Verwaltung Ihrer Garderobe</string>
-    <string name="sign_in_button">Mit Google anmelden</string>
-    <string name="sign_in_error_not_registered">Anmeldung fehlgeschlagen: Diese App-Version ist bei Google nicht autorisiert. Wenn Sie Entwickler sind, registrieren Sie den Signaturschlüssel-Fingerabdruck in der Firebase Console.</string>
-    <string name="sign_in_error_network">Anmeldung fehlgeschlagen: Keine Netzwerkverbindung. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
-    <string name="sign_in_error_generic">Anmeldung fehlgeschlagen (Code %1$d). Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.</string>
-
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_display">Anzeige</string>
     <string name="settings_display_theme">Farbschema</string>
@@ -116,10 +104,6 @@
     <string name="settings_style_prefs">Outfit-Präferenzen</string>
     <string name="settings_style_placeholder">Beschreiben Sie, was Sie gerne tragen, Anlässe für die Sie sich kleiden, Lieblingsfarben, Marken oder alles andere, das Ihre Outfit-Empfehlungen personalisiert…</string>
     <string name="settings_saved">Einstellungen gespeichert</string>
-    <string name="settings_api_key_title">Gemini API-Schlüssel</string>
-    <string name="settings_api_key_desc">Alle KI-Funktionen (Tagging, Outfit-Vorschläge, Hintergrundentfernung) benötigen einen Gemini API-Schlüssel. Kostenlosen Schlüssel unter aistudio.google.com → „Get API key" erstellen. Der Schlüssel wird nur auf diesem Gerät gespeichert.</string>
-    <string name="settings_api_key_label">API-Schlüssel</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Kleidungs-Tags</string>
     <string name="settings_data_tags_desc">Alle Artikel in Ihrer Garderobe mit Gemini neu klassifizieren. Dadurch werden manuelle Tag-Bearbeitungen überschrieben.</string>
     <string name="settings_rescan_button">Alle Tags neu scannen</string>
@@ -446,20 +430,6 @@
     <string name="wardrobe_suggest_replacements">Alternativen vorschlagen</string>
     <string name="replacements_title">Ersatz für %d Teile</string>
     <string name="replacements_analyzing">Ersatz wird vorgeschlagen…</string>
-
-    <string name="credits_balance_label">Verbleibende KI-Credits</string>
-    <string name="credits_cost_title">Credits pro Aktion</string>
-    <string name="credits_action_bg_removal">Hintergrund entfernen</string>
-    <string name="credits_action_classify">Artikel automatisch taggen</string>
-    <string name="credits_action_style">Outfit-Vorschlag</string>
-    <string name="credits_action_travel">Reise-Packliste</string>
-    <string name="credits_cost_each">%d Credits</string>
-    <string name="credits_packs_title">Aufladen</string>
-    <string name="credits_packs_unavailable">Credit-Pakete auf diesem Gerät nicht verfügbar</string>
-    <string name="credits_pack_label">%d Credits</string>
-    <string name="credits_best_value">Bestes Angebot</string>
-    <string name="credits_buy">Kaufen</string>
-
     <string name="ai_working">KI arbeitet…</string>
     <string name="ai_fetching_weather">Wetter wird geladen…</string>
     <string name="ai_generating_packing">Packliste wird erstellt…</string>
@@ -468,10 +438,6 @@
     <string name="ai_composing_outfit">Outfit wird zusammengestellt…</string>
 
     <!-- Foreground service notification -->
-    <string name="job_notif_channel_name">Hintergrundverarbeitung</string>
-    <string name="job_notif_title">LibreLookAI</string>
-    <string name="job_notif_text">Garderobe wird verarbeitet…</string>
-
     <!-- Battery optimization exemption dialog -->
     <string name="battery_exempt_title">Hintergrundverarbeitung erforderlich</string>
     <string name="battery_exempt_text">LibreLookAI benötigt uneingeschränkte Hintergrundverarbeitung, um Fotos sicher zu importieren, Hintergründe zu entfernen und Kleidungsstücke mit KI zu taggen.\n\nOhne diese Berechtigung kann Android die App während der Verarbeitung beenden, was zu Datenverlust führen kann — teilweise importierte Artikel, fehlende Tags oder beschädigte Dateien.\n\nBitte deaktiviere die Akku-Optimierung für LibreLookAI, um fortzufahren.</string>
@@ -786,18 +752,8 @@
     <string name="import_preview_scanning">Scanne %1$d / %2$d…</string>
 
     <!-- Monetization / cost badges -->
-    <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s Tokens</string>
     <string name="cost_badge_usd_estimate">~$%1$s</string>
-    <string name="cost_legend_title">Kostenstufen</string>
-    <string name="cost_legend_hint">Lange auf eine $-Marke tippen für den genauen Preis.</string>
-    <string name="confirm_spend_title">KI-Guthaben verwenden?</string>
-    <string name="confirm_spend_body">Dies verbraucht %1$d Guthaben.</string>
-    <string name="confirm_spend_body_bulk">Dies verbraucht %1$d Guthaben für %2$d Artikel.</string>
-    <string name="confirm_spend_continue">Weiter</string>
-    <string name="insufficient_credits_title">Nicht genug Guthaben</string>
-    <string name="insufficient_credits_body">Sie benötigen %1$d Guthaben, haben aber %2$d. Aufladen, um fortzufahren.</string>
-    <string name="insufficient_credits_buy">Guthaben kaufen</string>
     <string name="coins_balance_label">Guthaben: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Eigener Gemini-Schlüssel — kein Guthaben wird verbraucht.</string>
     <!-- Trips -->
@@ -1118,10 +1074,6 @@
     <string name="error_no_refinement">Keine brauchbare Verfeinerung erhalten.</string>
     <string name="error_enter_destination">Bitte ein Ziel eingeben.</string>
     <string name="error_weather_fetch_failed">Wetter für \"%1$s\" konnte nicht geladen werden. Prüfe den Zielnamen.</string>
-    <string name="error_billing">Abrechnungsfehler: %1$s</string>
-    <string name="error_purchase_verify_failed">Kauf konnte nicht verifiziert werden – bitte kontaktiere den Support.</string>
-    <string name="credits_added">+%1$d Credits hinzugefügt!</string>
-
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Outfit zum Kalender hinzufügen</string>
     <string name="calendar_add_pick">Outfit auswählen</string>

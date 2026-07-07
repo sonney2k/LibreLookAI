@@ -482,7 +482,7 @@ internal fun FixCutoutBgItemDialog(
                             clearAlpha = clearAlpha,
                         ))
                     },
-                ) { Text(stringResource(R.string.action_ok)) }
+                ) { Text(stringResource(DsR.string.action_ok)) }
             }
         },
         dismissButton = {

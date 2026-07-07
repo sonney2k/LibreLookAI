@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="job_notif_channel_name">المعالجة الخلفية</string>
+    <string name="job_notif_title">LibreLookAI</string>
+    <string name="job_notif_text">جاري معالجة أصناف الخزانة…</string>
+</resources>

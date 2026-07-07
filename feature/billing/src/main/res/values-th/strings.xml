@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">ฟีเจอร์ AI ทั้งหมดต้องการ Gemini API key รับรหัสฟรีได้ที่ aistudio.google.com รหัสของคุณจะถูกเก็บไว้ในเครื่องนี้เท่านั้น</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="confirm_spend_title">ใช้เครดิต AI หรือไม่</string>
+    <string name="confirm_spend_body">การดำเนินการนี้จะใช้ %1$d เครดิต</string>
+    <string name="confirm_spend_body_bulk">การดำเนินการนี้จะใช้ %1$d เครดิตสำหรับ %2$d รายการ</string>
+    <string name="confirm_spend_continue">ดำเนินการต่อ</string>
+    <string name="insufficient_credits_title">เครดิตไม่เพียงพอ</string>
+    <string name="insufficient_credits_body">คุณต้องมี %1$d เครดิตแต่มี %2$d เติมเครดิตเพื่อดำเนินการต่อ</string>
+    <string name="insufficient_credits_buy">ซื้อเครดิต</string>
+    <string name="credits_action_bg_removal">ลบพื้นหลัง</string>
+    <string name="credits_action_classify">แท็กรายการอัตโนมัติ</string>
+    <string name="credits_action_style">แนะนำชุด</string>
+    <string name="credits_action_travel">รายการของเดินทาง</string>
+    <string name="credits_balance_label">เครดิต AI คงเหลือ</string>
+    <string name="credits_best_value">คุ้มที่สุด</string>
+    <string name="credits_buy">ซื้อ</string>
+    <string name="credits_cost_each">%d เครดิต</string>
+    <string name="credits_cost_title">ค่าเครดิตต่อการกระทำ</string>
+    <string name="credits_pack_label">%d เครดิต</string>
+    <string name="credits_packs_title">แพ็คเติมเงิน</string>
+    <string name="credits_packs_unavailable">แพ็คเครดิตไม่พร้อมใช้บนอุปกรณ์นี้</string>
+    <string name="error_billing">ข้อผิดพลาดในการเรียกเก็บเงิน: %1$s</string>
+    <string name="error_purchase_verify_failed">ไม่สามารถยืนยันการซื้อได้ — โปรดติดต่อฝ่ายสนับสนุน</string>
+    <string name="credits_added">เพิ่ม %1$d เครดิตแล้ว!</string>
+</resources>

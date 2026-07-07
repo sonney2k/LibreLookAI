@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.LocalIsOffline
@@ -188,7 +189,7 @@ internal fun IdentifyGapsTab(
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(start = 8.dp, end = 8.dp, top = 64.dp),
-                action = { TextButton(onClick = gapViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
+                action = { TextButton(onClick = gapViewModel::clearError) { Text(stringResource(DsR.string.action_ok)) } },
             ) { Text(msg) }
         }
     }

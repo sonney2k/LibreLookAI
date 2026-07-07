@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="job_notif_channel_name">پس منظر پروسیسنگ</string>
+    <string name="job_notif_text">وارڈروب آئٹمز پر کارروائی ہو رہی ہے…</string>
+    <string name="job_notif_title">LibreLookAI</string>
+</resources>
