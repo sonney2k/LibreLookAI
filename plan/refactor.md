@@ -1620,7 +1620,10 @@ categories:
    token badges (feature→feature — needs the `LocalRemoveBgCostBadge`-style CompositionLocal
    treatment). The wardrobe filter/taxonomy UI travel uses is already in designsystem.
 
-   **`feature:travel` LANDED** (July 2026) — the extraction followed the plan below with two
+   **`feature:travel` LANDED** (July 2026, `e2b64f6` — one commit with enabler 2) — the
+   extraction followed the recorded 7-step plan (sink shared composables → break the billing
+   edge → module from the tryon template → wholesale package move → res split → tests stay →
+   verify+docs; the generalized template lives in the "Remaining" paragraph below) with two
    noted deviations: (a) `ExpertTagsCard`'s private helpers (`SectionCard`/`SmallPillChip`/
    `TAG_DIM_LABELS`) are **shared** app-side (used by every prediction-setup card), so rather
    than move them, the designsystem `OutfitExpertTagsCard.kt` carries its own **file-private
@@ -1636,59 +1639,19 @@ categories:
    broke the `billing/CostBadge` edge; `TravelPlannerScreen` `internal`→public was the only
    visibility bump the compiler flagged (VMs/repo/handlers were already public, no test internals
    used). `add_translations.py --module travel` + `translation_status.sh` aggregate the eighth res
-   root (still 1180 keys). `./gradlew :app:assembleDebug testDebugUnitTest` green; the three travel
-   suites (19 tests) pass unchanged.
+   root (still 1180 keys). Module deps (the shape for the coming slices): `api(core:model)`
+   (Trip/Outfit/PackingList/DriveImage/UserPreferences/Location in public signatures), impl
+   `core:sync` (DriveService + SyncEngine/MutationHandler), `core:database` (TripStore +
+   PendingMutationStore), `core:ai` (AiClient/AiResult/AiRetry/UsageCategory/CostTokens),
+   `core:common`, `core:session` + `core:outfit` (wearHistoryFlow + prompt summaries),
+   `core:weather` (wmoEmoji/WeatherData), `core:designsystem`; no BuildConfig, no manifest
+   entries. `./gradlew :app:assembleDebug testDebugUnitTest` green; the three travel suites
+   (19 tests) pass unchanged. Res-split pitfall for the next slices, re-learned: inventory
+   app-`R` keys with a grep that excludes `DsR.string.` matches — plain `R\.string\.`
+   false-positives on the `DsR` alias.
 
-   **`feature:travel` extraction plan (executed; enablers 1+2 landed):**
-   1. **Sink the two outfit composables to `core:designsystem`** (both are already
-      designsystem-clean — deps are `Location`/`AiConsiderations` (core:model) + DsR keys):
-      `ClosetPickerSheet` (out of `OutfitComposerSheets.kt`; `internal` → public) and
-      `ExpertTagsCard` (out of `PredictionSetupCards.kt`), original `com.librelookai.outfit`
-      package kept (designsystem already hosts `outfit/` files). Move only the composables +
-      any private helpers they own; their strings move with them if still app-owned.
-   2. **Break the `billing/CostBadge` edge** with a CompositionLocal defined **in
-      `feature:travel`** (not designsystem — the consumer is travel-only and the slot's
-      `CostTokens` param comes from core:ai, which travel already depends on):
-      `LocalTravelCostBadge: (@Composable (CostTokens?) -> Unit)?`, read by the two badge
-      sites (`TravelGoalCards.kt:292`, `TripRefine.kt:179`; unprovided → no badge), provided
-      by `AppContent` from `feature/billing`'s `CostBadge` (mirror the exact current args).
-   3. **Create the module** from the `feature/tryon` template (`git show d53cb87 --stat`
-      is the shape): namespace `com.librelookai.feature.travel`, no BuildConfig fields.
-      Deps: `api(core:model)` (Trip/Outfit/PackingList/DriveImage/UserPreferences/Location
-      in public signatures), impl `core:sync` (DriveService + SyncEngine/MutationHandler),
-      `core:database` (TripStore + PendingMutationStore), `core:ai` (AiClient/AiResult/
-      AiRetry/UsageCategory/CostTokens), `core:common`, `core:session` + `core:outfit`
-      (wearHistoryFlow + prompt summaries), `core:weather` (wmoEmoji/WeatherData),
-      `core:designsystem`. Register in `settings.gradle.kts`; app adds
-      `implementation(project(":feature:travel"))`.
-   4. **Move `app/src/main/java/com/librelookai/travel/` wholesale** (14 files incl.
-      `TripsRepository`/`TripSync` — the trip mutation handlers register via Hilt
-      `@Binds @IntoSet` multibinding, so the Hilt module moves with them, the
-      `TryOnIndexSyncHandler` precedent). Kotlin package `com.librelookai.travel` kept.
-      Visibility: `TravelPlannerScreen` `internal` → public (AppContent calls it); bump
-      whatever else AppContent / the app-side test suites reference — compiler is the
-      source of truth.
-   5. **Res split**: travel-only keys (`travel_*`/`trip_*`/`packing_*` …) move
-      `app/src/main/res/values*/strings.xml` → `feature/travel/src/main/res` across **all
-      31 locales** (no renames). Keys travel uses that app-side code (outfit/settings)
-      also uses **sink to the designsystem vocabulary instead** — travel cannot read app
-      `R` — measured set: `ai_consider_*`, `composer_vibe_*`, `composer_section_*`,
-      `composer_closets_all`, `outfits_empty`/`outfits_missing_items`/`outfits_wear_today`,
-      `error_gemini_no_response`/`error_gemini_parse`, `action_edit` (+ re-verify:
-      inventory with a grep that excludes `DsR.string.` matches — plain `R\.string\.`
-      false-positives on the `DsR` alias). Flip app-side call sites of sunk keys to `DsR`.
-      Add `travel` to `scripts/add_translations.py --module`; confirm
-      `scripts/translation_status.sh` picks up the new res root.
-   6. **Tests stay in `app/src/test`** against the module's public API (the tryon
-      precedent): `TripsViewModelTest`, `TripsRepositoryTest`, `TripSyncHandlersTest`
-      keep using the shared fakes; only visibility bumps, no test moves.
-   7. **Verify**: `./gradlew :app:assembleDebug testDebugUnitTest` green (JDK-21 test
-      toolchain is app-side only — no new wiring needed since tests don't move),
-      `scripts/translation_status.sh` clean. Update CLAUDE.md (repo-layout map, Package
-      layout, module list) + this file when it lands.
-
-   **After travel (§ 1 slice 6 remaining, leaf-first, re-measure each before starting):**
-   `feature:shopping` (needs the shopping↔wardrobe VM edges measured; `ShoppingRepository`/
+   **Remaining (§ 1 slice 6, leaf-first, re-measure each before starting) — next:
+   `feature:shopping`** (needs the shopping↔wardrobe VM edges measured; `ShoppingRepository`/
    `ShoppingIngestionQueue` are already singleton-shaped) → `feature:outfit` (largest;
    `core:outfit` domain home exists, the composer/generation VM split is done — the knot is
    the app-shell hosts `OutfitViewerDestination`/calendar and the prediction surfaces) →
