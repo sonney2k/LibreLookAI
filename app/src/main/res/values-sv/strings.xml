@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Annat</string>
     <string name="settings_year_of_birth">Födelseår</string>
     <string name="settings_year_placeholder">t.ex. 1990</string>
-    <string name="settings_style_prefs">Outfit-preferenser</string>
     <string name="settings_style_placeholder">Beskriv vad du gillar att bära, tillfällen du klär upp dig för, favoritfärger, märken eller allt annat som hjälper till att anpassa dina outfitrekommendationer…</string>
     <string name="settings_saved">Inställningar sparade</string>
     <string name="settings_data_tags_title">Garderobstaggar</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Lägg till plagg</string>
     <string name="tryon_add_items_title">Lägg till garderobsplagg</string>
     <string name="tryon_generate">Generera provning</string>
-    <string name="tryon_try_again">Försök igen</string>
     <string name="tryon_change_items">Ändra plagg</string>
     <string name="tryon_save_to_drive">Spara</string>
     <string name="tryon_saved_to_drive">Sparad</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">AI-användning &amp; kostnader · API-nyckel · avancerade alternativ</string>
     <string name="settings_more_about">Om LibreLookAI</string>
     <string name="settings_profile_edit_title">Redigera profil</string>
-    <string name="settings_profile_gender">Kön / pronomen</string>
-    <string name="settings_profile_year">Födelseår</string>
     <string name="settings_profile_ai_considerations">Vad AI ska ta hänsyn till</string>
     <string name="settings_advanced_title">Avancerat</string>
     <string name="settings_section_advanced_fix">Åtgärda AI-misstag</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Välj vilka klädattribut AI:n väger in. Färre detaljer = snabbare, billigare och mer fokuserade förslag.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Hoppa över</string>
-    <string name="onboarding_next">Nästa</string>
-    <string name="onboarding_back">Tillbaka</string>
-    <string name="onboarding_welcome_title">Välkommen till LibreLookAI</string>
-    <string name="onboarding_welcome_body">Din AI-stylist för garderoben du redan har. Fotografera dina kläder, få outfit-idéer, prova dem och packa inför resor — allt privat i din egen Google Drive.</string>
-    <string name="onboarding_wardrobe_title">Din digitala garderob</string>
-    <string name="onboarding_wardrobe_body">Fotografera varje plagg en gång. AI tar bort bakgrunden och taggar typ, färg, material och mer, så att allt går att söka.</string>
-    <string name="onboarding_outfits_title">AI-outfitidéer</string>
-    <string name="onboarding_outfits_body">Få outfit-förslag anpassade efter vädret, tillfället och din smak — byggda enbart av kläder du faktiskt har.</string>
-    <string name="onboarding_tryon_title">Prova outfits på dig själv</string>
-    <string name="onboarding_tryon_body">Lägg till ett foto på dig själv och se vilken outfit som helst på dig innan du tar på den. Tryck på mittknappen när som helst för att starta en provning.</string>
-    <string name="onboarding_travel_title">Packa för vilken resa som helst</string>
-    <string name="onboarding_travel_body">Berätta för reseplaneraren vart du ska och hur länge. Den bygger en kapselgarderob dag för dag från din garderob.</string>
-    <string name="onboarding_shopping_title">Smartare shopping</string>
-    <string name="onboarding_shopping_body">Spara plagg du funderar på och låt shoppinghjälpen kontrollera om de matchar det du redan har — och fyller verkliga luckor.</string>
-    <string name="onboarding_profile_title">Berätta om din stil</string>
-    <string name="onboarding_profile_body">Det hjälper AI:n att anpassa varje förslag efter dig. Du kan ändra det när som helst i Inställningar.</string>
-    <string name="onboarding_photo_title">Lägg till ett provfoto</string>
-    <string name="onboarding_photo_body">Ett helkroppsfoto framifrån låter dig prova outfits på dig själv. Valfritt — du kan lägga till det senare.</string>
-    <string name="onboarding_photo_add">Lägg till foto</string>
-    <string name="onboarding_photo_added">Foto tillagt</string>
-    <string name="onboarding_photo_offline">Anslut till internet för att lägga till ditt foto.</string>
-    <string name="onboarding_closet_title">Bygg din garderob</string>
-    <string name="onboarding_closet_body">Din första garderob är klar. Lägg till några plagg för att få dina första outfit-idéer — eller utforska först och lägg till dem när du vill.</string>
     <string name="onboarding_closet_add_items">Lägg till kläder nu</string>
-    <string name="onboarding_closet_explore">Utforska appen</string>
     <string name="onboarding_tour_replay">Ta rundturen</string>
     <string name="onboarding_tour_replay_sub">Spela upp välkomstrundturen igen</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Lägg till din Gemini API-nyckel</string>
-    <string name="onboarding_apikey_body">LibreLookAI körs på Google Gemini med din egen API-nyckel. Den lagras bara på den här enheten och används direkt med Google — inget går via våra servrar.</string>
-    <string name="onboarding_apikey_tiers">En gratis nyckel täcker redan taggning och outfitförslag. Virtuell provning och bakgrundsborttagning genererar bilder och kräver en betald nyckel med fakturering aktiverad — Google debiterar fortfarande bara för det du faktiskt använder.</string>
-    <string name="onboarding_apikey_get">Hämta en API-nyckel</string>
-    <string name="onboarding_apikey_billing">Aktivera fakturering (för provning)</string>
-    <string name="onboarding_apikey_saved">Nyckel sparad på den här enheten ✓</string>
-    <string name="onboarding_apikey_offline">Anslut till internet för att öppna Google AI Studio. Du kan ändå klistra in en nyckel du redan har.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Det gick inte att flytta vissa objekt. De har återställts.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Anslut din Google Drive</string>
-    <string name="onboarding_drive_body">LibreLookAI sparar allt — dina kläder, outfits och foton — i en privat mapp på din egen Google Drive. Inget lagras på våra servrar och bara du kan se det. Logga in med Google för att skapa din garderob.</string>
-    <string name="onboarding_drive_connect">Logga in med Google</string>
-    <string name="onboarding_drive_connected">Google Drive ansluten ✓</string>
-    <string name="onboarding_drive_offline">Anslut till internet för att logga in med Google.</string>
-    <string name="onboarding_background_title">Tillåt bakgrundsbearbetning</string>
-    <string name="onboarding_background_body">Att importera foton, ta bort bakgrunder och tagga kläder med AI kan ta en stund. LibreLookAI behöver obegränsad bakgrundsbearbetning så att Android inte stänger appen mitt i en uppgift — vilket annars kan lämna halvt importerade objekt, saknade taggar eller skadade filer.\n\nDetta låter bara appen slutföra arbete som du har påbörjat; den kör inget på egen hand.</string>
-    <string name="onboarding_background_allow">Tillåt bakgrundsbearbetning</string>
-    <string name="onboarding_background_granted">Bakgrundsbearbetning tillåten ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Aktivera plats för väder</string>
-    <string name="onboarding_location_body">LibreLookAI använder din ungefärliga plats för att hämta lokalt väder och kan på så sätt föreslå outfits som passar dagens förhållanden. Din plats stannar på din enhet och används bara för att hämta vädret – den lagras eller delas aldrig. Du kan hoppa över det här och aktivera det senare.</string>
-    <string name="onboarding_location_allow">Tillåt platsåtkomst</string>
-    <string name="onboarding_location_granted">Plats aktiverad ✓</string>
-    <string name="onboarding_finish_setup_title">Din konfiguration</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Bakgrundsbearbetning</string>
-    <string name="onboarding_finish_apikey">Gemini API-nyckel</string>
-    <string name="onboarding_finish_location">Plats för väder</string>
-    <string name="onboarding_finish_grant">Konfigurera</string>
-    <string name="onboarding_finish_warning">Konfigurationen är inte klar. Punkterna markerade ovan fungerar inte förrän du slutför dem – du kan ställa in dem här eller senare i Inställningar.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Gemini API-nyckel krävs</string>
     <string name="ai_no_key_message">Den här funktionen använder Googles Gemini-AI, som behöver din egen API-nyckel. Lägg till en gratis nyckel för att börja tagga kläder och få outfitförslag (virtuell provning och bakgrundsborttagning kräver en nyckel med fakturering aktiverad).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Söker efter en befintlig garderob att importera…</string>
-    <string name="onboarding_drive_importing">Importerar din befintliga garderob… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Garderob importerad ✓</string>
-    <string name="onboarding_drive_import_error">Vi kunde inte importera din befintliga garderob automatiskt. Du kan försöka igen eller välja mappen själv.</string>
-    <string name="onboarding_drive_import_manual">Välj mapp manuellt</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Bildkvalitet</string>
     <string name="settings_image_quality_sub">Balansera lagring mot detaljer. Gäller nya klädbilder som sparas på din Drive.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · vanligtvis 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Det gick inte att ansluta till Google Drive. Försök igen.</string>
-    <string name="drive_picker_opening">Öppnar Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Välj kläder som täcker både överkroppen och underkroppen — antingen ett helkroppsplagg (klänning eller jumpsuit) eller en överdel tillsammans med en underdel. Då förblir din genererade provning fullt påklädd.</string>
 

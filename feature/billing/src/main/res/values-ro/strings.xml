@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Cheie API Gemini</string>
     <string name="settings_api_key_desc">Toate funcțiile AI necesită o cheie Gemini API. Obține una gratuită la aistudio.google.com.</string>
-    <string name="settings_api_key_label">Cheie API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="confirm_spend_title">Folosești credite AI?</string>
     <string name="confirm_spend_body">Aceasta va folosi %1$d credite.</string>

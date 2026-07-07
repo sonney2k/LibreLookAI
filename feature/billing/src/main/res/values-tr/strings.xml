@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API Anahtarı</string>
     <string name="settings_api_key_desc">Tüm yapay zeka özellikleri (etiketleme, kombin önerileri, arka plan kaldırma) bir Gemini API anahtarı gerektirir. aistudio.google.com adresinden \"Get API key\" diyerek ücretsiz bir anahtar alın. Anahtarınız yalnızca bu cihazda saklanır.</string>
-    <string name="settings_api_key_label">API Anahtarı</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Kalan yapay zeka kredisi</string>
     <string name="credits_cost_title">Eylem başına kredi maliyeti</string>
     <string name="credits_action_bg_removal">Arka plan kaldırma</string>

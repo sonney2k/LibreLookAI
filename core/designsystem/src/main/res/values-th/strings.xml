@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">ตกลง</string>
     <string name="action_dismiss">ปิด</string>
+    <string name="sign_in_error_not_registered">การลงชื่อเข้าใช้ล้มเหลว: แอปเวอร์ชันนี้ไม่ได้รับอนุญาตจาก Google</string>
+    <string name="sign_in_error_network">การลงชื่อเข้าใช้ล้มเหลว: ไม่มีการเชื่อมต่อเครือข่าย โปรดตรวจสอบอินเทอร์เน็ตของคุณ</string>
+    <string name="sign_in_error_generic">การลงชื่อเข้าใช้ล้มเหลว (รหัส %1$d) โปรดลองอีกครั้ง</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">ความชอบส่วนตัว</string>
+    <string name="tryon_try_again">ลองอีกครั้ง</string>
+    <string name="settings_profile_gender">เพศ / คำสรรพนาม</string>
+    <string name="settings_profile_year">ปีเกิด</string>
 </resources>

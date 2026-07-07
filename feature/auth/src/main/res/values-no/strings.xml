@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Logg inn for å administrere garderoben din</string>
     <string name="sign_in_button">Logg inn med Google</string>
-    <string name="sign_in_error_not_registered">Innlogging mislyktes: denne app-versjonen er ikke autorisert av Google. Hvis du er utvikler, registrer signeringsnøkkelens fingeravtrykk i Firebase Console.</string>
-    <string name="sign_in_error_network">Innlogging mislyktes: ingen nettverksforbindelse. Sjekk internett og prøv igjen.</string>
-    <string name="sign_in_error_generic">Innlogging mislyktes (kode %1$d). Prøv igjen eller kontakt support.</string>
 </resources>

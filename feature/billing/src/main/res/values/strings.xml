@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API Key</string>
     <string name="settings_api_key_desc">All AI features need a Gemini API key (add it here or during setup). A free key covers tagging and outfit suggestions; virtual try-on and background removal need a billing-enabled (paid) key. Your key is stored only on this device.</string>
-    <string name="settings_api_key_label">API Key</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">AI Credits remaining</string>
     <string name="credits_cost_title">Credit cost per action</string>
     <string name="credits_action_bg_removal">Background removal</string>

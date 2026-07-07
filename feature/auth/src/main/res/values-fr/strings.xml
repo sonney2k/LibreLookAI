@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Connecte-toi pour gérer ta garde-robe</string>
     <string name="sign_in_button">Se connecter avec Google</string>
-    <string name="sign_in_error_not_registered">Échec de la connexion : cette version de l\'app n\'est pas autorisée par Google. Si tu es développeur, enregistre l\'empreinte de la clé de signature dans Firebase Console.</string>
-    <string name="sign_in_error_network">Échec de la connexion : pas de connexion réseau. Vérifie ta connexion Internet et réessaie.</string>
-    <string name="sign_in_error_generic">Échec de la connexion (code %1$d). Réessaie ou contacte le support.</string>
 </resources>

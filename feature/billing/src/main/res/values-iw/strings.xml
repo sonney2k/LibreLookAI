@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">מפתח Gemini API</string>
     <string name="settings_api_key_desc">כל יכולות ה-AI דורשות מפתח Gemini API (הוסף כאן או בהגדרה הראשונית). מפתח חינמי מכסה תיוג והצעות תלבושות; מדידה וירטואלית והסרת רקע דורשות מפתח בתשלום עם חיוב מופעל. המפתח נשמר במכשיר זה בלבד.</string>
-    <string name="settings_api_key_label">מפתח API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">יתרת קרדיטים</string>
     <string name="credits_cost_title">עלות פעולה</string>
     <string name="credits_action_bg_removal">הסרת רקע</string>

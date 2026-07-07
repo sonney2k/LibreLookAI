@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Закрити</string>
+    <string name="sign_in_error_not_registered">Помилка входу: цей додаток не авторизовано Google.</string>
+    <string name="sign_in_error_network">Помилка входу: немає зв’язку з мережею.</string>
+    <string name="sign_in_error_generic">Помилка входу (код %1$d). Спробуйте ще раз.</string>
+    <string name="settings_api_key_label">Ключ API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Стильові вподобання</string>
+    <string name="tryon_try_again">Спробувати знову</string>
+    <string name="settings_profile_gender">Стать / займенники</string>
+    <string name="settings_profile_year">Рік народження</string>
 </resources>

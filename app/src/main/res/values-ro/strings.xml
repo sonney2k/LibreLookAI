@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Altul</string>
     <string name="settings_year_of_birth">Anul nașterii</string>
     <string name="settings_year_placeholder">ex. 1990</string>
-    <string name="settings_style_prefs">Preferințe Stil</string>
     <string name="settings_style_placeholder">Descrie ce îți place să porți, ocazii, culori preferate, branduri, etc…</string>
     <string name="settings_saved">Preferințe salvate</string>
     <string name="settings_data_tags_title">Etichete Garderobă</string>
@@ -650,7 +649,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="tryon_slot_back">Spate</string>
     <string name="tryon_slot_front">Față</string>
     <string name="tryon_slot_side">Lateral</string>
-    <string name="tryon_try_again">Încearcă din nou</string>
     <string name="tryon_use_outfit">Folosește o ținută</string>
     <string name="tryon_view_source_outfit">Vezi ținuta</string>
     <string name="wardrobe_create_style">Creează ținută</string>
@@ -741,8 +739,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_more_advanced_subtitle">Utilizare și costuri AI · cheie API · opțiuni avansate</string>
     <string name="settings_more_about">Despre LibreLookAI</string>
     <string name="settings_profile_edit_title">Editează profilul</string>
-    <string name="settings_profile_gender">Gen / pronume</string>
-    <string name="settings_profile_year">Anul nașterii</string>
     <string name="settings_profile_ai_considerations">Ce ar trebui să ia în calcul AI</string>
     <string name="settings_advanced_title">Avansat</string>
     <string name="settings_section_advanced_fix">Repară greșelile AI</string>
@@ -773,32 +769,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="composer_tags_hint">Alege ce atribute ale hainelor ia în calcul AI-ul. Mai puține detalii = sugestii mai rapide, ieftine și precise.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Omite</string>
-    <string name="onboarding_next">Înainte</string>
-    <string name="onboarding_back">Înapoi</string>
-    <string name="onboarding_welcome_title">Bun venit în LibreLookAI</string>
-    <string name="onboarding_welcome_body">Stilistul tău cu IA pentru garderoba pe care o ai deja. Fotografiază-ți hainele, primește idei de ținute, probează-le și fă-ți bagajul pentru călătorii — totul privat, în propriul tău Google Drive.</string>
-    <string name="onboarding_wardrobe_title">Garderoba ta digitală</string>
-    <string name="onboarding_wardrobe_body">Fotografiază fiecare articol o dată. IA elimină fundalul și etichetează tipul, culoarea, materialul și altele, ca totul să rămână ușor de căutat.</string>
-    <string name="onboarding_outfits_title">Idei de ținute cu IA</string>
-    <string name="onboarding_outfits_body">Primește sugestii de ținute adaptate la vreme, ocazie și gustul tău — create doar din hainele pe care chiar le ai.</string>
-    <string name="onboarding_tryon_title">Probează ținutele pe tine</string>
-    <string name="onboarding_tryon_body">Adaugă o fotografie cu tine și vezi orice ținută pe tine înainte să o porți. Atinge butonul central oricând pentru a începe o probă.</string>
-    <string name="onboarding_travel_title">Fă-ți bagajul pentru orice călătorie</string>
-    <string name="onboarding_travel_body">Spune planificatorului de călătorii unde mergi și pentru cât timp. Îți creează o garderobă capsulă zi cu zi din dulapul tău.</string>
-    <string name="onboarding_shopping_title">Cumpărături mai inteligente</string>
-    <string name="onboarding_shopping_body">Salvează articolele la care te gândești și lasă asistentul de cumpărături să verifice dacă se potrivesc cu ce ai deja — și acoperă goluri reale.</string>
-    <string name="onboarding_profile_title">Spune-ne stilul tău</string>
-    <string name="onboarding_profile_body">Asta ajută IA să personalizeze fiecare sugestie pentru tine. Poți modifica oricând în Setări.</string>
-    <string name="onboarding_photo_title">Adaugă o fotografie de probă</string>
-    <string name="onboarding_photo_body">O fotografie din față, din cap până-n picioare, îți permite să probezi ținutele pe tine. Opțional — o poți adăuga mai târziu.</string>
-    <string name="onboarding_photo_add">Adaugă fotografie</string>
-    <string name="onboarding_photo_added">Fotografie adăugată</string>
-    <string name="onboarding_photo_offline">Conectează-te la internet pentru a adăuga fotografia.</string>
-    <string name="onboarding_closet_title">Construiește-ți dulapul</string>
-    <string name="onboarding_closet_body">Primul tău dulap este gata. Adaugă câteva haine pentru primele idei de ținute — sau explorează mai întâi și adaugă-le când vrei.</string>
     <string name="onboarding_closet_add_items">Adaugă haine acum</string>
-    <string name="onboarding_closet_explore">Explorează aplicația</string>
     <string name="onboarding_tour_replay">Pornește turul</string>
     <string name="onboarding_tour_replay_sub">Reia turul de bun venit</string>
 
@@ -807,41 +778,11 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Adaugă cheia ta API Gemini</string>
-    <string name="onboarding_apikey_body">LibreLookAI funcționează pe Google Gemini folosind propria ta cheie API. Este stocată doar pe acest dispozitiv și folosită direct cu Google — nimic nu trece prin serverele noastre.</string>
-    <string name="onboarding_apikey_tiers">O cheie gratuită acoperă deja etichetarea și sugestiile de ținute. Proba virtuală și eliminarea fundalului generează imagini și necesită o cheie plătită cu facturarea activată — Google îți tarifează în continuare doar ce folosești efectiv.</string>
-    <string name="onboarding_apikey_get">Obține o cheie API</string>
-    <string name="onboarding_apikey_billing">Activează facturarea (pentru probă)</string>
-    <string name="onboarding_apikey_saved">Cheie salvată pe acest dispozitiv ✓</string>
-    <string name="onboarding_apikey_offline">Conectează-te la internet pentru a deschide Google AI Studio. Poți lipi în continuare o cheie pe care o ai deja.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Unele articole nu au putut fi mutate. Au fost restaurate.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Conectează-ți Google Drive</string>
-    <string name="onboarding_drive_body">LibreLookAI păstrează totul — hainele, ținutele și fotografiile tale — într-un folder privat pe propriul tău Google Drive. Nimic nu este stocat pe serverele noastre și doar tu poți vedea conținutul. Conectează-te cu Google pentru a-ți crea garderoba.</string>
-    <string name="onboarding_drive_connect">Conectare cu Google</string>
-    <string name="onboarding_drive_connected">Google Drive conectat ✓</string>
-    <string name="onboarding_drive_offline">Conectează-te la internet pentru a te autentifica cu Google.</string>
-    <string name="onboarding_background_title">Permite procesarea în fundal</string>
-    <string name="onboarding_background_body">Importul fotografiilor, eliminarea fundalurilor și etichetarea hainelor cu AI pot dura puțin. LibreLookAI are nevoie de procesare nelimitată în fundal pentru ca Android să nu închidă aplicația în mijlocul unei sarcini — ceea ce altfel ar putea lăsa articole importate pe jumătate, etichete lipsă sau fișiere corupte.\n\nAceasta permite aplicației doar să finalizeze lucrul pe care l-ai început; nu rulează nimic de la sine.</string>
-    <string name="onboarding_background_allow">Permite procesarea în fundal</string>
-    <string name="onboarding_background_granted">Procesare în fundal permisă ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Activează locația pentru vreme</string>
-    <string name="onboarding_location_body">LibreLookAI folosește locația ta aproximativă pentru a afla vremea locală, astfel încât să poată sugera ținute potrivite condițiilor zilei. Locația ta rămâne pe dispozitiv și este folosită doar pentru a obține vremea — nu este niciodată stocată sau partajată. Poți sări peste acest pas și îl poți activa mai târziu.</string>
-    <string name="onboarding_location_allow">Permite accesul la locație</string>
-    <string name="onboarding_location_granted">Locație activată ✓</string>
-    <string name="onboarding_finish_setup_title">Configurarea ta</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Procesare în fundal</string>
-    <string name="onboarding_finish_apikey">Cheie API Gemini</string>
-    <string name="onboarding_finish_location">Locație pentru vreme</string>
-    <string name="onboarding_finish_grant">Configurează</string>
-    <string name="onboarding_finish_warning">Configurarea nu este completă. Elementele marcate mai sus nu vor funcționa până nu le finalizezi — le poți configura aici sau mai târziu în Setări.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Este necesară o cheie API Gemini</string>
     <string name="ai_no_key_message">Această funcție folosește IA Gemini de la Google, care are nevoie de propria ta cheie API. Adaugă o cheie gratuită pentru a începe să etichetezi haine și a primi idei de ținute (proba virtuală și eliminarea fundalului necesită o cheie cu facturare activată).</string>
@@ -904,12 +845,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Se caută o garderobă existentă de importat…</string>
-    <string name="onboarding_drive_importing">Se importă garderoba ta existentă… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Garderobă importată ✓</string>
-    <string name="onboarding_drive_import_error">Nu am putut importa automat garderoba ta existentă. Poți încerca din nou sau poți alege singur folderul.</string>
-    <string name="onboarding_drive_import_manual">Alege folderul manual</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Calitatea imaginii</string>
     <string name="settings_image_quality_sub">Echilibrează spațiul și detaliile. Afectează noile fotografii salvate pe Drive.</string>
@@ -955,9 +890,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="ai_progress_timing">%1$ds · de obicei 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Nu s-a putut conecta la Google Drive. Încearcă din nou.</string>
-    <string name="drive_picker_opening">Se deschide Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Alege haine care acoperă atât partea de sus, cât și partea de jos a corpului — fie o piesă integrală (o rochie sau o salopetă), fie o piesă de sus împreună cu una de jos. Astfel, proba generată rămâne complet îmbrăcată.</string>
 

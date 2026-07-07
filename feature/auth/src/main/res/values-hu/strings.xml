@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Jelentkezz be a gardróbod kezeléséhez</string>
     <string name="sign_in_button">Bejelentkezés Google-fiókkal</string>
-    <string name="sign_in_error_not_registered">Bejelentkezési hiba: ez az alkalmazásverzió nem engedélyezett a Google által.</string>
-    <string name="sign_in_error_network">Bejelentkezési hiba: nincs hálózati kapcsolat. Ellenőrizd az internetet.</string>
-    <string name="sign_in_error_generic">Bejelentkezési hiba (kód: %1$d). Kérjük, próbáld újra.</string>
 </resources>

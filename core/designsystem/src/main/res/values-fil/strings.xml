@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">I-dismiss</string>
+    <string name="sign_in_error_not_registered">Hindi nag-sign in: hindi awtorisado ang build ng app na ito sa Google. Kung ikaw ay developer, irehistro ang signing key fingerprint sa Firebase Console.</string>
+    <string name="sign_in_error_network">Hindi nag-sign in: walang network connection. Pakitingnan ang iyong internet at subukan muli.</string>
+    <string name="sign_in_error_generic">Hindi nag-sign in (code %1$d). Pakisubukan muli o makipag-ugnayan sa support.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Mga Outfit Preference</string>
+    <string name="tryon_try_again">Subukan muli</string>
+    <string name="settings_profile_gender">Kasarian / panghalip</string>
+    <string name="settings_profile_year">Taon ng kapanganakan</string>
 </resources>

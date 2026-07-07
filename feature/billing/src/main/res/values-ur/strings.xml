@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API کلید</string>
     <string name="settings_api_key_desc">تمام AI خصوصیات کے لیے کلید درکار ہے۔ aistudio.google.com سے حاصل کریں۔</string>
-    <string name="settings_api_key_label">API کلید</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="confirm_spend_title">AI کریڈٹ استعمال کریں؟</string>
     <string name="confirm_spend_body">اس میں %1$d کریڈٹ استعمال ہوں گے۔</string>

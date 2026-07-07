@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Khác</string>
     <string name="settings_year_of_birth">Năm sinh</string>
     <string name="settings_year_placeholder">vd: 1990</string>
-    <string name="settings_style_prefs">Sở thích phong cách</string>
     <string name="settings_style_placeholder">Mô tả những gì bạn thích mặc, màu sắc yêu thích, thương hiệu…</string>
     <string name="settings_saved">Đã lưu sở thích</string>
     <string name="settings_data_tags_title">Thẻ tủ đồ</string>
@@ -650,7 +649,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="tryon_slot_back">Sau</string>
     <string name="tryon_slot_front">Trước</string>
     <string name="tryon_slot_side">Bên</string>
-    <string name="tryon_try_again">Thử lại</string>
     <string name="tryon_use_outfit">Dùng trang phục</string>
     <string name="tryon_view_source_outfit">Xem trang phục</string>
     <string name="wardrobe_create_style">Tạo trang phục</string>
@@ -741,8 +739,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_more_advanced_subtitle">Mức dùng &amp; chi phí AI · khóa API · tùy chọn nâng cao</string>
     <string name="settings_more_about">Giới thiệu LibreLookAI</string>
     <string name="settings_profile_edit_title">Sửa hồ sơ</string>
-    <string name="settings_profile_gender">Giới tính / đại từ</string>
-    <string name="settings_profile_year">Năm sinh</string>
     <string name="settings_profile_ai_considerations">Điều AI nên cân nhắc</string>
     <string name="settings_advanced_title">Nâng cao</string>
     <string name="settings_section_advanced_fix">Sửa lỗi của AI</string>
@@ -773,32 +769,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="composer_tags_hint">Chọn những thuộc tính trang phục mà AI cân nhắc. Ít chi tiết hơn = gợi ý nhanh hơn, rẻ hơn và tập trung hơn.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Bỏ qua</string>
-    <string name="onboarding_next">Tiếp</string>
-    <string name="onboarding_back">Quay lại</string>
-    <string name="onboarding_welcome_title">Chào mừng đến với LibreLookAI</string>
-    <string name="onboarding_welcome_body">Nhà tạo mẫu AI cho tủ đồ bạn đã có. Chụp ảnh quần áo, nhận gợi ý trang phục, thử chúng và sắp xếp hành lý cho chuyến đi — tất cả riêng tư trong Google Drive của bạn.</string>
-    <string name="onboarding_wardrobe_title">Tủ đồ kỹ thuật số của bạn</string>
-    <string name="onboarding_wardrobe_body">Chụp ảnh mỗi món một lần. AI xóa nền và gắn thẻ loại, màu sắc, chất liệu và hơn thế, để mọi thứ luôn có thể tìm kiếm.</string>
-    <string name="onboarding_outfits_title">Gợi ý trang phục bằng AI</string>
-    <string name="onboarding_outfits_body">Nhận gợi ý trang phục phù hợp với thời tiết, dịp và gu của bạn — chỉ dựng từ quần áo bạn thực sự có.</string>
-    <string name="onboarding_tryon_title">Thử trang phục lên chính bạn</string>
-    <string name="onboarding_tryon_body">Thêm ảnh của bạn và xem bất kỳ trang phục nào trên người trước khi mặc. Chạm nút giữa bất cứ lúc nào để bắt đầu thử đồ.</string>
-    <string name="onboarding_travel_title">Sắp đồ cho mọi chuyến đi</string>
-    <string name="onboarding_travel_body">Cho trình lập kế hoạch du lịch biết bạn đi đâu và trong bao lâu. Nó dựng tủ đồ capsule theo từng ngày từ tủ của bạn.</string>
-    <string name="onboarding_shopping_title">Mua sắm thông minh hơn</string>
-    <string name="onboarding_shopping_body">Lưu những món bạn đang cân nhắc và để trợ lý mua sắm kiểm tra xem chúng có hợp với đồ bạn đã có — và lấp đầy những khoảng trống thực sự.</string>
-    <string name="onboarding_profile_title">Cho chúng tôi biết phong cách của bạn</string>
-    <string name="onboarding_profile_body">Điều này giúp AI điều chỉnh mọi gợi ý cho bạn. Bạn có thể thay đổi bất cứ lúc nào trong Cài đặt.</string>
-    <string name="onboarding_photo_title">Thêm ảnh thử đồ</string>
-    <string name="onboarding_photo_body">Ảnh toàn thân, chụp chính diện, cho phép bạn thử trang phục lên người. Tùy chọn — bạn có thể thêm sau.</string>
-    <string name="onboarding_photo_add">Thêm ảnh</string>
-    <string name="onboarding_photo_added">Đã thêm ảnh</string>
-    <string name="onboarding_photo_offline">Kết nối internet để thêm ảnh của bạn.</string>
-    <string name="onboarding_closet_title">Dựng tủ đồ của bạn</string>
-    <string name="onboarding_closet_body">Tủ đầu tiên của bạn đã sẵn sàng. Thêm vài món để nhận gợi ý trang phục đầu tiên — hoặc khám phá trước rồi thêm bất cứ khi nào bạn muốn.</string>
     <string name="onboarding_closet_add_items">Thêm quần áo ngay</string>
-    <string name="onboarding_closet_explore">Khám phá ứng dụng</string>
     <string name="onboarding_tour_replay">Xem hướng dẫn</string>
     <string name="onboarding_tour_replay_sub">Phát lại phần giới thiệu chào mừng</string>
 
@@ -807,41 +778,11 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Thêm khóa API Gemini của bạn</string>
-    <string name="onboarding_apikey_body">LibreLookAI chạy trên Google Gemini bằng khóa API của riêng bạn. Khóa chỉ được lưu trên thiết bị này và dùng trực tiếp với Google — không có gì đi qua máy chủ của chúng tôi.</string>
-    <string name="onboarding_apikey_tiers">Khóa miễn phí đã đủ cho việc gắn thẻ và gợi ý trang phục. Thử đồ ảo và xóa nền tạo ra hình ảnh nên cần khóa trả phí có bật thanh toán — Google vẫn chỉ tính phí theo mức bạn thực sự dùng.</string>
-    <string name="onboarding_apikey_get">Lấy khóa API</string>
-    <string name="onboarding_apikey_billing">Bật thanh toán (cho thử đồ)</string>
-    <string name="onboarding_apikey_saved">Đã lưu khóa trên thiết bị này ✓</string>
-    <string name="onboarding_apikey_offline">Kết nối internet để mở Google AI Studio. Bạn vẫn có thể dán khóa mình đã có.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Không thể di chuyển một số mục. Chúng đã được khôi phục.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Kết nối Google Drive của bạn</string>
-    <string name="onboarding_drive_body">LibreLookAI lưu giữ mọi thứ — quần áo, trang phục và ảnh của bạn — trong một thư mục riêng tư trên Google Drive của chính bạn. Không có gì được lưu trên máy chủ của chúng tôi và chỉ bạn mới có thể xem. Đăng nhập bằng Google để tạo tủ đồ của bạn.</string>
-    <string name="onboarding_drive_connect">Đăng nhập bằng Google</string>
-    <string name="onboarding_drive_connected">Đã kết nối Google Drive ✓</string>
-    <string name="onboarding_drive_offline">Kết nối internet để đăng nhập bằng Google.</string>
-    <string name="onboarding_background_title">Cho phép xử lý nền</string>
-    <string name="onboarding_background_body">Nhập ảnh, xóa nền và gắn thẻ quần áo bằng AI có thể mất một chút thời gian. LibreLookAI cần xử lý nền không giới hạn để Android không tắt ứng dụng giữa chừng — điều này nếu không có thể để lại các mục nhập dở, thẻ bị thiếu hoặc tệp bị hỏng.\n\nĐiều này chỉ cho phép ứng dụng hoàn tất công việc bạn đã bắt đầu; nó không tự chạy bất cứ thứ gì.</string>
-    <string name="onboarding_background_allow">Cho phép xử lý nền</string>
-    <string name="onboarding_background_granted">Đã cho phép xử lý nền ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Bật vị trí để xem thời tiết</string>
-    <string name="onboarding_location_body">LibreLookAI sử dụng vị trí gần đúng của bạn để tra cứu thời tiết địa phương, nhờ đó có thể gợi ý trang phục phù hợp với điều kiện trong ngày. Vị trí của bạn được giữ trên thiết bị và chỉ dùng để lấy thông tin thời tiết — không bao giờ được lưu trữ hay chia sẻ. Bạn có thể bỏ qua bước này và bật sau.</string>
-    <string name="onboarding_location_allow">Cho phép truy cập vị trí</string>
-    <string name="onboarding_location_granted">Đã bật vị trí ✓</string>
-    <string name="onboarding_finish_setup_title">Thiết lập của bạn</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Xử lý nền</string>
-    <string name="onboarding_finish_apikey">Khóa API Gemini</string>
-    <string name="onboarding_finish_location">Vị trí cho thời tiết</string>
-    <string name="onboarding_finish_grant">Thiết lập</string>
-    <string name="onboarding_finish_warning">Thiết lập chưa hoàn tất. Các mục được đánh dấu ở trên sẽ không hoạt động cho đến khi bạn hoàn tất — bạn có thể thiết lập tại đây hoặc sau này trong Cài đặt.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Cần khóa API Gemini</string>
     <string name="ai_no_key_message">Tính năng này sử dụng AI Gemini của Google, cần khóa API của riêng bạn. Thêm khóa miễn phí để bắt đầu gắn thẻ quần áo và nhận gợi ý trang phục (thử đồ ảo và xóa nền cần khóa đã bật thanh toán).</string>
@@ -904,12 +845,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Đang tìm tủ quần áo hiện có để nhập…</string>
-    <string name="onboarding_drive_importing">Đang nhập tủ quần áo hiện có của bạn… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Đã nhập tủ quần áo ✓</string>
-    <string name="onboarding_drive_import_error">Chúng tôi không thể tự động nhập tủ quần áo hiện có của bạn. Bạn có thể thử lại hoặc tự chọn thư mục.</string>
-    <string name="onboarding_drive_import_manual">Chọn thư mục thủ công</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Chất lượng ảnh</string>
     <string name="settings_image_quality_sub">Cân bằng dung lượng và chi tiết. Áp dụng cho ảnh mới lưu vào Drive của bạn.</string>
@@ -955,9 +890,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="ai_progress_timing">%1$ds · thường mất 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Không thể kết nối với Google Drive. Hãy thử lại.</string>
-    <string name="drive_picker_opening">Đang mở Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Chọn trang phục che cả phần thân trên và thân dưới — có thể là một món đồ liền thân (váy hoặc jumpsuit) hoặc một áo kết hợp với một quần/váy. Điều này giúp ảnh thử đồ được tạo ra luôn mặc đầy đủ.</string>
 

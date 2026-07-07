@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">ठीक है</string>
     <string name="action_dismiss">खारिज करें</string>
+    <string name="sign_in_error_not_registered">साइन-इन विफल: यह ऐप बिल्ड Google के साथ अधिकृत नहीं है।</string>
+    <string name="sign_in_error_network">साइन-इन विफल: कोई नेटवर्क कनेक्शन नहीं। कृपया इंटरनेट की जांच करें।</string>
+    <string name="sign_in_error_generic">साइन-इन विफल (कोड %1$d)। कृपया पुनः प्रयास करें।</string>
+    <string name="settings_api_key_label">API कुंजी</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">आउटफ़िट प्राथमिकताएं</string>
+    <string name="tryon_try_again">फिर कोशिश करें</string>
+    <string name="settings_profile_gender">लिंग / सर्वनाम</string>
+    <string name="settings_profile_year">जन्म का वर्ष</string>
 </resources>

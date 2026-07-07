@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Accedi per gestire il tuo guardaroba</string>
     <string name="sign_in_button">Accedi con Google</string>
-    <string name="sign_in_error_not_registered">Accesso fallito: questa versione dell\'app non è autorizzata con Google. Se sei uno sviluppatore, registra l\'impronta della chiave di firma nella Console Firebase.</string>
-    <string name="sign_in_error_network">Accesso fallito: nessuna connessione di rete. Controlla la tua connessione internet e riprova.</string>
-    <string name="sign_in_error_generic">Accesso fallito (codice %1$d). Riprova o contatta il supporto.</string>
 </resources>

@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API-Schlüssel</string>
     <string name="settings_api_key_desc">Alle KI-Funktionen (Tagging, Outfit-Vorschläge, Hintergrundentfernung) benötigen einen Gemini API-Schlüssel. Kostenlosen Schlüssel unter aistudio.google.com → „Get API key" erstellen. Der Schlüssel wird nur auf diesem Gerät gespeichert.</string>
-    <string name="settings_api_key_label">API-Schlüssel</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Verbleibende KI-Credits</string>
     <string name="credits_cost_title">Credits pro Aktion</string>
     <string name="credits_action_bg_removal">Hintergrund entfernen</string>

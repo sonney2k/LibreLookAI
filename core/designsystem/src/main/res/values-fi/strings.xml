@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Hylkää</string>
+    <string name="sign_in_error_not_registered">Kirjautuminen epäonnistui: tämä sovellusversio ei ole Googlen valtuuttama. Jos olet kehittäjä, rekisteröi allekirjoitusavaimen sormenjälki Firebase Consolessa.</string>
+    <string name="sign_in_error_network">Kirjautuminen epäonnistui: ei verkkoyhteyttä. Tarkista internet-yhteys ja yritä uudelleen.</string>
+    <string name="sign_in_error_generic">Kirjautuminen epäonnistui (koodi %1$d). Yritä uudelleen tai ota yhteyttä tukeen.</string>
+    <string name="settings_api_key_label">API-avain</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Asusuosikit</string>
+    <string name="tryon_try_again">Yritä uudelleen</string>
+    <string name="settings_profile_gender">Sukupuoli / pronominit</string>
+    <string name="settings_profile_year">Syntymävuosi</string>
 </resources>

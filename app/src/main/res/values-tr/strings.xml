@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Diğer</string>
     <string name="settings_year_of_birth">Doğum Yılı</string>
     <string name="settings_year_placeholder">örn. 1990</string>
-    <string name="settings_style_prefs">Kombin Tercihleri</string>
     <string name="settings_style_placeholder">Neler giymeyi sevdiğinizi, giyindiğiniz ortamları, favori renklerinizi, markalarınızı veya kombin önerilerinizi kişiselleştirmeye yardımcı olacak her şeyi tanımlayın…</string>
     <string name="settings_saved">Tercihler kaydedildi</string>
     <string name="settings_data_tags_title">Gardırop Etiketleri</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Öge ekle</string>
     <string name="tryon_add_items_title">Gardırop ögeleri ekle</string>
     <string name="tryon_generate">Deneme oluştur</string>
-    <string name="tryon_try_again">Tekrar dene</string>
     <string name="tryon_change_items">Ögeleri değiştir</string>
     <string name="tryon_save_to_drive">Kaydet</string>
     <string name="tryon_saved_to_drive">Kaydedildi</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">AI kullanımı ve maliyetleri · API anahtarı · gelişmiş seçenekler</string>
     <string name="settings_more_about">LibreLookAI hakkında</string>
     <string name="settings_profile_edit_title">Profili düzenle</string>
-    <string name="settings_profile_gender">Cinsiyet / zamirler</string>
-    <string name="settings_profile_year">Doğum yılı</string>
     <string name="settings_profile_ai_considerations">AI neleri dikkate almalı</string>
     <string name="settings_advanced_title">Gelişmiş</string>
     <string name="settings_section_advanced_fix">AI hatalarını düzelt</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Yapay zekânın hangi giysi özelliklerini dikkate alacağını seç. Daha az detay = daha hızlı, daha ucuz ve daha odaklı öneriler.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Atla</string>
-    <string name="onboarding_next">İleri</string>
-    <string name="onboarding_back">Geri</string>
-    <string name="onboarding_welcome_title">LibreLookAI\'ye hoş geldiniz</string>
-    <string name="onboarding_welcome_body">Zaten sahip olduğunuz gardırop için yapay zekâ stilistiniz. Kıyafetlerinizi çekin, kombin fikirleri alın, deneyin ve seyahatler için bavul hazırlayın — hepsi kendi Google Drive\'ınızda gizli.</string>
-    <string name="onboarding_wardrobe_title">Dijital gardırobunuz</string>
-    <string name="onboarding_wardrobe_body">Her parçayı bir kez fotoğraflayın. Yapay zekâ arka planı kaldırır ve türü, rengi, kumaşı ve daha fazlasını etiketler, böylece her şey aranabilir kalır.</string>
-    <string name="onboarding_outfits_title">Yapay zekâ kombin fikirleri</string>
-    <string name="onboarding_outfits_body">Havaya, ortama ve zevkinize göre uyarlanmış kombin önerileri alın — yalnızca gerçekten sahip olduğunuz kıyafetlerden oluşturulur.</string>
-    <string name="onboarding_tryon_title">Kombinleri üzerinizde deneyin</string>
-    <string name="onboarding_tryon_body">Kendi fotoğrafınızı ekleyin ve giymeden önce herhangi bir kombini üzerinizde görün. Denemeyi başlatmak için istediğiniz zaman orta düğmeye dokunun.</string>
-    <string name="onboarding_travel_title">Her yolculuk için bavul hazırlayın</string>
-    <string name="onboarding_travel_body">Seyahat planlayıcısına nereye ve ne kadar süreyle gittiğinizi söyleyin. Dolabınızdan gün gün bir kapsül gardırop oluşturur.</string>
-    <string name="onboarding_shopping_title">Daha akıllı alışveriş</string>
-    <string name="onboarding_shopping_body">Düşündüğünüz parçaları kaydedin ve alışveriş yardımcısı, sahip olduklarınızla uyumlu olup olmadıklarını — ve gerçek boşlukları doldurup doldurmadıklarını kontrol etsin.</string>
-    <string name="onboarding_profile_title">Bize tarzınızı anlatın</string>
-    <string name="onboarding_profile_body">Bu, yapay zekânın her öneriyi size göre uyarlamasına yardımcı olur. İstediğiniz zaman Ayarlar\'dan değiştirebilirsiniz.</string>
-    <string name="onboarding_photo_title">Bir deneme fotoğrafı ekleyin</string>
-    <string name="onboarding_photo_body">Önden çekilmiş tam boy bir fotoğraf, kombinleri üzerinizde denemenizi sağlar. İsteğe bağlı — daha sonra ekleyebilirsiniz.</string>
-    <string name="onboarding_photo_add">Fotoğraf ekle</string>
-    <string name="onboarding_photo_added">Fotoğraf eklendi</string>
-    <string name="onboarding_photo_offline">Fotoğrafınızı eklemek için internete bağlanın.</string>
-    <string name="onboarding_closet_title">Dolabınızı oluşturun</string>
-    <string name="onboarding_closet_body">İlk dolabınız hazır. İlk kombin fikirlerinizi almak için birkaç kıyafet ekleyin — ya da önce keşfedin ve istediğiniz zaman ekleyin.</string>
     <string name="onboarding_closet_add_items">Şimdi kıyafet ekle</string>
-    <string name="onboarding_closet_explore">Uygulamayı keşfet</string>
     <string name="onboarding_tour_replay">Turu başlat</string>
     <string name="onboarding_tour_replay_sub">Karşılama turunu yeniden oynat</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Gemini API anahtarınızı ekleyin</string>
-    <string name="onboarding_apikey_body">LibreLookAI, kendi API anahtarınızla Google Gemini üzerinde çalışır. Anahtar yalnızca bu cihazda saklanır ve doğrudan Google ile kullanılır — hiçbir şey sunucularımızdan geçmez.</string>
-    <string name="onboarding_apikey_tiers">Ücretsiz anahtar etiketleme ve kıyafet önerilerini zaten karşılar. Sanal deneme ve arka plan kaldırma görsel oluşturur ve faturalandırması etkin, ücretli bir anahtar gerektirir — Google yine yalnızca gerçek kullanımınız kadar ücret alır.</string>
-    <string name="onboarding_apikey_get">API anahtarı al</string>
-    <string name="onboarding_apikey_billing">Faturalandırmayı etkinleştir (deneme için)</string>
-    <string name="onboarding_apikey_saved">Anahtar bu cihaza kaydedildi ✓</string>
-    <string name="onboarding_apikey_offline">Google AI Studio\'yu açmak için internete bağlanın. Zaten sahip olduğunuz bir anahtarı yine de yapıştırabilirsiniz.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Bazı öğeler taşınamadı. Geri yüklendiler.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Google Drive\'ını bağla</string>
-    <string name="onboarding_drive_body">LibreLookAI her şeyi — kıyafetlerini, kombinlerini ve fotoğraflarını — kendi Google Drive\'ındaki özel bir klasörde saklar. Hiçbir şey sunucularımızda tutulmaz ve yalnızca sen görebilirsin. Gardırobunu oluşturmak için Google ile giriş yap.</string>
-    <string name="onboarding_drive_connect">Google ile giriş yap</string>
-    <string name="onboarding_drive_connected">Google Drive bağlandı ✓</string>
-    <string name="onboarding_drive_offline">Google ile giriş yapmak için internete bağlan.</string>
-    <string name="onboarding_background_title">Arka planda çalışmaya izin ver</string>
-    <string name="onboarding_background_body">Fotoğrafları içe aktarmak, arka planları kaldırmak ve kıyafetleri yapay zekâ ile etiketlemek biraz zaman alabilir. LibreLookAI, Android\'in uygulamayı bir görevin ortasında kapatmaması için sınırsız arka plan işleme iznine ihtiyaç duyar — aksi takdirde yarım içe aktarılmış öğeler, eksik etiketler veya bozuk dosyalar kalabilir.\n\nBu yalnızca uygulamanın başlattığın işi tamamlamasına izin verir; kendi başına hiçbir şey çalıştırmaz.</string>
-    <string name="onboarding_background_allow">Arka planda çalışmaya izin ver</string>
-    <string name="onboarding_background_granted">Arka planda çalışmaya izin verildi ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Hava durumu için konumu etkinleştir</string>
-    <string name="onboarding_location_body">LibreLookAI, günün koşullarına uygun kombinler önerebilmek için yaklaşık konumunuzu kullanarak yerel hava durumunu alır. Konumunuz cihazınızda kalır ve yalnızca hava durumunu almak için kullanılır; asla saklanmaz veya paylaşılmaz. Bunu atlayıp daha sonra etkinleştirebilirsiniz.</string>
-    <string name="onboarding_location_allow">Konum erişimine izin ver</string>
-    <string name="onboarding_location_granted">Konum etkinleştirildi ✓</string>
-    <string name="onboarding_finish_setup_title">Kurulumunuz</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Arka planda işleme</string>
-    <string name="onboarding_finish_apikey">Gemini API anahtarı</string>
-    <string name="onboarding_finish_location">Hava durumu için konum</string>
-    <string name="onboarding_finish_grant">Ayarla</string>
-    <string name="onboarding_finish_warning">Kurulum tamamlanmadı. Yukarıda işaretlenen öğeler, siz tamamlayana kadar çalışmaz; bunları burada veya daha sonra Ayarlar\'da yapabilirsiniz.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Gemini API anahtarı gerekli</string>
     <string name="ai_no_key_message">Bu özellik, kendi API anahtarınızı gerektiren Google\'ın Gemini yapay zekâsını kullanır. Kıyafetleri etiketlemeye ve kombin önerileri almaya başlamak için ücretsiz bir anahtar ekleyin (sanal deneme ve arka plan kaldırma, faturalandırma etkin bir anahtar gerektirir).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">İçe aktarmak için mevcut bir gardırop aranıyor…</string>
-    <string name="onboarding_drive_importing">Mevcut gardırobunuz içe aktarılıyor… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Gardırop içe aktarıldı ✓</string>
-    <string name="onboarding_drive_import_error">Mevcut gardırobunuzu otomatik olarak içe aktaramadık. Tekrar deneyebilir veya klasörü kendiniz seçebilirsiniz.</string>
-    <string name="onboarding_drive_import_manual">Klasörü manuel olarak seç</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Görüntü kalitesi</string>
     <string name="settings_image_quality_sub">Depolama ile ayrıntı arasında denge kurun. Drive\'a kaydedilen yeni fotoğrafları etkiler.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · genellikle 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Google Drive\'a bağlanılamadı. Tekrar deneyin.</string>
-    <string name="drive_picker_opening">Google Drive açılıyor…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Hem vücudun üst hem de alt kısmını örten kıyafetler seç — ya tek parça bir giysi (elbise veya tulum) ya da bir üst ile birlikte bir alt. Böylece oluşturulan deneme tamamen giyinik kalır.</string>
 

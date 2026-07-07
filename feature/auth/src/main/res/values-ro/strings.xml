@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Autentifică-te pentru a-ți gestiona garderoba</string>
     <string name="sign_in_button">Conectare cu Google</string>
-    <string name="sign_in_error_not_registered">Conectare eșuată: aplicația nu este autorizată de Google.</string>
-    <string name="sign_in_error_network">Conectare eșuată: nu există conexiune la internet.</string>
-    <string name="sign_in_error_generic">Conectare eșuată (cod %1$d). Încearcă din nou.</string>
 </resources>

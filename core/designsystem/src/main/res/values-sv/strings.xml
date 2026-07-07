@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Avfärda</string>
+    <string name="sign_in_error_not_registered">Inloggning misslyckades: denna app-version är inte auktoriserad av Google. Om du är utvecklare, registrera signeringsnyckelns fingeravtryck i Firebase Console.</string>
+    <string name="sign_in_error_network">Inloggning misslyckades: ingen nätverksanslutning. Kontrollera din internetanslutning och försök igen.</string>
+    <string name="sign_in_error_generic">Inloggning misslyckades (kod %1$d). Försök igen eller kontakta support.</string>
+    <string name="settings_api_key_label">API-nyckel</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Outfit-preferenser</string>
+    <string name="tryon_try_again">Försök igen</string>
+    <string name="settings_profile_gender">Kön / pronomen</string>
+    <string name="settings_profile_year">Födelseår</string>
 </resources>

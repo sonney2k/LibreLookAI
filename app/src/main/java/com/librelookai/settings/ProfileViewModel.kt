@@ -27,17 +27,7 @@ import com.librelookai.data.session.UserPreferencesRepository
 
 // TryOnSlot moved to :core:model (core/model/…/settings/TryOnSlot.kt), same package.
 
-data class ProfileUiState(
-    val preferences: UserPreferences = UserPreferences(),
-    val isLoading: Boolean = false,
-    val isSaving: Boolean = false,
-    val savedSuccessfully: Boolean = false,
-    val error: String? = null,
-    /** Local absolute path of the cached try-on photo per slot, or null if not set. */
-    val tryOnLocalPaths: Map<TryOnSlot, String> = emptyMap(),
-    /** Set of slots currently uploading a new photo. */
-    val tryOnUploading: Set<TryOnSlot> = emptySet(),
-)
+// ProfileUiState moved to :core:model (core/model/…/settings/ProfileUiState.kt), same package.
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(

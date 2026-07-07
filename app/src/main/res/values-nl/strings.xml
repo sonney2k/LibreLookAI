@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Anders</string>
     <string name="settings_year_of_birth">Geboortejaar</string>
     <string name="settings_year_placeholder">bv. 1990</string>
-    <string name="settings_style_prefs">Outfitvoorkeuren</string>
     <string name="settings_style_placeholder">Beschrijf wat je graag draagt, gelegenheden waarvoor je je kleedt, favoriete kleuren, merken of alles anders dat je outfitaanbevelingen persoonlijker maakt…</string>
     <string name="settings_saved">Voorkeuren opgeslagen</string>
     <string name="settings_data_tags_title">Garderobetags</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Item toevoegen</string>
     <string name="tryon_add_items_title">Garderobe-items toevoegen</string>
     <string name="tryon_generate">Pasbeurt genereren</string>
-    <string name="tryon_try_again">Opnieuw proberen</string>
     <string name="tryon_change_items">Items wijzigen</string>
     <string name="tryon_save_to_drive">Opslaan</string>
     <string name="tryon_saved_to_drive">Opgeslagen</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">AI-gebruik &amp; kosten · API-sleutel · geavanceerde opties</string>
     <string name="settings_more_about">Over LibreLookAI</string>
     <string name="settings_profile_edit_title">Profiel bewerken</string>
-    <string name="settings_profile_gender">Geslacht / voornaamwoorden</string>
-    <string name="settings_profile_year">Geboortejaar</string>
     <string name="settings_profile_ai_considerations">Waar de AI rekening mee moet houden</string>
     <string name="settings_advanced_title">Geavanceerd</string>
     <string name="settings_section_advanced_fix">AI-fouten herstellen</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Kies welke kledingkenmerken de AI meeweegt. Minder details = snellere, goedkopere en gerichtere suggesties.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Overslaan</string>
-    <string name="onboarding_next">Volgende</string>
-    <string name="onboarding_back">Terug</string>
-    <string name="onboarding_welcome_title">Welkom bij LibreLookAI</string>
-    <string name="onboarding_welcome_body">Je AI-stylist voor de garderobe die je al hebt. Fotografeer je kleding, krijg outfit-ideeën, pas ze en pak je koffer voor reizen — allemaal privé in je eigen Google Drive.</string>
-    <string name="onboarding_wardrobe_title">Je digitale garderobe</string>
-    <string name="onboarding_wardrobe_body">Fotografeer elk item één keer. AI verwijdert de achtergrond en labelt type, kleur, materiaal en meer, zodat alles doorzoekbaar blijft.</string>
-    <string name="onboarding_outfits_title">AI-outfitideeën</string>
-    <string name="onboarding_outfits_body">Krijg outfitsuggesties afgestemd op het weer, de gelegenheid en je smaak — alleen samengesteld uit kleding die je echt hebt.</string>
-    <string name="onboarding_tryon_title">Pas outfits op jezelf</string>
-    <string name="onboarding_tryon_body">Voeg een foto van jezelf toe en zie elke outfit op jou voordat je hem draagt. Tik op elk moment op de middelste knop om een pasbeurt te starten.</string>
-    <string name="onboarding_travel_title">Pak in voor elke reis</string>
-    <string name="onboarding_travel_body">Vertel de reisplanner waar je heen gaat en hoe lang. Hij stelt dag voor dag een capsulegarderobe samen uit je kast.</string>
-    <string name="onboarding_shopping_title">Slimmer shoppen</string>
-    <string name="onboarding_shopping_body">Bewaar items die je overweegt en laat de shophulp controleren of ze passen bij wat je al hebt — en echte gaten vullen.</string>
-    <string name="onboarding_profile_title">Vertel ons je stijl</string>
-    <string name="onboarding_profile_body">Dit helpt de AI elke suggestie op jou af te stemmen. Je kunt het altijd wijzigen in Instellingen.</string>
-    <string name="onboarding_photo_title">Voeg een pasfoto toe</string>
-    <string name="onboarding_photo_body">Met een volledige foto van de voorkant kun je outfits op jezelf passen. Optioneel — je kunt hem later toevoegen.</string>
-    <string name="onboarding_photo_add">Foto toevoegen</string>
-    <string name="onboarding_photo_added">Foto toegevoegd</string>
-    <string name="onboarding_photo_offline">Maak verbinding met internet om je foto toe te voegen.</string>
-    <string name="onboarding_closet_title">Bouw je kast op</string>
-    <string name="onboarding_closet_body">Je eerste kast is klaar. Voeg een paar kledingstukken toe voor je eerste outfitideeën — of verken eerst en voeg ze toe wanneer je wilt.</string>
     <string name="onboarding_closet_add_items">Nu kleding toevoegen</string>
-    <string name="onboarding_closet_explore">App verkennen</string>
     <string name="onboarding_tour_replay">Volg de rondleiding</string>
     <string name="onboarding_tour_replay_sub">Bekijk de welkomstrondleiding opnieuw</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Voeg je Gemini API-sleutel toe</string>
-    <string name="onboarding_apikey_body">LibreLookAI draait op Google Gemini met je eigen API-sleutel. Die wordt alleen op dit apparaat opgeslagen en rechtstreeks met Google gebruikt — er gaat niets via onze servers.</string>
-    <string name="onboarding_apikey_tiers">Een gratis sleutel dekt al taggen en outfitsuggesties. Virtueel passen en achtergrond verwijderen genereren afbeeldingen en vereisen een betaalde sleutel met facturering ingeschakeld — Google rekent nog steeds alleen je werkelijke gebruik.</string>
-    <string name="onboarding_apikey_get">Een API-sleutel ophalen</string>
-    <string name="onboarding_apikey_billing">Facturering inschakelen (voor passen)</string>
-    <string name="onboarding_apikey_saved">Sleutel opgeslagen op dit apparaat ✓</string>
-    <string name="onboarding_apikey_offline">Maak verbinding met internet om Google AI Studio te openen. Je kunt een sleutel die je al hebt nog steeds plakken.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Sommige items konden niet worden verplaatst. Ze zijn hersteld.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Verbind je Google Drive</string>
-    <string name="onboarding_drive_body">LibreLookAI bewaart alles — je kleding, outfits en foto\'s — in een privémap in je eigen Google Drive. Er wordt niets op onze servers opgeslagen en alleen jij kunt het zien. Log in met Google om je garderobe aan te maken.</string>
-    <string name="onboarding_drive_connect">Inloggen met Google</string>
-    <string name="onboarding_drive_connected">Google Drive verbonden ✓</string>
-    <string name="onboarding_drive_offline">Maak verbinding met internet om in te loggen met Google.</string>
-    <string name="onboarding_background_title">Achtergrondverwerking toestaan</string>
-    <string name="onboarding_background_body">Foto\'s importeren, achtergronden verwijderen en kleding taggen met AI kan even duren. LibreLookAI heeft onbeperkte achtergrondverwerking nodig zodat Android de app niet halverwege afsluit — wat anders half geïmporteerde items, ontbrekende tags of beschadigde bestanden kan achterlaten.\n\nDit staat de app alleen toe om werk af te maken dat jij hebt gestart; het doet niets uit zichzelf.</string>
-    <string name="onboarding_background_allow">Achtergrondverwerking toestaan</string>
-    <string name="onboarding_background_granted">Achtergrondverwerking toegestaan ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Locatie inschakelen voor weer</string>
-    <string name="onboarding_location_body">LibreLookAI gebruikt je geschatte locatie om het lokale weer op te halen en zo outfits voor te stellen die passen bij het weer van de dag. Je locatie blijft op je apparaat en wordt alleen gebruikt om het weer op te halen — die wordt nooit opgeslagen of gedeeld. Je kunt dit overslaan en later inschakelen.</string>
-    <string name="onboarding_location_allow">Locatietoegang toestaan</string>
-    <string name="onboarding_location_granted">Locatie ingeschakeld ✓</string>
-    <string name="onboarding_finish_setup_title">Jouw instellingen</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Verwerking op de achtergrond</string>
-    <string name="onboarding_finish_apikey">Gemini API-sleutel</string>
-    <string name="onboarding_finish_location">Locatie voor weer</string>
-    <string name="onboarding_finish_grant">Instellen</string>
-    <string name="onboarding_finish_warning">De installatie is nog niet compleet. De hierboven gemarkeerde onderdelen werken pas als je ze afrondt — hier of later bij Instellingen.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Gemini API-sleutel vereist</string>
     <string name="ai_no_key_message">Deze functie gebruikt Google\'s Gemini-AI, die je eigen API-sleutel nodig heeft. Voeg een gratis sleutel toe om kleding te taggen en outfitideeën te krijgen (virtueel passen en achtergrond verwijderen vereisen een sleutel met facturering ingeschakeld).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Er wordt gezocht naar een bestaande garderobe om te importeren…</string>
-    <string name="onboarding_drive_importing">Je bestaande garderobe wordt geïmporteerd… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Garderobe geïmporteerd ✓</string>
-    <string name="onboarding_drive_import_error">We konden je bestaande garderobe niet automatisch importeren. Je kunt het opnieuw proberen of zelf de map kiezen.</string>
-    <string name="onboarding_drive_import_manual">Map handmatig kiezen</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Beeldkwaliteit</string>
     <string name="settings_image_quality_sub">Weeg opslag af tegen detail. Geldt voor nieuwe foto\'s die op je Drive worden opgeslagen.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · gewoonlijk 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Kan geen verbinding maken met Google Drive. Probeer het opnieuw.</string>
-    <string name="drive_picker_opening">Google Drive openen…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Kies kleding die zowel het boven- als het onderlichaam bedekt — een kledingstuk voor het hele lichaam (een jurk of jumpsuit) of een bovenstuk samen met een onderstuk. Zo blijft je gegenereerde pasbeeld volledig gekleed.</string>
 

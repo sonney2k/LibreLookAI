@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Tutup</string>
+    <string name="sign_in_error_not_registered">Log masuk gagal: versi aplikasi ini tidak dibenarkan oleh Google.</string>
+    <string name="sign_in_error_network">Log masuk gagal: tiada sambungan rangkaian. Sila cuba lagi.</string>
+    <string name="sign_in_error_generic">Log masuk gagal (kod %1$d). Sila cuba lagi.</string>
+    <string name="settings_api_key_label">Kunci API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Preferensi Pakaian</string>
+    <string name="tryon_try_again">Cuba lagi</string>
+    <string name="settings_profile_gender">Jantina / kata ganti</string>
+    <string name="settings_profile_year">Tahun lahir</string>
 </resources>

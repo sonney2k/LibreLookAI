@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Συνδεθείτε για να διαχειριστείτε τη ντουλάπα σας</string>
     <string name="sign_in_button">Σύνδεση με Google</string>
-    <string name="sign_in_error_not_registered">Η σύνδεση απέτυχε: αυτή η έκδοση της εφαρμογής δεν είναι εξουσιοδοτημένη από την Google. Εάν είστε προγραμματιστής, καταχωρίστε το αποτύπωμα του κλειδιού υπογραφής στην κονσόλα Firebase.</string>
-    <string name="sign_in_error_network">Η σύνδεση απέτυχε: δεν υπάρχει σύνδεση δικτύου. Παρακαλούμε ελέγξτε το διαδίκτυο και δοκιμάστε ξανά.</string>
-    <string name="sign_in_error_generic">Η σύνδεση απέτυχε (κωδικός %1$d). Παρακαλούμε δοκιμάστε ξανά ή επικοινωνήστε με την υποστήριξη.</string>
 </resources>

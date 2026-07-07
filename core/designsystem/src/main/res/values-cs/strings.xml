@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Zavřít</string>
+    <string name="sign_in_error_not_registered">Přihlášení se nezdařilo: tato verze aplikace není autorizována Googlem. Pokud jste vývojář, zaregistrujte otisk podpisového klíče v konzoli Firebase.</string>
+    <string name="sign_in_error_network">Přihlášení se nezdařilo: žádné připojení k síti. Zkontrolujte prosím své internetové připojení a zkuste to znovu.</string>
+    <string name="sign_in_error_generic">Přihlášení se nezdařilo (kód %1$d). Zkuste to prosím znovu nebo kontaktujte podporu.</string>
+    <string name="settings_api_key_label">API klíč</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Preference outfitů</string>
+    <string name="tryon_try_again">Zkusit znovu</string>
+    <string name="settings_profile_gender">Pohlaví / zájmena</string>
+    <string name="settings_profile_year">Rok narození</string>
 </resources>

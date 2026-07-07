@@ -210,7 +210,10 @@ internal fun AppContent(
                             fontId = profileState.preferences.appFont,
                         ) {
                             OnboardingScreen(
-                                profileViewModel = profileViewModel,
+                                profileState = profileViewModel.state,
+                                onLoadPreferences = profileViewModel::loadPreferences,
+                                onSavePreferences = profileViewModel::savePreferences,
+                                onUploadTryOnPhoto = profileViewModel::uploadTryOnPhoto,
                                 isSignedIn = isSignedIn,
                                 signInErrorCode = authError,
                                 onStartSignIn = {

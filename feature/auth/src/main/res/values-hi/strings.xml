@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">अपना वॉर्डरोब प्रबंधित करने के लिए साइन इन करें</string>
     <string name="sign_in_button">Google के साथ साइन इन करें</string>
-    <string name="sign_in_error_not_registered">साइन-इन विफल: यह ऐप बिल्ड Google के साथ अधिकृत नहीं है।</string>
-    <string name="sign_in_error_network">साइन-इन विफल: कोई नेटवर्क कनेक्शन नहीं। कृपया इंटरनेट की जांच करें।</string>
-    <string name="sign_in_error_generic">साइन-इन विफल (कोड %1$d)। कृपया पुनः प्रयास करें।</string>
 </resources>

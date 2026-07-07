@@ -31,9 +31,9 @@ fun SignInScreen(
 
     val errorMessage = when (signInErrorCode) {
         null -> null
-        10   -> stringResource(R.string.sign_in_error_not_registered)   // DEVELOPER_ERROR
-        7    -> stringResource(R.string.sign_in_error_network)           // NETWORK_ERROR
-        else -> stringResource(R.string.sign_in_error_generic, signInErrorCode)
+        10   -> stringResource(DsR.string.sign_in_error_not_registered)   // DEVELOPER_ERROR
+        7    -> stringResource(DsR.string.sign_in_error_network)           // NETWORK_ERROR
+        else -> stringResource(DsR.string.sign_in_error_generic, signInErrorCode)
     }
 
     Column(

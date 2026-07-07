@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Άλλο</string>
     <string name="settings_year_of_birth">Έτος Γέννησης</string>
     <string name="settings_year_placeholder">π.χ. 1990</string>
-    <string name="settings_style_prefs">Προτιμήσεις Στιλ</string>
     <string name="settings_style_placeholder">Περιγράψτε τι σας αρέσει να φοράτε, τις περιστάσεις, τα αγαπημένα σας χρώματα, μάρκες ή οτιδήποτε βοηθά στην εξατομίκευση των προτάσεων…</string>
     <string name="settings_saved">Οι προτιμήσεις αποθηκεύτηκαν</string>
     <string name="settings_data_tags_title">Ετικέτες Ντουλάπας</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Προσθήκη είδους</string>
     <string name="tryon_add_items_title">Προσθήκη ειδών ντουλάπας</string>
     <string name="tryon_generate">Δημιουργία δοκιμής</string>
-    <string name="tryon_try_again">Δοκιμάστε ξανά</string>
     <string name="tryon_change_items">Αλλαγή ειδών</string>
     <string name="tryon_save_to_drive">Αποθήκευση</string>
     <string name="tryon_saved_to_drive">Αποθηκεύτηκε</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">Χρήση &amp; κόστος AI · κλειδί API · προηγμένες επιλογές</string>
     <string name="settings_more_about">Σχετικά με το LibreLookAI</string>
     <string name="settings_profile_edit_title">Επεξεργασία προφίλ</string>
-    <string name="settings_profile_gender">Φύλο / αντωνυμίες</string>
-    <string name="settings_profile_year">Έτος γέννησης</string>
     <string name="settings_profile_ai_considerations">Τι να λαμβάνει υπόψη το AI</string>
     <string name="settings_advanced_title">Για προχωρημένους</string>
     <string name="settings_section_advanced_fix">Διόρθωση λαθών του AI</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Επίλεξε ποια χαρακτηριστικά των ρούχων λαμβάνει υπόψη η AI. Λιγότερες λεπτομέρειες = ταχύτερες, φθηνότερες και πιο στοχευμένες προτάσεις.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Παράλειψη</string>
-    <string name="onboarding_next">Επόμενο</string>
-    <string name="onboarding_back">Πίσω</string>
-    <string name="onboarding_welcome_title">Καλώς ήρθατε στο LibreLookAI</string>
-    <string name="onboarding_welcome_body">Ο στιλίστας AI για την γκαρνταρόμπα που ήδη έχετε. Φωτογραφίστε τα ρούχα σας, λάβετε ιδέες για σύνολα, δοκιμάστε τα και ετοιμάστε βαλίτσα για ταξίδια — όλα ιδιωτικά στο δικό σας Google Drive.</string>
-    <string name="onboarding_wardrobe_title">Η ψηφιακή σας γκαρνταρόμπα</string>
-    <string name="onboarding_wardrobe_body">Φωτογραφίστε κάθε κομμάτι μία φορά. Το AI αφαιρεί το φόντο και επισημαίνει τύπο, χρώμα, υλικό και άλλα, ώστε όλα να παραμένουν αναζητήσιμα.</string>
-    <string name="onboarding_outfits_title">Ιδέες συνόλων με AI</string>
-    <string name="onboarding_outfits_body">Λάβετε προτάσεις συνόλων προσαρμοσμένες στον καιρό, την περίσταση και το γούστο σας — φτιαγμένες μόνο από ρούχα που πραγματικά έχετε.</string>
-    <string name="onboarding_tryon_title">Δοκιμάστε σύνολα πάνω σας</string>
-    <string name="onboarding_tryon_body">Προσθέστε μια φωτογραφία σας και δείτε οποιοδήποτε σύνολο πάνω σας πριν το φορέσετε. Πατήστε το κεντρικό κουμπί οποτεδήποτε για να ξεκινήσετε δοκιμή.</string>
-    <string name="onboarding_travel_title">Ετοιμάστε βαλίτσα για κάθε ταξίδι</string>
-    <string name="onboarding_travel_body">Πείτε στον σχεδιαστή ταξιδιών πού πάτε και για πόσο. Δημιουργεί μια κάψουλα γκαρνταρόμπας μέρα με τη μέρα από την ντουλάπα σας.</string>
-    <string name="onboarding_shopping_title">Πιο έξυπνες αγορές</string>
-    <string name="onboarding_shopping_body">Αποθηκεύστε όσα κομμάτια σκέφτεστε και αφήστε τον βοηθό αγορών να ελέγξει αν ταιριάζουν με όσα έχετε ήδη — και καλύπτουν πραγματικά κενά.</string>
-    <string name="onboarding_profile_title">Πείτε μας το στιλ σας</string>
-    <string name="onboarding_profile_body">Αυτό βοηθά το AI να προσαρμόζει κάθε πρόταση σε εσάς. Μπορείτε να το αλλάξετε οποτεδήποτε στις Ρυθμίσεις.</string>
-    <string name="onboarding_photo_title">Προσθέστε φωτογραφία δοκιμής</string>
-    <string name="onboarding_photo_body">Μια φωτογραφία ολόσωμη, από μπροστά, σας επιτρέπει να δοκιμάζετε σύνολα πάνω σας. Προαιρετικό — μπορείτε να την προσθέσετε αργότερα.</string>
-    <string name="onboarding_photo_add">Προσθήκη φωτογραφίας</string>
-    <string name="onboarding_photo_added">Η φωτογραφία προστέθηκε</string>
-    <string name="onboarding_photo_offline">Συνδεθείτε στο διαδίκτυο για να προσθέσετε τη φωτογραφία σας.</string>
-    <string name="onboarding_closet_title">Δημιουργήστε την ντουλάπα σας</string>
-    <string name="onboarding_closet_body">Η πρώτη σας ντουλάπα είναι έτοιμη. Προσθέστε μερικά ρούχα για τις πρώτες ιδέες συνόλων — ή εξερευνήστε πρώτα και προσθέστε τα όποτε θέλετε.</string>
     <string name="onboarding_closet_add_items">Προσθήκη ρούχων τώρα</string>
-    <string name="onboarding_closet_explore">Εξερεύνηση της εφαρμογής</string>
     <string name="onboarding_tour_replay">Ξεκινήστε την ξενάγηση</string>
     <string name="onboarding_tour_replay_sub">Αναπαραγωγή της ξενάγησης καλωσορίσματος</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Προσθέστε το κλειδί Gemini API</string>
-    <string name="onboarding_apikey_body">Το LibreLookAI λειτουργεί με το Google Gemini χρησιμοποιώντας το δικό σας κλειδί API. Αποθηκεύεται μόνο σε αυτή τη συσκευή και χρησιμοποιείται απευθείας με την Google — τίποτα δεν περνά από τους διακομιστές μας.</string>
-    <string name="onboarding_apikey_tiers">Ένα δωρεάν κλειδί καλύπτει ήδη τις ετικέτες και τις προτάσεις συνόλων. Η εικονική δοκιμή και η αφαίρεση φόντου δημιουργούν εικόνες και απαιτούν πληρωμένο κλειδί με ενεργοποιημένη χρέωση — η Google χρεώνει και πάλι μόνο ό,τι πραγματικά χρησιμοποιείτε.</string>
-    <string name="onboarding_apikey_get">Λήψη κλειδιού API</string>
-    <string name="onboarding_apikey_billing">Ενεργοποίηση χρέωσης (για τη δοκιμή)</string>
-    <string name="onboarding_apikey_saved">Το κλειδί αποθηκεύτηκε σε αυτή τη συσκευή ✓</string>
-    <string name="onboarding_apikey_offline">Συνδεθείτε στο διαδίκτυο για να ανοίξετε το Google AI Studio. Μπορείτε ακόμη να επικολλήσετε ένα κλειδί που ήδη έχετε.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Δεν ήταν δυνατή η μετακίνηση ορισμένων στοιχείων. Επαναφέρθηκαν.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Σύνδεσε το Google Drive σου</string>
-    <string name="onboarding_drive_body">Το LibreLookAI κρατά τα πάντα — τα ρούχα, τα σύνολα και τις φωτογραφίες σου — σε έναν ιδιωτικό φάκελο στο δικό σου Google Drive. Τίποτα δεν αποθηκεύεται στους διακομιστές μας και μόνο εσύ μπορείς να το δεις. Συνδέσου με το Google για να δημιουργήσεις την γκαρνταρόμπα σου.</string>
-    <string name="onboarding_drive_connect">Σύνδεση με Google</string>
-    <string name="onboarding_drive_connected">Το Google Drive συνδέθηκε ✓</string>
-    <string name="onboarding_drive_offline">Σύνδεσε στο διαδίκτυο για να συνδεθείς με το Google.</string>
-    <string name="onboarding_background_title">Επίτρεψε την επεξεργασία στο παρασκήνιο</string>
-    <string name="onboarding_background_body">Η εισαγωγή φωτογραφιών, η αφαίρεση φόντου και η προσθήκη ετικετών στα ρούχα με AI μπορεί να πάρει λίγη ώρα. Το LibreLookAI χρειάζεται απεριόριστη επεξεργασία στο παρασκήνιο ώστε το Android να μην τερματίσει την εφαρμογή στη μέση μιας εργασίας — κάτι που διαφορετικά θα μπορούσε να αφήσει μισοεισαγμένα αντικείμενα, ετικέτες που λείπουν ή κατεστραμμένα αρχεία.\n\nΑυτό επιτρέπει μόνο στην εφαρμογή να ολοκληρώσει την εργασία που ξεκίνησες· δεν εκτελεί τίποτα μόνη της.</string>
-    <string name="onboarding_background_allow">Επίτρεψε την επεξεργασία στο παρασκήνιο</string>
-    <string name="onboarding_background_granted">Η επεξεργασία στο παρασκήνιο επιτράπηκε ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Ενεργοποίηση τοποθεσίας για τον καιρό</string>
-    <string name="onboarding_location_body">Το LibreLookAI χρησιμοποιεί την κατά προσέγγιση τοποθεσία σου για να βρει τον τοπικό καιρό, ώστε να προτείνει σύνολα κατάλληλα για τις συνθήκες της ημέρας. Η τοποθεσία σου παραμένει στη συσκευή σου και χρησιμοποιείται μόνο για τη λήψη του καιρού — δεν αποθηκεύεται ούτε κοινοποιείται ποτέ. Μπορείς να το παραλείψεις και να το ενεργοποιήσεις αργότερα.</string>
-    <string name="onboarding_location_allow">Να επιτρέπεται η πρόσβαση στην τοποθεσία</string>
-    <string name="onboarding_location_granted">Η τοποθεσία ενεργοποιήθηκε ✓</string>
-    <string name="onboarding_finish_setup_title">Η ρύθμισή σου</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Επεξεργασία στο παρασκήνιο</string>
-    <string name="onboarding_finish_apikey">Κλειδί API Gemini</string>
-    <string name="onboarding_finish_location">Τοποθεσία για τον καιρό</string>
-    <string name="onboarding_finish_grant">Ρύθμιση</string>
-    <string name="onboarding_finish_warning">Η ρύθμιση δεν έχει ολοκληρωθεί. Τα στοιχεία που επισημαίνονται παραπάνω δεν θα λειτουργήσουν μέχρι να τα ολοκληρώσεις — μπορείς να τα ρυθμίσεις εδώ ή αργότερα στις Ρυθμίσεις.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Απαιτείται κλειδί API Gemini</string>
     <string name="ai_no_key_message">Αυτή η λειτουργία χρησιμοποιεί την τεχνητή νοημοσύνη Gemini της Google, που χρειάζεται το δικό σου κλειδί API. Πρόσθεσε ένα δωρεάν κλειδί για να αρχίσεις να προσθέτεις ετικέτες στα ρούχα και να λαμβάνεις ιδέες για σύνολα (η εικονική δοκιμή και η αφαίρεση φόντου χρειάζονται κλειδί με ενεργοποιημένη χρέωση).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Γίνεται αναζήτηση υπάρχουσας γκαρνταρόμπας για εισαγωγή…</string>
-    <string name="onboarding_drive_importing">Εισαγωγή της υπάρχουσας γκαρνταρόμπας σας… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Η γκαρνταρόμπα εισήχθη ✓</string>
-    <string name="onboarding_drive_import_error">Δεν μπορέσαμε να εισαγάγουμε αυτόματα την υπάρχουσα γκαρνταρόμπα σας. Μπορείτε να δοκιμάσετε ξανά ή να επιλέξετε μόνοι σας τον φάκελο.</string>
-    <string name="onboarding_drive_import_manual">Μη αυτόματη επιλογή φακέλου</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Ποιότητα εικόνας</string>
     <string name="settings_image_quality_sub">Ισορροπήστε αποθηκευτικό χώρο και λεπτομέρεια. Αφορά νέες φωτογραφίες στο Drive σας.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · συνήθως 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Δεν ήταν δυνατή η σύνδεση στο Google Drive. Δοκιμάστε ξανά.</string>
-    <string name="drive_picker_opening">Άνοιγμα Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Διάλεξε ρούχα που καλύπτουν τόσο το πάνω όσο και το κάτω μέρος του σώματος — είτε ένα ολόσωμο ρούχο (φόρεμα ή ολόσωμη φόρμα) είτε ένα πάνω μαζί με ένα κάτω. Έτσι η δοκιμή που δημιουργείται παραμένει πλήρως ντυμένη.</string>
 

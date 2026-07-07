@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.librelookai.BuildConfig
+import com.librelookai.core.sync.BuildConfig
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.migrateLegacyInto
 import com.librelookai.service.JobForegroundService

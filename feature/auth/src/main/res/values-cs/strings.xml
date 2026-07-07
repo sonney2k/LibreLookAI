@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Přihlaste se pro správu svého šatníku</string>
     <string name="sign_in_button">Přihlásit se přes Google</string>
-    <string name="sign_in_error_not_registered">Přihlášení se nezdařilo: tato verze aplikace není autorizována Googlem. Pokud jste vývojář, zaregistrujte otisk podpisového klíče v konzoli Firebase.</string>
-    <string name="sign_in_error_network">Přihlášení se nezdařilo: žádné připojení k síti. Zkontrolujte prosím své internetové připojení a zkuste to znovu.</string>
-    <string name="sign_in_error_generic">Přihlášení se nezdařilo (kód %1$d). Zkuste to prosím znovu nebo kontaktujte podporu.</string>
 </resources>

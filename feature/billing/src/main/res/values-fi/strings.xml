@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API-avain</string>
     <string name="settings_api_key_desc">Kaikki tekoälytoiminnot (merkitseminen, asuehdotukset, taustanpoisto) vaativat Gemini API-avaimen. Hanki ilmainen avain osoitteesta aistudio.google.com → \"Get API key\". Avaimesi tallennetaan vain tälle laitteelle.</string>
-    <string name="settings_api_key_label">API-avain</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Jäljellä olevat tekoälykrediitit</string>
     <string name="credits_cost_title">Krediittikustannus toimintoa kohden</string>
     <string name="credits_action_bg_removal">Taustanpoisto</string>

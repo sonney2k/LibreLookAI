@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Klucz API Gemini</string>
     <string name="settings_api_key_desc">Wszystkie funkcje AI (tagowanie, sugestie stylizacji, usuwanie tła) wymagają klucza API Gemini. Pobierz darmowy klucz na aistudio.google.com → „Get API key". Klucz przechowywany tylko na tym urządzeniu.</string>
-    <string name="settings_api_key_label">Klucz API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Pozostałe kredyty AI</string>
     <string name="credits_cost_title">Koszt kredytów za akcję</string>
     <string name="credits_action_bg_removal">Usuwanie tła</string>

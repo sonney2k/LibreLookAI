@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">Aceptar</string>
     <string name="action_dismiss">Descartar</string>
+    <string name="sign_in_error_not_registered">Error al iniciar sesión: esta versión de la app no está autorizada por Google. Si eres desarrollador, registra la huella de la clave de firma en la consola de Firebase.</string>
+    <string name="sign_in_error_network">Error al iniciar sesión: sin conexión a internet. Revisa tu conexión e intenta de nuevo.</string>
+    <string name="sign_in_error_generic">Error al iniciar sesión (código %1$d). Intenta de nuevo o contacta al soporte.</string>
+    <string name="settings_api_key_label">Clave de API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Preferencias de outfits</string>
+    <string name="tryon_try_again">Intentar de nuevo</string>
+    <string name="settings_profile_gender">Género / pronombres</string>
+    <string name="settings_profile_year">Año de nacimiento</string>
 </resources>

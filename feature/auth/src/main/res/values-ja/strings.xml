@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">サインインしてクローゼットを管理</string>
     <string name="sign_in_button">Google でサインイン</string>
-    <string name="sign_in_error_not_registered">サインインに失敗しました: このアプリビルドは Google で認証されていません。開発者の方は、署名キーのフィンガープリントを Firebase Console に登録してください。</string>
-    <string name="sign_in_error_network">サインインに失敗しました: ネットワーク接続がありません。インターネット接続を確認してもう一度お試しください。</string>
-    <string name="sign_in_error_generic">サインインに失敗しました(コード %1$d)。もう一度お試しいただくか、サポートまでお問い合わせください。</string>
 </resources>

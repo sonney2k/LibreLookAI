@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API klíč</string>
     <string name="settings_api_key_desc">Všechny funkce AI (tagování, návrhy outfitů, odstraňování pozadí) vyžadují klíč Gemini API. Získejte bezplatný klíč na aistudio.google.com → \"Get API key\". Váš klíč je uložen pouze v tomto zařízení.</string>
-    <string name="settings_api_key_label">API klíč</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Zbývající AI kredity</string>
     <string name="credits_cost_title">Cena v kreditech za akci</string>
     <string name="credits_action_bg_removal">Odstranění pozadí</string>

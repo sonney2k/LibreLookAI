@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API-nyckel</string>
     <string name="settings_api_key_desc">Alla AI-funktioner (taggning, outfitförslag, bakgrundsborttagning) kräver en Gemini API-nyckel. Skaffa en kostnadsfri nyckel på aistudio.google.com → \"Get API key\". Din nyckel sparas endast på denna enhet.</string>
-    <string name="settings_api_key_label">API-nyckel</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Återstående AI-krediter</string>
     <string name="credits_cost_title">Kreditkostnad per åtgärd</string>
     <string name="credits_action_bg_removal">Bakgrundsborttagning</string>

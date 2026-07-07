@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">ٹھیک ہے</string>
     <string name="action_dismiss">خارج کریں</string>
+    <string name="sign_in_error_not_registered">سائن ان ناکام: یہ ایپ گوگل سے منظور شدہ نہیں ہے۔</string>
+    <string name="sign_in_error_network">سائن ان ناکام: انٹرنیٹ کنکشن نہیں ہے۔</string>
+    <string name="sign_in_error_generic">سائن ان ناکام (کوڈ %1$d)۔ دوبارہ کوشش کریں۔</string>
+    <string name="settings_api_key_label">API کلید</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">ملبوسات کی ترجیحات</string>
+    <string name="tryon_try_again">دوبارہ کوشش کریں</string>
+    <string name="settings_profile_gender">جنس / ضمائر</string>
+    <string name="settings_profile_year">سالِ پیدائش</string>
 </resources>

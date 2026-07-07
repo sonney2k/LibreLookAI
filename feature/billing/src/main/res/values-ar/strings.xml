@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">مفتاح Gemini API</string>
     <string name="settings_api_key_desc">تتطلب جميع ميزات الذكاء الاصطناعي مفتاح Gemini API. احصل على مفتاح مجاني من aistudio.google.com ← \"Get API key\". يتم تخزين مفتاحك على هذا الجهاز فقط.</string>
-    <string name="settings_api_key_label">مفتاح API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">رصيد الذكاء الاصطناعي المتبقي</string>
     <string name="credits_cost_title">تكلفة الرصيد لكل إجراء</string>
     <string name="credits_action_bg_removal">إزالة الخلفية</string>

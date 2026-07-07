@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">سجل الدخول لإدارة خزانة ملابسك</string>
     <string name="sign_in_button">تسجيل الدخول باستخدام Google</string>
-    <string name="sign_in_error_not_registered">فشل تسجيل الدخول: نسخة التطبيق هذه غير مصرح لها من قِبل Google. إذا كنت مطورًا، فقم بتسجيل بصمة مفتاح التوقيع في Firebase Console.</string>
-    <string name="sign_in_error_network">فشل تسجيل الدخول: لا يوجد اتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.</string>
-    <string name="sign_in_error_generic">فشل تسجيل الدخول (كود %1$d). يرجى المحاولة مرة أخرى أو الاتصال بالدعم.</string>
 </resources>

@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">로그인하여 옷장을 관리하세요</string>
     <string name="sign_in_button">Google로 로그인</string>
-    <string name="sign_in_error_not_registered">로그인 실패: 이 앱 빌드는 Google에서 인증되지 않았습니다. 개발자라면 Firebase Console에 서명 키 지문을 등록하세요.</string>
-    <string name="sign_in_error_network">로그인 실패: 네트워크 연결이 없습니다. 인터넷을 확인하고 다시 시도하세요.</string>
-    <string name="sign_in_error_generic">로그인 실패 (코드 %1$d). 다시 시도하거나 지원팀에 문의하세요.</string>
 </resources>

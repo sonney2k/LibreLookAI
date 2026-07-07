@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Verwerfen</string>
+    <string name="sign_in_error_not_registered">Anmeldung fehlgeschlagen: Diese App-Version ist bei Google nicht autorisiert. Wenn Sie Entwickler sind, registrieren Sie den Signaturschlüssel-Fingerabdruck in der Firebase Console.</string>
+    <string name="sign_in_error_network">Anmeldung fehlgeschlagen: Keine Netzwerkverbindung. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
+    <string name="sign_in_error_generic">Anmeldung fehlgeschlagen (Code %1$d). Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.</string>
+    <string name="settings_api_key_label">API-Schlüssel</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Outfit-Präferenzen</string>
+    <string name="tryon_try_again">Erneut versuchen</string>
+    <string name="settings_profile_gender">Geschlecht / Pronomen</string>
+    <string name="settings_profile_year">Geburtsjahr</string>
 </resources>

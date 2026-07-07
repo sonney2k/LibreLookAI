@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.librelookai.BuildConfig
-import com.librelookai.R
+import com.librelookai.feature.onboarding.BuildConfig
+import com.librelookai.feature.onboarding.R
 import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository

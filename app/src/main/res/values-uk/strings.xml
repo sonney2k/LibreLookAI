@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Інша</string>
     <string name="settings_year_of_birth">Рік народження</string>
     <string name="settings_year_placeholder">напр. 1990</string>
-    <string name="settings_style_prefs">Стильові вподобання</string>
     <string name="settings_style_placeholder">Опишіть, що ви любите носити, для яких подій одягаєтесь, улюблені кольори та бренди…</string>
     <string name="settings_saved">Вподобання збережено</string>
     <string name="settings_data_tags_title">Теги гардероба</string>
@@ -650,7 +649,6 @@
     <string name="tryon_slot_back">Ззаду</string>
     <string name="tryon_slot_front">Спереду</string>
     <string name="tryon_slot_side">Збоку</string>
-    <string name="tryon_try_again">Спробувати знову</string>
     <string name="tryon_use_outfit">Використати образ</string>
     <string name="tryon_view_source_outfit">Переглянути образ</string>
     <string name="wardrobe_create_style">Створити образ</string>
@@ -741,8 +739,6 @@
     <string name="settings_more_advanced_subtitle">Використання та витрати ШІ · ключ API · розширені параметри</string>
     <string name="settings_more_about">Про LibreLookAI</string>
     <string name="settings_profile_edit_title">Редагувати профіль</string>
-    <string name="settings_profile_gender">Стать / займенники</string>
-    <string name="settings_profile_year">Рік народження</string>
     <string name="settings_profile_ai_considerations">Що має враховувати ШІ</string>
     <string name="settings_advanced_title">Додатково</string>
     <string name="settings_section_advanced_fix">Виправити помилки ШІ</string>
@@ -773,32 +769,7 @@
     <string name="composer_tags_hint">Обери, які характеристики одягу враховує ШІ. Менше деталей = швидші, дешевші й точніші пропозиції.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Пропустити</string>
-    <string name="onboarding_next">Далі</string>
-    <string name="onboarding_back">Назад</string>
-    <string name="onboarding_welcome_title">Ласкаво просимо до LibreLookAI</string>
-    <string name="onboarding_welcome_body">Ваш ШІ-стиліст для гардероба, який у вас уже є. Фотографуйте одяг, отримуйте ідеї образів, приміряйте їх і збирайтеся в подорожі — усе приватно у вашому Google Drive.</string>
-    <string name="onboarding_wardrobe_title">Ваш цифровий гардероб</string>
-    <string name="onboarding_wardrobe_body">Сфотографуйте кожну річ один раз. ШІ прибирає фон і додає теги: тип, колір, матеріал тощо, щоб усе легко знаходилося.</string>
-    <string name="onboarding_outfits_title">Ідеї образів від ШІ</string>
-    <string name="onboarding_outfits_body">Отримуйте пропозиції образів з урахуванням погоди, нагоди й вашого смаку — лише з одягу, який у вас є.</string>
-    <string name="onboarding_tryon_title">Приміряйте образи на собі</string>
-    <string name="onboarding_tryon_body">Додайте своє фото й дивіться будь-який образ на собі, перш ніж його вдягнути. Будь-коли натисніть центральну кнопку, щоб почати примірку.</string>
-    <string name="onboarding_travel_title">Збирайтеся в будь-яку подорож</string>
-    <string name="onboarding_travel_body">Скажіть планувальнику подорожей, куди й на скільки ви їдете. Він складе капсульний гардероб по днях із вашої шафи.</string>
-    <string name="onboarding_shopping_title">Розумніші покупки</string>
-    <string name="onboarding_shopping_body">Зберігайте речі, які розглядаєте, і помічник із покупок перевірить, чи поєднуються вони з тим, що у вас уже є, і чи заповнюють реальні прогалини.</string>
-    <string name="onboarding_profile_title">Розкажіть про свій стиль</string>
-    <string name="onboarding_profile_body">Це допомагає ШІ підлаштовувати кожну пропозицію під вас. Ви можете змінити це будь-коли в Налаштуваннях.</string>
-    <string name="onboarding_photo_title">Додайте фото для примірки</string>
-    <string name="onboarding_photo_body">Фото на повний зріст спереду дає змогу приміряти образи на собі. Необов\'язково — можна додати пізніше.</string>
-    <string name="onboarding_photo_add">Додати фото</string>
-    <string name="onboarding_photo_added">Фото додано</string>
-    <string name="onboarding_photo_offline">Підключіться до інтернету, щоб додати фото.</string>
-    <string name="onboarding_closet_title">Сформуйте свою шафу</string>
-    <string name="onboarding_closet_body">Ваша перша шафа готова. Додайте кілька речей, щоб отримати перші ідеї образів, або спершу огляньтеся й додайте їх коли захочете.</string>
     <string name="onboarding_closet_add_items">Додати одяг зараз</string>
-    <string name="onboarding_closet_explore">Дослідити застосунок</string>
     <string name="onboarding_tour_replay">Пройти огляд</string>
     <string name="onboarding_tour_replay_sub">Повторити вітальний огляд</string>
 
@@ -807,41 +778,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Додайте свій ключ API Gemini</string>
-    <string name="onboarding_apikey_body">LibreLookAI працює на Google Gemini з вашим власним ключем API. Він зберігається лише на цьому пристрої та використовується безпосередньо з Google — нічого не проходить через наші сервери.</string>
-    <string name="onboarding_apikey_tiers">Безкоштовного ключа вже достатньо для тегування й пропозицій образів. Віртуальна примірка та видалення фону створюють зображення й потребують платного ключа з увімкненим білінгом — Google усе одно стягує плату лише за фактичне використання.</string>
-    <string name="onboarding_apikey_get">Отримати ключ API</string>
-    <string name="onboarding_apikey_billing">Увімкнути білінг (для примірки)</string>
-    <string name="onboarding_apikey_saved">Ключ збережено на цьому пристрої ✓</string>
-    <string name="onboarding_apikey_offline">Підключіться до інтернету, щоб відкрити Google AI Studio. Наявний ключ ви все одно можете вставити.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Не вдалося перемістити деякі елементи. Їх відновлено.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Підключіть свій Google Диск</string>
-    <string name="onboarding_drive_body">LibreLookAI зберігає все — ваш одяг, образи та фотографії — у приватній папці на вашому власному Google Диску. Нічого не зберігається на наших серверах, і лише ви можете це бачити. Увійдіть через Google, щоб створити свій гардероб.</string>
-    <string name="onboarding_drive_connect">Увійти через Google</string>
-    <string name="onboarding_drive_connected">Google Диск підключено ✓</string>
-    <string name="onboarding_drive_offline">Підключіться до інтернету, щоб увійти через Google.</string>
-    <string name="onboarding_background_title">Дозволити фонову обробку</string>
-    <string name="onboarding_background_body">Імпорт фотографій, видалення фону та позначення одягу за допомогою ШІ може зайняти трохи часу. LibreLookAI потрібна необмежена фонова обробка, щоб Android не закрив застосунок посеред завдання — інакше можуть залишитися частково імпортовані речі, відсутні теги або пошкоджені файли.\n\nЦе лише дозволяє застосунку завершити роботу, яку ви розпочали; самостійно він нічого не запускає.</string>
-    <string name="onboarding_background_allow">Дозволити фонову обробку</string>
-    <string name="onboarding_background_granted">Фонову обробку дозволено ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Увімкнути геолокацію для погоди</string>
-    <string name="onboarding_location_body">LibreLookAI використовує ваше приблизне місцезнаходження, щоб дізнатися місцеву погоду й пропонувати образи, що відповідають умовам дня. Ваше місцезнаходження залишається на пристрої та використовується лише для отримання погоди — воно ніколи не зберігається й не передається. Ви можете пропустити цей крок і ввімкнути його пізніше.</string>
-    <string name="onboarding_location_allow">Дозволити доступ до місцезнаходження</string>
-    <string name="onboarding_location_granted">Геолокацію ввімкнено ✓</string>
-    <string name="onboarding_finish_setup_title">Ваше налаштування</string>
-    <string name="onboarding_finish_drive">Google Диск</string>
-    <string name="onboarding_finish_background">Фонова обробка</string>
-    <string name="onboarding_finish_apikey">Ключ API Gemini</string>
-    <string name="onboarding_finish_location">Місцезнаходження для погоди</string>
-    <string name="onboarding_finish_grant">Налаштувати</string>
-    <string name="onboarding_finish_warning">Налаштування не завершено. Позначені вище пункти не працюватимуть, доки ви їх не завершите — налаштуйте їх тут або пізніше в Налаштуваннях.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Потрібен ключ API Gemini</string>
     <string name="ai_no_key_message">Ця функція використовує ШІ Gemini від Google, для якого потрібен ваш власний ключ API. Додайте безкоштовний ключ, щоб позначати одяг і отримувати ідеї образів (віртуальна примірка та видалення фону потребують ключа з увімкненою оплатою).</string>
@@ -904,12 +845,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Пошук наявного гардероба для імпорту…</string>
-    <string name="onboarding_drive_importing">Імпорт вашого наявного гардероба… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Гардероб імпортовано ✓</string>
-    <string name="onboarding_drive_import_error">Не вдалося автоматично імпортувати ваш наявний гардероб. Ви можете повторити спробу або вибрати папку вручну.</string>
-    <string name="onboarding_drive_import_manual">Вибрати папку вручну</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Якість зображення</string>
     <string name="settings_image_quality_sub">Баланс між місцем і деталізацією. Стосується нових фото, що зберігаються на Диску.</string>
@@ -955,9 +890,6 @@
     <string name="ai_progress_timing">%1$ds · зазвичай 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Не вдалося підключитися до Google Drive. Спробуйте ще раз.</string>
-    <string name="drive_picker_opening">Відкриття Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Вибери одяг, що закриває і верхню, і нижню частину тіла — або суцільний предмет (сукню чи комбінезон), або верх разом із низом. Так згенерована примірка залишається повністю одягненою.</string>
 

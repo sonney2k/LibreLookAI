@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Avvis</string>
+    <string name="sign_in_error_not_registered">Innlogging mislyktes: denne app-versjonen er ikke autorisert av Google. Hvis du er utvikler, registrer signeringsnøkkelens fingeravtrykk i Firebase Console.</string>
+    <string name="sign_in_error_network">Innlogging mislyktes: ingen nettverksforbindelse. Sjekk internett og prøv igjen.</string>
+    <string name="sign_in_error_generic">Innlogging mislyktes (kode %1$d). Prøv igjen eller kontakt support.</string>
+    <string name="settings_api_key_label">API-nøkkel</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Antrekkpreferanser</string>
+    <string name="tryon_try_again">Prøv igjen</string>
+    <string name="settings_profile_gender">Kjønn / pronomen</string>
+    <string name="settings_profile_year">Fødselsår</string>
 </resources>

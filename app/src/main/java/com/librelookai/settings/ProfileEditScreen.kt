@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.librelookai.AppScreenHeader
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.AiConsiderationsStrip
 import com.librelookai.settings.UserPreferences
@@ -86,7 +87,7 @@ fun ProfileEditScreen(
             OutlinedTextField(
                 value = style,
                 onValueChange = { style = it },
-                label = { Text(stringResource(R.string.settings_style_prefs)) },
+                label = { Text(stringResource(DsR.string.settings_style_prefs)) },
                 supportingText = { Text(stringResource(R.string.settings_style_prefs_hint)) },
                 minLines = 2,
                 modifier = Modifier.fillMaxWidth(),
@@ -94,14 +95,14 @@ fun ProfileEditScreen(
             OutlinedTextField(
                 value = gender,
                 onValueChange = { gender = it },
-                label = { Text(stringResource(R.string.settings_profile_gender)) },
+                label = { Text(stringResource(DsR.string.settings_profile_gender)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
             OutlinedTextField(
                 value = yearText,
                 onValueChange = { v -> yearText = v.filter { it.isDigit() }.take(4) },
-                label = { Text(stringResource(R.string.settings_profile_year)) },
+                label = { Text(stringResource(DsR.string.settings_profile_year)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),

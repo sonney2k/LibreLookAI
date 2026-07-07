@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Увійдіть, щоб керувати гардеробом</string>
     <string name="sign_in_button">Увійти через Google</string>
-    <string name="sign_in_error_not_registered">Помилка входу: цей додаток не авторизовано Google.</string>
-    <string name="sign_in_error_network">Помилка входу: немає зв’язку з мережею.</string>
-    <string name="sign_in_error_generic">Помилка входу (код %1$d). Спробуйте ще раз.</string>
 </resources>

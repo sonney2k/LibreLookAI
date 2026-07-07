@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Negeren</string>
+    <string name="sign_in_error_not_registered">Aanmelden mislukt: deze app-versie is niet geautoriseerd door Google. Ben je ontwikkelaar? Registreer de signing key fingerprint in Firebase Console.</string>
+    <string name="sign_in_error_network">Aanmelden mislukt: geen netwerkverbinding. Controleer je internet en probeer opnieuw.</string>
+    <string name="sign_in_error_generic">Aanmelden mislukt (code %1$d). Probeer opnieuw of neem contact op met support.</string>
+    <string name="settings_api_key_label">API-sleutel</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Outfitvoorkeuren</string>
+    <string name="tryon_try_again">Opnieuw proberen</string>
+    <string name="settings_profile_gender">Geslacht / voornaamwoorden</string>
+    <string name="settings_profile_year">Geboortejaar</string>
 </resources>

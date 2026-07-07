@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Dismiss</string>
+    <string name="sign_in_error_not_registered">Sign-in failed: this app build is not authorised with Google. If you are a developer, register the signing key fingerprint in Firebase Console.</string>
+    <string name="sign_in_error_network">Sign-in failed: no network connection. Please check your internet and try again.</string>
+    <string name="sign_in_error_generic">Sign-in failed (code %1$d). Please try again or contact support.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Outfit Preferences</string>
+    <string name="tryon_try_again">Try again</string>
+    <string name="settings_profile_gender">Gender / pronouns</string>
+    <string name="settings_profile_year">Year of birth</string>
 </resources>

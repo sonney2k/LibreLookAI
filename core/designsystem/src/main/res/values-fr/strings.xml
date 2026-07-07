@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Ignorer</string>
+    <string name="sign_in_error_not_registered">Échec de la connexion : cette version de l\'app n\'est pas autorisée par Google. Si tu es développeur, enregistre l\'empreinte de la clé de signature dans Firebase Console.</string>
+    <string name="sign_in_error_network">Échec de la connexion : pas de connexion réseau. Vérifie ta connexion Internet et réessaie.</string>
+    <string name="sign_in_error_generic">Échec de la connexion (code %1$d). Réessaie ou contacte le support.</string>
+    <string name="settings_api_key_label">Clé API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Préférences de tenues</string>
+    <string name="tryon_try_again">Réessayer</string>
+    <string name="settings_profile_gender">Genre / pronoms</string>
+    <string name="settings_profile_year">Année de naissance</string>
 </resources>

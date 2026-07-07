@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Egyéb</string>
     <string name="settings_year_of_birth">Születési év</string>
     <string name="settings_year_placeholder">pl. 1990</string>
-    <string name="settings_style_prefs">Öltözködési preferenciák</string>
     <string name="settings_style_placeholder">Írd le, mit szeretsz hordani, milyen alkalmakra öltözöl, kedvenc színeid, márkáid, vagy bármit, ami segít személyre szabni a szettjavaslatokat…</string>
     <string name="settings_saved">Preferenciák elmentve</string>
     <string name="settings_data_tags_title">Gardrób címkék</string>
@@ -650,7 +649,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="tryon_slot_back">Hátulról</string>
     <string name="tryon_slot_front">Elölről</string>
     <string name="tryon_slot_side">Oldalról</string>
-    <string name="tryon_try_again">Próbáld újra</string>
     <string name="tryon_use_outfit">Szett használata</string>
     <string name="tryon_view_source_outfit">Szett megtekintése</string>
     <string name="wardrobe_create_style">Szett létrehozása</string>
@@ -741,8 +739,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_more_advanced_subtitle">MI-használat és költségek · API-kulcs · speciális beállítások</string>
     <string name="settings_more_about">A LibreLookAI névjegye</string>
     <string name="settings_profile_edit_title">Profil szerkesztése</string>
-    <string name="settings_profile_gender">Nem / névmások</string>
-    <string name="settings_profile_year">Születési év</string>
     <string name="settings_profile_ai_considerations">Mit vegyen figyelembe az AI</string>
     <string name="settings_advanced_title">Speciális</string>
     <string name="settings_section_advanced_fix">AI-hibák javítása</string>
@@ -773,32 +769,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="composer_tags_hint">Válaszd ki, mely ruhajellemzőket veszi figyelembe az MI. Kevesebb részlet = gyorsabb, olcsóbb és célzottabb javaslatok.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Kihagyás</string>
-    <string name="onboarding_next">Tovább</string>
-    <string name="onboarding_back">Vissza</string>
-    <string name="onboarding_welcome_title">Üdvözlünk a LibreLookAI-ban</string>
-    <string name="onboarding_welcome_body">A te MI-stylistod a már meglévő ruhatáradhoz. Fotózd le a ruháidat, kapj outfit-ötleteket, próbáld fel őket, és csomagolj az utazásokhoz — mindez privát módon a saját Google Drive-odon.</string>
-    <string name="onboarding_wardrobe_title">A digitális ruhatárad</string>
-    <string name="onboarding_wardrobe_body">Fotózz le minden darabot egyszer. Az MI eltávolítja a hátteret, és címkézi a típust, színt, anyagot és továbbiakat, így minden kereshető marad.</string>
-    <string name="onboarding_outfits_title">MI-outfit-ötletek</string>
-    <string name="onboarding_outfits_body">Kapj outfit-javaslatokat az időjáráshoz, az alkalomhoz és az ízlésedhez igazítva — kizárólag a valóban meglévő ruháidból.</string>
-    <string name="onboarding_tryon_title">Próbáld fel az outfiteket magadon</string>
-    <string name="onboarding_tryon_body">Adj hozzá egy fotót magadról, és lásd bármelyik outfitet magadon, mielőtt felvennéd. Bármikor érintsd meg a középső gombot a felpróbálás indításához.</string>
-    <string name="onboarding_travel_title">Csomagolj bármilyen útra</string>
-    <string name="onboarding_travel_body">Mondd meg az utazástervezőnek, hová és mennyi időre utazol. Napról napra kapszularuhatárt állít össze a szekrényedből.</string>
-    <string name="onboarding_shopping_title">Okosabb vásárlás</string>
-    <string name="onboarding_shopping_body">Mentsd el a fontolgatott darabokat, és a vásárlási segéd ellenőrzi, illenek-e a meglévőkhöz — és betöltenek-e valódi hiányokat.</string>
-    <string name="onboarding_profile_title">Meséld el a stílusod</string>
-    <string name="onboarding_profile_body">Ez segít az MI-nek minden javaslatot rád szabni. Bármikor módosíthatod a Beállításokban.</string>
-    <string name="onboarding_photo_title">Adj hozzá egy felpróbáláshoz való fotót</string>
-    <string name="onboarding_photo_body">Egy szemből készült egész alakos fotóval magadon próbálhatod fel az outfiteket. Opcionális — később is hozzáadhatod.</string>
-    <string name="onboarding_photo_add">Fotó hozzáadása</string>
-    <string name="onboarding_photo_added">Fotó hozzáadva</string>
-    <string name="onboarding_photo_offline">Csatlakozz az internethez a fotó hozzáadásához.</string>
-    <string name="onboarding_closet_title">Építsd fel a szekrényed</string>
-    <string name="onboarding_closet_body">Az első szekrényed kész. Adj hozzá néhány ruhát az első outfit-ötletekhez — vagy előbb nézz körül, és add hozzá őket, amikor szeretnéd.</string>
     <string name="onboarding_closet_add_items">Ruhák hozzáadása most</string>
-    <string name="onboarding_closet_explore">Az alkalmazás felfedezése</string>
     <string name="onboarding_tour_replay">Bemutató indítása</string>
     <string name="onboarding_tour_replay_sub">Az üdvözlő bemutató újrajátszása</string>
 
@@ -807,41 +778,11 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Adja meg a Gemini API-kulcsát</string>
-    <string name="onboarding_apikey_body">A LibreLookAI a Google Gemini szolgáltatáson fut a saját API-kulcsával. Csak ezen az eszközön tárolódik, és közvetlenül a Google-lel használjuk — semmi sem halad át a szervereinken.</string>
-    <string name="onboarding_apikey_tiers">Egy ingyenes kulcs már fedezi a címkézést és az outfitjavaslatokat. A virtuális felpróbálás és a háttér eltávolítása képeket generál, ezekhez számlázással engedélyezett, fizetős kulcs kell — a Google továbbra is csak a tényleges használatot számlázza.</string>
-    <string name="onboarding_apikey_get">API-kulcs beszerzése</string>
-    <string name="onboarding_apikey_billing">Számlázás engedélyezése (felpróbáláshoz)</string>
-    <string name="onboarding_apikey_saved">Kulcs elmentve ezen az eszközön ✓</string>
-    <string name="onboarding_apikey_offline">Csatlakozzon az internethez a Google AI Studio megnyitásához. Egy már meglévő kulcsot így is beilleszthet.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Néhány elemet nem sikerült áthelyezni. Visszaállítottuk őket.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Csatlakoztasd a Google Drive-ot</string>
-    <string name="onboarding_drive_body">A LibreLookAI mindent — a ruháidat, szettjeidet és fotóidat — egy privát mappában tárol a saját Google Drive-odon. Semmi sem kerül a szervereinkre, és csak te láthatod. Jelentkezz be a Google-lal a ruhatárad létrehozásához.</string>
-    <string name="onboarding_drive_connect">Bejelentkezés a Google-lal</string>
-    <string name="onboarding_drive_connected">Google Drive csatlakoztatva ✓</string>
-    <string name="onboarding_drive_offline">Csatlakozz az internethez a Google-lal való bejelentkezéshez.</string>
-    <string name="onboarding_background_title">Háttérben futás engedélyezése</string>
-    <string name="onboarding_background_body">A fotók importálása, a hátterek eltávolítása és a ruhák AI-jal való címkézése eltarthat egy ideig. A LibreLookAI-nak korlátlan háttérfeldolgozásra van szüksége, hogy az Android ne állítsa le a feladat közben — különben félig importált tételek, hiányzó címkék vagy sérült fájlok maradhatnak.\n\nEz csak azt teszi lehetővé, hogy az alkalmazás befejezze az általad elindított munkát; magától nem futtat semmit.</string>
-    <string name="onboarding_background_allow">Háttérben futás engedélyezése</string>
-    <string name="onboarding_background_granted">Háttérben futás engedélyezve ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Helymeghatározás engedélyezése az időjáráshoz</string>
-    <string name="onboarding_location_body">A LibreLookAI a hozzávetőleges helyzeted alapján kéri le a helyi időjárást, hogy az adott nap körülményeihez illő szetteket javasolhasson. A helyzeted a készülékeden marad, és csak az időjárás lekéréséhez használjuk – soha nem tároljuk és nem osztjuk meg. Ezt kihagyhatod, és később is engedélyezheted.</string>
-    <string name="onboarding_location_allow">Helyhozzáférés engedélyezése</string>
-    <string name="onboarding_location_granted">Helymeghatározás engedélyezve ✓</string>
-    <string name="onboarding_finish_setup_title">A beállításaid</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Háttérben futó feldolgozás</string>
-    <string name="onboarding_finish_apikey">Gemini API-kulcs</string>
-    <string name="onboarding_finish_location">Helymeghatározás az időjáráshoz</string>
-    <string name="onboarding_finish_grant">Beállítás</string>
-    <string name="onboarding_finish_warning">A beállítás nem teljes. A fent jelölt elemek addig nem működnek, amíg be nem fejezed őket – beállíthatod itt vagy később a Beállításokban.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Gemini API-kulcs szükséges</string>
     <string name="ai_no_key_message">Ez a funkció a Google Gemini MI-jét használja, amelyhez saját API-kulcs szükséges. Adj hozzá egy ingyenes kulcsot, hogy elkezdhesd címkézni a ruháidat és szettötleteket kapni (a virtuális próba és a háttér eltávolítása számlázásra engedélyezett kulcsot igényel).</string>
@@ -904,12 +845,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Meglévő gardrób keresése importáláshoz…</string>
-    <string name="onboarding_drive_importing">A meglévő gardróbod importálása… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Gardrób importálva ✓</string>
-    <string name="onboarding_drive_import_error">Nem sikerült automatikusan importálni a meglévő gardróbodat. Megpróbálhatod újra, vagy kiválaszthatod a mappát magad.</string>
-    <string name="onboarding_drive_import_manual">Mappa kézi kiválasztása</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Képminőség</string>
     <string name="settings_image_quality_sub">Egyensúlyozd a tárhelyet és a részletességet. Az új, Drive-ra mentett fotókra vonatkozik.</string>
@@ -955,9 +890,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="ai_progress_timing">%1$ds · általában 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Nem sikerült csatlakozni a Google Drive-hoz. Próbáld újra.</string>
-    <string name="drive_picker_opening">Google Drive megnyitása…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Válassz olyan ruhákat, amelyek a felső- és az alsótestet egyaránt fedik — vagy egy egyrészes darabot (ruhát vagy overált), vagy egy felsőt egy alsóval együtt. Így a létrehozott felpróbálás teljesen felöltözött marad.</string>
 

@@ -188,8 +188,8 @@ fun BuyCreditsScreen(
                             apiKey = it
                             onSaveApiKey(it)
                         },
-                        label = { Text(stringResource(R.string.settings_api_key_label)) },
-                        placeholder = { Text(stringResource(R.string.settings_api_key_placeholder)) },
+                        label = { Text(stringResource(DsR.string.settings_api_key_label)) },
+                        placeholder = { Text(stringResource(DsR.string.settings_api_key_placeholder)) },
                         singleLine = true,
                         visualTransformation = if (apiKeyVisible) VisualTransformation.None
                                                else PasswordVisualTransformation(),

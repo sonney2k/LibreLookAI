@@ -107,7 +107,6 @@
     <string name="settings_gender_other">آخر</string>
     <string name="settings_year_of_birth">سنة الميلاد</string>
     <string name="settings_year_placeholder">مثال: 1990</string>
-    <string name="settings_style_prefs">تفضيلات الأطقم</string>
     <string name="settings_style_placeholder">صف ما تحب ارتداءه، والمناسبات التي ترتدي الملابس لها، وألوانك المفضلة، وعلاماتك التجارية، أو أي شيء آخر يساعد في تخصيص توصيات الأطقم الخاصة بك…</string>
     <string name="settings_saved">تم حفظ التفضيلات</string>
     <string name="settings_data_tags_title">وسوم الخزانة</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">إضافة صنف</string>
     <string name="tryon_add_items_title">إضافة أصناف الخزانة</string>
     <string name="tryon_generate">توليد تجربة</string>
-    <string name="tryon_try_again">المحاولة مرة أخرى</string>
     <string name="tryon_change_items">تغيير الأصناف</string>
     <string name="tryon_save_to_drive">حفظ</string>
     <string name="tryon_saved_to_drive">تم الحفظ</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">استخدام وتكاليف الذكاء الاصطناعي · مفتاح API · خيارات متقدمة</string>
     <string name="settings_more_about">حول LibreLookAI</string>
     <string name="settings_profile_edit_title">تعديل الملف الشخصي</string>
-    <string name="settings_profile_gender">الجنس / الضمائر</string>
-    <string name="settings_profile_year">سنة الميلاد</string>
     <string name="settings_profile_ai_considerations">ما الذي يجب أن يأخذه الذكاء الاصطناعي بالحسبان</string>
     <string name="settings_advanced_title">متقدم</string>
     <string name="settings_section_advanced_fix">إصلاح أخطاء الذكاء الاصطناعي</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">اختر سمات الملابس التي يراعيها الذكاء الاصطناعي. تفاصيل أقل = اقتراحات أسرع وأرخص وأكثر تركيزًا.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">تخطٍّ</string>
-    <string name="onboarding_next">التالي</string>
-    <string name="onboarding_back">رجوع</string>
-    <string name="onboarding_welcome_title">مرحبًا بك في LibreLookAI</string>
-    <string name="onboarding_welcome_body">مصمم أزيائك بالذكاء الاصطناعي للخزانة التي تملكها بالفعل. صوّر ملابسك، واحصل على أفكار إطلالات، وجرّبها، وجهّز حقيبتك للسفر — كل ذلك بخصوصية في Google Drive الخاص بك.</string>
-    <string name="onboarding_wardrobe_title">خزانتك الرقمية</string>
-    <string name="onboarding_wardrobe_body">صوّر كل قطعة مرة واحدة. يزيل الذكاء الاصطناعي الخلفية ويصنّف النوع واللون والخامة والمزيد، ليبقى كل شيء قابلاً للبحث.</string>
-    <string name="onboarding_outfits_title">أفكار إطلالات بالذكاء الاصطناعي</string>
-    <string name="onboarding_outfits_body">احصل على اقتراحات إطلالات مصممة حسب الطقس والمناسبة وذوقك — مبنية فقط من الملابس التي تملكها فعلاً.</string>
-    <string name="onboarding_tryon_title">جرّب الإطلالات على نفسك</string>
-    <string name="onboarding_tryon_body">أضف صورة لنفسك وشاهد أي إطلالة عليك قبل ارتدائها. اضغط على الزر الأوسط في أي وقت لبدء التجربة.</string>
-    <string name="onboarding_travel_title">جهّز حقيبتك لأي رحلة</string>
-    <string name="onboarding_travel_body">أخبر مخطط الرحلات إلى أين تذهب ولكم من الوقت. سيُنشئ خزانة كبسولة يومًا بيوم من خزانتك.</string>
-    <string name="onboarding_shopping_title">تسوق أذكى</string>
-    <string name="onboarding_shopping_body">احفظ القطع التي تفكر فيها ودع مساعد التسوق يتحقق مما إذا كانت تتناسب مع ما تملكه — وتسد فجوات حقيقية.</string>
-    <string name="onboarding_profile_title">أخبرنا عن أسلوبك</string>
-    <string name="onboarding_profile_body">يساعد ذلك الذكاء الاصطناعي على تخصيص كل اقتراح لك. يمكنك تغييره في أي وقت من الإعدادات.</string>
-    <string name="onboarding_photo_title">أضف صورة للتجربة</string>
-    <string name="onboarding_photo_body">صورة كاملة للجسم من الأمام تتيح لك تجربة الإطلالات على نفسك. اختياري — يمكنك إضافتها لاحقًا.</string>
-    <string name="onboarding_photo_add">إضافة صورة</string>
-    <string name="onboarding_photo_added">تمت إضافة الصورة</string>
-    <string name="onboarding_photo_offline">اتصل بالإنترنت لإضافة صورتك.</string>
-    <string name="onboarding_closet_title">أنشئ خزانتك</string>
-    <string name="onboarding_closet_body">خزانتك الأولى جاهزة. أضف بعض الملابس للحصول على أول أفكار الإطلالات — أو استكشف أولاً وأضفها متى شئت.</string>
     <string name="onboarding_closet_add_items">أضف ملابس الآن</string>
-    <string name="onboarding_closet_explore">استكشف التطبيق</string>
     <string name="onboarding_tour_replay">ابدأ الجولة</string>
     <string name="onboarding_tour_replay_sub">إعادة تشغيل جولة الترحيب</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">أضف مفتاح Gemini API</string>
-    <string name="onboarding_apikey_body">يعمل LibreLookAI على Google Gemini باستخدام مفتاح API الخاص بك. يُخزَّن على هذا الجهاز فقط ويُستخدم مباشرة مع Google — لا يمر أي شيء عبر خوادمنا.</string>
-    <string name="onboarding_apikey_tiers">المفتاح المجاني يكفي للوسم واقتراحات الإطلالات. أما التجربة الافتراضية وإزالة الخلفية فتولّدان صورًا وتتطلبان مفتاحًا مدفوعًا مع تفعيل الفوترة — وتظل Google تحاسبك على ما تستخدمه فعليًا فقط.</string>
-    <string name="onboarding_apikey_get">الحصول على مفتاح API</string>
-    <string name="onboarding_apikey_billing">تفعيل الفوترة (للتجربة الافتراضية)</string>
-    <string name="onboarding_apikey_saved">تم حفظ المفتاح على هذا الجهاز ✓</string>
-    <string name="onboarding_apikey_offline">اتصل بالإنترنت لفتح Google AI Studio. لا يزال بإمكانك لصق مفتاح لديك بالفعل.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">تعذّر نقل بعض العناصر. تمت استعادتها.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">اربط حساب Google Drive الخاص بك</string>
-    <string name="onboarding_drive_body">يحفظ LibreLookAI كل شيء — ملابسك وإطلالاتك وصورك — في مجلد خاص داخل حساب Google Drive الخاص بك. لا يُخزَّن أي شيء على خوادمنا، وأنت وحدك من يمكنه رؤيته. سجّل الدخول بحساب Google لإنشاء خزانة ملابسك.</string>
-    <string name="onboarding_drive_connect">تسجيل الدخول بحساب Google</string>
-    <string name="onboarding_drive_connected">تم ربط Google Drive ✓</string>
-    <string name="onboarding_drive_offline">اتصل بالإنترنت لتسجيل الدخول بحساب Google.</string>
-    <string name="onboarding_background_title">السماح بالمعالجة في الخلفية</string>
-    <string name="onboarding_background_body">قد يستغرق استيراد الصور وإزالة الخلفيات ووسم الملابس بالذكاء الاصطناعي بعض الوقت. يحتاج LibreLookAI إلى معالجة غير مقيّدة في الخلفية حتى لا يوقفه Android في منتصف المهمة — وهو ما قد يترك عناصر مستوردة جزئيًا أو وسومًا مفقودة أو ملفات تالفة.\n\nهذا يسمح للتطبيق فقط بإكمال العمل الذي بدأته؛ ولا يشغّل أي شيء من تلقاء نفسه.</string>
-    <string name="onboarding_background_allow">السماح بالمعالجة في الخلفية</string>
-    <string name="onboarding_background_granted">تم السماح بالمعالجة في الخلفية ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">تفعيل الموقع لمعرفة الطقس</string>
-    <string name="onboarding_location_body">يستخدم LibreLookAI موقعك التقريبي لمعرفة الطقس المحلي، حتى يتمكن من اقتراح ملابس تناسب ظروف اليوم. يبقى موقعك على جهازك ويُستخدم فقط لجلب الطقس — ولا يتم تخزينه أو مشاركته أبدًا. يمكنك تخطّي هذه الخطوة وتفعيلها لاحقًا.</string>
-    <string name="onboarding_location_allow">السماح بالوصول إلى الموقع</string>
-    <string name="onboarding_location_granted">تم تفعيل الموقع ✓</string>
-    <string name="onboarding_finish_setup_title">إعدادك</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">المعالجة في الخلفية</string>
-    <string name="onboarding_finish_apikey">مفتاح Gemini API</string>
-    <string name="onboarding_finish_location">الموقع لمعرفة الطقس</string>
-    <string name="onboarding_finish_grant">إعداد</string>
-    <string name="onboarding_finish_warning">الإعداد غير مكتمل. العناصر المميَّزة أعلاه لن تعمل حتى تُكملها — يمكنك إعدادها هنا أو لاحقًا في الإعدادات.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">مطلوب مفتاح Gemini API</string>
     <string name="ai_no_key_message">تستخدم هذه الميزة الذكاء الاصطناعي Gemini من Google، الذي يتطلب مفتاح API خاصًا بك. أضِف مفتاحًا مجانيًا لبدء وسم الملابس والحصول على أفكار للإطلالات (يتطلب التجربة الافتراضية وإزالة الخلفية مفتاحًا مُفعَّلًا للفوترة).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">جارٍ البحث عن خزانة ملابس موجودة لاستيرادها…</string>
-    <string name="onboarding_drive_importing">جارٍ استيراد خزانة ملابسك الحالية… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">تم استيراد خزانة الملابس ✓</string>
-    <string name="onboarding_drive_import_error">تعذّر علينا استيراد خزانة ملابسك الحالية تلقائيًا. يمكنك المحاولة مرة أخرى أو اختيار المجلد بنفسك.</string>
-    <string name="onboarding_drive_import_manual">اختيار المجلد يدويًا</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">جودة الصورة</string>
     <string name="settings_image_quality_sub">وازِن بين المساحة والتفاصيل. يؤثر في الصور الجديدة المحفوظة على Drive.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · عادةً 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">تعذّر الاتصال بـ Google Drive. حاول مرة أخرى.</string>
-    <string name="drive_picker_opening">جارٍ فتح Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">اختر ملابس تغطي الجزأين العلوي والسفلي من الجسم — إما قطعة لكامل الجسم (فستان أو أفرول) أو قطعة علوية مع قطعة سفلية. هذا يُبقي التجربة المُولَّدة مرتدية ملابس كاملة.</string>
 

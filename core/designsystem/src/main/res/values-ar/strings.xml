@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">موافق</string>
     <string name="action_dismiss">تجاهل</string>
+    <string name="sign_in_error_not_registered">فشل تسجيل الدخول: نسخة التطبيق هذه غير مصرح لها من قِبل Google. إذا كنت مطورًا، فقم بتسجيل بصمة مفتاح التوقيع في Firebase Console.</string>
+    <string name="sign_in_error_network">فشل تسجيل الدخول: لا يوجد اتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.</string>
+    <string name="sign_in_error_generic">فشل تسجيل الدخول (كود %1$d). يرجى المحاولة مرة أخرى أو الاتصال بالدعم.</string>
+    <string name="settings_api_key_label">مفتاح API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">تفضيلات الأطقم</string>
+    <string name="tryon_try_again">المحاولة مرة أخرى</string>
+    <string name="settings_profile_gender">الجنس / الضمائر</string>
+    <string name="settings_profile_year">سنة الميلاد</string>
 </resources>

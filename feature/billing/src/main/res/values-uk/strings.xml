@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Ключ Gemini API</string>
     <string name="settings_api_key_desc">Для функцій ШІ потрібен ключ Gemini API. Отримайте безкоштовно на aistudio.google.com.</string>
-    <string name="settings_api_key_label">Ключ API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="confirm_spend_title">Використати AI-кредити?</string>
     <string name="confirm_spend_body">Це використає %1$d кредитів.</string>

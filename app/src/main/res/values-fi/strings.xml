@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Muu</string>
     <string name="settings_year_of_birth">Syntymävuosi</string>
     <string name="settings_year_placeholder">esim. 1990</string>
-    <string name="settings_style_prefs">Asusuosikit</string>
     <string name="settings_style_placeholder">Kuvaile mitä mielelläsi pukeudut, tilaisuuksia, joihin pukeudut, suosikkivärejäsi, brändejäsi tai mitä tahansa muuta, mikä auttaa personoimaan asusuosituksia…</string>
     <string name="settings_saved">Asetukset tallennettu</string>
     <string name="settings_data_tags_title">Vaatekaappitunnisteet</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Lisää vaate</string>
     <string name="tryon_add_items_title">Lisää vaatekaapin vaatteita</string>
     <string name="tryon_generate">Luo sovitus</string>
-    <string name="tryon_try_again">Yritä uudelleen</string>
     <string name="tryon_change_items">Vaihda vaatteet</string>
     <string name="tryon_save_to_drive">Tallenna</string>
     <string name="tryon_saved_to_drive">Tallennettu</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">Tekoälyn käyttö &amp; kustannukset · API-avain · lisäasetukset</string>
     <string name="settings_more_about">Tietoja LibreLookAI:sta</string>
     <string name="settings_profile_edit_title">Muokkaa profiilia</string>
-    <string name="settings_profile_gender">Sukupuoli / pronominit</string>
-    <string name="settings_profile_year">Syntymävuosi</string>
     <string name="settings_profile_ai_considerations">Mitä tekoälyn tulee huomioida</string>
     <string name="settings_advanced_title">Lisäasetukset</string>
     <string name="settings_section_advanced_fix">Korjaa tekoälyn virheet</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Valitse, mitä vaatteiden ominaisuuksia tekoäly painottaa. Vähemmän yksityiskohtia = nopeampia, edullisempia ja tarkempia ehdotuksia.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Ohita</string>
-    <string name="onboarding_next">Seuraava</string>
-    <string name="onboarding_back">Takaisin</string>
-    <string name="onboarding_welcome_title">Tervetuloa LibreLookAI:hin</string>
-    <string name="onboarding_welcome_body">Tekoälystylistisi vaatekaapille, joka sinulla jo on. Kuvaa vaatteesi, saa asukokonaisuusideoita, sovita niitä ja pakkaa matkoja varten — kaikki yksityisesti omassa Google Drivessasi.</string>
-    <string name="onboarding_wardrobe_title">Digitaalinen vaatekaappisi</string>
-    <string name="onboarding_wardrobe_body">Kuvaa jokainen vaate kerran. Tekoäly poistaa taustan ja merkitsee tyypin, värin, materiaalin ja muuta, joten kaikki pysyy haettavissa.</string>
-    <string name="onboarding_outfits_title">Tekoälyn asuideat</string>
-    <string name="onboarding_outfits_body">Saa asuehdotuksia, jotka on räätälöity sään, tilaisuuden ja makusi mukaan — koottu vain vaatteista, jotka todella omistat.</string>
-    <string name="onboarding_tryon_title">Sovita asuja itsellesi</string>
-    <string name="onboarding_tryon_body">Lisää kuva itsestäsi ja näe mikä tahansa asu päälläsi ennen kuin puet sen. Aloita sovitus milloin tahansa keskimmäisestä painikkeesta.</string>
-    <string name="onboarding_travel_title">Pakkaa mille tahansa matkalle</string>
-    <string name="onboarding_travel_body">Kerro matkasuunnittelijalle, minne ja kuinka pitkäksi aikaa matkustat. Se kokoaa kaapistasi kapselivaatekaapin päivä kerrallaan.</string>
-    <string name="onboarding_shopping_title">Fiksumpaa ostamista</string>
-    <string name="onboarding_shopping_body">Tallenna harkitsemasi tuotteet, ja anna ostosavustajan tarkistaa, sopivatko ne jo omistamiisi — ja täyttävätkö todellisia aukkoja.</string>
-    <string name="onboarding_profile_title">Kerro tyylistäsi</string>
-    <string name="onboarding_profile_body">Tämä auttaa tekoälyä räätälöimään jokaisen ehdotuksen sinulle. Voit muuttaa sitä milloin tahansa Asetuksissa.</string>
-    <string name="onboarding_photo_title">Lisää sovituskuva</string>
-    <string name="onboarding_photo_body">Koko vartalon etukuva antaa sinun sovittaa asuja itsellesi. Valinnainen — voit lisätä sen myöhemmin.</string>
-    <string name="onboarding_photo_add">Lisää kuva</string>
-    <string name="onboarding_photo_added">Kuva lisätty</string>
-    <string name="onboarding_photo_offline">Muodosta internetyhteys lisätäksesi kuvan.</string>
-    <string name="onboarding_closet_title">Rakenna vaatekaappisi</string>
-    <string name="onboarding_closet_body">Ensimmäinen kaappisi on valmis. Lisää muutama vaate saadaksesi ensimmäiset asuideat — tai tutustu ensin ja lisää ne milloin haluat.</string>
     <string name="onboarding_closet_add_items">Lisää vaatteita nyt</string>
-    <string name="onboarding_closet_explore">Tutustu sovellukseen</string>
     <string name="onboarding_tour_replay">Aloita esittely</string>
     <string name="onboarding_tour_replay_sub">Toista tervetuloesittely</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Lisää Gemini API -avaimesi</string>
-    <string name="onboarding_apikey_body">LibreLookAI toimii Google Geminillä omalla API-avaimellasi. Se tallennetaan vain tähän laitteeseen ja sitä käytetään suoraan Googlen kanssa — mikään ei kulje palvelimiemme kautta.</string>
-    <string name="onboarding_apikey_tiers">Ilmainen avain kattaa jo merkinnät ja asukokonaisuusehdotukset. Virtuaalinen sovitus ja taustanpoisto luovat kuvia ja vaativat maksullisen avaimen, jossa laskutus on käytössä — Google veloittaa silti vain todellisesta käytöstä.</string>
-    <string name="onboarding_apikey_get">Hanki API-avain</string>
-    <string name="onboarding_apikey_billing">Ota laskutus käyttöön (sovitusta varten)</string>
-    <string name="onboarding_apikey_saved">Avain tallennettu tähän laitteeseen ✓</string>
-    <string name="onboarding_apikey_offline">Muodosta internetyhteys avataksesi Google AI Studion. Voit silti liittää avaimen, joka sinulla jo on.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Joitakin kohteita ei voitu siirtää. Ne on palautettu.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Yhdistä Google Drive</string>
-    <string name="onboarding_drive_body">LibreLookAI säilyttää kaiken — vaatteesi, asukokonaisuutesi ja kuvasi — yksityisessä kansiossa omassa Google Drivessasi. Mitään ei tallenneta palvelimillemme, ja vain sinä näet sen. Kirjaudu sisään Googlella luodaksesi vaatekaappisi.</string>
-    <string name="onboarding_drive_connect">Kirjaudu Googlella</string>
-    <string name="onboarding_drive_connected">Google Drive yhdistetty ✓</string>
-    <string name="onboarding_drive_offline">Yhdistä internetiin kirjautuaksesi sisään Googlella.</string>
-    <string name="onboarding_background_title">Salli taustakäsittely</string>
-    <string name="onboarding_background_body">Kuvien tuonti, taustojen poisto ja vaatteiden merkitseminen tekoälyllä voi kestää hetken. LibreLookAI tarvitsee rajoittamattoman taustakäsittelyn, jotta Android ei sulje sovellusta kesken tehtävän — mikä voisi muuten jättää puoliksi tuotuja kohteita, puuttuvia merkintöjä tai vioittuneita tiedostoja.\n\nTämä antaa sovelluksen vain saattaa loppuun aloittamasi työn; se ei suorita mitään itsestään.</string>
-    <string name="onboarding_background_allow">Salli taustakäsittely</string>
-    <string name="onboarding_background_granted">Taustakäsittely sallittu ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Ota sijainti käyttöön säätä varten</string>
-    <string name="onboarding_location_body">LibreLookAI käyttää likimääräistä sijaintiasi paikallisen sään hakemiseen ja voi näin ehdottaa asuja, jotka sopivat päivän olosuhteisiin. Sijaintisi pysyy laitteellasi ja sitä käytetään vain sään hakemiseen – sitä ei koskaan tallenneta eikä jaeta. Voit ohittaa tämän ja ottaa sen käyttöön myöhemmin.</string>
-    <string name="onboarding_location_allow">Salli sijainnin käyttö</string>
-    <string name="onboarding_location_granted">Sijainti käytössä ✓</string>
-    <string name="onboarding_finish_setup_title">Asetuksesi</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Taustakäsittely</string>
-    <string name="onboarding_finish_apikey">Gemini-API-avain</string>
-    <string name="onboarding_finish_location">Sijainti säätä varten</string>
-    <string name="onboarding_finish_grant">Määritä</string>
-    <string name="onboarding_finish_warning">Määritykset eivät ole valmiit. Yllä merkityt kohteet eivät toimi ennen kuin viimeistelet ne – voit määrittää ne tässä tai myöhemmin Asetuksissa.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Gemini-API-avain vaaditaan</string>
     <string name="ai_no_key_message">Tämä ominaisuus käyttää Googlen Gemini-tekoälyä, joka tarvitsee oman API-avaimesi. Lisää maksuton avain, niin voit merkitä vaatteita ja saada asukokonaisuusehdotuksia (virtuaalinen sovitus ja taustan poisto vaativat avaimen, jossa laskutus on käytössä).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Etsitään tuotavaa olemassa olevaa vaatekaappia…</string>
-    <string name="onboarding_drive_importing">Tuodaan olemassa olevaa vaatekaappiasi… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Vaatekaappi tuotu ✓</string>
-    <string name="onboarding_drive_import_error">Emme voineet tuoda olemassa olevaa vaatekaappiasi automaattisesti. Voit yrittää uudelleen tai valita kansion itse.</string>
-    <string name="onboarding_drive_import_manual">Valitse kansio manuaalisesti</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Kuvanlaatu</string>
     <string name="settings_image_quality_sub">Tasapainota tallennustila ja yksityiskohdat. Koskee uusia Driveen tallennettuja kuvia.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · yleensä 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Yhteyttä Google Driveen ei voitu muodostaa. Yritä uudelleen.</string>
-    <string name="drive_picker_opening">Avataan Google Drivea…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Valitse vaatteet, jotka peittävät sekä ylä- että alavartalon — joko kokovartalon vaate (mekko tai haalari) tai yläosa yhdessä alaosan kanssa. Näin luotu sovitus pysyy täysin puettuna.</string>
 

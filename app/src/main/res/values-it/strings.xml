@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Altro</string>
     <string name="settings_year_of_birth">Anno di nascita</string>
     <string name="settings_year_placeholder">es. 1990</string>
-    <string name="settings_style_prefs">Preferenze outfit</string>
     <string name="settings_style_placeholder">Descrivi cosa ti piace indossare, le occasioni per cui ti vesti, colori preferiti, marchi o qualsiasi altra cosa che aiuti a personalizzare i suggerimenti di outfit…</string>
     <string name="settings_saved">Preferenze salvate</string>
     <string name="settings_data_tags_title">Etichette guardaroba</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Aggiungi capo</string>
     <string name="tryon_add_items_title">Aggiungi capi dal guardaroba</string>
     <string name="tryon_generate">Genera prova</string>
-    <string name="tryon_try_again">Riprova</string>
     <string name="tryon_change_items">Cambia capi</string>
     <string name="tryon_save_to_drive">Salva</string>
     <string name="tryon_saved_to_drive">Salvato</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">Utilizzo e costi IA · chiave API · opzioni avanzate</string>
     <string name="settings_more_about">Informazioni su LibreLookAI</string>
     <string name="settings_profile_edit_title">Modifica profilo</string>
-    <string name="settings_profile_gender">Genere / pronomi</string>
-    <string name="settings_profile_year">Anno di nascita</string>
     <string name="settings_profile_ai_considerations">Cosa deve considerare l’IA</string>
     <string name="settings_advanced_title">Avanzate</string>
     <string name="settings_section_advanced_fix">Correggi gli errori dell’IA</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Scegli quali attributi dei capi considera l\'IA. Meno dettagli = suggerimenti più rapidi, economici e mirati.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Salta</string>
-    <string name="onboarding_next">Avanti</string>
-    <string name="onboarding_back">Indietro</string>
-    <string name="onboarding_welcome_title">Benvenuto in LibreLookAI</string>
-    <string name="onboarding_welcome_body">Il tuo stylist con IA per il guardaroba che hai già. Fotografa i tuoi capi, ricevi idee di outfit, provali e prepara la valigia per i viaggi — tutto privato nel tuo Google Drive.</string>
-    <string name="onboarding_wardrobe_title">Il tuo guardaroba digitale</string>
-    <string name="onboarding_wardrobe_body">Fotografa ogni capo una volta. L\'IA rimuove lo sfondo ed etichetta tipo, colore, materiale e altro, così tutto resta ricercabile.</string>
-    <string name="onboarding_outfits_title">Idee di outfit con IA</string>
-    <string name="onboarding_outfits_body">Ricevi suggerimenti di outfit adatti al meteo, all\'occasione e al tuo gusto — creati solo con i capi che possiedi davvero.</string>
-    <string name="onboarding_tryon_title">Prova gli outfit su di te</string>
-    <string name="onboarding_tryon_body">Aggiungi una tua foto e vedi qualsiasi outfit indosso prima di metterlo. Tocca il pulsante centrale in qualsiasi momento per avviare una prova.</string>
-    <string name="onboarding_travel_title">Prepara la valigia per ogni viaggio</string>
-    <string name="onboarding_travel_body">Indica al pianificatore di viaggio dove vai e per quanto tempo. Crea un guardaroba capsule giorno per giorno dal tuo armadio.</string>
-    <string name="onboarding_shopping_title">Acquisti più intelligenti</string>
-    <string name="onboarding_shopping_body">Salva i capi che stai valutando e lascia che l\'assistente agli acquisti verifichi se si abbinano a ciò che hai già — e colmano lacune reali.</string>
-    <string name="onboarding_profile_title">Raccontaci il tuo stile</string>
-    <string name="onboarding_profile_body">Aiuta l\'IA a personalizzare ogni suggerimento. Puoi modificarlo quando vuoi nelle Impostazioni.</string>
-    <string name="onboarding_photo_title">Aggiungi una foto per le prove</string>
-    <string name="onboarding_photo_body">Una foto a figura intera, di fronte, ti permette di provare gli outfit. Facoltativa — puoi aggiungerla più tardi.</string>
-    <string name="onboarding_photo_add">Aggiungi foto</string>
-    <string name="onboarding_photo_added">Foto aggiunta</string>
-    <string name="onboarding_photo_offline">Connettiti a internet per aggiungere la tua foto.</string>
-    <string name="onboarding_closet_title">Crea il tuo armadio</string>
-    <string name="onboarding_closet_body">Il tuo primo armadio è pronto. Aggiungi qualche capo per ricevere le prime idee di outfit — oppure esplora prima e aggiungili quando vuoi.</string>
     <string name="onboarding_closet_add_items">Aggiungi capi ora</string>
-    <string name="onboarding_closet_explore">Esplora l\'app</string>
     <string name="onboarding_tour_replay">Fai il tour</string>
     <string name="onboarding_tour_replay_sub">Rivedi la presentazione di benvenuto</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Aggiungi la tua chiave API Gemini</string>
-    <string name="onboarding_apikey_body">LibreLookAI funziona con Google Gemini usando la tua chiave API. Viene salvata solo su questo dispositivo e usata direttamente con Google — nulla passa dai nostri server.</string>
-    <string name="onboarding_apikey_tiers">Una chiave gratuita copre già l’etichettatura e i suggerimenti di outfit. La prova virtuale e la rimozione dello sfondo generano immagini e richiedono una chiave a pagamento con fatturazione attiva — Google addebita comunque solo ciò che usi davvero.</string>
-    <string name="onboarding_apikey_get">Ottieni una chiave API</string>
-    <string name="onboarding_apikey_billing">Attiva la fatturazione (per la prova)</string>
-    <string name="onboarding_apikey_saved">Chiave salvata su questo dispositivo ✓</string>
-    <string name="onboarding_apikey_offline">Connettiti a Internet per aprire Google AI Studio. Puoi comunque incollare una chiave che hai già.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Impossibile spostare alcuni articoli. Sono stati ripristinati.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Collega il tuo Google Drive</string>
-    <string name="onboarding_drive_body">LibreLookAI conserva tutto — i tuoi capi, i tuoi outfit e le tue foto — in una cartella privata sul tuo Google Drive. Niente viene salvato sui nostri server e solo tu puoi vederlo. Accedi con Google per creare il tuo guardaroba.</string>
-    <string name="onboarding_drive_connect">Accedi con Google</string>
-    <string name="onboarding_drive_connected">Google Drive collegato ✓</string>
-    <string name="onboarding_drive_offline">Connettiti a internet per accedere con Google.</string>
-    <string name="onboarding_background_title">Consenti l\'elaborazione in background</string>
-    <string name="onboarding_background_body">Importare foto, rimuovere gli sfondi ed etichettare i capi con l\'IA può richiedere un po\' di tempo. LibreLookAI ha bisogno di un\'elaborazione in background senza restrizioni affinché Android non lo chiuda a metà — cosa che altrimenti potrebbe lasciare capi importati a metà, etichette mancanti o file danneggiati.\n\nQuesto consente solo all\'app di completare il lavoro che hai avviato; non esegue nulla da sola.</string>
-    <string name="onboarding_background_allow">Consenti l\'elaborazione in background</string>
-    <string name="onboarding_background_granted">Elaborazione in background consentita ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Attiva la posizione per il meteo</string>
-    <string name="onboarding_location_body">LibreLookAI usa la tua posizione approssimativa per consultare il meteo locale e suggerire outfit adatti alle condizioni della giornata. La tua posizione resta sul dispositivo e viene usata solo per ottenere il meteo: non viene mai memorizzata né condivisa. Puoi saltare questo passaggio e attivarlo più tardi.</string>
-    <string name="onboarding_location_allow">Consenti l\'accesso alla posizione</string>
-    <string name="onboarding_location_granted">Posizione attivata ✓</string>
-    <string name="onboarding_finish_setup_title">La tua configurazione</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Elaborazione in background</string>
-    <string name="onboarding_finish_apikey">Chiave API Gemini</string>
-    <string name="onboarding_finish_location">Posizione per il meteo</string>
-    <string name="onboarding_finish_grant">Configura</string>
-    <string name="onboarding_finish_warning">La configurazione non è completa. Gli elementi contrassegnati sopra non funzioneranno finché non li completi: puoi configurarli qui o più tardi nelle Impostazioni.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Serve una chiave API Gemini</string>
     <string name="ai_no_key_message">Questa funzione usa l\'IA Gemini di Google, che richiede una tua chiave API. Aggiungi una chiave gratuita per iniziare a etichettare i capi e ottenere idee per gli outfit (la prova virtuale e la rimozione dello sfondo richiedono una chiave con fatturazione attiva).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Ricerca di un guardaroba esistente da importare…</string>
-    <string name="onboarding_drive_importing">Importazione del tuo guardaroba esistente… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Guardaroba importato ✓</string>
-    <string name="onboarding_drive_import_error">Non è stato possibile importare automaticamente il tuo guardaroba esistente. Puoi riprovare o scegliere tu stesso la cartella.</string>
-    <string name="onboarding_drive_import_manual">Scegli la cartella manualmente</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Qualità immagine</string>
     <string name="settings_image_quality_sub">Bilancia spazio e dettaglio. Riguarda le nuove foto salvate sul tuo Drive.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · di solito 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Impossibile connettersi a Google Drive. Riprova.</string>
-    <string name="drive_picker_opening">Apertura di Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Scegli capi che coprano sia la parte superiore sia quella inferiore del corpo — un capo intero (un abito o una tuta) oppure un capo sopra insieme a uno sotto. Così la prova generata resta completamente vestita.</string>
 

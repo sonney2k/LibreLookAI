@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Inicia sesión para gestionar tu closet</string>
     <string name="sign_in_button">Iniciar sesión con Google</string>
-    <string name="sign_in_error_not_registered">Error al iniciar sesión: esta versión de la app no está autorizada por Google. Si eres desarrollador, registra la huella de la clave de firma en la consola de Firebase.</string>
-    <string name="sign_in_error_network">Error al iniciar sesión: sin conexión a internet. Revisa tu conexión e intenta de nuevo.</string>
-    <string name="sign_in_error_generic">Error al iniciar sesión (código %1$d). Intenta de nuevo o contacta al soporte.</string>
 </resources>

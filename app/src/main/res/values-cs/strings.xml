@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Jiné</string>
     <string name="settings_year_of_birth">Rok narození</string>
     <string name="settings_year_placeholder">např. 1990</string>
-    <string name="settings_style_prefs">Preference outfitů</string>
     <string name="settings_style_placeholder">Popište, co rádi nosíte, příležitosti, pro které se oblékáte, oblíbené barvy, značky nebo cokoli jiného, co pomůže personalizovat návrhy outfitů…</string>
     <string name="settings_saved">Preference uloženy</string>
     <string name="settings_data_tags_title">Štítky šatníku</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Přidat položku</string>
     <string name="tryon_add_items_title">Přidat položky ze šatníku</string>
     <string name="tryon_generate">Generovat vyzkoušení</string>
-    <string name="tryon_try_again">Zkusit znovu</string>
     <string name="tryon_change_items">Změnit položky</string>
     <string name="tryon_save_to_drive">Uložit</string>
     <string name="tryon_saved_to_drive">Uloženo</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">Využití a náklady AI · klíč API · pokročilé možnosti</string>
     <string name="settings_more_about">O aplikaci LibreLookAI</string>
     <string name="settings_profile_edit_title">Upravit profil</string>
-    <string name="settings_profile_gender">Pohlaví / zájmena</string>
-    <string name="settings_profile_year">Rok narození</string>
     <string name="settings_profile_ai_considerations">Co má AI zohlednit</string>
     <string name="settings_advanced_title">Pokročilé</string>
     <string name="settings_section_advanced_fix">Opravit chyby AI</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Vyber, které vlastnosti oblečení AI zohlední. Méně detailů = rychlejší, levnější a cílenější návrhy.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Přeskočit</string>
-    <string name="onboarding_next">Další</string>
-    <string name="onboarding_back">Zpět</string>
-    <string name="onboarding_welcome_title">Vítejte v LibreLookAI</string>
-    <string name="onboarding_welcome_body">Váš AI stylista pro šatník, který už máte. Vyfoťte své oblečení, získejte nápady na outfity, vyzkoušejte si je a sbalte se na cesty — vše soukromě na vašem Google Disku.</string>
-    <string name="onboarding_wardrobe_title">Váš digitální šatník</string>
-    <string name="onboarding_wardrobe_body">Každý kus vyfoťte jednou. AI odstraní pozadí a označí typ, barvu, materiál a další, takže vše zůstane vyhledatelné.</string>
-    <string name="onboarding_outfits_title">Nápady na outfity od AI</string>
-    <string name="onboarding_outfits_body">Získejte návrhy outfitů podle počasí, příležitosti a vašeho vkusu — sestavené jen z oblečení, které opravdu máte.</string>
-    <string name="onboarding_tryon_title">Vyzkoušejte si outfity na sobě</string>
-    <string name="onboarding_tryon_body">Přidejte svou fotku a uvidíte jakýkoli outfit na sobě, než si ho obléknete. Kdykoli klepněte na prostřední tlačítko a spusťte zkoušku.</string>
-    <string name="onboarding_travel_title">Sbalte se na jakoukoli cestu</string>
-    <string name="onboarding_travel_body">Řekněte plánovači cest, kam a na jak dlouho jedete. Sestaví den po dni kapslový šatník z vaší skříně.</string>
-    <string name="onboarding_shopping_title">Chytřejší nakupování</string>
-    <string name="onboarding_shopping_body">Ukládejte kousky, které zvažujete, a nechte nákupního pomocníka zkontrolovat, zda se hodí k tomu, co už máte — a zaplní skutečné mezery.</string>
-    <string name="onboarding_profile_title">Řekněte nám o svém stylu</string>
-    <string name="onboarding_profile_body">Pomáhá to AI přizpůsobit každý návrh právě vám. Kdykoli to můžete změnit v Nastavení.</string>
-    <string name="onboarding_photo_title">Přidejte fotku pro zkoušení</string>
-    <string name="onboarding_photo_body">Celotělová fotka zepředu vám umožní zkoušet outfity na sobě. Volitelné — můžete ji přidat později.</string>
-    <string name="onboarding_photo_add">Přidat fotku</string>
-    <string name="onboarding_photo_added">Fotka přidána</string>
-    <string name="onboarding_photo_offline">Připojte se k internetu a přidejte svou fotku.</string>
-    <string name="onboarding_closet_title">Sestavte si šatník</string>
-    <string name="onboarding_closet_body">Vaše první skříň je připravena. Přidejte pár kousků a získejte první nápady na outfity — nebo se nejdřív rozhlédněte a přidejte je, kdy budete chtít.</string>
     <string name="onboarding_closet_add_items">Přidat oblečení</string>
-    <string name="onboarding_closet_explore">Prozkoumat aplikaci</string>
     <string name="onboarding_tour_replay">Spustit prohlídku</string>
     <string name="onboarding_tour_replay_sub">Přehrát úvodní prohlídku</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Přidejte svůj klíč Gemini API</string>
-    <string name="onboarding_apikey_body">LibreLookAI běží na Google Gemini s vaším vlastním klíčem API. Ukládá se jen do tohoto zařízení a používá se přímo s Googlem — nic neprochází přes naše servery.</string>
-    <string name="onboarding_apikey_tiers">Bezplatný klíč pokryje označování a návrhy outfitů. Virtuální zkoušení a odstranění pozadí generují obrázky a vyžadují placený klíč s aktivovanou fakturací — Google vám i tak účtuje jen to, co skutečně využijete.</string>
-    <string name="onboarding_apikey_get">Získat klíč API</string>
-    <string name="onboarding_apikey_billing">Aktivovat fakturaci (pro zkoušení)</string>
-    <string name="onboarding_apikey_saved">Klíč uložen v tomto zařízení ✓</string>
-    <string name="onboarding_apikey_offline">Připojte se k internetu a otevřete Google AI Studio. Klíč, který už máte, můžete vložit i tak.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Některé položky se nepodařilo přesunout. Byly obnoveny.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Připoj svůj Google Disk</string>
-    <string name="onboarding_drive_body">LibreLookAI ukládá vše — tvé oblečení, outfity a fotky — do soukromé složky na tvém vlastním Google Disku. Nic se neukládá na našich serverech a vidíš to jen ty. Přihlas se přes Google a vytvoř si svůj šatník.</string>
-    <string name="onboarding_drive_connect">Přihlásit se přes Google</string>
-    <string name="onboarding_drive_connected">Google Disk připojen ✓</string>
-    <string name="onboarding_drive_offline">Připoj se k internetu, aby ses mohl přihlásit přes Google.</string>
-    <string name="onboarding_background_title">Povolit zpracování na pozadí</string>
-    <string name="onboarding_background_body">Import fotek, odstraňování pozadí a označování oblečení pomocí AI může chvíli trvat. LibreLookAI potřebuje neomezené zpracování na pozadí, aby Android aplikaci neukončil uprostřed úkolu — což by jinak mohlo zanechat napůl importované položky, chybějící štítky nebo poškozené soubory.\n\nToto pouze umožní aplikaci dokončit práci, kterou jsi spustil; sama o sobě nic nespouští.</string>
-    <string name="onboarding_background_allow">Povolit zpracování na pozadí</string>
-    <string name="onboarding_background_granted">Zpracování na pozadí povoleno ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Povolit polohu pro počasí</string>
-    <string name="onboarding_location_body">LibreLookAI používá vaši přibližnou polohu k zjištění místního počasí, aby mohl navrhovat oblečení vhodné pro daný den. Vaše poloha zůstává ve vašem zařízení a používá se pouze k získání počasí – nikdy se neukládá ani nesdílí. Tento krok můžete přeskočit a povolit jej později.</string>
-    <string name="onboarding_location_allow">Povolit přístup k poloze</string>
-    <string name="onboarding_location_granted">Poloha povolena ✓</string>
-    <string name="onboarding_finish_setup_title">Vaše nastavení</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Zpracování na pozadí</string>
-    <string name="onboarding_finish_apikey">Klíč API Gemini</string>
-    <string name="onboarding_finish_location">Poloha pro počasí</string>
-    <string name="onboarding_finish_grant">Nastavit</string>
-    <string name="onboarding_finish_warning">Nastavení není dokončené. Položky označené výše nebudou fungovat, dokud je nedokončíte – můžete je nastavit zde nebo později v Nastavení.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Je potřeba klíč API Gemini</string>
     <string name="ai_no_key_message">Tato funkce využívá AI Gemini od Googlu, která vyžaduje váš vlastní klíč API. Přidejte bezplatný klíč a začněte štítkovat oblečení a získávat nápady na outfity (virtuální zkoušení a odstranění pozadí vyžadují klíč se zapnutou fakturací).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Hledá se existující šatník k importu…</string>
-    <string name="onboarding_drive_importing">Importuje se váš stávající šatník… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Šatník importován ✓</string>
-    <string name="onboarding_drive_import_error">Váš stávající šatník se nepodařilo importovat automaticky. Můžete to zkusit znovu nebo složku vybrat ručně.</string>
-    <string name="onboarding_drive_import_manual">Vybrat složku ručně</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Kvalita obrazu</string>
     <string name="settings_image_quality_sub">Vyvažte úložiště a detail. Týká se nových fotek ukládaných na Disk.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · obvykle 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Nepodařilo se připojit ke Google Drive. Zkuste to znovu.</string>
-    <string name="drive_picker_opening">Otevírání Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Vyber oblečení, které zakryje horní i dolní část těla — buď celotělový kus (šaty nebo overal), nebo horní díl spolu se spodním dílem. Díky tomu zůstane vygenerované vyzkoušení plně oblečené.</string>
 

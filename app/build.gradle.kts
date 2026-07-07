@@ -55,17 +55,6 @@ android {
             "FIREBASE_WEB_CLIENT_ID",
             "\"${localProps.getProperty("firebase.web.client.id", "")}\"",
         )
-        // Google Picker (drive.file folder selection): API key + Cloud project number (setAppId).
-        buildConfigField(
-            "String",
-            "PICKER_API_KEY",
-            "\"${localProps.getProperty("picker.api.key", "")}\"",
-        )
-        buildConfigField(
-            "String",
-            "PICKER_APP_ID",
-            "\"${localProps.getProperty("picker.app.id", "923211051414")}\"",
-        )
         // Drive OAuth scope selector. Default off → production ships the narrow `drive.file`
         // scope (no sensitive-scope CASA review). Flip `drive.full.scope=true` in local.properties
         // for the migration build distributed to existing testers, which needs full `drive` to read
@@ -167,8 +156,10 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:weather"))
     implementation(project(":core:service"))
+    implementation(project(":core:session"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:billing"))
+    implementation(project(":feature:onboarding"))
     implementation(project(":core:database"))
     implementation(project(":core:ml"))
     implementation(project(":core:sync"))

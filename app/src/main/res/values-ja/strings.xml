@@ -107,7 +107,6 @@
     <string name="settings_gender_other">その他</string>
     <string name="settings_year_of_birth">生年</string>
     <string name="settings_year_placeholder">例: 1990</string>
-    <string name="settings_style_prefs">コーデの好み</string>
     <string name="settings_style_placeholder">よく着るもの、装う機会、好きな色やブランドなど、コーデ提案のパーソナライズに役立つ情報を記入してください…</string>
     <string name="settings_saved">設定を保存しました</string>
     <string name="settings_data_tags_title">クローゼットのタグ</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">アイテムを追加</string>
     <string name="tryon_add_items_title">クローゼットからアイテムを追加</string>
     <string name="tryon_generate">試着を生成</string>
-    <string name="tryon_try_again">もう一度</string>
     <string name="tryon_change_items">アイテムを変更</string>
     <string name="tryon_save_to_drive">保存</string>
     <string name="tryon_saved_to_drive">保存しました</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">AIの使用状況とコスト · APIキー · 詳細オプション</string>
     <string name="settings_more_about">LibreLookAIについて</string>
     <string name="settings_profile_edit_title">プロフィールを編集</string>
-    <string name="settings_profile_gender">性別 / 代名詞</string>
-    <string name="settings_profile_year">生まれ年</string>
     <string name="settings_profile_ai_considerations">AIが考慮すべきこと</string>
     <string name="settings_advanced_title">詳細設定</string>
     <string name="settings_section_advanced_fix">AIの間違いを修正</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">AIが考慮する服の属性を選びます。詳細が少ないほど、速く、安く、的を絞った提案になります。</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">スキップ</string>
-    <string name="onboarding_next">次へ</string>
-    <string name="onboarding_back">戻る</string>
-    <string name="onboarding_welcome_title">LibreLookAI へようこそ</string>
-    <string name="onboarding_welcome_body">すでにお持ちのワードローブのための AI スタイリスト。服を撮影し、コーデのアイデアを受け取り、試着し、旅行の荷造りまで——すべてご自身の Google ドライブ内でプライベートに。</string>
-    <string name="onboarding_wardrobe_title">あなたのデジタルワードローブ</string>
-    <string name="onboarding_wardrobe_body">各アイテムを一度撮影するだけ。AI が背景を除去し、種類・色・素材などをタグ付けするので、すべて検索できます。</string>
-    <string name="onboarding_outfits_title">AI コーデのアイデア</string>
-    <string name="onboarding_outfits_body">天気・シーン・好みに合わせたコーデ提案を受け取れます。実際に持っている服だけで構成されます。</string>
-    <string name="onboarding_tryon_title">自分にコーデを試着</string>
-    <string name="onboarding_tryon_body">自分の写真を追加すれば、着る前にどんなコーデも自分に重ねて確認できます。中央のボタンをタップするといつでも試着を開始できます。</string>
-    <string name="onboarding_travel_title">どんな旅行の荷造りも</string>
-    <string name="onboarding_travel_body">旅行プランナーに行き先と期間を伝えるだけ。クローゼットから日ごとのカプセルワードローブを作成します。</string>
-    <string name="onboarding_shopping_title">より賢い買い物</string>
-    <string name="onboarding_shopping_body">検討中のアイテムを保存すると、ショッピングヘルパーが手持ちの服と合うか、本当の不足を埋めるかを確認します。</string>
-    <string name="onboarding_profile_title">あなたのスタイルを教えてください</string>
-    <string name="onboarding_profile_body">これにより AI が提案をあなた向けに調整します。設定でいつでも変更できます。</string>
-    <string name="onboarding_photo_title">試着用の写真を追加</string>
-    <string name="onboarding_photo_body">正面からの全身写真があれば、自分にコーデを試着できます。任意——後から追加できます。</string>
-    <string name="onboarding_photo_add">写真を追加</string>
-    <string name="onboarding_photo_added">写真を追加しました</string>
-    <string name="onboarding_photo_offline">写真を追加するにはインターネットに接続してください。</string>
-    <string name="onboarding_closet_title">クローゼットを作成</string>
-    <string name="onboarding_closet_body">最初のクローゼットの準備ができました。服をいくつか追加して最初のコーデ案を受け取りましょう——または先に見て回り、いつでも追加できます。</string>
     <string name="onboarding_closet_add_items">今すぐ服を追加</string>
-    <string name="onboarding_closet_explore">アプリを見てみる</string>
     <string name="onboarding_tour_replay">ツアーを見る</string>
     <string name="onboarding_tour_replay_sub">ようこそツアーをもう一度再生</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Gemini API キーを追加</string>
-    <string name="onboarding_apikey_body">LibreLookAI はあなた自身の API キーで Google Gemini 上で動作します。キーはこの端末にのみ保存され、Google と直接やり取りします。当社のサーバーを経由することはありません。</string>
-    <string name="onboarding_apikey_tiers">無料キーでもタグ付けやコーディネート提案は利用できます。バーチャル試着と背景除去は画像を生成するため、請求を有効にした有料キーが必要です。Google が課金するのは実際に使用した分だけです。</string>
-    <string name="onboarding_apikey_get">API キーを取得</string>
-    <string name="onboarding_apikey_billing">請求を有効にする（試着用）</string>
-    <string name="onboarding_apikey_saved">キーをこの端末に保存しました ✓</string>
-    <string name="onboarding_apikey_offline">Google AI Studio を開くにはインターネットに接続してください。すでにお持ちのキーは貼り付けできます。</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">一部のアイテムを移動できませんでした。元に戻しました。</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Google ドライブを接続</string>
-    <string name="onboarding_drive_body">LibreLookAI は、あなたの服・コーデ・写真などすべてを、あなた自身の Google ドライブ内のプライベートフォルダに保存します。当社のサーバーには何も保存されず、見られるのはあなただけです。Google でサインインしてワードローブを作成しましょう。</string>
-    <string name="onboarding_drive_connect">Google でサインイン</string>
-    <string name="onboarding_drive_connected">Google ドライブに接続しました ✓</string>
-    <string name="onboarding_drive_offline">Google でサインインするにはインターネットに接続してください。</string>
-    <string name="onboarding_background_title">バックグラウンド処理を許可</string>
-    <string name="onboarding_background_body">写真のインポート、背景の削除、AI による衣類のタグ付けには少し時間がかかることがあります。タスクの途中で Android にアプリを終了されないよう、LibreLookAI は無制限のバックグラウンド処理を必要とします。そうでないと、途中までしかインポートされないアイテム、欠落したタグ、破損したファイルが残る可能性があります。\n\nこれは、あなたが開始した作業をアプリが完了できるようにするだけで、勝手に何かを実行することはありません。</string>
-    <string name="onboarding_background_allow">バックグラウンド処理を許可</string>
-    <string name="onboarding_background_granted">バックグラウンド処理を許可しました ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">天気のために位置情報を有効にする</string>
-    <string name="onboarding_location_body">LibreLookAI はおおよその位置情報を使って地域の天気を取得し、その日の天候に合ったコーディネートを提案します。位置情報はデバイス内にとどまり、天気の取得のみに使用され、保存も共有もされません。この手順はスキップして後で有効にすることもできます。</string>
-    <string name="onboarding_location_allow">位置情報へのアクセスを許可</string>
-    <string name="onboarding_location_granted">位置情報が有効になりました ✓</string>
-    <string name="onboarding_finish_setup_title">セットアップ</string>
-    <string name="onboarding_finish_drive">Google ドライブ</string>
-    <string name="onboarding_finish_background">バックグラウンド処理</string>
-    <string name="onboarding_finish_apikey">Gemini API キー</string>
-    <string name="onboarding_finish_location">天気のための位置情報</string>
-    <string name="onboarding_finish_grant">設定</string>
-    <string name="onboarding_finish_warning">セットアップが完了していません。上で印が付いた項目は、完了するまで機能しません。ここで設定するか、後で設定画面から設定できます。</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Gemini API キーが必要です</string>
     <string name="ai_no_key_message">この機能は Google の Gemini AI を使用しており、ご自身の API キーが必要です。無料キーを追加すると、服のタグ付けやコーディネート提案を利用できます（バーチャル試着と背景除去には課金が有効なキーが必要です）。</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">インポートできる既存のワードローブを確認しています…</string>
-    <string name="onboarding_drive_importing">既存のワードローブをインポートしています… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">ワードローブをインポートしました ✓</string>
-    <string name="onboarding_drive_import_error">既存のワードローブを自動的にインポートできませんでした。もう一度お試しいただくか、フォルダをご自分で選択してください。</string>
-    <string name="onboarding_drive_import_manual">フォルダを手動で選択</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">画質</string>
     <string name="settings_image_quality_sub">保存容量と精細さのバランスを調整します。Drive に保存する新しい写真に適用されます。</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · 通常 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Google Drive に接続できませんでした。もう一度お試しください。</string>
-    <string name="drive_picker_opening">Google Drive を開いています…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">上半身と下半身の両方を覆う服を選んでください。全身を覆う一枚もの（ワンピースやジャンプスーツ）か、トップスとボトムスの組み合わせのいずれかです。これにより、生成される試着が完全に着衣の状態に保たれます。</string>
 

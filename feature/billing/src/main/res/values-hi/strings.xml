@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API कुंजी</string>
     <string name="settings_api_key_desc">सभी AI सुविधाओं के लिए Gemini API कुंजी की आवश्यकता होती है। aistudio.google.com से मुफ़्त कुंजी प्राप्त करें। आपकी कुंजी केवल इसी डिवाइस पर संग्रहीत है।</string>
-    <string name="settings_api_key_label">API कुंजी</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="confirm_spend_title">AI क्रेडिट उपयोग करें?</string>
     <string name="confirm_spend_body">इसमें %1$d क्रेडिट लगेंगे.</string>

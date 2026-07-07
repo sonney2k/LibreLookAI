@@ -46,6 +46,7 @@ MODULE_RES_DIRS = {
     "service": os.path.join(REPO_ROOT, "core", "service", "src", "main", "res"),
     "auth": os.path.join(REPO_ROOT, "feature", "auth", "src", "main", "res"),
     "billing": os.path.join(REPO_ROOT, "feature", "billing", "src", "main", "res"),
+    "onboarding": os.path.join(REPO_ROOT, "feature", "onboarding", "src", "main", "res"),
 }
 
 

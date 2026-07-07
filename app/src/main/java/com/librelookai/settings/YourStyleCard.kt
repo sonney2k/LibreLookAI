@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.settings.ProfileUiState
 import com.librelookai.settings.TryOnSlot
 import com.librelookai.util.LocalIsOffline
@@ -115,7 +116,7 @@ fun YourStyleCard(
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         SettingsRow(
             icon = Icons.Filled.FavoriteBorder,
-            label = stringResource(R.string.settings_style_prefs),
+            label = stringResource(DsR.string.settings_style_prefs),
             sub = prefs.preferences.takeIf { it.isNotBlank() },
             onClick = onEditStyle,
         )

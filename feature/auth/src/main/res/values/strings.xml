@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Sign in to manage your wardrobe</string>
     <string name="sign_in_button">Sign in with Google</string>
-    <string name="sign_in_error_not_registered">Sign-in failed: this app build is not authorised with Google. If you are a developer, register the signing key fingerprint in Firebase Console.</string>
-    <string name="sign_in_error_network">Sign-in failed: no network connection. Please check your internet and try again.</string>
-    <string name="sign_in_error_generic">Sign-in failed (code %1$d). Please try again or contact support.</string>
 </resources>

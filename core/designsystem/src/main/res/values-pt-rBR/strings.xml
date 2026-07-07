@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Dispensar</string>
+    <string name="sign_in_error_not_registered">Falha no login: esta versão do app não está autorizada com o Google. Se você é desenvolvedor, registre a impressão digital da chave de assinatura no Firebase Console.</string>
+    <string name="sign_in_error_network">Falha no login: sem conexão de rede. Verifique sua internet e tente novamente.</string>
+    <string name="sign_in_error_generic">Falha no login (código %1$d). Tente novamente ou entre em contato com o suporte.</string>
+    <string name="settings_api_key_label">Chave API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Preferências de look</string>
+    <string name="tryon_try_again">Tentar de novo</string>
+    <string name="settings_profile_gender">Gênero / pronomes</string>
+    <string name="settings_profile_year">Ano de nascimento</string>
 </resources>

@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Κλειδί API Gemini</string>
     <string name="settings_api_key_desc">Όλες οι λειτουργίες AI απαιτούν ένα κλειδί API Gemini. Αποκτήστε ένα δωρεάν κλειδί στο aistudio.google.com → \"Get API key\". Το κλειδί σας αποθηκεύεται μόνο σε αυτήν τη συσκευή.</string>
-    <string name="settings_api_key_label">Κλειδί API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Μονάδες AI που απομένουν</string>
     <string name="credits_cost_title">Κόστος μονάδων ανά ενέργεια</string>
     <string name="credits_action_bg_removal">Αφαίρεση φόντου</string>

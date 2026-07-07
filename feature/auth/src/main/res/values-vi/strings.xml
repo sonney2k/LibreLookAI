@@ -2,7 +2,4 @@
 <resources>
     <string name="sign_in_prompt">Đăng nhập để quản lý tủ đồ của bạn</string>
     <string name="sign_in_button">Đăng nhập bằng Google</string>
-    <string name="sign_in_error_not_registered">Đăng nhập thất bại: bản dựng ứng dụng này chưa được ủy quyền.</string>
-    <string name="sign_in_error_network">Đăng nhập thất bại: không có kết nối mạng.</string>
-    <string name="sign_in_error_generic">Đăng nhập thất bại (mã %1$d). Vui lòng thử lại.</string>
 </resources>

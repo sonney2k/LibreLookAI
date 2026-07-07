@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">OK</string>
     <string name="action_dismiss">Odrzuć</string>
+    <string name="sign_in_error_not_registered">Logowanie nieudane: ta wersja aplikacji nie jest autoryzowana przez Google. Jeśli jesteś programistą, zarejestruj odcisk klucza podpisywania w Firebase Console.</string>
+    <string name="sign_in_error_network">Logowanie nieudane: brak połączenia sieciowego. Sprawdź internet i spróbuj ponownie.</string>
+    <string name="sign_in_error_generic">Logowanie nieudane (kod %1$d). Spróbuj ponownie lub skontaktuj się z pomocą.</string>
+    <string name="settings_api_key_label">Klucz API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">Preferencje stylizacji</string>
+    <string name="tryon_try_again">Spróbuj ponownie</string>
+    <string name="settings_profile_gender">Płeć / zaimki</string>
+    <string name="settings_profile_year">Rok urodzenia</string>
 </resources>

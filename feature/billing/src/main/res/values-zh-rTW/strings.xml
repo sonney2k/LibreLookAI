@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API 金鑰</string>
     <string name="settings_api_key_desc">所有 AI 功能皆需 Gemini API 金鑰。請至 aistudio.google.com 獲取免費金鑰。金鑰僅儲存於此設備。</string>
-    <string name="settings_api_key_label">API 金鑰</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="confirm_spend_title">使用 AI 點數？</string>
     <string name="confirm_spend_body">此操作將使用 %1$d 點數。</string>

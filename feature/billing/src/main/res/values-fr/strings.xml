@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Clé API Gemini</string>
     <string name="settings_api_key_desc">Toutes les fonctions IA (étiquetage, suggestions de tenues, suppression de fond) nécessitent une clé API Gemini. Obtiens une clé gratuite sur aistudio.google.com → « Get API key ». Ta clé est stockée uniquement sur cet appareil.</string>
-    <string name="settings_api_key_label">Clé API</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">Crédits IA restants</string>
     <string name="credits_cost_title">Coût en crédits par action</string>
     <string name="credits_action_bg_removal">Suppression du fond</string>

@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_api_key_title">Gemini API 키</string>
     <string name="settings_api_key_desc">모든 AI 기능(태그 지정, 코디 제안, 배경 제거)에는 Gemini API 키가 필요합니다. aistudio.google.com → \"Get API key\"에서 무료 키를 받을 수 있습니다. 키는 이 기기에만 저장됩니다.</string>
-    <string name="settings_api_key_label">API 키</string>
-    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="credits_balance_label">남은 AI 크레딧</string>
     <string name="credits_cost_title">액션당 크레딧 비용</string>
     <string name="credits_action_bg_removal">배경 제거</string>

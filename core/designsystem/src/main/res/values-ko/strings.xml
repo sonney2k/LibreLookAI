@@ -147,4 +147,13 @@
     <string name="app_name">LibreLookAI</string>
     <string name="action_ok">확인</string>
     <string name="action_dismiss">닫기</string>
+    <string name="sign_in_error_not_registered">로그인 실패: 이 앱 빌드는 Google에서 인증되지 않았습니다. 개발자라면 Firebase Console에 서명 키 지문을 등록하세요.</string>
+    <string name="sign_in_error_network">로그인 실패: 네트워크 연결이 없습니다. 인터넷을 확인하고 다시 시도하세요.</string>
+    <string name="sign_in_error_generic">로그인 실패 (코드 %1$d). 다시 시도하거나 지원팀에 문의하세요.</string>
+    <string name="settings_api_key_label">API 키</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_style_prefs">코디 선호</string>
+    <string name="tryon_try_again">다시 시도</string>
+    <string name="settings_profile_gender">성별 / 대명사</string>
+    <string name="settings_profile_year">출생 연도</string>
 </resources>

@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Iba pa</string>
     <string name="settings_year_of_birth">Taon ng Kapanganakan</string>
     <string name="settings_year_placeholder">hal. 1990</string>
-    <string name="settings_style_prefs">Mga Outfit Preference</string>
     <string name="settings_style_placeholder">Ilarawan kung ano ang gusto mong isuot, mga okasyon na pinupuntahan, paboritong kulay, brand, o anumang makakatulong sa pag-personalize ng iyong mga rekomendasyon sa outfit…</string>
     <string name="settings_saved">Na-save ang mga preference</string>
     <string name="settings_data_tags_title">Mga Tag ng Wardrobe</string>
@@ -476,7 +475,6 @@
     <string name="tryon_add_item">Magdagdag ng item</string>
     <string name="tryon_add_items_title">Magdagdag ng wardrobe items</string>
     <string name="tryon_generate">Bumuo ng try-on</string>
-    <string name="tryon_try_again">Subukan muli</string>
     <string name="tryon_change_items">Palitan ang mga item</string>
     <string name="tryon_save_to_drive">I-save</string>
     <string name="tryon_saved_to_drive">Na-save na</string>
@@ -765,8 +763,6 @@
     <string name="settings_more_advanced_subtitle">Paggamit at gastos ng AI · API key · advanced na opsyon</string>
     <string name="settings_more_about">Tungkol sa LibreLookAI</string>
     <string name="settings_profile_edit_title">I-edit ang profile</string>
-    <string name="settings_profile_gender">Kasarian / panghalip</string>
-    <string name="settings_profile_year">Taon ng kapanganakan</string>
     <string name="settings_profile_ai_considerations">Ano ang dapat isaalang-alang ng AI</string>
     <string name="settings_advanced_title">Advanced</string>
     <string name="settings_section_advanced_fix">Ayusin ang mga pagkakamali ng AI</string>
@@ -797,32 +793,7 @@
     <string name="composer_tags_hint">Piliin kung aling mga katangian ng damit ang isinasaalang-alang ng AI. Mas kaunting detalye = mas mabilis, mas mura, at mas tutok na mga mungkahi.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Laktawan</string>
-    <string name="onboarding_next">Susunod</string>
-    <string name="onboarding_back">Bumalik</string>
-    <string name="onboarding_welcome_title">Maligayang pagdating sa LibreLookAI</string>
-    <string name="onboarding_welcome_body">Ang iyong AI stylist para sa wardrobe na meron ka na. Kunan ng litrato ang iyong mga damit, kumuha ng mga ideya sa outfit, isukat ang mga ito, at mag-impake para sa mga biyahe — lahat ay pribado sa sarili mong Google Drive.</string>
-    <string name="onboarding_wardrobe_title">Ang iyong digital na wardrobe</string>
-    <string name="onboarding_wardrobe_body">Kunan ng litrato ang bawat item nang isang beses. Inaalis ng AI ang background at tina-tag ang uri, kulay, materyal at iba pa, kaya nananatiling masesearch ang lahat.</string>
-    <string name="onboarding_outfits_title">Mga ideya sa outfit mula sa AI</string>
-    <string name="onboarding_outfits_body">Kumuha ng mga mungkahing outfit na akma sa panahon, okasyon at panlasa mo — gawa lamang mula sa mga damit na talagang meron ka.</string>
-    <string name="onboarding_tryon_title">Isukat ang mga outfit sa sarili</string>
-    <string name="onboarding_tryon_body">Magdagdag ng litrato mo at tingnan ang kahit anong outfit sa iyo bago isuot. I-tap ang gitnang button anumang oras para magsimulang magsukat.</string>
-    <string name="onboarding_travel_title">Mag-impake para sa kahit anong biyahe</string>
-    <string name="onboarding_travel_body">Sabihin sa travel planner kung saan at gaano katagal ka pupunta. Bubuo ito ng capsule wardrobe araw-araw mula sa iyong aparador.</string>
-    <string name="onboarding_shopping_title">Mas matalinong pamimili</string>
-    <string name="onboarding_shopping_body">I-save ang mga item na pinag-iisipan mo at hayaang tingnan ng shopping helper kung bagay ang mga ito sa meron ka na — at pinupunan ang totoong kakulangan.</string>
-    <string name="onboarding_profile_title">Sabihin sa amin ang istilo mo</string>
-    <string name="onboarding_profile_body">Tumutulong ito sa AI na i-angkop ang bawat mungkahi sa iyo. Mababago mo ito anumang oras sa Mga Setting.</string>
-    <string name="onboarding_photo_title">Magdagdag ng litrato pansukat</string>
-    <string name="onboarding_photo_body">Ang buong-katawan na litrato mula sa harap ay nagbibigay-daan na isukat ang mga outfit sa sarili. Opsyonal — maaari mong idagdag mamaya.</string>
-    <string name="onboarding_photo_add">Magdagdag ng litrato</string>
-    <string name="onboarding_photo_added">Naidagdag ang litrato</string>
-    <string name="onboarding_photo_offline">Kumonekta sa internet para idagdag ang iyong litrato.</string>
-    <string name="onboarding_closet_title">Buuin ang iyong aparador</string>
-    <string name="onboarding_closet_body">Handa na ang iyong unang aparador. Magdagdag ng ilang damit para makakuha ng mga unang ideya sa outfit — o mag-explore muna at idagdag ang mga ito kahit kailan.</string>
     <string name="onboarding_closet_add_items">Magdagdag ng damit ngayon</string>
-    <string name="onboarding_closet_explore">Tuklasin ang app</string>
     <string name="onboarding_tour_replay">Subukan ang tour</string>
     <string name="onboarding_tour_replay_sub">I-replay ang welcome walkthrough</string>
 
@@ -831,41 +802,11 @@
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Idagdag ang iyong Gemini API key</string>
-    <string name="onboarding_apikey_body">Gumagana ang LibreLookAI sa Google Gemini gamit ang sarili mong API key. Naka-imbak lang ito sa device na ito at direktang ginagamit sa Google — walang dumadaan sa aming mga server.</string>
-    <string name="onboarding_apikey_tiers">Sapat na ang libreng key para sa pag-tag at mga suhestiyon sa outfit. Ang virtual try-on at pag-alis ng background ay gumagawa ng mga larawan at nangangailangan ng bayad na key na may naka-enable na billing — sisingilin ka pa rin ng Google ayon lang sa aktwal mong nagagamit.</string>
-    <string name="onboarding_apikey_get">Kumuha ng API key</string>
-    <string name="onboarding_apikey_billing">I-enable ang billing (para sa try-on)</string>
-    <string name="onboarding_apikey_saved">Na-save ang key sa device na ito ✓</string>
-    <string name="onboarding_apikey_offline">Kumonekta sa internet para buksan ang Google AI Studio. Puwede mo pa ring i-paste ang key na mayroon ka na.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Hindi nailipat ang ilang item. Naibalik na ang mga ito.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Ikonekta ang iyong Google Drive</string>
-    <string name="onboarding_drive_body">Iniingatan ng LibreLookAI ang lahat — ang iyong mga damit, outfit at litrato — sa isang pribadong folder sa sarili mong Google Drive. Walang itinatabi sa aming mga server, at ikaw lang ang makakakita nito. Mag-sign in gamit ang Google para gawin ang iyong wardrobe.</string>
-    <string name="onboarding_drive_connect">Mag-sign in gamit ang Google</string>
-    <string name="onboarding_drive_connected">Nakakonekta ang Google Drive ✓</string>
-    <string name="onboarding_drive_offline">Kumonekta sa internet para mag-sign in gamit ang Google.</string>
-    <string name="onboarding_background_title">Payagan ang pagproseso sa background</string>
-    <string name="onboarding_background_body">Ang pag-import ng mga litrato, pag-alis ng background at pag-tag ng mga damit gamit ang AI ay maaaring tumagal nang kaunti. Kailangan ng LibreLookAI ng walang-limitasyong pagproseso sa background para hindi ito patayin ng Android sa kalagitnaan ng gawain — na kung hindi ay maaaring mag-iwan ng kalahating na-import na mga item, nawawalang tag o sirang file.\n\nPinapayagan lang nito ang app na tapusin ang gawaing sinimulan mo; wala itong pinapatakbo nang mag-isa.</string>
-    <string name="onboarding_background_allow">Payagan ang pagproseso sa background</string>
-    <string name="onboarding_background_granted">Pinayagan ang pagproseso sa background ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">I-enable ang lokasyon para sa panahon</string>
-    <string name="onboarding_location_body">Ginagamit ng LibreLookAI ang iyong tinatayang lokasyon para tingnan ang lokal na panahon, para makapagmungkahi ng mga damit na bagay sa kondisyon ng araw. Nananatili sa iyong device ang iyong lokasyon at ginagamit lang para kunin ang panahon — hindi ito kailanman iniimbak o ibinabahagi. Maaari mong laktawan ito at i-enable mamaya.</string>
-    <string name="onboarding_location_allow">Payagan ang access sa lokasyon</string>
-    <string name="onboarding_location_granted">Naka-enable ang lokasyon ✓</string>
-    <string name="onboarding_finish_setup_title">Ang iyong setup</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Pagpoproseso sa background</string>
-    <string name="onboarding_finish_apikey">Gemini API key</string>
-    <string name="onboarding_finish_location">Lokasyon para sa panahon</string>
-    <string name="onboarding_finish_grant">I-set up</string>
-    <string name="onboarding_finish_warning">Hindi pa kumpleto ang setup. Ang mga item na minarkahan sa itaas ay hindi gagana hangga\'t hindi mo tinatapos — maaari mong i-set up ang mga ito dito o mamaya sa Mga Setting.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Kailangan ng Gemini API key</string>
     <string name="ai_no_key_message">Gumagamit ang feature na ito ng Gemini AI ng Google, na nangangailangan ng sarili mong API key. Magdagdag ng libreng key para makapagsimulang mag-tag ng damit at makakuha ng mga ideya sa outfit (kailangan ng key na may naka-enable na billing para sa virtual try-on at pag-alis ng background).</string>
@@ -928,12 +869,6 @@
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Naghahanap ng kasalukuyang wardrobe na i-import…</string>
-    <string name="onboarding_drive_importing">Ini-import ang iyong kasalukuyang wardrobe… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Na-import na ang wardrobe ✓</string>
-    <string name="onboarding_drive_import_error">Hindi namin awtomatikong na-import ang iyong kasalukuyang wardrobe. Maaari kang subukan muli o pumili mismo ng folder.</string>
-    <string name="onboarding_drive_import_manual">Pumili ng folder nang manu-mano</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Kalidad ng larawan</string>
     <string name="settings_image_quality_sub">Balansehin ang storage at detalye. Apektado ang mga bagong larawang nase-save sa iyong Drive.</string>
@@ -979,9 +914,6 @@
     <string name="ai_progress_timing">%1$ds · karaniwang 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Hindi makakonekta sa Google Drive. Subukang muli.</string>
-    <string name="drive_picker_opening">Binubuksan ang Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Pumili ng mga damit na tumatakip sa itaas at ibabang bahagi ng katawan — isang full-body na piraso (damit o jumpsuit) o isang pang-itaas kasama ang isang pang-ibaba. Pinananatili nitong ganap na nakadamit ang nabuong try-on.</string>
 

@@ -107,7 +107,6 @@
     <string name="settings_gender_other">Lain-lain</string>
     <string name="settings_year_of_birth">Tahun Lahir</string>
     <string name="settings_year_placeholder">cth. 1990</string>
-    <string name="settings_style_prefs">Preferensi Pakaian</string>
     <string name="settings_style_placeholder">Huraikan apa yang anda suka pakai, acara yang dihadiri, warna kegemaran, jenama, dsb…</string>
     <string name="settings_saved">Preferensi disimpan</string>
     <string name="settings_data_tags_title">Tag Almari</string>
@@ -650,7 +649,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="tryon_slot_back">Belakang</string>
     <string name="tryon_slot_front">Depan</string>
     <string name="tryon_slot_side">Sisi</string>
-    <string name="tryon_try_again">Cuba lagi</string>
     <string name="tryon_use_outfit">Guna pakaian</string>
     <string name="tryon_view_source_outfit">Lihat pakaian</string>
     <string name="wardrobe_create_style">Cipta pakaian</string>
@@ -741,8 +739,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="settings_more_advanced_subtitle">Penggunaan &amp; kos AI · kunci API · pilihan lanjutan</string>
     <string name="settings_more_about">Perihal LibreLookAI</string>
     <string name="settings_profile_edit_title">Edit profil</string>
-    <string name="settings_profile_gender">Jantina / kata ganti</string>
-    <string name="settings_profile_year">Tahun lahir</string>
     <string name="settings_profile_ai_considerations">Apa yang AI patut pertimbangkan</string>
     <string name="settings_advanced_title">Lanjutan</string>
     <string name="settings_section_advanced_fix">Betulkan kesilapan AI</string>
@@ -773,32 +769,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="composer_tags_hint">Pilih ciri pakaian yang dipertimbangkan AI. Kurang butiran = cadangan lebih pantas, murah dan fokus.</string>
 
     <!-- Onboarding tour -->
-    <string name="onboarding_skip">Langkau</string>
-    <string name="onboarding_next">Seterusnya</string>
-    <string name="onboarding_back">Kembali</string>
-    <string name="onboarding_welcome_title">Selamat datang ke LibreLookAI</string>
-    <string name="onboarding_welcome_body">Penggaya AI anda untuk almari pakaian yang anda sedia ada. Ambil foto pakaian anda, dapatkan idea set pakaian, cuba pakai dan kemas untuk perjalanan — semuanya peribadi dalam Google Drive anda sendiri.</string>
-    <string name="onboarding_wardrobe_title">Almari pakaian digital anda</string>
-    <string name="onboarding_wardrobe_body">Foto setiap item sekali. AI membuang latar belakang dan menanda jenis, warna, bahan dan banyak lagi, supaya semuanya kekal boleh dicari.</string>
-    <string name="onboarding_outfits_title">Idea set pakaian AI</string>
-    <string name="onboarding_outfits_body">Dapatkan cadangan set pakaian yang disesuaikan dengan cuaca, majlis dan citarasa anda — dibina hanya daripada pakaian yang benar-benar anda miliki.</string>
-    <string name="onboarding_tryon_title">Cuba set pakaian pada diri anda</string>
-    <string name="onboarding_tryon_body">Tambah foto diri anda dan lihat mana-mana set pakaian pada anda sebelum memakainya. Ketik butang tengah bila-bila masa untuk mula mencuba.</string>
-    <string name="onboarding_travel_title">Kemas untuk sebarang perjalanan</string>
-    <string name="onboarding_travel_body">Beritahu perancang perjalanan ke mana dan berapa lama anda pergi. Ia menyusun almari kapsul hari demi hari daripada almari anda.</string>
-    <string name="onboarding_shopping_title">Membeli-belah lebih bijak</string>
-    <string name="onboarding_shopping_body">Simpan item yang anda pertimbangkan dan biar pembantu membeli-belah menyemak sama ada ia padan dengan yang sedia ada — dan mengisi jurang sebenar.</string>
-    <string name="onboarding_profile_title">Beritahu kami gaya anda</string>
-    <string name="onboarding_profile_body">Ini membantu AI menyesuaikan setiap cadangan untuk anda. Anda boleh mengubahnya bila-bila masa dalam Tetapan.</string>
-    <string name="onboarding_photo_title">Tambah foto untuk mencuba</string>
-    <string name="onboarding_photo_body">Foto seluruh badan dari hadapan membolehkan anda mencuba set pakaian pada diri sendiri. Pilihan — anda boleh tambah kemudian.</string>
-    <string name="onboarding_photo_add">Tambah foto</string>
-    <string name="onboarding_photo_added">Foto ditambah</string>
-    <string name="onboarding_photo_offline">Sambung ke internet untuk menambah foto anda.</string>
-    <string name="onboarding_closet_title">Bina almari anda</string>
-    <string name="onboarding_closet_body">Almari pertama anda sudah sedia. Tambah beberapa pakaian untuk mendapatkan idea set pakaian pertama anda — atau terokai dahulu dan tambah bila-bila anda mahu.</string>
     <string name="onboarding_closet_add_items">Tambah pakaian sekarang</string>
-    <string name="onboarding_closet_explore">Terokai apl</string>
     <string name="onboarding_tour_replay">Ikuti lawatan</string>
     <string name="onboarding_tour_replay_sub">Main semula lawatan selamat datang</string>
 
@@ -807,41 +778,11 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
-    <string name="onboarding_apikey_title">Tambah kunci API Gemini anda</string>
-    <string name="onboarding_apikey_body">LibreLookAI berjalan pada Google Gemini menggunakan kunci API anda sendiri. Ia disimpan hanya pada peranti ini dan digunakan terus dengan Google — tiada apa-apa melalui pelayan kami.</string>
-    <string name="onboarding_apikey_tiers">Kunci percuma sudah meliputi penandaan dan cadangan pakaian. Cuba pakai maya dan pembuangan latar menjana imej dan memerlukan kunci berbayar dengan pengebilan didayakan — Google tetap mengecaj mengikut penggunaan sebenar anda sahaja.</string>
-    <string name="onboarding_apikey_get">Dapatkan kunci API</string>
-    <string name="onboarding_apikey_billing">Dayakan pengebilan (untuk cuba pakai)</string>
-    <string name="onboarding_apikey_saved">Kunci disimpan pada peranti ini ✓</string>
-    <string name="onboarding_apikey_offline">Sambung ke internet untuk membuka Google AI Studio. Anda masih boleh menampal kunci yang sedia ada.</string>
-
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Sesetengah item tidak dapat dialihkan. Item telah dipulihkan.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
-    <string name="onboarding_drive_title">Sambungkan Google Drive anda</string>
-    <string name="onboarding_drive_body">LibreLookAI menyimpan segalanya — pakaian, set pakaian dan foto anda — dalam folder peribadi di Google Drive anda sendiri. Tiada apa-apa disimpan pada pelayan kami dan hanya anda yang boleh melihatnya. Log masuk dengan Google untuk mencipta almari pakaian anda.</string>
-    <string name="onboarding_drive_connect">Log masuk dengan Google</string>
-    <string name="onboarding_drive_connected">Google Drive disambungkan ✓</string>
-    <string name="onboarding_drive_offline">Sambung ke internet untuk log masuk dengan Google.</string>
-    <string name="onboarding_background_title">Benarkan pemprosesan latar belakang</string>
-    <string name="onboarding_background_body">Mengimport foto, membuang latar belakang dan menanda pakaian dengan AI mungkin mengambil sedikit masa. LibreLookAI memerlukan pemprosesan latar belakang tanpa had supaya Android tidak menamatkannya di tengah tugas — yang jika tidak boleh meninggalkan item separuh diimport, tag yang hilang atau fail yang rosak.\n\nIni hanya membenarkan apl menyelesaikan kerja yang anda mulakan; ia tidak menjalankan apa-apa dengan sendirinya.</string>
-    <string name="onboarding_background_allow">Benarkan pemprosesan latar belakang</string>
-    <string name="onboarding_background_granted">Pemprosesan latar belakang dibenarkan ✓</string>
-
     <!-- Onboarding location step + finish-page setup summary -->
-    <string name="onboarding_location_title">Dayakan lokasi untuk cuaca</string>
-    <string name="onboarding_location_body">LibreLookAI menggunakan anggaran lokasi anda untuk menyemak cuaca tempatan, supaya ia boleh mencadangkan pakaian yang sesuai dengan keadaan hari itu. Lokasi anda kekal pada peranti anda dan hanya digunakan untuk mendapatkan cuaca — ia tidak pernah disimpan atau dikongsi. Anda boleh melangkau langkah ini dan mendayakannya kemudian.</string>
-    <string name="onboarding_location_allow">Benarkan akses lokasi</string>
-    <string name="onboarding_location_granted">Lokasi didayakan ✓</string>
-    <string name="onboarding_finish_setup_title">Persediaan anda</string>
-    <string name="onboarding_finish_drive">Google Drive</string>
-    <string name="onboarding_finish_background">Pemprosesan latar belakang</string>
-    <string name="onboarding_finish_apikey">Kunci API Gemini</string>
-    <string name="onboarding_finish_location">Lokasi untuk cuaca</string>
-    <string name="onboarding_finish_grant">Sediakan</string>
-    <string name="onboarding_finish_warning">Persediaan belum lengkap. Item yang ditandakan di atas tidak akan berfungsi sehingga anda menyelesaikannya — anda boleh menyediakannya di sini atau kemudian dalam Tetapan.</string>
-
     <!-- AI key/error global notices (no-key + failure/retry) -->
     <string name="ai_no_key_title">Kunci API Gemini diperlukan</string>
     <string name="ai_no_key_message">Ciri ini menggunakan AI Gemini Google, yang memerlukan kunci API anda sendiri. Tambah kunci percuma untuk mula menanda pakaian dan mendapatkan idea pakaian (cuba maya dan pembuangan latar memerlukan kunci dengan pengebilan didayakan).</string>
@@ -904,12 +845,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Unify close affordance (action_close) -->
     <!-- Drive migration: auto-detect import (items 2/3) -->
-    <string name="onboarding_drive_checking">Mencari almari pakaian sedia ada untuk diimport…</string>
-    <string name="onboarding_drive_importing">Mengimport almari pakaian sedia ada anda… %1$d / %2$d</string>
-    <string name="onboarding_drive_imported">Almari pakaian diimport ✓</string>
-    <string name="onboarding_drive_import_error">Kami tidak dapat mengimport almari pakaian sedia ada anda secara automatik. Anda boleh cuba lagi atau pilih folder sendiri.</string>
-    <string name="onboarding_drive_import_manual">Pilih folder secara manual</string>
-
     <!-- Image quality setting (WebP) -->
     <string name="settings_image_quality_row">Kualiti imej</string>
     <string name="settings_image_quality_sub">Imbangi storan dengan perincian. Memberi kesan kepada foto baharu yang disimpan ke Drive anda.</string>
@@ -955,9 +890,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="ai_progress_timing">%1$ds · biasanya 20–40s</string>
 
     <!-- Drive folder picker strings -->
-    <string name="drive_picker_failed">Tidak dapat menyambung ke Google Drive. Cuba lagi.</string>
-    <string name="drive_picker_opening">Membuka Google Drive…</string>
-
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Pilih pakaian yang menutupi bahagian atas dan bawah badan — sama ada sehelai penuh (gaun atau jumpsuit) atau pakaian atas bersama pakaian bawah. Ini memastikan percubaan yang dijana berpakaian lengkap.</string>
 

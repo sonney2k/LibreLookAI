@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.wardrobe.DriveImage
 import java.io.File
 
@@ -172,7 +173,7 @@ internal fun TryOnResultContent(
                 ) {
                     Icon(Icons.Default.Refresh, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text(stringResource(R.string.tryon_try_again))
+                    Text(stringResource(DsR.string.tryon_try_again))
                 }
             }
             TextButton(onClick = onChangeItems, modifier = Modifier.fillMaxWidth()) {
