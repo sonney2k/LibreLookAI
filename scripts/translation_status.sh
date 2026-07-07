@@ -2,7 +2,7 @@
 # Report translation completeness for every values-<locale>/strings.xml,
 # measured against the default values/strings.xml — aggregated across every
 # module that owns string resources (:app, :core:designsystem, :core:service,
-# :feature:auth, :feature:billing and :feature:onboarding after the § 1 res-split).
+# :feature:auth, :feature:billing, :feature:onboarding and :feature:tryon after the § 1 res-split).
 #
 # Usage:
 #   scripts/translation_status.sh            # table sorted by completeness (worst first)
@@ -22,6 +22,7 @@ RES_DIRS=(
     "$REPO_ROOT/feature/auth/src/main/res"
     "$REPO_ROOT/feature/billing/src/main/res"
     "$REPO_ROOT/feature/onboarding/src/main/res"
+    "$REPO_ROOT/feature/tryon/src/main/res"
 )
 
 for d in "${RES_DIRS[@]}"; do

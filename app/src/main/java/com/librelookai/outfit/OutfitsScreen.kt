@@ -51,12 +51,12 @@ internal enum class OutfitSortOption {
 
 @Composable
 internal fun OutfitSortOption.displayLabel(): String = when (this) {
-    OutfitSortOption.DATE_DESC  -> stringResource(R.string.outfits_sort_newest)
-    OutfitSortOption.DATE_ASC   -> stringResource(R.string.outfits_sort_oldest)
+    OutfitSortOption.DATE_DESC  -> stringResource(DsR.string.outfits_sort_newest)
+    OutfitSortOption.DATE_ASC   -> stringResource(DsR.string.outfits_sort_oldest)
     OutfitSortOption.POPULARITY -> stringResource(R.string.outfits_sort_most_worn)
-    OutfitSortOption.NAME_AZ    -> stringResource(R.string.outfits_sort_name_az)
-    OutfitSortOption.NAME_ZA    -> stringResource(R.string.outfits_sort_name_za)
-    OutfitSortOption.ITEM_COUNT -> stringResource(R.string.outfits_sort_most_items)
+    OutfitSortOption.NAME_AZ    -> stringResource(DsR.string.outfits_sort_name_az)
+    OutfitSortOption.NAME_ZA    -> stringResource(DsR.string.outfits_sort_name_za)
+    OutfitSortOption.ITEM_COUNT -> stringResource(DsR.string.outfits_sort_most_items)
 }
 
 

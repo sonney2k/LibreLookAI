@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Ayakkabı</string>
     <string name="outfit_layer_accessories">Aksesuar</string>
     <string name="outfit_layer_other">Diğer</string>
+    <string name="action_delete">Sil</string>
+    <string name="action_remove">Kaldır</string>
+    <string name="action_sort">Sırala</string>
+    <string name="error_save_failed">Kaydetme başarısız</string>
+    <string name="outfits_no_match">Filtreyle eşleşen kombin yok</string>
+    <string name="outfits_sort_most_items">En çok öge</string>
+    <string name="outfits_sort_name_az">İsim A–Z</string>
+    <string name="outfits_sort_name_za">İsim Z–A</string>
+    <string name="outfits_sort_newest">En yeni önce</string>
+    <string name="outfits_sort_oldest">En eski önce</string>
+    <string name="outfits_unnamed">Adsız kombin</string>
+    <string name="travel_day">%d. Gün</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Öge ekle</string>
 </resources>

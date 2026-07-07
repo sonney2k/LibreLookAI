@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Det gick inte att ta bort</string>
+    <string name="tryon_change_items">Ändra plagg</string>
+    <string name="tryon_composer_explain">Alla plagg nedan kommer bäras tillsammans i den genererade provningen. Tryck på ett plagg för att ta bort det; tryck på \"+\" för att lägga till fler.</string>
+    <string name="tryon_composer_items_title">Plagg i denna provning (%1$d)</string>
+    <string name="tryon_coverage_blocked">Välj kläder som täcker både överkroppen och underkroppen — antingen ett helkroppsplagg (klänning eller jumpsuit) eller en överdel tillsammans med en underdel. Då förblir din genererade provning fullt påklädd.</string>
+    <string name="tryon_delete_confirm_text">Detta tar bort den sparade provningsbilden från Drive. Garderobsplaggen behålls.</string>
+    <string name="tryon_delete_confirm_title">Ta bort provning?</string>
+    <string name="tryon_error">Provningsgenerering misslyckades</string>
+    <string name="tryon_generate">Generera provning</string>
+    <string name="tryon_generate_failed">Genereringen misslyckades</string>
+    <string name="tryon_generating">Genererar din provning…</string>
+    <string name="tryon_history_detail_title">Provningsdetaljer</string>
+    <string name="tryon_history_items_missing">Plagg finns inte längre tillgängliga i din garderob.</string>
+    <string name="tryon_history_items_title">Burna plagg</string>
+    <string name="tryon_history_title">Tidigare provningar</string>
+    <string name="tryon_missing_photos_items">Foton eller plagg saknas</string>
+    <string name="tryon_outfit_picker_empty">Inga sparade outfits ännu. Skapa en i Outfits-fliken för att använda här.</string>
+    <string name="tryon_outfit_picker_title">Välj en outfit</string>
+    <string name="tryon_save_to_drive">Spara</string>
+    <string name="tryon_saved_to_drive">Sparad</string>
+    <string name="tryon_saving">Sparar…</string>
+    <string name="tryon_slot_back">Baksida</string>
+    <string name="tryon_slot_front">Framifrån</string>
+    <string name="tryon_slot_side">Sida</string>
+    <string name="tryon_title">Prova på mig</string>
+    <string name="tryon_view_source_outfit">Visa outfit</string>
+</resources>

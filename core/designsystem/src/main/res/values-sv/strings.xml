@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Skor</string>
     <string name="outfit_layer_accessories">Accessoarer</string>
     <string name="outfit_layer_other">Övrigt</string>
+    <string name="action_delete">Ta bort</string>
+    <string name="action_remove">Ta bort</string>
+    <string name="action_sort">Sortera</string>
+    <string name="error_save_failed">Det gick inte att spara</string>
+    <string name="outfits_no_match">Inga outfits matchar filtret</string>
+    <string name="outfits_sort_most_items">Flest plagg</string>
+    <string name="outfits_sort_name_az">Namn A–Ö</string>
+    <string name="outfits_sort_name_za">Namn Ö–A</string>
+    <string name="outfits_sort_newest">Nyaste först</string>
+    <string name="outfits_sort_oldest">Äldsta först</string>
+    <string name="outfits_unnamed">Namnlös outfit</string>
+    <string name="travel_day">Dag %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Lägg till plagg</string>
 </resources>

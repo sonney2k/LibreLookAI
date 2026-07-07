@@ -220,7 +220,7 @@ internal fun OutfitListScreen(
         // in-app language toggle inside the dialog window. (See CLAUDE.md → Dialog quirks.)
         val parentContext = LocalContext.current
         val parentConfiguration = LocalConfiguration.current
-        val unnamed = stringResource(R.string.outfits_unnamed)
+        val unnamed = stringResource(DsR.string.outfits_unnamed)
         val shown = remember(brokenOutfits) { brokenOutfits.take(8) }
         AlertDialog(
             onDismissRequest = { showBrokenDeleteDialog = false },
@@ -266,7 +266,7 @@ internal fun OutfitListScreen(
                         Analytics.action("Outfits", "confirm_delete_broken", mapOf("count" to brokenOutfits.size.toString()))
                         onDeleteBrokenOutfits(); showBrokenDeleteDialog = false
                     }) {
-                        Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(DsR.string.action_delete), color = MaterialTheme.colorScheme.error)
                     }
                 }
             },
@@ -309,7 +309,7 @@ internal fun OutfitListScreen(
                         Analytics.action("Outfits", "confirm_delete_selected")
                         onDeleteSelectedStyles(); showDeleteDialog = false
                     }) {
-                        Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(DsR.string.action_delete), color = MaterialTheme.colorScheme.error)
                     }
                 }
             },
@@ -474,7 +474,7 @@ internal fun OutfitListScreen(
                 }
                 displayedStyles.isEmpty() -> {
                     Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Text(stringResource(R.string.outfits_no_match), style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(DsR.string.outfits_no_match), style = MaterialTheme.typography.bodyLarge)
                     }
                 }
                 else -> {
@@ -580,7 +580,7 @@ internal fun OutfitListScreen(
                 )
                 add(
                     SelectionAction(
-                        label = stringResource(R.string.action_delete),
+                        label = stringResource(DsR.string.action_delete),
                         icon = Icons.Default.Delete,
                         kind = SelectionAction.Kind.Danger,
                     ) {
@@ -646,7 +646,7 @@ private fun StyleSortButton(
     val parentConfiguration = LocalConfiguration.current
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(DsR.string.action_sort))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             CompositionLocalProvider(

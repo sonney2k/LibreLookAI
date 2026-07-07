@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Provningar</string>
 
     <!-- Vanliga åtgärder -->
-    <string name="action_delete">Ta bort</string>
     <string name="action_save">Spara</string>
     <string name="action_edit">Redigera</string>
     <string name="action_saving">Sparar…</string>
-    <string name="action_sort">Sortera</string>
-    <string name="action_remove">Ta bort</string>
     <string name="cd_ai_suggestion">AI-förslag</string>
     <string name="cd_refine">Förfina</string>
     <string name="filter_location">Plats</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Inga outfits ännu</string>
     <string name="outfits_empty_hint">Tryck på + för att bygga en outfit från din garderob</string>
-    <string name="outfits_no_match">Inga outfits matchar filtret</string>
-    <string name="outfits_sort_newest">Nyaste först</string>
-    <string name="outfits_sort_oldest">Äldsta först</string>
     <string name="outfits_sort_most_worn">Mest burna</string>
-    <string name="outfits_sort_name_az">Namn A–Ö</string>
-    <string name="outfits_sort_name_za">Namn Ö–A</string>
-    <string name="outfits_sort_most_items">Flest plagg</string>
     <string name="outfits_create_manual">Skapa outfit manuellt</string>
     <string name="outfits_suggest">Föreslå befintlig outfit</string>
     <string name="prediction_setup_title">Hitta med AI</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Inga nya taggar föreslagna.</string>
     <string name="outfits_suggest_tags_apply">Lägg till markerade</string>
     <string name="outfits_suggest_tags_hint">Tryck på taggar för att växla. Markerade taggar läggs till i denna outfit.</string>
-    <string name="outfits_unnamed">Namnlös outfit</string>
     <string name="outfits_swap_item_for">Byt: %s</string>
     <string name="outfits_suggest_alternatives">Föreslå 10 alternativ</string>
     <string name="outfits_select_item">Välj</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Bättre för regn</string>
     <string name="travel_refine_evening">Lägg till kvällsoutfits</string>
     <string name="travel_refine_reuse">Maximera outfitåteranvändning</string>
-    <string name="travel_day">Dag %d</string>
     <string name="travel_save_as_style">Spara som outfit</string>
     <string name="travel_saved_as_style">Sparad</string>
     <string name="travel_move_to_travel">Flytta allt till Rese-plats</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Du är offline — endast visningsläge</string>
 
     <!-- Prova på mig -->
-    <string name="tryon_title">Prova på mig</string>
     <string name="tryon_fab">Prova på mig</string>
     <string name="tryon_section_title">Provningsfoton</string>
     <string name="tryon_section_desc">Ladda upp helkroppsfoton framifrån, från sidan och bakifrån. Appen använder dem som referens när en provningsförhandsvisning av en outfit eller ett garderobsplagg genereras på dig. Foton stannar på din egen Drive.</string>
-    <string name="tryon_slot_front">Framifrån</string>
-    <string name="tryon_slot_side">Sida</string>
-    <string name="tryon_slot_back">Baksida</string>
     <string name="tryon_add_photo">Lägg till %1$s-foto</string>
     <string name="tryon_replace_photo">Ersätt %1$s</string>
     <string name="tryon_remove_photo">Ta bort %1$s</string>
     <string name="tryon_uploading">Laddar upp…</string>
-    <string name="tryon_generating">Genererar din provning…</string>
-    <string name="tryon_error">Provningsgenerering misslyckades</string>
     <string name="tryon_no_photos">Lägg till ett provningsfoto under Inställningar → Profil för att använda denna funktion.</string>
     <string name="tryon_save_to_gallery">Spara i galleri</string>
     <string name="tryon_saved">Sparad i Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galleri</string>
 
     <!-- Provningskompositör / historik -->
-    <string name="tryon_composer_explain">Alla plagg nedan kommer bäras tillsammans i den genererade provningen. Tryck på ett plagg för att ta bort det; tryck på \"+\" för att lägga till fler.</string>
-    <string name="tryon_composer_items_title">Plagg i denna provning (%1$d)</string>
-    <string name="tryon_add_item">Lägg till plagg</string>
     <string name="tryon_add_items_title">Lägg till garderobsplagg</string>
-    <string name="tryon_generate">Generera provning</string>
-    <string name="tryon_change_items">Ändra plagg</string>
-    <string name="tryon_save_to_drive">Spara</string>
-    <string name="tryon_saved_to_drive">Sparad</string>
-    <string name="tryon_saving">Sparar…</string>
     <string name="tryon_history_action">Historik</string>
-    <string name="tryon_history_title">Tidigare provningar</string>
-    <string name="tryon_history_detail_title">Provningsdetaljer</string>
     <string name="tryon_history_empty">Inga sparade provningar ännu. Generera en och tryck på \"Spara\" för att behålla den här.</string>
-    <string name="tryon_history_items_title">Burna plagg</string>
-    <string name="tryon_history_items_missing">Plagg finns inte längre tillgängliga i din garderob.</string>
-    <string name="tryon_delete_confirm_title">Ta bort provning?</string>
-    <string name="tryon_delete_confirm_text">Detta tar bort den sparade provningsbilden från Drive. Garderobsplaggen behålls.</string>
     <string name="tryon_use_outfit">Använd en outfit</string>
-    <string name="tryon_outfit_picker_title">Välj en outfit</string>
-    <string name="tryon_outfit_picker_empty">Inga sparade outfits ännu. Skapa en i Outfits-fliken för att använda här.</string>
     <string name="tryon_from_outfit">Från outfit: %1$s</string>
-    <string name="tryon_view_source_outfit">Visa outfit</string>
 
     <!-- Om -->
     <string name="settings_tab_about">Om</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Använder din egen Gemini-nyckel — inga krediter förbrukas.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Planerad resa</string>
     <string name="trip_saved_label">Sparad</string>
     <string name="trip_saved_confirmation">Resa och outfits sparade</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Välj kläder som täcker både överkroppen och underkroppen — antingen ett helkroppsplagg (klänning eller jumpsuit) eller en överdel tillsammans med en underdel. Då förblir din genererade provning fullt påklädd.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Läser in detaljer %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Sparar outfit…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Genereringen misslyckades</string>
-    <string name="tryon_missing_photos_items">Foton eller plagg saknas</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Det gick inte att spara</string>
-    <string name="error_delete_failed">Det gick inte att ta bort</string>
     <string name="error_upload_failed">Uppladdningen misslyckades: %1$s</string>
     <string name="error_original_unavailable">Originalet är inte tillgängligt</string>
     <string name="error_gemini_no_response">AI:n svarade inte.</string>

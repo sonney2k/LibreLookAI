@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">試穿</string>
 
     <!-- Common actions -->
-    <string name="action_delete">刪除</string>
     <string name="action_save">儲存</string>
     <string name="action_edit">編輯</string>
     <string name="action_saving">儲存中…</string>
-    <string name="action_sort">排序</string>
-    <string name="action_remove">移除</string>
     <string name="cd_ai_suggestion">AI 建議</string>
     <string name="cd_refine">優化</string>
     <string name="filter_location">位置</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">目前沒有穿搭</string>
     <string name="outfits_empty_hint">點擊 + 從衣櫥建立穿搭</string>
-    <string name="outfits_no_match">沒有符合篩選條件的穿搭</string>
-    <string name="outfits_sort_newest">最新優先</string>
-    <string name="outfits_sort_oldest">最舊優先</string>
     <string name="outfits_sort_most_worn">穿著次數最多</string>
-    <string name="outfits_sort_name_az">名稱 A–Z</string>
-    <string name="outfits_sort_name_za">名稱 Z–A</string>
     <string name="outfits_create_manual">手動建立穿搭</string>
     <string name="outfits_suggest">建議現有穿搭</string>
     <string name="prediction_setup_title">使用 AI 尋找</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">打包清單</string>
     <string name="travel_clear">清除</string>
     <string name="travel_empty">輸入目的地以開始</string>
-    <string name="travel_day">第 %d 天</string>
     <string name="travel_save_as_style">儲存為穿搭</string>
     <string name="travel_saved_as_style">已儲存</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">您目前離線 — 僅供檢視模式</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">試穿在我身上</string>
     <string name="tryon_fab">試穿在我身上</string>
     <string name="tryon_uploading">正在上傳…</string>
-    <string name="tryon_generating">正在生成您的試穿效果…</string>
-    <string name="tryon_error">試穿生成失敗</string>
     <string name="tryon_save_to_gallery">儲存到相簿</string>
     <string name="tryon_saved">已儲存到 Pictures/LibreLookAI</string>
     <string name="tryon_camera">相機</string>
@@ -458,7 +446,6 @@
     <string name="outfits_select_all_count">全選 %d 套</string>
     <string name="outfits_select_item">選取</string>
     <string name="outfits_selected_count">已選 %d 套</string>
-    <string name="outfits_sort_most_items">單品最多</string>
     <string name="outfits_suggest_alternatives">建議 10 種替代方案</string>
     <string name="outfits_suggest_tags">用 AI 建議標籤</string>
     <string name="outfits_suggest_tags_apply">新增已選</string>
@@ -467,7 +454,6 @@
     <string name="outfits_suggest_tags_loading">正在建議標籤…</string>
     <string name="outfits_suggest_tags_title">建議標籤</string>
     <string name="outfits_swap_item_for">替換：%s</string>
-    <string name="outfits_unnamed">未命名穿搭</string>
     <string name="prediction_setup_weather_pick_day">選擇日期</string>
     <string name="repair_duplicate_of">類似 %1$s</string>
     <string name="repair_duplicates_hint">勾選要從 Drive 刪除的單品。點擊以查看樣式。</string>
@@ -604,39 +590,19 @@
     <string name="travel_refine_rain">更適合雨天</string>
     <string name="travel_refine_reuse">最大化穿搭重複使用</string>
     <string name="travel_regenerate">重新生成</string>
-    <string name="tryon_add_item">新增單品</string>
     <string name="tryon_add_items_title">新增衣櫥單品</string>
     <string name="tryon_add_photo">新增 %1$s 相片</string>
-    <string name="tryon_change_items">更換單品</string>
-    <string name="tryon_composer_explain">下方所有單品將會一起穿在生成的試穿中。點擊單品以移除；點擊「+」以加入更多。</string>
-    <string name="tryon_composer_items_title">此次試穿的單品（%1$d）</string>
     <string name="tryon_cost_line">每次試穿 %1$d 點</string>
-    <string name="tryon_delete_confirm_text">這會從 Drive 移除已儲存的試穿圖。衣櫥單品會保留。</string>
-    <string name="tryon_delete_confirm_title">刪除試穿？</string>
     <string name="tryon_from_outfit">來自穿搭：%1$s</string>
-    <string name="tryon_generate">生成試穿</string>
     <string name="tryon_history_action">歷史</string>
-    <string name="tryon_history_detail_title">試穿詳情</string>
     <string name="tryon_history_empty">尚無已儲存的試穿。生成一張並按「儲存」即可保留在此。</string>
-    <string name="tryon_history_items_missing">單品已不在你的衣櫥中。</string>
-    <string name="tryon_history_items_title">穿著的單品</string>
-    <string name="tryon_history_title">過往試穿</string>
     <string name="tryon_no_photos">請先在 設定 → 個人資料 新增試穿相片才能使用此功能。</string>
-    <string name="tryon_outfit_picker_empty">尚無已儲存的穿搭。請先在「穿搭」頁面建立。</string>
-    <string name="tryon_outfit_picker_title">選擇穿搭</string>
     <string name="tryon_remove_photo">移除 %1$s</string>
     <string name="tryon_replace_photo">替換 %1$s</string>
     <string name="tryon_save_failed">無法儲存到圖庫</string>
-    <string name="tryon_save_to_drive">儲存</string>
-    <string name="tryon_saved_to_drive">已儲存</string>
-    <string name="tryon_saving">儲存中…</string>
     <string name="tryon_section_desc">上傳正面、側面、背面的全身相片。App 會以此作為生成你身上穿搭或單品試穿時的參考。相片只會留在你自己的 Drive 上。</string>
     <string name="tryon_section_title">試穿相片</string>
-    <string name="tryon_slot_back">背面</string>
-    <string name="tryon_slot_front">正面</string>
-    <string name="tryon_slot_side">側面</string>
     <string name="tryon_use_outfit">使用穿搭</string>
-    <string name="tryon_view_source_outfit">檢視穿搭</string>
     <string name="wardrobe_create_style">建立穿搭</string>
     <string name="wardrobe_find_by_photo">以相片尋找單品</string>
     <string name="wardrobe_find_by_photo_empty">找不到相似的單品。</string>
@@ -654,7 +620,6 @@
     <string name="wardrobe_view_original">檢視原圖</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">已規劃的行程</string>
     <string name="trip_saved_label">已儲存</string>
     <string name="trip_saved_confirmation">行程與穿搭已儲存</string>
@@ -873,7 +838,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">請選擇能同時遮蓋上半身和下半身的衣物——可以是全身式單品（洋裝或連身褲），或是上衣搭配下著。這樣產生的試穿才會完整著裝。</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">正在載入詳細資料 %1$d / %2$d</string>
@@ -883,12 +847,8 @@
     <string name="outfit_saving">正在儲存穿搭…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">生成失敗</string>
-    <string name="tryon_missing_photos_items">缺少照片或單品</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">儲存失敗</string>
-    <string name="error_delete_failed">刪除失敗</string>
     <string name="error_upload_failed">上傳失敗：%1$s</string>
     <string name="error_original_unavailable">原始檔無法使用</string>
     <string name="error_gemini_no_response">AI 未回應。</string>

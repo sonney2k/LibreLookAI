@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">신발</string>
     <string name="outfit_layer_accessories">액세서리</string>
     <string name="outfit_layer_other">기타</string>
+    <string name="action_delete">삭제</string>
+    <string name="action_remove">제거</string>
+    <string name="action_sort">정렬</string>
+    <string name="error_save_failed">저장 실패</string>
+    <string name="outfits_no_match">필터에 일치하는 코디가 없습니다</string>
+    <string name="outfits_sort_most_items">아이템 많은순</string>
+    <string name="outfits_sort_name_az">이름 A–Z</string>
+    <string name="outfits_sort_name_za">이름 Z–A</string>
+    <string name="outfits_sort_newest">최신순</string>
+    <string name="outfits_sort_oldest">오래된순</string>
+    <string name="outfits_unnamed">제목 없는 코디</string>
+    <string name="travel_day">%d일째</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">아이템 추가</string>
 </resources>

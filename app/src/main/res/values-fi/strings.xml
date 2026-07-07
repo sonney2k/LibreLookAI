@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Sovitukset</string>
 
     <!-- Yleiset toiminnot -->
-    <string name="action_delete">Poista</string>
     <string name="action_save">Tallenna</string>
     <string name="action_edit">Muokkaa</string>
     <string name="action_saving">Tallennetaan…</string>
-    <string name="action_sort">Lajittele</string>
-    <string name="action_remove">Poista</string>
     <string name="cd_ai_suggestion">Tekoälyehdotus</string>
     <string name="cd_refine">Tarkenna</string>
     <string name="filter_location">Sijainti</string>
@@ -272,13 +269,7 @@
     <!-- Asut -->
     <string name="outfits_empty">Ei vielä asuja</string>
     <string name="outfits_empty_hint">Napauta +-painiketta rakentaaksesi asun vaatekaapistasi</string>
-    <string name="outfits_no_match">Yksikään asu ei vastaa suodatinta</string>
-    <string name="outfits_sort_newest">Uusin ensin</string>
-    <string name="outfits_sort_oldest">Vanhin ensin</string>
     <string name="outfits_sort_most_worn">Eniten käytetyt</string>
-    <string name="outfits_sort_name_az">Nimi A–Ö</string>
-    <string name="outfits_sort_name_za">Nimi Ö–A</string>
-    <string name="outfits_sort_most_items">Eniten vaatteita</string>
     <string name="outfits_create_manual">Luo asu manuaalisesti</string>
     <string name="outfits_suggest">Ehdota olemassa olevaa asua</string>
     <string name="prediction_setup_title">Etsi tekoälyllä</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Uusia tunnisteita ei ehdoteta.</string>
     <string name="outfits_suggest_tags_apply">Lisää valitut</string>
     <string name="outfits_suggest_tags_hint">Napauta tunnisteita vaihtaaksesi. Valitut tunnisteet lisätään tähän asuun.</string>
-    <string name="outfits_unnamed">Nimetön asu</string>
     <string name="outfits_swap_item_for">Vaihda: %s</string>
     <string name="outfits_suggest_alternatives">Ehdota 10 vaihtoehtoa</string>
     <string name="outfits_select_item">Valitse</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Parempi sateelle</string>
     <string name="travel_refine_evening">Lisää ilta-asuja</string>
     <string name="travel_refine_reuse">Maksimoi asujen uudelleenkäyttö</string>
-    <string name="travel_day">Päivä %d</string>
     <string name="travel_save_as_style">Tallenna asuna</string>
     <string name="travel_saved_as_style">Tallennettu</string>
     <string name="travel_move_to_travel">Siirrä kaikki Matka-sijaintiin</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Olet offline-tilassa — vain katselutila</string>
 
     <!-- Sovita minulle -->
-    <string name="tryon_title">Sovita minulle</string>
     <string name="tryon_fab">Sovita minulle</string>
     <string name="tryon_section_title">Sovituskuvat</string>
     <string name="tryon_section_desc">Lataa kokovartalokuvat edestä, sivulta ja takaa. Sovellus käyttää näitä viitteenä luodessaan sovitusesikatselun asusta tai vaatekaapin vaatteesta sinulle. Kuvat pysyvät omassa Drivessasi.</string>
-    <string name="tryon_slot_front">Edestä</string>
-    <string name="tryon_slot_side">Sivu</string>
-    <string name="tryon_slot_back">Takaa</string>
     <string name="tryon_add_photo">Lisää %1$s-kuva</string>
     <string name="tryon_replace_photo">Korvaa %1$s</string>
     <string name="tryon_remove_photo">Poista %1$s</string>
     <string name="tryon_uploading">Ladataan…</string>
-    <string name="tryon_generating">Luodaan sovitustasi…</string>
-    <string name="tryon_error">Sovituksen luominen epäonnistui</string>
     <string name="tryon_no_photos">Lisää sovituskuva kohtaan Asetukset → Profiili käyttääksesi tätä ominaisuutta.</string>
     <string name="tryon_save_to_gallery">Tallenna galleriaan</string>
     <string name="tryon_saved">Tallennettu kansioon Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galleria</string>
 
     <!-- Sovituksen kokoaja / historia -->
-    <string name="tryon_composer_explain">Kaikki alla näytetyt vaatteet käytetään yhdessä luodussa sovituksessa. Napauta vaatetta poistaaksesi sen; napauta \"+\" lisätäksesi lisää.</string>
-    <string name="tryon_composer_items_title">Vaatteet tässä sovituksessa (%1$d)</string>
-    <string name="tryon_add_item">Lisää vaate</string>
     <string name="tryon_add_items_title">Lisää vaatekaapin vaatteita</string>
-    <string name="tryon_generate">Luo sovitus</string>
-    <string name="tryon_change_items">Vaihda vaatteet</string>
-    <string name="tryon_save_to_drive">Tallenna</string>
-    <string name="tryon_saved_to_drive">Tallennettu</string>
-    <string name="tryon_saving">Tallennetaan…</string>
     <string name="tryon_history_action">Historia</string>
-    <string name="tryon_history_title">Aiemmat sovitukset</string>
-    <string name="tryon_history_detail_title">Sovituksen tiedot</string>
     <string name="tryon_history_empty">Ei vielä tallennettuja sovituksia. Luo yksi ja napauta \"Tallenna\" säilyttääksesi sen täällä.</string>
-    <string name="tryon_history_items_title">Käytetyt vaatteet</string>
-    <string name="tryon_history_items_missing">Vaatteet eivät ole enää saatavilla vaatekaapissasi.</string>
-    <string name="tryon_delete_confirm_title">Poistetaanko sovitus?</string>
-    <string name="tryon_delete_confirm_text">Tämä poistaa tallennetun sovituskuvan Drivesta. Vaatekaapin vaatteet säilyvät.</string>
     <string name="tryon_use_outfit">Käytä asua</string>
-    <string name="tryon_outfit_picker_title">Valitse asu</string>
-    <string name="tryon_outfit_picker_empty">Ei vielä tallennettuja asuja. Luo sellainen Asut-välilehdellä käyttääksesi sitä täällä.</string>
     <string name="tryon_from_outfit">Asusta: %1$s</string>
-    <string name="tryon_view_source_outfit">Näytä asu</string>
 
     <!-- Tietoja -->
     <string name="settings_tab_about">Tietoja</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Käytät omaa Gemini-avaintasi — krediittejä ei kuluteta.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Suunniteltu matka</string>
     <string name="trip_saved_label">Tallennettu</string>
     <string name="trip_saved_confirmation">Matka ja asut tallennettu</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Valitse vaatteet, jotka peittävät sekä ylä- että alavartalon — joko kokovartalon vaate (mekko tai haalari) tai yläosa yhdessä alaosan kanssa. Näin luotu sovitus pysyy täysin puettuna.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Ladataan tietoja %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Tallennetaan asua…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Luonti epäonnistui</string>
-    <string name="tryon_missing_photos_items">Kuvia tai vaatteita puuttuu</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Tallennus epäonnistui</string>
-    <string name="error_delete_failed">Poisto epäonnistui</string>
     <string name="error_upload_failed">Lataus epäonnistui: %1$s</string>
     <string name="error_original_unavailable">Alkuperäistä ei saatavilla</string>
     <string name="error_gemini_no_response">Tekoäly ei vastannut.</string>

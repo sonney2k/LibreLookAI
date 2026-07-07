@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Footwear</string>
     <string name="outfit_layer_accessories">Accessories</string>
     <string name="outfit_layer_other">Iba pa</string>
+    <string name="action_delete">Tanggalin</string>
+    <string name="action_remove">Alisin</string>
+    <string name="action_sort">Pag-uri-uriin</string>
+    <string name="error_save_failed">Nabigo ang pag-save</string>
+    <string name="outfits_no_match">Walang outfit na tumutugma sa filter</string>
+    <string name="outfits_sort_most_items">Pinakamaraming item</string>
+    <string name="outfits_sort_name_az">Pangalan A–Z</string>
+    <string name="outfits_sort_name_za">Pangalan Z–A</string>
+    <string name="outfits_sort_newest">Pinakabago muna</string>
+    <string name="outfits_sort_oldest">Pinakaluma muna</string>
+    <string name="outfits_unnamed">Walang pamagat na outfit</string>
+    <string name="travel_day">Araw %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Magdagdag ng item</string>
 </resources>

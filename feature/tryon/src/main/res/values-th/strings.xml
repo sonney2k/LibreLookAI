@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">ลบไม่สำเร็จ</string>
+    <string name="tryon_change_items">เปลี่ยนรายการ</string>
+    <string name="tryon_composer_explain">รายการทั้งหมดด้านล่างจะถูกสวมใส่ร่วมกันในภาพลองที่สร้าง แตะรายการเพื่อลบ; แตะ „+” เพื่อเพิ่ม</string>
+    <string name="tryon_composer_items_title">รายการในการลองนี้ (%1$d)</string>
+    <string name="tryon_coverage_blocked">เลือกเสื้อผ้าที่ปกปิดทั้งร่างกายส่วนบนและส่วนล่าง — ไม่ว่าจะเป็นชุดเต็มตัว (เดรสหรือจัมป์สูท) หรือเสื้อท่อนบนคู่กับท่อนล่าง วิธีนี้จะทำให้การลองสวมที่สร้างขึ้นแต่งกายครบถ้วน</string>
+    <string name="tryon_delete_confirm_text">การกระทำนี้ลบภาพลองที่บันทึกจาก Drive รายการในตู้ยังคงอยู่</string>
+    <string name="tryon_delete_confirm_title">ลบการลอง?</string>
+    <string name="tryon_error">การสร้างภาพล้มเหลว</string>
+    <string name="tryon_generate">สร้างภาพลอง</string>
+    <string name="tryon_generate_failed">การสร้างล้มเหลว</string>
+    <string name="tryon_generating">กำลังสร้างภาพจำลองลองชุด…</string>
+    <string name="tryon_history_detail_title">รายละเอียดการลอง</string>
+    <string name="tryon_history_items_missing">รายการไม่มีในตู้ของคุณแล้ว</string>
+    <string name="tryon_history_items_title">รายการที่สวม</string>
+    <string name="tryon_history_title">การลองที่ผ่านมา</string>
+    <string name="tryon_missing_photos_items">ไม่มีรูปภาพหรือรายการ</string>
+    <string name="tryon_outfit_picker_empty">ยังไม่มีชุดที่บันทึก สร้างหนึ่งในแท็บชุดเพื่อใช้ที่นี่</string>
+    <string name="tryon_outfit_picker_title">เลือกชุด</string>
+    <string name="tryon_save_to_drive">บันทึก</string>
+    <string name="tryon_saved_to_drive">บันทึกแล้ว</string>
+    <string name="tryon_saving">กำลังบันทึก…</string>
+    <string name="tryon_slot_back">ด้านหลัง</string>
+    <string name="tryon_slot_front">ด้านหน้า</string>
+    <string name="tryon_slot_side">ด้านข้าง</string>
+    <string name="tryon_title">ลองใส่ชุด</string>
+    <string name="tryon_view_source_outfit">ดูชุด</string>
+</resources>

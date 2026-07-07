@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">جوتے</string>
     <string name="outfit_layer_accessories">لوازم</string>
     <string name="outfit_layer_other">دیگر</string>
+    <string name="action_delete">حذف کریں</string>
+    <string name="action_remove">نکال دیں</string>
+    <string name="action_sort">ترتیب دیں</string>
+    <string name="error_save_failed">محفوظ کرنا ناکام</string>
+    <string name="outfits_no_match">فلٹر سے مطابقت رکھنے والا کوئی لباس نہیں ہے</string>
+    <string name="outfits_sort_most_items">سب سے زیادہ آئٹمز</string>
+    <string name="outfits_sort_name_az">نام الف–ی</string>
+    <string name="outfits_sort_name_za">نام ی–الف</string>
+    <string name="outfits_sort_newest">نیا پہلے</string>
+    <string name="outfits_sort_oldest">پرانا پہلے</string>
+    <string name="outfits_unnamed">بے نام ملبوسات</string>
+    <string name="travel_day">دن %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">آئٹم شامل کریں</string>
 </resources>

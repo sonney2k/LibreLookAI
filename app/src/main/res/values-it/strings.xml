@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Prove</string>
 
     <!-- Azioni comuni -->
-    <string name="action_delete">Elimina</string>
     <string name="action_save">Salva</string>
     <string name="action_edit">Modifica</string>
     <string name="action_saving">Salvataggio…</string>
-    <string name="action_sort">Ordina</string>
-    <string name="action_remove">Rimuovi</string>
     <string name="cd_ai_suggestion">Suggerimento IA</string>
     <string name="cd_refine">Affina</string>
     <string name="filter_location">Posizione</string>
@@ -272,13 +269,7 @@
     <!-- Outfit -->
     <string name="outfits_empty">Nessun outfit ancora</string>
     <string name="outfits_empty_hint">Tocca + per creare un outfit dal tuo guardaroba</string>
-    <string name="outfits_no_match">Nessun outfit corrisponde al filtro</string>
-    <string name="outfits_sort_newest">Più recenti</string>
-    <string name="outfits_sort_oldest">Più vecchi</string>
     <string name="outfits_sort_most_worn">Più indossati</string>
-    <string name="outfits_sort_name_az">Nome A–Z</string>
-    <string name="outfits_sort_name_za">Nome Z–A</string>
-    <string name="outfits_sort_most_items">Più capi</string>
     <string name="outfits_create_manual">Crea outfit manualmente</string>
     <string name="outfits_suggest">Suggerisci outfit esistente</string>
     <string name="prediction_setup_title">Trova con IA</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Nessuna nuova etichetta suggerita.</string>
     <string name="outfits_suggest_tags_apply">Aggiungi selezionate</string>
     <string name="outfits_suggest_tags_hint">Tocca le etichette per attivare/disattivare. Le etichette selezionate vengono aggiunte a questo outfit.</string>
-    <string name="outfits_unnamed">Outfit senza titolo</string>
     <string name="outfits_swap_item_for">Scambia: %s</string>
     <string name="outfits_suggest_alternatives">Suggerisci 10 alternative</string>
     <string name="outfits_select_item">Seleziona</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Meglio per la pioggia</string>
     <string name="travel_refine_evening">Aggiungi outfit da sera</string>
     <string name="travel_refine_reuse">Massimizza riutilizzo outfit</string>
-    <string name="travel_day">Giorno %d</string>
     <string name="travel_save_as_style">Salva come outfit</string>
     <string name="travel_saved_as_style">Salvato</string>
     <string name="travel_move_to_travel">Sposta tutto nella posizione Viaggio</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Sei offline — modalità solo visualizzazione</string>
 
     <!-- Prova su di me -->
-    <string name="tryon_title">Prova su di me</string>
     <string name="tryon_fab">Prova su di me</string>
     <string name="tryon_section_title">Foto per prove</string>
     <string name="tryon_section_desc">Carica foto a figura intera da davanti, di lato e da dietro. L\'app le usa come riferimento per generare un\'anteprima di un outfit o di un capo del guardaroba indossato. Le foto rimangono nel tuo Drive.</string>
-    <string name="tryon_slot_front">Davanti</string>
-    <string name="tryon_slot_side">Lato</string>
-    <string name="tryon_slot_back">Dietro</string>
     <string name="tryon_add_photo">Aggiungi foto %1$s</string>
     <string name="tryon_replace_photo">Sostituisci %1$s</string>
     <string name="tryon_remove_photo">Rimuovi %1$s</string>
     <string name="tryon_uploading">Caricamento…</string>
-    <string name="tryon_generating">Generazione della tua prova…</string>
-    <string name="tryon_error">Generazione prova fallita</string>
     <string name="tryon_no_photos">Aggiungi una foto in Impostazioni → Profilo per usare questa funzione.</string>
     <string name="tryon_save_to_gallery">Salva nella galleria</string>
     <string name="tryon_saved">Salvato in Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galleria</string>
 
     <!-- Compositore prove / cronologia -->
-    <string name="tryon_composer_explain">Tutti i capi mostrati sotto verranno indossati insieme nella prova generata. Tocca un capo per rimuoverlo; tocca \"+\" per aggiungerne altri.</string>
-    <string name="tryon_composer_items_title">Capi in questa prova (%1$d)</string>
-    <string name="tryon_add_item">Aggiungi capo</string>
     <string name="tryon_add_items_title">Aggiungi capi dal guardaroba</string>
-    <string name="tryon_generate">Genera prova</string>
-    <string name="tryon_change_items">Cambia capi</string>
-    <string name="tryon_save_to_drive">Salva</string>
-    <string name="tryon_saved_to_drive">Salvato</string>
-    <string name="tryon_saving">Salvataggio…</string>
     <string name="tryon_history_action">Cronologia</string>
-    <string name="tryon_history_title">Prove passate</string>
-    <string name="tryon_history_detail_title">Dettagli prova</string>
     <string name="tryon_history_empty">Nessuna prova salvata. Generane una e tocca \"Salva\" per conservarla qui.</string>
-    <string name="tryon_history_items_title">Capi indossati</string>
-    <string name="tryon_history_items_missing">Capi non più disponibili nel tuo guardaroba.</string>
-    <string name="tryon_delete_confirm_title">Eliminare la prova?</string>
-    <string name="tryon_delete_confirm_text">Questo rimuove l\'immagine della prova salvata da Drive. I capi del guardaroba vengono mantenuti.</string>
     <string name="tryon_use_outfit">Usa un outfit</string>
-    <string name="tryon_outfit_picker_title">Scegli un outfit</string>
-    <string name="tryon_outfit_picker_empty">Nessun outfit salvato. Creane uno nella scheda Outfit per usarlo qui.</string>
     <string name="tryon_from_outfit">Dall\'outfit: %1$s</string>
-    <string name="tryon_view_source_outfit">Vedi outfit</string>
 
     <!-- Info -->
     <string name="settings_tab_about">Info</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Stai usando la tua chiave Gemini — non vengono spesi crediti.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Viaggio pianificato</string>
     <string name="trip_saved_label">Salvato</string>
     <string name="trip_saved_confirmation">Viaggio e look salvati</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Scegli capi che coprano sia la parte superiore sia quella inferiore del corpo — un capo intero (un abito o una tuta) oppure un capo sopra insieme a uno sotto. Così la prova generata resta completamente vestita.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Caricamento dettagli %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Salvataggio outfit…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Generazione non riuscita</string>
-    <string name="tryon_missing_photos_items">Foto o capi mancanti</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Salvataggio non riuscito</string>
-    <string name="error_delete_failed">Eliminazione non riuscita</string>
     <string name="error_upload_failed">Caricamento non riuscito: %1$s</string>
     <string name="error_original_unavailable">Originale non disponibile</string>
     <string name="error_gemini_no_response">L\'IA non ha risposto.</string>

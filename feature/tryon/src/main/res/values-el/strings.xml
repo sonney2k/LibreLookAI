@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Η διαγραφή απέτυχε</string>
+    <string name="tryon_change_items">Αλλαγή ειδών</string>
+    <string name="tryon_composer_explain">Όλα τα είδη παρακάτω θα φορεθούν μαζί στη δοκιμή. Πατήστε για αφαίρεση, + για προσθήκη.</string>
+    <string name="tryon_composer_items_title">Είδη στη δοκιμή (%1$d)</string>
+    <string name="tryon_coverage_blocked">Διάλεξε ρούχα που καλύπτουν τόσο το πάνω όσο και το κάτω μέρος του σώματος — είτε ένα ολόσωμο ρούχο (φόρεμα ή ολόσωμη φόρμα) είτε ένα πάνω μαζί με ένα κάτω. Έτσι η δοκιμή που δημιουργείται παραμένει πλήρως ντυμένη.</string>
+    <string name="tryon_delete_confirm_text">Αυτό αφαιρεί την εικόνα από το Drive. Τα είδη παραμένουν στη ντουλάπα.</string>
+    <string name="tryon_delete_confirm_title">Διαγραφή δοκιμής;</string>
+    <string name="tryon_error">Η δημιουργία δοκιμής απέτυχε</string>
+    <string name="tryon_generate">Δημιουργία δοκιμής</string>
+    <string name="tryon_generate_failed">Η δημιουργία απέτυχε</string>
+    <string name="tryon_generating">Δημιουργία δοκιμής…</string>
+    <string name="tryon_history_detail_title">Λεπτομέρειες δοκιμής</string>
+    <string name="tryon_history_items_missing">Κάποια είδη δεν υπάρχουν πια στη ντουλάπα.</string>
+    <string name="tryon_history_items_title">Είδη που φορέθηκαν</string>
+    <string name="tryon_history_title">Παλαιότερες δοκιμές</string>
+    <string name="tryon_missing_photos_items">Λείπουν φωτογραφίες ή είδη</string>
+    <string name="tryon_outfit_picker_empty">Δεν υπάρχουν σύνολα ακόμα.</string>
+    <string name="tryon_outfit_picker_title">Επιλέξτε σύνολο</string>
+    <string name="tryon_save_to_drive">Αποθήκευση</string>
+    <string name="tryon_saved_to_drive">Αποθηκεύτηκε</string>
+    <string name="tryon_saving">Αποθήκευση…</string>
+    <string name="tryon_slot_back">Πίσω</string>
+    <string name="tryon_slot_front">Εμπρός</string>
+    <string name="tryon_slot_side">Πλάι</string>
+    <string name="tryon_title">Δοκιμή πάνω μου</string>
+    <string name="tryon_view_source_outfit">Προβολή συνόλου</string>
+</resources>

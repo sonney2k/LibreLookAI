@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">जूते</string>
     <string name="outfit_layer_accessories">एक्सेसरीज़</string>
     <string name="outfit_layer_other">अन्य</string>
+    <string name="action_delete">हटाएं</string>
+    <string name="action_remove">निकालें</string>
+    <string name="action_sort">क्रमबद्ध करें</string>
+    <string name="error_save_failed">सहेजना विफल</string>
+    <string name="outfits_no_match">फ़िल्टर से मेल खाने वाला कोई आउटफ़िट नहीं है</string>
+    <string name="outfits_sort_most_items">सबसे अधिक आइटम</string>
+    <string name="outfits_sort_name_az">नाम A–Z</string>
+    <string name="outfits_sort_name_za">नाम Z–A</string>
+    <string name="outfits_sort_newest">नया पहले</string>
+    <string name="outfits_sort_oldest">पुराना पहले</string>
+    <string name="outfits_unnamed">अनाम आउटफ़िट</string>
+    <string name="travel_day">दिन %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">आइटम जोड़ें</string>
 </resources>

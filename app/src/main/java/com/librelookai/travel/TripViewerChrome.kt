@@ -49,7 +49,7 @@ internal fun TripHeader(
         Spacer(Modifier.width(4.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                if (name.isBlank()) stringResource(R.string.trip_viewer_title) else name,
+                if (name.isBlank()) stringResource(DsR.string.trip_viewer_title) else name,
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
@@ -84,7 +84,7 @@ internal fun TripViewHeader(
         }
         Spacer(Modifier.width(4.dp))
         Text(
-            if (title.isBlank()) stringResource(R.string.trip_viewer_title) else title,
+            if (title.isBlank()) stringResource(DsR.string.trip_viewer_title) else title,
             style = MaterialTheme.typography.headlineSmall.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.librelookai.AppScreenHeader
 import com.librelookai.LocationButton
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.ui.components.AppFab
@@ -274,7 +275,7 @@ internal fun TravelOutfitsView(
                 displayedTrips.isEmpty() && displayedOrphans.isEmpty() -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            stringResource(R.string.outfits_no_match),
+                            stringResource(DsR.string.outfits_no_match),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -359,7 +360,7 @@ internal fun TravelOutfitsView(
                     }
                     add(
                         SelectionAction(
-                            label = stringResource(R.string.action_delete),
+                            label = stringResource(DsR.string.action_delete),
                             icon = Icons.Default.Delete,
                             kind = SelectionAction.Kind.Danger,
                         ) { showDeleteDialog = true },

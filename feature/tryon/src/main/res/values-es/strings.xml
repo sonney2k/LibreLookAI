@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">No se pudo eliminar</string>
+    <string name="tryon_change_items">Cambiar prendas</string>
+    <string name="tryon_composer_explain">Todas las prendas mostradas a continuación se llevarán juntas en el Try-on generado. Toca una prenda para quitarla; toca \"+\" para añadir más.</string>
+    <string name="tryon_composer_items_title">Prendas en este Try-on (%1$d)</string>
+    <string name="tryon_coverage_blocked">Elige prendas que cubran tanto la parte superior como la inferior del cuerpo: una prenda de cuerpo entero (un vestido o un mono) o una prenda superior junto con una inferior. Así tu prueba generada queda completamente vestida.</string>
+    <string name="tryon_delete_confirm_text">Esto elimina la imagen guardada del Try-on de Drive. Las prendas del armario se conservan.</string>
+    <string name="tryon_delete_confirm_title">¿Eliminar Try-on?</string>
+    <string name="tryon_error">Fallo al generar el Try-on</string>
+    <string name="tryon_generate">Generar Try-on</string>
+    <string name="tryon_generate_failed">Error al generar</string>
+    <string name="tryon_generating">Generando tu Try-on…</string>
+    <string name="tryon_history_detail_title">Detalles del Try-on</string>
+    <string name="tryon_history_items_missing">Prendas que ya no están disponibles en tu armario.</string>
+    <string name="tryon_history_items_title">Prendas llevadas</string>
+    <string name="tryon_history_title">Try-ons anteriores</string>
+    <string name="tryon_missing_photos_items">Faltan fotos o prendas</string>
+    <string name="tryon_outfit_picker_empty">Aún no hay outfits guardados. Crea uno en la pestaña Outfits para usarlo aquí.</string>
+    <string name="tryon_outfit_picker_title">Elige un outfit</string>
+    <string name="tryon_save_to_drive">Guardar</string>
+    <string name="tryon_saved_to_drive">Guardado</string>
+    <string name="tryon_saving">Guardando…</string>
+    <string name="tryon_slot_back">Espalda</string>
+    <string name="tryon_slot_front">Frente</string>
+    <string name="tryon_slot_side">Lateral</string>
+    <string name="tryon_title">Probar en mí</string>
+    <string name="tryon_view_source_outfit">Ver outfit</string>
+</resources>

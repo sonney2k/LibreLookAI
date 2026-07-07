@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Przymiarki</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Usuń</string>
     <string name="action_save">Zapisz</string>
     <string name="action_edit">Edytuj</string>
     <string name="action_saving">Zapisywanie…</string>
-    <string name="action_sort">Sortuj</string>
-    <string name="action_remove">Usuń</string>
     <string name="cd_ai_suggestion">Sugestia AI</string>
     <string name="cd_refine">Dopracuj</string>
     <string name="filter_location">Lokalizacja</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Brak stylizacji</string>
     <string name="outfits_empty_hint">Dotknij +, aby zbudować stylizację z garderoby</string>
-    <string name="outfits_no_match">Żadne stylizacje nie pasują do filtru</string>
-    <string name="outfits_sort_newest">Najnowsze najpierw</string>
-    <string name="outfits_sort_oldest">Najstarsze najpierw</string>
     <string name="outfits_sort_most_worn">Najczęściej noszone</string>
-    <string name="outfits_sort_name_az">Nazwa A–Z</string>
-    <string name="outfits_sort_name_za">Nazwa Z–A</string>
-    <string name="outfits_sort_most_items">Najwięcej elementów</string>
     <string name="outfits_create_manual">Utwórz stylizację ręcznie</string>
     <string name="outfits_suggest">Zaproponuj istniejącą stylizację</string>
     <string name="prediction_setup_title">Znajdź z AI</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Nie zaproponowano nowych tagów.</string>
     <string name="outfits_suggest_tags_apply">Dodaj wybrane</string>
     <string name="outfits_suggest_tags_hint">Dotknij tagi, aby je przełączyć. Wybrane tagi zostaną dodane do tej stylizacji.</string>
-    <string name="outfits_unnamed">Stylizacja bez nazwy</string>
     <string name="outfits_swap_item_for">Zamień: %s</string>
     <string name="outfits_suggest_alternatives">Zaproponuj 10 alternatyw</string>
     <string name="outfits_select_item">Wybierz</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Lepiej na deszcz</string>
     <string name="travel_refine_evening">Dodaj wieczorowe stylizacje</string>
     <string name="travel_refine_reuse">Maksymalizuj powtórne użycie</string>
-    <string name="travel_day">Dzień %d</string>
     <string name="travel_save_as_style">Zapisz jako stylizację</string>
     <string name="travel_saved_as_style">Zapisano</string>
     <string name="travel_move_to_travel">Przenieś wszystko do lokalizacji Podróż</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Jesteś offline — tryb tylko do odczytu</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Przymierz na mnie</string>
     <string name="tryon_fab">Przymierz na mnie</string>
     <string name="tryon_section_title">Zdjęcia do przymiarki</string>
     <string name="tryon_section_desc">Prześlij zdjęcia całej sylwetki z przodu, z boku i z tyłu. Aplikacja używa ich jako odniesienia podczas generowania podglądu przymiarki stylizacji lub elementu garderoby na Tobie. Zdjęcia pozostają na Twoim Drive.</string>
-    <string name="tryon_slot_front">Przód</string>
-    <string name="tryon_slot_side">Bok</string>
-    <string name="tryon_slot_back">Tył</string>
     <string name="tryon_add_photo">Dodaj zdjęcie %1$s</string>
     <string name="tryon_replace_photo">Zastąp %1$s</string>
     <string name="tryon_remove_photo">Usuń %1$s</string>
     <string name="tryon_uploading">Przesyłanie…</string>
-    <string name="tryon_generating">Generowanie przymiarki…</string>
-    <string name="tryon_error">Generowanie przymiarki nie powiodło się</string>
     <string name="tryon_no_photos">Dodaj zdjęcie do przymiarki w Ustawienia → Profil, aby skorzystać z tej funkcji.</string>
     <string name="tryon_save_to_gallery">Zapisz w galerii</string>
     <string name="tryon_saved">Zapisano w Obrazy/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galeria</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">Wszystkie poniższe elementy będą noszone razem w wygenerowanej przymiarce. Dotknij element, aby go usunąć; dotknij „+", aby dodać więcej.</string>
-    <string name="tryon_composer_items_title">Elementy w tej przymiarce (%1$d)</string>
-    <string name="tryon_add_item">Dodaj element</string>
     <string name="tryon_add_items_title">Dodaj elementy garderoby</string>
-    <string name="tryon_generate">Generuj przymiarkę</string>
-    <string name="tryon_change_items">Zmień elementy</string>
-    <string name="tryon_save_to_drive">Zapisz</string>
-    <string name="tryon_saved_to_drive">Zapisano</string>
-    <string name="tryon_saving">Zapisywanie…</string>
     <string name="tryon_history_action">Historia</string>
-    <string name="tryon_history_title">Wcześniejsze przymiarki</string>
-    <string name="tryon_history_detail_title">Szczegóły przymiarki</string>
     <string name="tryon_history_empty">Brak zapisanych przymiarek. Wygeneruj jedną i dotknij „Zapisz", aby zachować ją tutaj.</string>
-    <string name="tryon_history_items_title">Noszone elementy</string>
-    <string name="tryon_history_items_missing">Elementy nie są już dostępne w garderobie.</string>
-    <string name="tryon_delete_confirm_title">Usunąć przymiarkę?</string>
-    <string name="tryon_delete_confirm_text">Usuwa to zapisany obraz przymiarki z Drive. Elementy garderoby zostają zachowane.</string>
     <string name="tryon_use_outfit">Użyj stylizacji</string>
-    <string name="tryon_outfit_picker_title">Wybierz stylizację</string>
-    <string name="tryon_outfit_picker_empty">Brak zapisanych stylizacji. Utwórz jedną w zakładce Stylizacje, aby jej tu użyć.</string>
     <string name="tryon_from_outfit">Ze stylizacji: %1$s</string>
-    <string name="tryon_view_source_outfit">Zobacz stylizację</string>
 
     <!-- About -->
     <string name="settings_tab_about">Informacje</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Używasz własnego klucza Gemini — kredyty nie są wydawane.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Zaplanowana podróż</string>
     <string name="trip_saved_label">Zapisano</string>
     <string name="trip_saved_confirmation">Zapisano podróż i stylizacje</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Wybierz ubrania zakrywające zarówno górną, jak i dolną część ciała — albo strój na całe ciało (sukienkę lub kombinezon), albo górę razem z dołem. Dzięki temu wygenerowana przymiarka pozostaje w pełni ubrana.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Wczytywanie szczegółów %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Zapisywanie stylizacji…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Generowanie nie powiodło się</string>
-    <string name="tryon_missing_photos_items">Brak zdjęć lub ubrań</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Zapis nie powiódł się</string>
-    <string name="error_delete_failed">Usuwanie nie powiodło się</string>
     <string name="error_upload_failed">Przesyłanie nie powiodło się: %1$s</string>
     <string name="error_original_unavailable">Oryginał niedostępny</string>
     <string name="error_gemini_no_response">AI nie odpowiedziała.</string>

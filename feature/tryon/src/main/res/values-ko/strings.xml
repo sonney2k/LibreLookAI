@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">삭제 실패</string>
+    <string name="tryon_change_items">아이템 변경</string>
+    <string name="tryon_composer_explain">아래에 표시된 모든 아이템은 생성된 착용 시뮬레이션에서 함께 착용됩니다. 아이템을 탭하여 제거하거나 \"+\"를 탭하여 더 추가하세요.</string>
+    <string name="tryon_composer_items_title">이 시뮬레이션의 아이템 (%1$d)</string>
+    <string name="tryon_coverage_blocked">상체와 하체를 모두 가리는 옷을 선택하세요. 전신을 덮는 한 벌(원피스나 점프수트)이거나, 상의와 하의를 함께 선택하면 됩니다. 이렇게 하면 생성된 가상 피팅이 완전히 옷을 갖춘 상태로 유지됩니다.</string>
+    <string name="tryon_delete_confirm_text">저장된 시뮬레이션 이미지가 Drive에서 제거됩니다. 옷장 아이템은 유지됩니다.</string>
+    <string name="tryon_delete_confirm_title">시뮬레이션을 삭제하시겠습니까?</string>
+    <string name="tryon_error">착용 시뮬레이션 생성 실패</string>
+    <string name="tryon_generate">착용 시뮬레이션 생성</string>
+    <string name="tryon_generate_failed">생성 실패</string>
+    <string name="tryon_generating">착용 시뮬레이션 생성 중…</string>
+    <string name="tryon_history_detail_title">시뮬레이션 세부 정보</string>
+    <string name="tryon_history_items_missing">더 이상 옷장에 없는 아이템입니다.</string>
+    <string name="tryon_history_items_title">착용한 아이템</string>
+    <string name="tryon_history_title">이전 시뮬레이션</string>
+    <string name="tryon_missing_photos_items">사진 또는 항목 없음</string>
+    <string name="tryon_outfit_picker_empty">아직 저장된 코디가 없습니다. 코디 탭에서 생성하여 여기서 사용하세요.</string>
+    <string name="tryon_outfit_picker_title">코디 선택</string>
+    <string name="tryon_save_to_drive">저장</string>
+    <string name="tryon_saved_to_drive">저장됨</string>
+    <string name="tryon_saving">저장 중…</string>
+    <string name="tryon_slot_back">후면</string>
+    <string name="tryon_slot_front">정면</string>
+    <string name="tryon_slot_side">측면</string>
+    <string name="tryon_title">나에게 입혀보기</string>
+    <string name="tryon_view_source_outfit">코디 보기</string>
+</resources>

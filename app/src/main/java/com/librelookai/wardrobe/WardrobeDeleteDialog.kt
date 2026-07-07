@@ -125,7 +125,7 @@ internal fun DeleteItemsConfirmDialog(
                         onDismiss()
                     }
                 ) {
-                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(DsR.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             }
         },

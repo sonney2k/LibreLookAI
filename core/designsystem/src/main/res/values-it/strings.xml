@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Scarpe</string>
     <string name="outfit_layer_accessories">Accessori</string>
     <string name="outfit_layer_other">Altro</string>
+    <string name="action_delete">Elimina</string>
+    <string name="action_remove">Rimuovi</string>
+    <string name="action_sort">Ordina</string>
+    <string name="error_save_failed">Salvataggio non riuscito</string>
+    <string name="outfits_no_match">Nessun outfit corrisponde al filtro</string>
+    <string name="outfits_sort_most_items">Più capi</string>
+    <string name="outfits_sort_name_az">Nome A–Z</string>
+    <string name="outfits_sort_name_za">Nome Z–A</string>
+    <string name="outfits_sort_newest">Più recenti</string>
+    <string name="outfits_sort_oldest">Più vecchi</string>
+    <string name="outfits_unnamed">Outfit senza titolo</string>
+    <string name="travel_day">Giorno %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Aggiungi capo</string>
 </resources>

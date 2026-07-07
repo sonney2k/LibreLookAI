@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Delete failed</string>
+    <string name="tryon_change_items">Change items</string>
+    <string name="tryon_composer_explain">All items shown below will be worn together in the generated try-on. Tap an item to remove it; tap \"+\" to add more.</string>
+    <string name="tryon_composer_items_title">Items in this try-on (%1$d)</string>
+    <string name="tryon_coverage_blocked">Pick clothes that cover both the upper and lower body — either a full-body piece (a dress or jumpsuit) or a top together with a bottom. This keeps your generated try-on fully dressed.</string>
+    <string name="tryon_delete_confirm_text">This removes the saved try-on image from Drive. The wardrobe items are kept.</string>
+    <string name="tryon_delete_confirm_title">Delete try-on?</string>
+    <string name="tryon_error">Try-on generation failed</string>
+    <string name="tryon_generate">Generate try-on</string>
+    <string name="tryon_generate_failed">Generation failed</string>
+    <string name="tryon_generating">Generating your try-on…</string>
+    <string name="tryon_history_detail_title">Try-on details</string>
+    <string name="tryon_history_items_missing">Items no longer available in your wardrobe.</string>
+    <string name="tryon_history_items_title">Items worn</string>
+    <string name="tryon_history_title">Past try-ons</string>
+    <string name="tryon_missing_photos_items">Missing photos or items</string>
+    <string name="tryon_outfit_picker_empty">No saved outfits yet. Create one in the Outfits tab to use it here.</string>
+    <string name="tryon_outfit_picker_title">Pick an outfit</string>
+    <string name="tryon_save_to_drive">Save</string>
+    <string name="tryon_saved_to_drive">Saved</string>
+    <string name="tryon_saving">Saving…</string>
+    <string name="tryon_slot_back">Back</string>
+    <string name="tryon_slot_front">Front</string>
+    <string name="tryon_slot_side">Side</string>
+    <string name="tryon_title">Try on me</string>
+    <string name="tryon_view_source_outfit">View outfit</string>
+</resources>

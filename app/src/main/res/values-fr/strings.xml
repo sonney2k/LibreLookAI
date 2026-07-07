@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Essayages</string>
 
     <!-- Actions communes -->
-    <string name="action_delete">Supprimer</string>
     <string name="action_save">Enregistrer</string>
     <string name="action_edit">Modifier</string>
     <string name="action_saving">Enregistrement…</string>
-    <string name="action_sort">Trier</string>
-    <string name="action_remove">Retirer</string>
     <string name="cd_ai_suggestion">Suggestion IA</string>
     <string name="cd_refine">Affiner</string>
     <string name="filter_location">Lieu</string>
@@ -272,13 +269,7 @@
     <!-- Tenues -->
     <string name="outfits_empty">Aucune tenue pour le moment</string>
     <string name="outfits_empty_hint">Touche + pour créer une tenue depuis ta garde-robe</string>
-    <string name="outfits_no_match">Aucune tenue ne correspond au filtre</string>
-    <string name="outfits_sort_newest">Plus récentes d\'abord</string>
-    <string name="outfits_sort_oldest">Plus anciennes d\'abord</string>
     <string name="outfits_sort_most_worn">Plus portées</string>
-    <string name="outfits_sort_name_az">Nom A–Z</string>
-    <string name="outfits_sort_name_za">Nom Z–A</string>
-    <string name="outfits_sort_most_items">Plus d\'articles</string>
     <string name="outfits_create_manual">Créer une tenue manuellement</string>
     <string name="outfits_suggest">Suggérer une tenue existante</string>
     <string name="prediction_setup_title">Trouver avec l\'IA</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Aucune nouvelle étiquette suggérée.</string>
     <string name="outfits_suggest_tags_apply">Ajouter la sélection</string>
     <string name="outfits_suggest_tags_hint">Touche les étiquettes pour activer/désactiver. Les étiquettes sélectionnées sont ajoutées à cette tenue.</string>
-    <string name="outfits_unnamed">Tenue sans titre</string>
     <string name="outfits_swap_item_for">Remplacer : %s</string>
     <string name="outfits_suggest_alternatives">Suggérer 10 alternatives</string>
     <string name="outfits_select_item">Sélectionner</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Mieux pour la pluie</string>
     <string name="travel_refine_evening">Ajouter des tenues de soirée</string>
     <string name="travel_refine_reuse">Maximiser la réutilisation</string>
-    <string name="travel_day">Jour %d</string>
     <string name="travel_save_as_style">Enregistrer comme tenue</string>
     <string name="travel_saved_as_style">Enregistrée</string>
     <string name="travel_move_to_travel">Tout déplacer vers le lieu Voyage</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Tu es hors ligne — mode lecture seule</string>
 
     <!-- Essayage -->
-    <string name="tryon_title">Essayage sur moi</string>
     <string name="tryon_fab">Essayage sur moi</string>
     <string name="tryon_section_title">Photos d\'essayage</string>
     <string name="tryon_section_desc">Téléverse des photos en pied de face, de côté et de dos. L\'app les utilise comme référence pour générer un aperçu d\'essayage d\'une tenue ou d\'un article de garde-robe sur toi. Les photos restent dans ton propre Drive.</string>
-    <string name="tryon_slot_front">Face</string>
-    <string name="tryon_slot_side">Côté</string>
-    <string name="tryon_slot_back">Dos</string>
     <string name="tryon_add_photo">Ajouter la photo %1$s</string>
     <string name="tryon_replace_photo">Remplacer %1$s</string>
     <string name="tryon_remove_photo">Retirer %1$s</string>
     <string name="tryon_uploading">Téléversement…</string>
-    <string name="tryon_generating">Génération de ton essayage…</string>
-    <string name="tryon_error">Échec de la génération de l\'essayage</string>
     <string name="tryon_no_photos">Ajoute une photo d\'essayage dans Paramètres → Profil pour utiliser cette fonction.</string>
     <string name="tryon_save_to_gallery">Enregistrer dans la galerie</string>
     <string name="tryon_saved">Enregistré dans Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galerie</string>
 
     <!-- Compositeur d\'essayage / historique -->
-    <string name="tryon_composer_explain">Tous les articles affichés ci-dessous seront portés ensemble dans l\'essayage généré. Touche un article pour le retirer ; touche « + » pour en ajouter d\'autres.</string>
-    <string name="tryon_composer_items_title">Articles dans cet essayage (%1$d)</string>
-    <string name="tryon_add_item">Ajouter un article</string>
     <string name="tryon_add_items_title">Ajouter des articles de garde-robe</string>
-    <string name="tryon_generate">Générer l\'essayage</string>
-    <string name="tryon_change_items">Changer les articles</string>
-    <string name="tryon_save_to_drive">Enregistrer</string>
-    <string name="tryon_saved_to_drive">Enregistré</string>
-    <string name="tryon_saving">Enregistrement…</string>
     <string name="tryon_history_action">Historique</string>
-    <string name="tryon_history_title">Essayages passés</string>
-    <string name="tryon_history_detail_title">Détails de l\'essayage</string>
     <string name="tryon_history_empty">Aucun essayage enregistré. Génères-en un et touche « Enregistrer » pour le conserver ici.</string>
-    <string name="tryon_history_items_title">Articles portés</string>
-    <string name="tryon_history_items_missing">Articles plus disponibles dans ta garde-robe.</string>
-    <string name="tryon_delete_confirm_title">Supprimer l\'essayage ?</string>
-    <string name="tryon_delete_confirm_text">Cela supprime l\'image d\'essayage enregistrée de Drive. Les articles de garde-robe sont conservés.</string>
     <string name="tryon_use_outfit">Utiliser une tenue</string>
-    <string name="tryon_outfit_picker_title">Choisir une tenue</string>
-    <string name="tryon_outfit_picker_empty">Aucune tenue enregistrée. Crées-en une dans l\'onglet Tenues pour l\'utiliser ici.</string>
     <string name="tryon_from_outfit">Depuis la tenue : %1$s</string>
-    <string name="tryon_view_source_outfit">Voir la tenue</string>
 
     <!-- À propos -->
     <string name="settings_tab_about">À propos</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Solde : %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Utilisation de votre propre clé Gemini — aucun crédit n\'est dépensé.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Voyage planifié</string>
     <string name="trip_saved_label">Enregistré</string>
     <string name="trip_saved_confirmation">Voyage et tenues enregistrés</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Choisis des vêtements qui couvrent à la fois le haut et le bas du corps — soit une pièce intégrale (une robe ou une combinaison), soit un haut avec un bas. Ainsi, ton essayage généré reste entièrement habillé.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Chargement des détails %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Enregistrement de la tenue…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Échec de la génération</string>
-    <string name="tryon_missing_photos_items">Photos ou articles manquants</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Échec de l\'enregistrement</string>
-    <string name="error_delete_failed">Échec de la suppression</string>
     <string name="error_upload_failed">Échec de l\'envoi : %1$s</string>
     <string name="error_original_unavailable">Original non disponible</string>
     <string name="error_gemini_no_response">L\'IA n\'a pas répondu.</string>

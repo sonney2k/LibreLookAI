@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Schoenen</string>
     <string name="outfit_layer_accessories">Accessoires</string>
     <string name="outfit_layer_other">Overig</string>
+    <string name="action_delete">Verwijderen</string>
+    <string name="action_remove">Verwijderen</string>
+    <string name="action_sort">Sorteren</string>
+    <string name="error_save_failed">Opslaan mislukt</string>
+    <string name="outfits_no_match">Geen outfits voldoen aan het filter</string>
+    <string name="outfits_sort_most_items">Meeste items</string>
+    <string name="outfits_sort_name_az">Naam A–Z</string>
+    <string name="outfits_sort_name_za">Naam Z–A</string>
+    <string name="outfits_sort_newest">Nieuwste eerst</string>
+    <string name="outfits_sort_oldest">Oudste eerst</string>
+    <string name="outfits_unnamed">Naamloze outfit</string>
+    <string name="travel_day">Dag %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Item toevoegen</string>
 </resources>

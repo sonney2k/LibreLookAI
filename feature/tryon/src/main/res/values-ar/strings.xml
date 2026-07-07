@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">فشل الحذف</string>
+    <string name="tryon_change_items">تغيير الأصناف</string>
+    <string name="tryon_composer_explain">سيتم ارتداء جميع الأصناف الموضحة أدناه معًا في التجربة المولدة. اضغط على صنف لإزالته؛ اضغط على \"+\" لإضافة المزيد.</string>
+    <string name="tryon_composer_items_title">الأصناف في هذه التجربة (%1$d)</string>
+    <string name="tryon_coverage_blocked">اختر ملابس تغطي الجزأين العلوي والسفلي من الجسم — إما قطعة لكامل الجسم (فستان أو أفرول) أو قطعة علوية مع قطعة سفلية. هذا يُبقي التجربة المُولَّدة مرتدية ملابس كاملة.</string>
+    <string name="tryon_delete_confirm_text">يؤدي هذا إلى إزالة صورة التجربة المحفوظة من Drive. يتم الاحتفاظ بأصناف الخزانة.</string>
+    <string name="tryon_delete_confirm_title">حذف التجربة؟</string>
+    <string name="tryon_error">فشل توليد التجربة</string>
+    <string name="tryon_generate">توليد تجربة</string>
+    <string name="tryon_generate_failed">فشل الإنشاء</string>
+    <string name="tryon_generating">جاري توليد التجربة الخاصة بك…</string>
+    <string name="tryon_history_detail_title">تفاصيل التجربة</string>
+    <string name="tryon_history_items_missing">أصناف لم تعد متوفرة في خزانة ملابسك.</string>
+    <string name="tryon_history_items_title">الأصناف المرتداة</string>
+    <string name="tryon_history_title">تجارب سابقة</string>
+    <string name="tryon_missing_photos_items">صور أو عناصر مفقودة</string>
+    <string name="tryon_outfit_picker_empty">لا توجد أطقم محفوظة بعد. أنشئ واحدًا في تبويب الأطقم لاستخدامه هنا.</string>
+    <string name="tryon_outfit_picker_title">اختر طقمًا</string>
+    <string name="tryon_save_to_drive">حفظ</string>
+    <string name="tryon_saved_to_drive">تم الحفظ</string>
+    <string name="tryon_saving">جاري الحفظ…</string>
+    <string name="tryon_slot_back">خلف</string>
+    <string name="tryon_slot_front">أمام</string>
+    <string name="tryon_slot_side">جانب</string>
+    <string name="tryon_title">تجربة عليّ</string>
+    <string name="tryon_view_source_outfit">عرض الطقم</string>
+</resources>

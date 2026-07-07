@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">A törlés sikertelen</string>
+    <string name="tryon_change_items">Darabok cseréje</string>
+    <string name="tryon_composer_explain">Az alábbi darabok mindegyikét együtt fogják viselni a generált felpróbáláson. Koppints egy darabra az eltávolításhoz; koppints a „+”-ra továbbiak hozzáadásához.</string>
+    <string name="tryon_composer_items_title">Darabok ebben a felpróbálásban (%1$d)</string>
+    <string name="tryon_coverage_blocked">Válassz olyan ruhákat, amelyek a felső- és az alsótestet egyaránt fedik — vagy egy egyrészes darabot (ruhát vagy overált), vagy egy felsőt egy alsóval együtt. Így a létrehozott felpróbálás teljesen felöltözött marad.</string>
+    <string name="tryon_delete_confirm_text">Ez eltávolítja a mentett felpróbálási képet a Drive-ról. A gardróbdarabok megmaradnak.</string>
+    <string name="tryon_delete_confirm_title">Felpróbálás törlése?</string>
+    <string name="tryon_error">A generálás sikertelen</string>
+    <string name="tryon_generate">Felpróbálás generálása</string>
+    <string name="tryon_generate_failed">A generálás sikertelen</string>
+    <string name="tryon_generating">Próba generálása…</string>
+    <string name="tryon_history_detail_title">Felpróbálás részletei</string>
+    <string name="tryon_history_items_missing">A darabok már nem érhetők el a gardróbodban.</string>
+    <string name="tryon_history_items_title">Viselt darabok</string>
+    <string name="tryon_history_title">Korábbi felpróbálások</string>
+    <string name="tryon_missing_photos_items">Hiányzó fotók vagy ruhák</string>
+    <string name="tryon_outfit_picker_empty">Még nincs mentett szett. Hozz létre egyet a Szettek lapon, hogy itt használhasd.</string>
+    <string name="tryon_outfit_picker_title">Válassz szettet</string>
+    <string name="tryon_save_to_drive">Mentés</string>
+    <string name="tryon_saved_to_drive">Elmentve</string>
+    <string name="tryon_saving">Mentés…</string>
+    <string name="tryon_slot_back">Hátulról</string>
+    <string name="tryon_slot_front">Elölről</string>
+    <string name="tryon_slot_side">Oldalról</string>
+    <string name="tryon_title">Próbáld rám</string>
+    <string name="tryon_view_source_outfit">Szett megtekintése</string>
+</resources>

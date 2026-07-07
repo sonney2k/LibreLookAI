@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Sletning mislykkedes</string>
+    <string name="tryon_change_items">Skift stykker</string>
+    <string name="tryon_composer_explain">Alle stykker vist nedenfor bæres sammen i den genererede prøvning. Tryk på et stykke for at fjerne det; tryk på \"+\" for at tilføje flere.</string>
+    <string name="tryon_composer_items_title">Stykker i denne prøvning (%1$d)</string>
+    <string name="tryon_coverage_blocked">Vælg tøj, der dækker både overkrop og underkrop — enten et heldragtsstykke (kjole eller buksedragt) eller en overdel sammen med en underdel. Så er din genererede prøvning fuldt påklædt.</string>
+    <string name="tryon_delete_confirm_text">Dette fjerner det gemte prøvningsbillede fra Drive. Garderobestykkerne beholdes.</string>
+    <string name="tryon_delete_confirm_title">Slet prøvning?</string>
+    <string name="tryon_error">Prøvningsgenerering mislykkedes</string>
+    <string name="tryon_generate">Generér prøvning</string>
+    <string name="tryon_generate_failed">Generering mislykkedes</string>
+    <string name="tryon_generating">Genererer din prøvning…</string>
+    <string name="tryon_history_detail_title">Prøvningsdetaljer</string>
+    <string name="tryon_history_items_missing">Stykker er ikke længere tilgængelige i din garderobe.</string>
+    <string name="tryon_history_items_title">Båret stykker</string>
+    <string name="tryon_history_title">Tidligere prøvninger</string>
+    <string name="tryon_missing_photos_items">Manglende fotos eller varer</string>
+    <string name="tryon_outfit_picker_empty">Ingen gemte outfits endnu. Opret et i Outfits-fanen for at bruge det her.</string>
+    <string name="tryon_outfit_picker_title">Vælg et outfit</string>
+    <string name="tryon_save_to_drive">Gem</string>
+    <string name="tryon_saved_to_drive">Gemt</string>
+    <string name="tryon_saving">Gemmer…</string>
+    <string name="tryon_slot_back">Bagside</string>
+    <string name="tryon_slot_front">Forfra</string>
+    <string name="tryon_slot_side">Side</string>
+    <string name="tryon_title">Prøv på mig</string>
+    <string name="tryon_view_source_outfit">Vis outfit</string>
+</resources>

@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Obuwie</string>
     <string name="outfit_layer_accessories">Akcesoria</string>
     <string name="outfit_layer_other">Inne</string>
+    <string name="action_delete">Usuń</string>
+    <string name="action_remove">Usuń</string>
+    <string name="action_sort">Sortuj</string>
+    <string name="error_save_failed">Zapis nie powiódł się</string>
+    <string name="outfits_no_match">Żadne stylizacje nie pasują do filtru</string>
+    <string name="outfits_sort_most_items">Najwięcej elementów</string>
+    <string name="outfits_sort_name_az">Nazwa A–Z</string>
+    <string name="outfits_sort_name_za">Nazwa Z–A</string>
+    <string name="outfits_sort_newest">Najnowsze najpierw</string>
+    <string name="outfits_sort_oldest">Najstarsze najpierw</string>
+    <string name="outfits_unnamed">Stylizacja bez nazwy</string>
+    <string name="travel_day">Dzień %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Dodaj element</string>
 </resources>

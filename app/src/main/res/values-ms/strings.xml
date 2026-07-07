@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Percubaan</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Padam</string>
     <string name="action_save">Simpan</string>
     <string name="action_edit">Edit</string>
     <string name="action_saving">Menyimpan…</string>
-    <string name="action_sort">Susun</string>
-    <string name="action_remove">Keluarkan</string>
     <string name="cd_ai_suggestion">Cadangan AI</string>
     <string name="cd_refine">Haluskan</string>
     <string name="filter_location">Lokasi</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Tiada pakaian lagi</string>
     <string name="outfits_empty_hint">Ketik + untuk membina pakaian dari almari anda</string>
-    <string name="outfits_no_match">Tiada pakaian padan dengan penapis</string>
-    <string name="outfits_sort_newest">Terbaru</string>
-    <string name="outfits_sort_oldest">Terlama</string>
     <string name="outfits_sort_most_worn">Paling kerap dipakai</string>
-    <string name="outfits_sort_name_az">Nama A–Z</string>
-    <string name="outfits_sort_name_za">Nama Z–A</string>
     <string name="outfits_create_manual">Buat pakaian secara manual</string>
     <string name="outfits_suggest">Cadangkan pakaian sedia ada</string>
     <string name="prediction_setup_title">Cari dengan AI</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">Senarai Pembungkusan</string>
     <string name="travel_clear">Padam</string>
     <string name="travel_empty">Masukkan destinasi untuk bermula</string>
-    <string name="travel_day">Hari %d</string>
     <string name="travel_save_as_style">Simpan sebagai pakaian</string>
     <string name="travel_saved_as_style">Disimpan</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">Anda sedang luar talian — mod baca-sahaja</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Cuba pada saya</string>
     <string name="tryon_fab">Cuba pada saya</string>
     <string name="tryon_uploading">Memuat naik…</string>
-    <string name="tryon_generating">Menghasilkan percubaan anda…</string>
-    <string name="tryon_error">Gagal menghasilkan percubaan</string>
     <string name="tryon_save_to_gallery">Simpan ke galeri</string>
     <string name="tryon_saved">Disimpan ke Pictures/LibreLookAI</string>
     <string name="tryon_camera">Kamera</string>
@@ -458,7 +446,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="outfits_select_all_count">Pilih semua %d</string>
     <string name="outfits_select_item">Pilih</string>
     <string name="outfits_selected_count">%d dipilih</string>
-    <string name="outfits_sort_most_items">Paling banyak item</string>
     <string name="outfits_suggest_alternatives">Cadangkan 10 alternatif</string>
     <string name="outfits_suggest_tags">Cadangkan tag dengan AI</string>
     <string name="outfits_suggest_tags_apply">Tambah yang dipilih</string>
@@ -467,7 +454,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="outfits_suggest_tags_loading">Mencadangkan tag…</string>
     <string name="outfits_suggest_tags_title">Tag dicadangkan</string>
     <string name="outfits_swap_item_for">Tukar: %s</string>
-    <string name="outfits_unnamed">Pakaian tanpa nama</string>
     <string name="prediction_setup_weather_pick_day">Pilih hari</string>
     <string name="repair_duplicate_of">Serupa dengan %1$s</string>
     <string name="repair_duplicates_hint">Tandakan item untuk dipadam dari Drive. Ketik untuk melihat rupanya.</string>
@@ -604,39 +590,19 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="travel_refine_rain">Lebih sesuai untuk hujan</string>
     <string name="travel_refine_reuse">Maksimumkan guna semula pakaian</string>
     <string name="travel_regenerate">Jana semula</string>
-    <string name="tryon_add_item">Tambah item</string>
     <string name="tryon_add_items_title">Tambah item dari almari</string>
     <string name="tryon_add_photo">Tambah gambar %1$s</string>
-    <string name="tryon_change_items">Tukar item</string>
-    <string name="tryon_composer_explain">Semua item di bawah akan dipakai bersama dalam cuba pakai yang dijana. Ketik item untuk membuang; ketik „+” untuk menambah.</string>
-    <string name="tryon_composer_items_title">Item dalam cuba pakai ini (%1$d)</string>
     <string name="tryon_cost_line">Kos %1$d kredit setiap cuba pakai</string>
-    <string name="tryon_delete_confirm_text">Ini mengeluarkan imej cuba pakai tersimpan dari Drive. Item almari kekal.</string>
-    <string name="tryon_delete_confirm_title">Padam cuba pakai?</string>
     <string name="tryon_from_outfit">Daripada pakaian: %1$s</string>
-    <string name="tryon_generate">Jana cuba pakai</string>
     <string name="tryon_history_action">Sejarah</string>
-    <string name="tryon_history_detail_title">Butiran cuba pakai</string>
     <string name="tryon_history_empty">Belum ada cuba pakai tersimpan. Jana satu dan ketik „Simpan” untuk simpan di sini.</string>
-    <string name="tryon_history_items_missing">Item tiada lagi dalam almari anda.</string>
-    <string name="tryon_history_items_title">Item yang dipakai</string>
-    <string name="tryon_history_title">Cuba pakai lalu</string>
     <string name="tryon_no_photos">Tambah gambar cuba pakai di Tetapan → Profil untuk menggunakan ciri ini.</string>
-    <string name="tryon_outfit_picker_empty">Belum ada pakaian tersimpan. Cipta satu di tab Pakaian untuk digunakan di sini.</string>
-    <string name="tryon_outfit_picker_title">Pilih pakaian</string>
     <string name="tryon_remove_photo">Padam %1$s</string>
     <string name="tryon_replace_photo">Ganti %1$s</string>
     <string name="tryon_save_failed">Tidak dapat simpan ke galeri</string>
-    <string name="tryon_save_to_drive">Simpan</string>
-    <string name="tryon_saved_to_drive">Disimpan</string>
-    <string name="tryon_saving">Menyimpan…</string>
     <string name="tryon_section_desc">Muat naik gambar seluruh badan dari depan, sisi, dan belakang. Aplikasi menggunakannya sebagai rujukan apabila menjana pratonton cuba pakai pakaian atau item pada anda. Gambar kekal di Drive anda sendiri.</string>
     <string name="tryon_section_title">Gambar cuba pakai</string>
-    <string name="tryon_slot_back">Belakang</string>
-    <string name="tryon_slot_front">Depan</string>
-    <string name="tryon_slot_side">Sisi</string>
     <string name="tryon_use_outfit">Guna pakaian</string>
-    <string name="tryon_view_source_outfit">Lihat pakaian</string>
     <string name="wardrobe_create_style">Cipta pakaian</string>
     <string name="wardrobe_find_by_photo">Cari item melalui gambar</string>
     <string name="wardrobe_find_by_photo_empty">Tiada item serupa ditemui.</string>
@@ -654,7 +620,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="wardrobe_view_original">Lihat asal</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Perjalanan dirancang</string>
     <string name="trip_saved_label">Disimpan</string>
     <string name="trip_saved_confirmation">Perjalanan &amp; pakaian disimpan</string>
@@ -873,7 +838,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Pilih pakaian yang menutupi bahagian atas dan bawah badan — sama ada sehelai penuh (gaun atau jumpsuit) atau pakaian atas bersama pakaian bawah. Ini memastikan percubaan yang dijana berpakaian lengkap.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Memuatkan butiran %1$d / %2$d</string>
@@ -883,12 +847,8 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="outfit_saving">Menyimpan set pakaian…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Penjanaan gagal</string>
-    <string name="tryon_missing_photos_items">Foto atau item tiada</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Gagal menyimpan</string>
-    <string name="error_delete_failed">Gagal memadam</string>
     <string name="error_upload_failed">Gagal memuat naik: %1$s</string>
     <string name="error_original_unavailable">Asal tidak tersedia</string>
     <string name="error_gemini_no_response">AI tidak membalas.</string>

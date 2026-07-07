@@ -121,7 +121,7 @@ internal fun OutfitFullScreenViewer(
                     showDeleteDialog = false
                     onDelete(current)
                 }) {
-                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(DsR.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
@@ -149,7 +149,7 @@ internal fun OutfitFullScreenViewer(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = current.name.ifBlank { stringResource(R.string.outfits_unnamed) },
+                        text = current.name.ifBlank { stringResource(DsR.string.outfits_unnamed) },
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 2,
@@ -324,7 +324,7 @@ internal fun OutfitFullScreenViewer(
                     }
                     add(
                         com.librelookai.ui.components.SelectionAction(
-                            label = stringResource(R.string.action_delete),
+                            label = stringResource(DsR.string.action_delete),
                             icon = Icons.Default.Delete,
                             kind = com.librelookai.ui.components.SelectionAction.Kind.Danger,
                         ) {

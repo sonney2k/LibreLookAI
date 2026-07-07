@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">آزمائشیں</string>
 
     <!-- Common actions -->
-    <string name="action_delete">حذف کریں</string>
     <string name="action_save">محفوظ کریں</string>
     <string name="action_edit">ترمیم کریں</string>
     <string name="action_saving">محفوظ ہو رہا ہے…</string>
-    <string name="action_sort">ترتیب دیں</string>
-    <string name="action_remove">نکال دیں</string>
     <string name="cd_ai_suggestion">AI مشورہ</string>
     <string name="cd_refine">بہتر بنائیں</string>
     <string name="filter_location">مقام</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">ابھی تک کوئی لباس نہیں</string>
     <string name="outfits_empty_hint">اپنے وارڈروب سے لباس تیار کرنے کے لیے + پر ٹیپ کریں</string>
-    <string name="outfits_no_match">فلٹر سے مطابقت رکھنے والا کوئی لباس نہیں ہے</string>
-    <string name="outfits_sort_newest">نیا پہلے</string>
-    <string name="outfits_sort_oldest">پرانا پہلے</string>
     <string name="outfits_sort_most_worn">زیادہ پہنا جانے والا</string>
-    <string name="outfits_sort_name_az">نام الف–ی</string>
-    <string name="outfits_sort_name_za">نام ی–الف</string>
     <string name="outfits_create_manual">خود سے لباس تیار کریں</string>
     <string name="outfits_suggest">موجودہ لباس کا مشورہ دیں</string>
     <string name="prediction_setup_title">AI کے ساتھ تلاش کریں</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">سامان کی فہرست</string>
     <string name="travel_clear">صاف کریں</string>
     <string name="travel_empty">شروع کرنے کے لیے منزل لکھیں</string>
-    <string name="travel_day">دن %d</string>
     <string name="travel_save_as_style">بطور لباس محفوظ کریں</string>
     <string name="travel_saved_as_style">محفوظ ہو گیا</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">آپ آف لائن ہیں — صرف دیکھنے کی سہولت</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">مجھ پر آزمائیں</string>
     <string name="tryon_fab">مجھ پر آزمائیں</string>
     <string name="tryon_uploading">اپ لوڈ ہو رہا ہے…</string>
-    <string name="tryon_generating">آزمائشی تصویر تیار ہو رہی ہے…</string>
-    <string name="tryon_error">تصویر کی تیاری ناکام رہی</string>
     <string name="tryon_save_to_gallery">گیلری میں محفوظ کریں</string>
     <string name="tryon_saved">محفوظ ہو گیا</string>
     <string name="tryon_camera">کیمرہ</string>
@@ -458,7 +446,6 @@
     <string name="outfits_select_all_count">تمام %d منتخب کریں</string>
     <string name="outfits_select_item">منتخب کریں</string>
     <string name="outfits_selected_count">%d منتخب</string>
-    <string name="outfits_sort_most_items">سب سے زیادہ آئٹمز</string>
     <string name="outfits_suggest_alternatives">10 متبادل تجویز کریں</string>
     <string name="outfits_suggest_tags">AI سے ٹیگ تجویز</string>
     <string name="outfits_suggest_tags_apply">منتخب شدہ شامل کریں</string>
@@ -467,7 +454,6 @@
     <string name="outfits_suggest_tags_loading">ٹیگز تجویز کیے جا رہے ہیں…</string>
     <string name="outfits_suggest_tags_title">تجویز کردہ ٹیگز</string>
     <string name="outfits_swap_item_for">تبدیل کریں: %s</string>
-    <string name="outfits_unnamed">بے نام ملبوسات</string>
     <string name="prediction_setup_weather_pick_day">دن منتخب کریں</string>
     <string name="repair_duplicate_of">%1$s سے ملتا جلتا</string>
     <string name="repair_duplicates_hint">Drive سے حذف کرنے کے لیے آئٹمز پر نشان لگائیں۔ دیکھنے کے لیے ٹیپ کریں۔</string>
@@ -604,39 +590,19 @@
     <string name="travel_refine_rain">بارش کے لیے بہتر</string>
     <string name="travel_refine_reuse">ملبوسات کے دوبارہ استعمال کو زیادہ سے زیادہ کریں</string>
     <string name="travel_regenerate">دوبارہ بنائیں</string>
-    <string name="tryon_add_item">آئٹم شامل کریں</string>
     <string name="tryon_add_items_title">وارڈروب سے آئٹمز شامل کریں</string>
     <string name="tryon_add_photo">%1$s تصویر شامل کریں</string>
-    <string name="tryon_change_items">آئٹمز بدلیں</string>
-    <string name="tryon_composer_explain">ذیل میں دکھائے گئے تمام آئٹمز پیدا کیے گئے ٹرائی آن میں ایک ساتھ پہنے جائیں گے۔ ہٹانے کے لیے آئٹم پر ٹیپ کریں؛ مزید شامل کرنے کے لیے „+” ٹیپ کریں۔</string>
-    <string name="tryon_composer_items_title">اس ٹرائی آن میں آئٹمز (%1$d)</string>
     <string name="tryon_cost_line">فی ٹرائی آن %1$d کریڈٹس</string>
-    <string name="tryon_delete_confirm_text">یہ Drive سے محفوظ ٹرائی آن تصویر کو ہٹاتا ہے۔ وارڈروب آئٹمز برقرار رہتے ہیں۔</string>
-    <string name="tryon_delete_confirm_title">ٹرائی آن حذف کریں؟</string>
     <string name="tryon_from_outfit">ملبوسات سے: %1$s</string>
-    <string name="tryon_generate">ٹرائی آن بنائیں</string>
     <string name="tryon_history_action">تاریخ</string>
-    <string name="tryon_history_detail_title">ٹرائی آن تفصیلات</string>
     <string name="tryon_history_empty">ابھی کوئی محفوظ ٹرائی آن نہیں۔ ایک بنائیں اور یہاں رکھنے کے لیے „محفوظ کریں” ٹیپ کریں۔</string>
-    <string name="tryon_history_items_missing">آئٹمز اب آپ کے وارڈروب میں دستیاب نہیں۔</string>
-    <string name="tryon_history_items_title">پہنے گئے آئٹمز</string>
-    <string name="tryon_history_title">گزشتہ ٹرائی آن</string>
     <string name="tryon_no_photos">اس فیچر کے استعمال کے لیے ترتیبات → پروفائل میں ٹرائی آن تصویر شامل کریں۔</string>
-    <string name="tryon_outfit_picker_empty">ابھی کوئی محفوظ ملبوسات نہیں۔ یہاں استعمال کے لیے ملبوسات ٹیب میں ایک بنائیں۔</string>
-    <string name="tryon_outfit_picker_title">ملبوسات منتخب کریں</string>
     <string name="tryon_remove_photo">%1$s ہٹائیں</string>
     <string name="tryon_replace_photo">%1$s بدلیں</string>
     <string name="tryon_save_failed">گیلری میں محفوظ نہیں ہو سکا</string>
-    <string name="tryon_save_to_drive">محفوظ کریں</string>
-    <string name="tryon_saved_to_drive">محفوظ ہو گیا</string>
-    <string name="tryon_saving">محفوظ ہو رہا ہے…</string>
     <string name="tryon_section_desc">سامنے، سائیڈ اور پیچھے سے پوری جسم کی تصاویر اپلوڈ کریں۔ ایپ ان کا حوالہ ملبوسات یا وارڈروب آئٹم کا آپ پر ٹرائی آن پیش نظارہ بناتے وقت استعمال کرتی ہے۔ تصاویر آپ کے اپنے Drive میں رہتی ہیں۔</string>
     <string name="tryon_section_title">ٹرائی آن کے لیے تصاویر</string>
-    <string name="tryon_slot_back">پیچھے</string>
-    <string name="tryon_slot_front">سامنے</string>
-    <string name="tryon_slot_side">سائیڈ</string>
     <string name="tryon_use_outfit">ملبوسات استعمال کریں</string>
-    <string name="tryon_view_source_outfit">ملبوسات دیکھیں</string>
     <string name="wardrobe_create_style">ملبوسات بنائیں</string>
     <string name="wardrobe_find_by_photo">تصویر سے آئٹم تلاش کریں</string>
     <string name="wardrobe_find_by_photo_empty">کوئی ملتا جلتا آئٹم نہیں ملا۔</string>
@@ -654,7 +620,6 @@
     <string name="wardrobe_view_original">اصل دیکھیں</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">منصوبہ بند سفر</string>
     <string name="trip_saved_label">محفوظ</string>
     <string name="trip_saved_confirmation">سفر اور آؤٹ فٹس محفوظ ہو گئے</string>
@@ -873,7 +838,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">ایسے کپڑے منتخب کریں جو جسم کے اوپری اور نچلے دونوں حصوں کو ڈھانپیں — یا تو پورے جسم کا لباس (فراک یا جمپ سوٹ) یا ایک اوپری کے ساتھ ایک نچلا۔ اس سے آپ کا تیار کردہ ٹرائی آن مکمل طور پر ملبوس رہتا ہے۔</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">تفصیلات لوڈ ہو رہی ہیں %1$d / %2$d</string>
@@ -883,12 +847,8 @@
     <string name="outfit_saving">آؤٹ فٹ محفوظ ہو رہا ہے…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">جنریشن ناکام ہو گیا</string>
-    <string name="tryon_missing_photos_items">تصاویر یا اشیاء غائب ہیں</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">محفوظ کرنا ناکام</string>
-    <string name="error_delete_failed">حذف کرنا ناکام</string>
     <string name="error_upload_failed">اپ لوڈ ناکام: %1$s</string>
     <string name="error_original_unavailable">اصل دستیاب نہیں</string>
     <string name="error_gemini_no_response">AI نے جواب نہیں دیا۔</string>

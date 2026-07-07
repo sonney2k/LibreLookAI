@@ -394,7 +394,7 @@ internal fun ExtrasCard(
                         IconButton(onClick = { onUpdate(items - item) }) {
                             Icon(
                                 Icons.Default.Close,
-                                contentDescription = stringResource(R.string.action_remove),
+                                contentDescription = stringResource(DsR.string.action_remove),
                                 modifier = Modifier.size(18.dp),
                             )
                         }
@@ -412,7 +412,7 @@ internal fun ExtrasCard(
                         value = draft,
                         onValueChange = { draft = it },
                         singleLine = true,
-                        placeholder = { Text(stringResource(R.string.tryon_add_item)) },
+                        placeholder = { Text(stringResource(DsR.string.tryon_add_item)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         modifier = Modifier.weight(1f),
                     )

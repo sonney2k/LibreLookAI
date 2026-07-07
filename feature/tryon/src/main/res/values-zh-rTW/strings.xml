@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">刪除失敗</string>
+    <string name="tryon_change_items">更換單品</string>
+    <string name="tryon_composer_explain">下方所有單品將會一起穿在生成的試穿中。點擊單品以移除；點擊「+」以加入更多。</string>
+    <string name="tryon_composer_items_title">此次試穿的單品（%1$d）</string>
+    <string name="tryon_coverage_blocked">請選擇能同時遮蓋上半身和下半身的衣物——可以是全身式單品（洋裝或連身褲），或是上衣搭配下著。這樣產生的試穿才會完整著裝。</string>
+    <string name="tryon_delete_confirm_text">這會從 Drive 移除已儲存的試穿圖。衣櫥單品會保留。</string>
+    <string name="tryon_delete_confirm_title">刪除試穿？</string>
+    <string name="tryon_error">試穿生成失敗</string>
+    <string name="tryon_generate">生成試穿</string>
+    <string name="tryon_generate_failed">生成失敗</string>
+    <string name="tryon_generating">正在生成您的試穿效果…</string>
+    <string name="tryon_history_detail_title">試穿詳情</string>
+    <string name="tryon_history_items_missing">單品已不在你的衣櫥中。</string>
+    <string name="tryon_history_items_title">穿著的單品</string>
+    <string name="tryon_history_title">過往試穿</string>
+    <string name="tryon_missing_photos_items">缺少照片或單品</string>
+    <string name="tryon_outfit_picker_empty">尚無已儲存的穿搭。請先在「穿搭」頁面建立。</string>
+    <string name="tryon_outfit_picker_title">選擇穿搭</string>
+    <string name="tryon_save_to_drive">儲存</string>
+    <string name="tryon_saved_to_drive">已儲存</string>
+    <string name="tryon_saving">儲存中…</string>
+    <string name="tryon_slot_back">背面</string>
+    <string name="tryon_slot_front">正面</string>
+    <string name="tryon_slot_side">側面</string>
+    <string name="tryon_title">試穿在我身上</string>
+    <string name="tryon_view_source_outfit">檢視穿搭</string>
+</resources>

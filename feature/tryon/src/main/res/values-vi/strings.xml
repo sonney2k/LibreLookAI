@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Xóa không thành công</string>
+    <string name="tryon_change_items">Đổi món</string>
+    <string name="tryon_composer_explain">Tất cả các món bên dưới sẽ được mặc cùng nhau trong ảnh thử đồ tạo ra. Chạm một món để bỏ; chạm „+” để thêm.</string>
+    <string name="tryon_composer_items_title">Các món trong lần thử này (%1$d)</string>
+    <string name="tryon_coverage_blocked">Chọn trang phục che cả phần thân trên và thân dưới — có thể là một món đồ liền thân (váy hoặc jumpsuit) hoặc một áo kết hợp với một quần/váy. Điều này giúp ảnh thử đồ được tạo ra luôn mặc đầy đủ.</string>
+    <string name="tryon_delete_confirm_text">Việc này xóa ảnh thử đồ đã lưu khỏi Drive. Các món trong tủ vẫn còn.</string>
+    <string name="tryon_delete_confirm_title">Xóa lần thử đồ?</string>
+    <string name="tryon_error">Tạo ảnh thử đồ thất bại</string>
+    <string name="tryon_generate">Tạo ảnh thử đồ</string>
+    <string name="tryon_generate_failed">Tạo không thành công</string>
+    <string name="tryon_generating">Đang tạo ảnh thử đồ của bạn…</string>
+    <string name="tryon_history_detail_title">Chi tiết thử đồ</string>
+    <string name="tryon_history_items_missing">Các món không còn trong tủ của bạn.</string>
+    <string name="tryon_history_items_title">Các món đã mặc</string>
+    <string name="tryon_history_title">Lần thử đồ trước</string>
+    <string name="tryon_missing_photos_items">Thiếu ảnh hoặc trang phục</string>
+    <string name="tryon_outfit_picker_empty">Chưa có trang phục nào được lưu. Hãy tạo trong tab Trang phục để dùng ở đây.</string>
+    <string name="tryon_outfit_picker_title">Chọn một trang phục</string>
+    <string name="tryon_save_to_drive">Lưu</string>
+    <string name="tryon_saved_to_drive">Đã lưu</string>
+    <string name="tryon_saving">Đang lưu…</string>
+    <string name="tryon_slot_back">Sau</string>
+    <string name="tryon_slot_front">Trước</string>
+    <string name="tryon_slot_side">Bên</string>
+    <string name="tryon_title">Thử đồ trên tôi</string>
+    <string name="tryon_view_source_outfit">Xem trang phục</string>
+</resources>

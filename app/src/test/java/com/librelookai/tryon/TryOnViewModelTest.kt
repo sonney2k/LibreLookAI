@@ -145,7 +145,7 @@ class TryOnViewModelTest {
         vm.generate(emptyList(), listOf(dress), "")
         advanceUntilIdle()
 
-        assertEquals(com.librelookai.R.string.tryon_missing_photos_items, vm.state.value.errorRes)
+        assertEquals(com.librelookai.feature.tryon.R.string.tryon_missing_photos_items, vm.state.value.errorRes)
         assertTrue(gemini.tryOnCalls.isEmpty())
         assertFalse(vm.state.value.isGenerating)
     }
@@ -159,7 +159,7 @@ class TryOnViewModelTest {
         vm.generate(listOf(personFile()), listOf(top), "")
         advanceUntilIdle()
 
-        assertEquals(com.librelookai.R.string.tryon_coverage_blocked, vm.state.value.errorRes)
+        assertEquals(com.librelookai.feature.tryon.R.string.tryon_coverage_blocked, vm.state.value.errorRes)
         assertTrue(gemini.tryOnCalls.isEmpty())
     }
 
@@ -192,7 +192,7 @@ class TryOnViewModelTest {
         vm.generate(listOf(personFile()), listOf(item("d1", "dress")), "")
         advanceUntilIdle()
 
-        assertEquals(com.librelookai.R.string.tryon_generate_failed, vm.state.value.errorRes)
+        assertEquals(com.librelookai.feature.tryon.R.string.tryon_generate_failed, vm.state.value.errorRes)
         assertNull(vm.state.value.resultPath)
         assertFalse(vm.state.value.isGenerating)
     }

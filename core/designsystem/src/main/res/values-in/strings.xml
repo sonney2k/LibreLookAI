@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Alas kaki</string>
     <string name="outfit_layer_accessories">Aksesori</string>
     <string name="outfit_layer_other">Lainnya</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_remove">Hapus</string>
+    <string name="action_sort">Urutkan</string>
+    <string name="error_save_failed">Gagal menyimpan</string>
+    <string name="outfits_no_match">Tidak ada setelan cocok dengan filter</string>
+    <string name="outfits_sort_most_items">Paling banyak item</string>
+    <string name="outfits_sort_name_az">Nama A–Z</string>
+    <string name="outfits_sort_name_za">Nama Z–A</string>
+    <string name="outfits_sort_newest">Terbaru</string>
+    <string name="outfits_sort_oldest">Terlama</string>
+    <string name="outfits_unnamed">Setelan tanpa nama</string>
+    <string name="travel_day">Hari %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Tambah item</string>
 </resources>

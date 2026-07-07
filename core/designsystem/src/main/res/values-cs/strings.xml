@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Obuv</string>
     <string name="outfit_layer_accessories">Doplňky</string>
     <string name="outfit_layer_other">Ostatní</string>
+    <string name="action_delete">Smazat</string>
+    <string name="action_remove">Odstranit</string>
+    <string name="action_sort">Seřadit</string>
+    <string name="error_save_failed">Uložení selhalo</string>
+    <string name="outfits_no_match">Filtru neodpovídají žádné outfity</string>
+    <string name="outfits_sort_most_items">Nejvíc položek</string>
+    <string name="outfits_sort_name_az">Název A–Z</string>
+    <string name="outfits_sort_name_za">Název Z–A</string>
+    <string name="outfits_sort_newest">Nejnovější první</string>
+    <string name="outfits_sort_oldest">Nejstarší první</string>
+    <string name="outfits_unnamed">Outfit bez názvu</string>
+    <string name="travel_day">%d. den</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Přidat položku</string>
 </resources>

@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Примірки</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Видалити</string>
     <string name="action_save">Зберегти</string>
     <string name="action_edit">Редагувати</string>
     <string name="action_saving">Збереження…</string>
-    <string name="action_sort">Сортувати</string>
-    <string name="action_remove">Прибрати</string>
     <string name="cd_ai_suggestion">Пропозиція ШІ</string>
     <string name="cd_refine">Уточнити</string>
     <string name="filter_location">Місце</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Образів ще немає</string>
     <string name="outfits_empty_hint">Натисніть +, щоб скласти образ із речей гардероба</string>
-    <string name="outfits_no_match">Образів не знайдено</string>
-    <string name="outfits_sort_newest">Спочатку нові</string>
-    <string name="outfits_sort_oldest">Спочатку старі</string>
     <string name="outfits_sort_most_worn">Найчастіше ношені</string>
-    <string name="outfits_sort_name_az">Назва А–Я</string>
-    <string name="outfits_sort_name_za">Назва Я–А</string>
     <string name="outfits_create_manual">Створити образ вручну</string>
     <string name="outfits_suggest">Запропонувати образ із наявних</string>
     <string name="prediction_setup_title">Знайти через ШІ</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">Список речей</string>
     <string name="travel_clear">Очистити</string>
     <string name="travel_empty">Введіть напрямок, щоб почати</string>
-    <string name="travel_day">День %d</string>
     <string name="travel_save_as_style">Зберегти як образ</string>
     <string name="travel_saved_as_style">Збережено</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">Ви офлайн — режим перегляду</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Приміряти на мені</string>
     <string name="tryon_fab">Приміряти на мені</string>
     <string name="tryon_uploading">Завантаження…</string>
-    <string name="tryon_generating">Генерація вашої примірки…</string>
-    <string name="tryon_error">Помилка генерації примірки</string>
     <string name="tryon_save_to_gallery">Зберегти в галерею</string>
     <string name="tryon_saved">Збережено в Pictures/LibreLookAI</string>
     <string name="tryon_camera">Камера</string>
@@ -458,7 +446,6 @@
     <string name="outfits_select_all_count">Вибрати всі %d</string>
     <string name="outfits_select_item">Вибрати</string>
     <string name="outfits_selected_count">%d вибрано</string>
-    <string name="outfits_sort_most_items">Найбільше речей</string>
     <string name="outfits_suggest_alternatives">Запропонувати 10 альтернатив</string>
     <string name="outfits_suggest_tags">Запропонувати теги через ШІ</string>
     <string name="outfits_suggest_tags_apply">Додати вибрані</string>
@@ -467,7 +454,6 @@
     <string name="outfits_suggest_tags_loading">Підбір тегів…</string>
     <string name="outfits_suggest_tags_title">Запропоновані теги</string>
     <string name="outfits_swap_item_for">Замінити: %s</string>
-    <string name="outfits_unnamed">Образ без назви</string>
     <string name="prediction_setup_weather_pick_day">Оберіть день</string>
     <string name="repair_duplicate_of">Схоже на %1$s</string>
     <string name="repair_duplicates_hint">Позначте речі для видалення з Drive. Натисніть, щоб побачити, як вони виглядають.</string>
@@ -604,39 +590,19 @@
     <string name="travel_refine_rain">Краще для дощу</string>
     <string name="travel_refine_reuse">Максимум повторного використання образів</string>
     <string name="travel_regenerate">Перегенерувати</string>
-    <string name="tryon_add_item">Додати річ</string>
     <string name="tryon_add_items_title">Додати речі з гардероба</string>
     <string name="tryon_add_photo">Додати фото %1$s</string>
-    <string name="tryon_change_items">Змінити речі</string>
-    <string name="tryon_composer_explain">Усі речі нижче будуть одягнені разом у згенерованому приміряному образі. Натисніть на річ, щоб прибрати; натисніть «+», щоб додати ще.</string>
-    <string name="tryon_composer_items_title">Речі в цьому приміряні (%1$d)</string>
     <string name="tryon_cost_line">Коштує %1$d кредитів за приміряння</string>
-    <string name="tryon_delete_confirm_text">Це видалить збережене зображення приміряння з Drive. Речі в гардеробі залишаються.</string>
-    <string name="tryon_delete_confirm_title">Видалити приміряння?</string>
     <string name="tryon_from_outfit">З образу: %1$s</string>
-    <string name="tryon_generate">Згенерувати приміряння</string>
     <string name="tryon_history_action">Історія</string>
-    <string name="tryon_history_detail_title">Деталі приміряння</string>
     <string name="tryon_history_empty">Збережених приміряних поки немає. Згенеруйте одне й натисніть «Зберегти», щоб залишити тут.</string>
-    <string name="tryon_history_items_missing">Речі більше недоступні у вашому гардеробі.</string>
-    <string name="tryon_history_items_title">Одягнені речі</string>
-    <string name="tryon_history_title">Минулі приміряння</string>
     <string name="tryon_no_photos">Додайте фото для приміряння в Налаштування → Профіль, щоб користуватися функцією.</string>
-    <string name="tryon_outfit_picker_empty">Збережених образів поки немає. Створіть один у вкладці Образи, щоб використати його тут.</string>
-    <string name="tryon_outfit_picker_title">Оберіть образ</string>
     <string name="tryon_remove_photo">Видалити %1$s</string>
     <string name="tryon_replace_photo">Замінити %1$s</string>
     <string name="tryon_save_failed">Не вдалося зберегти в галерею</string>
-    <string name="tryon_save_to_drive">Зберегти</string>
-    <string name="tryon_saved_to_drive">Збережено</string>
-    <string name="tryon_saving">Збереження…</string>
     <string name="tryon_section_desc">Завантажте фото на повний зріст спереду, збоку та ззаду. Додаток використовує їх як референс при генерації приміряного образу чи речі на вас. Фото залишаються у вашому Drive.</string>
     <string name="tryon_section_title">Фото для приміряння</string>
-    <string name="tryon_slot_back">Ззаду</string>
-    <string name="tryon_slot_front">Спереду</string>
-    <string name="tryon_slot_side">Збоку</string>
     <string name="tryon_use_outfit">Використати образ</string>
-    <string name="tryon_view_source_outfit">Переглянути образ</string>
     <string name="wardrobe_create_style">Створити образ</string>
     <string name="wardrobe_find_by_photo">Знайти річ за фото</string>
     <string name="wardrobe_find_by_photo_empty">Схожих речей не знайдено.</string>
@@ -654,7 +620,6 @@
     <string name="wardrobe_view_original">Дивитися оригінал</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Запланована подорож</string>
     <string name="trip_saved_label">Збережено</string>
     <string name="trip_saved_confirmation">Подорож і образи збережено</string>
@@ -873,7 +838,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Вибери одяг, що закриває і верхню, і нижню частину тіла — або суцільний предмет (сукню чи комбінезон), або верх разом із низом. Так згенерована примірка залишається повністю одягненою.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Завантаження деталей %1$d / %2$d</string>
@@ -883,12 +847,8 @@
     <string name="outfit_saving">Збереження образу…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Не вдалося згенерувати</string>
-    <string name="tryon_missing_photos_items">Немає фото або речей</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Не вдалося зберегти</string>
-    <string name="error_delete_failed">Не вдалося видалити</string>
     <string name="error_upload_failed">Не вдалося завантажити: %1$s</string>
     <string name="error_original_unavailable">Оригінал недоступний</string>
     <string name="error_gemini_no_response">ШІ не відповів.</string>

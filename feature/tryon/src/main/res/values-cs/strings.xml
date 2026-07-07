@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Smazání selhalo</string>
+    <string name="tryon_change_items">Změnit položky</string>
+    <string name="tryon_composer_explain">Všechny níže zobrazené položky budou v generovaném vyzkoušení nošeny společně. Klepnutím na položku ji odstraníte; klepnutím na \"+\" přidáte další.</string>
+    <string name="tryon_composer_items_title">Položky v tomto vyzkoušení (%1$d)</string>
+    <string name="tryon_coverage_blocked">Vyber oblečení, které zakryje horní i dolní část těla — buď celotělový kus (šaty nebo overal), nebo horní díl spolu se spodním dílem. Díky tomu zůstane vygenerované vyzkoušení plně oblečené.</string>
+    <string name="tryon_delete_confirm_text">Tímto odstraníte uložený obrázek vyzkoušení z Drive. Položky šatníku zůstanou zachovány.</string>
+    <string name="tryon_delete_confirm_title">Smazat vyzkoušení?</string>
+    <string name="tryon_error">Generování vyzkoušení se nezdařilo</string>
+    <string name="tryon_generate">Generovat vyzkoušení</string>
+    <string name="tryon_generate_failed">Generování selhalo</string>
+    <string name="tryon_generating">Generování vašeho vyzkoušení…</string>
+    <string name="tryon_history_detail_title">Podrobnosti vyzkoušení</string>
+    <string name="tryon_history_items_missing">Položky již nejsou ve vašem šatníku dostupné.</string>
+    <string name="tryon_history_items_title">Nošené položky</string>
+    <string name="tryon_history_title">Minulá vyzkoušení</string>
+    <string name="tryon_missing_photos_items">Chybí fotky nebo položky</string>
+    <string name="tryon_outfit_picker_empty">Zatím žádné uložené outfity. Vytvořte si jeden na kartě Outfity, abyste jej mohli použít zde.</string>
+    <string name="tryon_outfit_picker_title">Vybrat outfit</string>
+    <string name="tryon_save_to_drive">Uložit</string>
+    <string name="tryon_saved_to_drive">Uloženo</string>
+    <string name="tryon_saving">Ukládání…</string>
+    <string name="tryon_slot_back">Zezadu</string>
+    <string name="tryon_slot_front">Zepředu</string>
+    <string name="tryon_slot_side">Zboku</string>
+    <string name="tryon_title">Vyzkoušet na mně</string>
+    <string name="tryon_view_source_outfit">Zobrazit outfit</string>
+</resources>

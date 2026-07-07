@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Chaussures</string>
     <string name="outfit_layer_accessories">Accessoires</string>
     <string name="outfit_layer_other">Autre</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="action_remove">Retirer</string>
+    <string name="action_sort">Trier</string>
+    <string name="error_save_failed">Échec de l\'enregistrement</string>
+    <string name="outfits_no_match">Aucune tenue ne correspond au filtre</string>
+    <string name="outfits_sort_most_items">Plus d\'articles</string>
+    <string name="outfits_sort_name_az">Nom A–Z</string>
+    <string name="outfits_sort_name_za">Nom Z–A</string>
+    <string name="outfits_sort_newest">Plus récentes d\'abord</string>
+    <string name="outfits_sort_oldest">Plus anciennes d\'abord</string>
+    <string name="outfits_unnamed">Tenue sans titre</string>
+    <string name="travel_day">Jour %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Ajouter un article</string>
 </resources>

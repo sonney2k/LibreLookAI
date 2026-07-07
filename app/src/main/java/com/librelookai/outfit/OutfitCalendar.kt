@@ -640,7 +640,7 @@ private fun CalendarContent(
                         pendingDeleteDays = emptySet()
                     }) {
                         Text(
-                            stringResource(R.string.action_delete),
+                            stringResource(DsR.string.action_delete),
                             color = MaterialTheme.colorScheme.error,
                         )
                     }

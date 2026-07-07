@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">हटाना विफल</string>
+    <string name="tryon_change_items">आइटम बदलें</string>
+    <string name="tryon_composer_explain">नीचे दिखाए सभी आइटम जेनरेट किए ट्राय-ऑन में एक साथ पहने जाएंगे। हटाने के लिए आइटम पर टैप करें; अधिक जोड़ने के लिए „+” टैप करें।</string>
+    <string name="tryon_composer_items_title">इस ट्राय-ऑन के आइटम (%1$d)</string>
+    <string name="tryon_coverage_blocked">ऐसे कपड़े चुनें जो शरीर के ऊपरी और निचले दोनों हिस्सों को ढकें — या तो पूरे शरीर का परिधान (ड्रेस या जंपसूट) या एक ऊपरी के साथ एक निचला परिधान। इससे आपका बनाया गया ट्राय-ऑन पूरी तरह कपड़ों में रहता है।</string>
+    <string name="tryon_delete_confirm_text">यह सहेजी ट्राय-ऑन छवि को Drive से हटाता है। वॉर्डरोब आइटम बने रहते हैं।</string>
+    <string name="tryon_delete_confirm_title">ट्राय-ऑन हटाएं?</string>
+    <string name="tryon_error">ट्राय-ऑन जनरेशन विफल रहा</string>
+    <string name="tryon_generate">ट्राय-ऑन जेनरेट करें</string>
+    <string name="tryon_generate_failed">जनरेशन विफल रहा</string>
+    <string name="tryon_generating">आपका ट्राय-ऑन जनरेट किया जा रहा है…</string>
+    <string name="tryon_history_detail_title">ट्राय-ऑन विवरण</string>
+    <string name="tryon_history_items_missing">आइटम अब आपके वॉर्डरोब में उपलब्ध नहीं हैं।</string>
+    <string name="tryon_history_items_title">पहने गए आइटम</string>
+    <string name="tryon_history_title">पिछले ट्राय-ऑन</string>
+    <string name="tryon_missing_photos_items">फ़ोटो या आइटम मौजूद नहीं</string>
+    <string name="tryon_outfit_picker_empty">अभी तक कोई सहेजा आउटफ़िट नहीं। यहाँ उपयोग के लिए आउटफ़िट टैब में बनाएं।</string>
+    <string name="tryon_outfit_picker_title">आउटफ़िट चुनें</string>
+    <string name="tryon_save_to_drive">सहेजें</string>
+    <string name="tryon_saved_to_drive">सहेजा गया</string>
+    <string name="tryon_saving">सहेजा जा रहा है…</string>
+    <string name="tryon_slot_back">पीछे</string>
+    <string name="tryon_slot_front">सामने</string>
+    <string name="tryon_slot_side">बगल</string>
+    <string name="tryon_title">मुझ पर आज़माएं</string>
+    <string name="tryon_view_source_outfit">आउटफ़िट देखें</string>
+</resources>

@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">試着</string>
 
     <!-- 共通アクション -->
-    <string name="action_delete">削除</string>
     <string name="action_save">保存</string>
     <string name="action_edit">編集</string>
     <string name="action_saving">保存中…</string>
-    <string name="action_sort">並び替え</string>
-    <string name="action_remove">削除</string>
     <string name="cd_ai_suggestion">AIの提案</string>
     <string name="cd_refine">調整</string>
     <string name="filter_location">場所</string>
@@ -272,13 +269,7 @@
     <!-- コーデ -->
     <string name="outfits_empty">まだコーデがありません</string>
     <string name="outfits_empty_hint">+ をタップしてクローゼットからコーデを作成</string>
-    <string name="outfits_no_match">フィルターに一致するコーデがありません</string>
-    <string name="outfits_sort_newest">新しい順</string>
-    <string name="outfits_sort_oldest">古い順</string>
     <string name="outfits_sort_most_worn">着用回数順</string>
-    <string name="outfits_sort_name_az">名前 A–Z</string>
-    <string name="outfits_sort_name_za">名前 Z–A</string>
-    <string name="outfits_sort_most_items">アイテム数順</string>
     <string name="outfits_create_manual">コーデを手動で作成</string>
     <string name="outfits_suggest">既存コーデを提案</string>
     <string name="prediction_setup_title">AIで探す</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">新しいタグの提案はありません。</string>
     <string name="outfits_suggest_tags_apply">選択を追加</string>
     <string name="outfits_suggest_tags_hint">タグをタップで切替。選択したタグがこのコーデに追加されます。</string>
-    <string name="outfits_unnamed">無題のコーデ</string>
     <string name="outfits_swap_item_for">入れ替え: %s</string>
     <string name="outfits_suggest_alternatives">10件の代替案を提案</string>
     <string name="outfits_select_item">選択</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">雨対応</string>
     <string name="travel_refine_evening">イブニングコーデを追加</string>
     <string name="travel_refine_reuse">コーデの再利用を最大化</string>
-    <string name="travel_day">%d 日目</string>
     <string name="travel_save_as_style">コーデとして保存</string>
     <string name="travel_saved_as_style">保存しました</string>
     <string name="travel_move_to_travel">すべて旅行先に移動</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">オフライン中 — 閲覧専用モード</string>
 
     <!-- 試着 -->
-    <string name="tryon_title">私に試着</string>
     <string name="tryon_fab">私に試着</string>
     <string name="tryon_section_title">試着用写真</string>
     <string name="tryon_section_desc">正面、横、背面の全身写真をアップロードしてください。アプリはこれらをコーデやアイテムを試着した際のプレビュー生成に参照します。写真はあなた自身の Drive に保存されます。</string>
-    <string name="tryon_slot_front">正面</string>
-    <string name="tryon_slot_side">横</string>
-    <string name="tryon_slot_back">背面</string>
     <string name="tryon_add_photo">%1$s の写真を追加</string>
     <string name="tryon_replace_photo">%1$s を置き換え</string>
     <string name="tryon_remove_photo">%1$s を削除</string>
     <string name="tryon_uploading">アップロード中…</string>
-    <string name="tryon_generating">試着を生成中…</string>
-    <string name="tryon_error">試着の生成に失敗しました</string>
     <string name="tryon_no_photos">この機能を使うには 設定 → プロフィール で試着写真を追加してください。</string>
     <string name="tryon_save_to_gallery">ギャラリーに保存</string>
     <string name="tryon_saved">Pictures/LibreLookAI に保存しました</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">ギャラリー</string>
 
     <!-- 試着コンポーザー / 履歴 -->
-    <string name="tryon_composer_explain">以下に表示されたアイテムはすべて生成される試着で一緒に着用されます。アイテムをタップで削除、「+」で追加できます。</string>
-    <string name="tryon_composer_items_title">この試着のアイテム (%1$d)</string>
-    <string name="tryon_add_item">アイテムを追加</string>
     <string name="tryon_add_items_title">クローゼットからアイテムを追加</string>
-    <string name="tryon_generate">試着を生成</string>
-    <string name="tryon_change_items">アイテムを変更</string>
-    <string name="tryon_save_to_drive">保存</string>
-    <string name="tryon_saved_to_drive">保存しました</string>
-    <string name="tryon_saving">保存中…</string>
     <string name="tryon_history_action">履歴</string>
-    <string name="tryon_history_title">過去の試着</string>
-    <string name="tryon_history_detail_title">試着の詳細</string>
     <string name="tryon_history_empty">保存された試着はまだありません。生成して「保存」をタップしてここに残しましょう。</string>
-    <string name="tryon_history_items_title">着用アイテム</string>
-    <string name="tryon_history_items_missing">クローゼットにないアイテムです。</string>
-    <string name="tryon_delete_confirm_title">試着を削除しますか?</string>
-    <string name="tryon_delete_confirm_text">保存された試着画像が Drive から削除されます。クローゼットのアイテムは保持されます。</string>
     <string name="tryon_use_outfit">コーデを使用</string>
-    <string name="tryon_outfit_picker_title">コーデを選択</string>
-    <string name="tryon_outfit_picker_empty">保存されたコーデはまだありません。コーデタブで作成してここで使用しましょう。</string>
     <string name="tryon_from_outfit">コーデから: %1$s</string>
-    <string name="tryon_view_source_outfit">コーデを表示</string>
 
     <!-- このアプリについて -->
     <string name="settings_tab_about">情報</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">残高: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">ご自身の Gemini キーを使用中 — クレジットは消費されません。</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">予定した旅行</string>
     <string name="trip_saved_label">保存済み</string>
     <string name="trip_saved_confirmation">旅行とコーデを保存しました</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">上半身と下半身の両方を覆う服を選んでください。全身を覆う一枚もの（ワンピースやジャンプスーツ）か、トップスとボトムスの組み合わせのいずれかです。これにより、生成される試着が完全に着衣の状態に保たれます。</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">詳細を読み込み中 %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">コーディネートを保存中…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">生成に失敗しました</string>
-    <string name="tryon_missing_photos_items">写真またはアイテムがありません</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">保存に失敗しました</string>
-    <string name="error_delete_failed">削除に失敗しました</string>
     <string name="error_upload_failed">アップロードに失敗しました: %1$s</string>
     <string name="error_original_unavailable">オリジナルを利用できません</string>
     <string name="error_gemini_no_response">AIから応答がありませんでした。</string>

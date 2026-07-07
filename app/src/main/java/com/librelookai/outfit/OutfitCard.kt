@@ -102,7 +102,7 @@ internal fun OutfitCard(
                     Analytics.action("OutfitEditor", "confirm_delete")
                     onDelete(); showDeleteDialog = false
                 }) {
-                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(DsR.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {

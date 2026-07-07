@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">シューズ</string>
     <string name="outfit_layer_accessories">アクセサリー</string>
     <string name="outfit_layer_other">その他</string>
+    <string name="action_delete">削除</string>
+    <string name="action_remove">削除</string>
+    <string name="action_sort">並び替え</string>
+    <string name="error_save_failed">保存に失敗しました</string>
+    <string name="outfits_no_match">フィルターに一致するコーデがありません</string>
+    <string name="outfits_sort_most_items">アイテム数順</string>
+    <string name="outfits_sort_name_az">名前 A–Z</string>
+    <string name="outfits_sort_name_za">名前 Z–A</string>
+    <string name="outfits_sort_newest">新しい順</string>
+    <string name="outfits_sort_oldest">古い順</string>
+    <string name="outfits_unnamed">無題のコーデ</string>
+    <string name="travel_day">%d 日目</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">アイテムを追加</string>
 </resources>

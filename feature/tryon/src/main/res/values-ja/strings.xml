@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">削除に失敗しました</string>
+    <string name="tryon_change_items">アイテムを変更</string>
+    <string name="tryon_composer_explain">以下に表示されたアイテムはすべて生成される試着で一緒に着用されます。アイテムをタップで削除、「+」で追加できます。</string>
+    <string name="tryon_composer_items_title">この試着のアイテム (%1$d)</string>
+    <string name="tryon_coverage_blocked">上半身と下半身の両方を覆う服を選んでください。全身を覆う一枚もの（ワンピースやジャンプスーツ）か、トップスとボトムスの組み合わせのいずれかです。これにより、生成される試着が完全に着衣の状態に保たれます。</string>
+    <string name="tryon_delete_confirm_text">保存された試着画像が Drive から削除されます。クローゼットのアイテムは保持されます。</string>
+    <string name="tryon_delete_confirm_title">試着を削除しますか?</string>
+    <string name="tryon_error">試着の生成に失敗しました</string>
+    <string name="tryon_generate">試着を生成</string>
+    <string name="tryon_generate_failed">生成に失敗しました</string>
+    <string name="tryon_generating">試着を生成中…</string>
+    <string name="tryon_history_detail_title">試着の詳細</string>
+    <string name="tryon_history_items_missing">クローゼットにないアイテムです。</string>
+    <string name="tryon_history_items_title">着用アイテム</string>
+    <string name="tryon_history_title">過去の試着</string>
+    <string name="tryon_missing_photos_items">写真またはアイテムがありません</string>
+    <string name="tryon_outfit_picker_empty">保存されたコーデはまだありません。コーデタブで作成してここで使用しましょう。</string>
+    <string name="tryon_outfit_picker_title">コーデを選択</string>
+    <string name="tryon_save_to_drive">保存</string>
+    <string name="tryon_saved_to_drive">保存しました</string>
+    <string name="tryon_saving">保存中…</string>
+    <string name="tryon_slot_back">背面</string>
+    <string name="tryon_slot_front">正面</string>
+    <string name="tryon_slot_side">横</string>
+    <string name="tryon_title">私に試着</string>
+    <string name="tryon_view_source_outfit">コーデを表示</string>
+</resources>

@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">ट्राय-ऑन</string>
 
     <!-- Common actions -->
-    <string name="action_delete">हटाएं</string>
     <string name="action_save">सहेजें</string>
     <string name="action_edit">संपादित करें</string>
     <string name="action_saving">सहेजा जा रहा है…</string>
-    <string name="action_sort">क्रमबद्ध करें</string>
-    <string name="action_remove">निकालें</string>
     <string name="cd_ai_suggestion">AI सुझाव</string>
     <string name="cd_refine">परिष्कृत करें</string>
     <string name="filter_location">स्थान</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">अभी तक कोई आउटफ़िट नहीं</string>
     <string name="outfits_empty_hint">अपने वॉर्डरोब से आउटफ़िट बनाने के लिए + पर टैप करें</string>
-    <string name="outfits_no_match">फ़िल्टर से मेल खाने वाला कोई आउटफ़िट नहीं है</string>
-    <string name="outfits_sort_newest">नया पहले</string>
-    <string name="outfits_sort_oldest">पुराना पहले</string>
     <string name="outfits_sort_most_worn">सबसे अधिक पहने गए</string>
-    <string name="outfits_sort_name_az">नाम A–Z</string>
-    <string name="outfits_sort_name_za">नाम Z–A</string>
     <string name="outfits_create_manual">मैन्युअल रूप से आउटफ़िट बनाएं</string>
     <string name="outfits_suggest">मौजूदा आउटफ़िट का सुझाव दें</string>
     <string name="prediction_setup_title">AI के साथ खोजें</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">पैकिंग लिस्ट</string>
     <string name="travel_clear">साफ़ करें</string>
     <string name="travel_empty">शुरू करने के लिए गंतव्य दर्ज करें</string>
-    <string name="travel_day">दिन %d</string>
     <string name="travel_save_as_style">आउटफ़िट के रूप में सहेजें</string>
     <string name="travel_saved_as_style">सहेजा गया</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">आप ऑफ़लाइन हैं — केवल देखने का मोड</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">मुझ पर आज़माएं</string>
     <string name="tryon_fab">मुझ पर आज़माएं</string>
     <string name="tryon_uploading">अपलोड हो रहा है…</string>
-    <string name="tryon_generating">आपका ट्राय-ऑन जनरेट किया जा रहा है…</string>
-    <string name="tryon_error">ट्राय-ऑन जनरेशन विफल रहा</string>
     <string name="tryon_save_to_gallery">गैलरी में सहेजें</string>
     <string name="tryon_saved">Pictures/LibreLookAI में सहेजा गया</string>
     <string name="tryon_camera">कैमरा</string>
@@ -458,7 +446,6 @@
     <string name="outfits_select_all_count">सभी %d चुनें</string>
     <string name="outfits_select_item">चुनें</string>
     <string name="outfits_selected_count">%d चयनित</string>
-    <string name="outfits_sort_most_items">सबसे अधिक आइटम</string>
     <string name="outfits_suggest_alternatives">10 विकल्प सुझाएं</string>
     <string name="outfits_suggest_tags">AI से टैग सुझाएं</string>
     <string name="outfits_suggest_tags_apply">चयनित जोड़ें</string>
@@ -467,7 +454,6 @@
     <string name="outfits_suggest_tags_loading">टैग सुझाए जा रहे हैं…</string>
     <string name="outfits_suggest_tags_title">सुझाए गए टैग्स</string>
     <string name="outfits_swap_item_for">बदलें: %s</string>
-    <string name="outfits_unnamed">अनाम आउटफ़िट</string>
     <string name="prediction_setup_weather_pick_day">दिन चुनें</string>
     <string name="repair_duplicate_of">%1$s के समान</string>
     <string name="repair_duplicates_hint">Drive से हटाने के लिए आइटम चुनें। देखने के लिए टैप करें।</string>
@@ -604,39 +590,19 @@
     <string name="travel_refine_rain">बारिश के लिए बेहतर</string>
     <string name="travel_refine_reuse">आउटफ़िट पुन: उपयोग अधिकतम करें</string>
     <string name="travel_regenerate">पुनः बनाएं</string>
-    <string name="tryon_add_item">आइटम जोड़ें</string>
     <string name="tryon_add_items_title">वॉर्डरोब से आइटम जोड़ें</string>
     <string name="tryon_add_photo">%1$s फ़ोटो जोड़ें</string>
-    <string name="tryon_change_items">आइटम बदलें</string>
-    <string name="tryon_composer_explain">नीचे दिखाए सभी आइटम जेनरेट किए ट्राय-ऑन में एक साथ पहने जाएंगे। हटाने के लिए आइटम पर टैप करें; अधिक जोड़ने के लिए „+” टैप करें।</string>
-    <string name="tryon_composer_items_title">इस ट्राय-ऑन के आइटम (%1$d)</string>
     <string name="tryon_cost_line">प्रति ट्राय-ऑन %1$d क्रेडिट</string>
-    <string name="tryon_delete_confirm_text">यह सहेजी ट्राय-ऑन छवि को Drive से हटाता है। वॉर्डरोब आइटम बने रहते हैं।</string>
-    <string name="tryon_delete_confirm_title">ट्राय-ऑन हटाएं?</string>
     <string name="tryon_from_outfit">आउटफ़िट से: %1$s</string>
-    <string name="tryon_generate">ट्राय-ऑन जेनरेट करें</string>
     <string name="tryon_history_action">इतिहास</string>
-    <string name="tryon_history_detail_title">ट्राय-ऑन विवरण</string>
     <string name="tryon_history_empty">अभी तक कोई सहेजा ट्राय-ऑन नहीं। एक जेनरेट करें और इसे यहाँ रखने के लिए „सहेजें” टैप करें।</string>
-    <string name="tryon_history_items_missing">आइटम अब आपके वॉर्डरोब में उपलब्ध नहीं हैं।</string>
-    <string name="tryon_history_items_title">पहने गए आइटम</string>
-    <string name="tryon_history_title">पिछले ट्राय-ऑन</string>
     <string name="tryon_no_photos">इस सुविधा का उपयोग करने के लिए सेटिंग्स → प्रोफ़ाइल में ट्राय-ऑन फ़ोटो जोड़ें।</string>
-    <string name="tryon_outfit_picker_empty">अभी तक कोई सहेजा आउटफ़िट नहीं। यहाँ उपयोग के लिए आउटफ़िट टैब में बनाएं।</string>
-    <string name="tryon_outfit_picker_title">आउटफ़िट चुनें</string>
     <string name="tryon_remove_photo">%1$s हटाएं</string>
     <string name="tryon_replace_photo">%1$s बदलें</string>
     <string name="tryon_save_failed">गैलरी में सहेजा नहीं जा सका</string>
-    <string name="tryon_save_to_drive">सहेजें</string>
-    <string name="tryon_saved_to_drive">सहेजा गया</string>
-    <string name="tryon_saving">सहेजा जा रहा है…</string>
     <string name="tryon_section_desc">सामने, बगल और पीछे से पूरी लंबाई की तस्वीरें अपलोड करें। ऐप उन्हें आउटफ़िट या वॉर्डरोब आइटम के ट्राय-ऑन पूर्वावलोकन जेनरेट करते समय संदर्भ के रूप में उपयोग करता है। तस्वीरें आपके अपने Drive में रहती हैं।</string>
     <string name="tryon_section_title">ट्राय-ऑन फ़ोटो</string>
-    <string name="tryon_slot_back">पीछे</string>
-    <string name="tryon_slot_front">सामने</string>
-    <string name="tryon_slot_side">बगल</string>
     <string name="tryon_use_outfit">आउटफ़िट उपयोग करें</string>
-    <string name="tryon_view_source_outfit">आउटफ़िट देखें</string>
     <string name="wardrobe_create_style">आउटफ़िट बनाएं</string>
     <string name="wardrobe_find_by_photo">फ़ोटो से आइटम खोजें</string>
     <string name="wardrobe_find_by_photo_empty">कोई समान आइटम नहीं मिला।</string>
@@ -654,7 +620,6 @@
     <string name="wardrobe_view_original">मूल देखें</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">नियोजित यात्रा</string>
     <string name="trip_saved_label">सहेजा गया</string>
     <string name="trip_saved_confirmation">यात्रा और आउटफ़िट सहेजे गए</string>
@@ -873,7 +838,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">ऐसे कपड़े चुनें जो शरीर के ऊपरी और निचले दोनों हिस्सों को ढकें — या तो पूरे शरीर का परिधान (ड्रेस या जंपसूट) या एक ऊपरी के साथ एक निचला परिधान। इससे आपका बनाया गया ट्राय-ऑन पूरी तरह कपड़ों में रहता है।</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">विवरण लोड हो रहे हैं %1$d / %2$d</string>
@@ -883,12 +847,8 @@
     <string name="outfit_saving">आउटफ़िट सहेजा जा रहा है…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">जनरेशन विफल रहा</string>
-    <string name="tryon_missing_photos_items">फ़ोटो या आइटम मौजूद नहीं</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">सहेजना विफल</string>
-    <string name="error_delete_failed">हटाना विफल</string>
     <string name="error_upload_failed">अपलोड विफल: %1$s</string>
     <string name="error_original_unavailable">मूल उपलब्ध नहीं</string>
     <string name="error_gemini_no_response">AI ने जवाब नहीं दिया।</string>

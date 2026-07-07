@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Pasbeurten</string>
 
     <!-- Algemene acties -->
-    <string name="action_delete">Verwijderen</string>
     <string name="action_save">Opslaan</string>
     <string name="action_edit">Bewerken</string>
     <string name="action_saving">Opslaan…</string>
-    <string name="action_sort">Sorteren</string>
-    <string name="action_remove">Verwijderen</string>
     <string name="cd_ai_suggestion">AI-suggestie</string>
     <string name="cd_refine">Verfijnen</string>
     <string name="filter_location">Locatie</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Nog geen outfits</string>
     <string name="outfits_empty_hint">Tik op + om een outfit uit je garderobe te maken</string>
-    <string name="outfits_no_match">Geen outfits voldoen aan het filter</string>
-    <string name="outfits_sort_newest">Nieuwste eerst</string>
-    <string name="outfits_sort_oldest">Oudste eerst</string>
     <string name="outfits_sort_most_worn">Meest gedragen</string>
-    <string name="outfits_sort_name_az">Naam A–Z</string>
-    <string name="outfits_sort_name_za">Naam Z–A</string>
-    <string name="outfits_sort_most_items">Meeste items</string>
     <string name="outfits_create_manual">Outfit handmatig maken</string>
     <string name="outfits_suggest">Bestaande outfit voorstellen</string>
     <string name="prediction_setup_title">Zoek met AI</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Geen nieuwe tags voorgesteld.</string>
     <string name="outfits_suggest_tags_apply">Selectie toevoegen</string>
     <string name="outfits_suggest_tags_hint">Tik op tags om aan/uit te zetten. Geselecteerde tags worden aan deze outfit toegevoegd.</string>
-    <string name="outfits_unnamed">Naamloze outfit</string>
     <string name="outfits_swap_item_for">Wissel: %s</string>
     <string name="outfits_suggest_alternatives">10 alternatieven voorstellen</string>
     <string name="outfits_select_item">Selecteren</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Beter voor regen</string>
     <string name="travel_refine_evening">Avondoutfits toevoegen</string>
     <string name="travel_refine_reuse">Outfithergebruik maximaliseren</string>
-    <string name="travel_day">Dag %d</string>
     <string name="travel_save_as_style">Opslaan als outfit</string>
     <string name="travel_saved_as_style">Opgeslagen</string>
     <string name="travel_move_to_travel">Alles verplaatsen naar Reis-locatie</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Je bent offline — alleen-lezenmodus</string>
 
     <!-- Probeer aan me -->
-    <string name="tryon_title">Pas op mij</string>
     <string name="tryon_fab">Pas op mij</string>
     <string name="tryon_section_title">Pasfoto\'s</string>
     <string name="tryon_section_desc">Upload volledige lichaamsfoto\'s van voren, opzij en achter. De app gebruikt deze als referentie bij het genereren van een pasvoorbeeld van een outfit of garderobe-item op jou. Foto\'s blijven op je eigen Drive.</string>
-    <string name="tryon_slot_front">Voorkant</string>
-    <string name="tryon_slot_side">Zijkant</string>
-    <string name="tryon_slot_back">Achterkant</string>
     <string name="tryon_add_photo">%1$s-foto toevoegen</string>
     <string name="tryon_replace_photo">%1$s vervangen</string>
     <string name="tryon_remove_photo">%1$s verwijderen</string>
     <string name="tryon_uploading">Uploaden…</string>
-    <string name="tryon_generating">Je pasbeurt genereren…</string>
-    <string name="tryon_error">Pasbeurtgeneratie mislukt</string>
     <string name="tryon_no_photos">Voeg een pasfoto toe via Instellingen → Profiel om deze functie te gebruiken.</string>
     <string name="tryon_save_to_gallery">Opslaan in galerij</string>
     <string name="tryon_saved">Opgeslagen in Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galerij</string>
 
     <!-- Pas-composer / geschiedenis -->
-    <string name="tryon_composer_explain">Alle items hieronder worden samen gedragen in de gegenereerde pasbeurt. Tik op een item om het te verwijderen; tik op \"+\" om meer toe te voegen.</string>
-    <string name="tryon_composer_items_title">Items in deze pasbeurt (%1$d)</string>
-    <string name="tryon_add_item">Item toevoegen</string>
     <string name="tryon_add_items_title">Garderobe-items toevoegen</string>
-    <string name="tryon_generate">Pasbeurt genereren</string>
-    <string name="tryon_change_items">Items wijzigen</string>
-    <string name="tryon_save_to_drive">Opslaan</string>
-    <string name="tryon_saved_to_drive">Opgeslagen</string>
-    <string name="tryon_saving">Opslaan…</string>
     <string name="tryon_history_action">Geschiedenis</string>
-    <string name="tryon_history_title">Eerdere pasbeurten</string>
-    <string name="tryon_history_detail_title">Pasbeurtdetails</string>
     <string name="tryon_history_empty">Nog geen opgeslagen pasbeurten. Genereer er een en tik op \"Opslaan\" om hier te bewaren.</string>
-    <string name="tryon_history_items_title">Gedragen items</string>
-    <string name="tryon_history_items_missing">Items zijn niet meer beschikbaar in je garderobe.</string>
-    <string name="tryon_delete_confirm_title">Pasbeurt verwijderen?</string>
-    <string name="tryon_delete_confirm_text">Dit verwijdert de opgeslagen pasfoto van Drive. De garderobe-items blijven behouden.</string>
     <string name="tryon_use_outfit">Outfit gebruiken</string>
-    <string name="tryon_outfit_picker_title">Kies een outfit</string>
-    <string name="tryon_outfit_picker_empty">Nog geen opgeslagen outfits. Maak er een in de Outfits-tab om hier te gebruiken.</string>
     <string name="tryon_from_outfit">Uit outfit: %1$s</string>
-    <string name="tryon_view_source_outfit">Outfit bekijken</string>
 
     <!-- Info -->
     <string name="settings_tab_about">Info</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Eigen Gemini-sleutel — er worden geen credits gebruikt.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Geplande reis</string>
     <string name="trip_saved_label">Opgeslagen</string>
     <string name="trip_saved_confirmation">Reis en outfits opgeslagen</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Kies kleding die zowel het boven- als het onderlichaam bedekt — een kledingstuk voor het hele lichaam (een jurk of jumpsuit) of een bovenstuk samen met een onderstuk. Zo blijft je gegenereerde pasbeeld volledig gekleed.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Details laden %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Outfit opslaan…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Genereren mislukt</string>
-    <string name="tryon_missing_photos_items">Foto\'s of items ontbreken</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Opslaan mislukt</string>
-    <string name="error_delete_failed">Verwijderen mislukt</string>
     <string name="error_upload_failed">Uploaden mislukt: %1$s</string>
     <string name="error_original_unavailable">Origineel niet beschikbaar</string>
     <string name="error_gemini_no_response">De AI reageerde niet.</string>

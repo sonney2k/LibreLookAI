@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Gagal menghapus</string>
+    <string name="tryon_change_items">Ganti item</string>
+    <string name="tryon_composer_explain">Semua item di bawah akan dipakai bersama di coba-pakai yang dihasilkan. Ketuk item untuk menghapus; ketuk „+” untuk menambah.</string>
+    <string name="tryon_composer_items_title">Item di coba-pakai ini (%1$d)</string>
+    <string name="tryon_coverage_blocked">Pilih pakaian yang menutupi tubuh bagian atas dan bawah — baik satu potong utuh (gaun atau jumpsuit) maupun atasan bersama bawahan. Ini menjaga try-on yang dihasilkan tetap berpakaian lengkap.</string>
+    <string name="tryon_delete_confirm_text">Ini akan menghapus gambar coba-pakai tersimpan dari Drive. Item lemari tetap.</string>
+    <string name="tryon_delete_confirm_title">Hapus coba-pakai?</string>
+    <string name="tryon_error">Gagal menghasilkan percobaan</string>
+    <string name="tryon_generate">Buat coba-pakai</string>
+    <string name="tryon_generate_failed">Pembuatan gagal</string>
+    <string name="tryon_generating">Menghasilkan percobaan Anda…</string>
+    <string name="tryon_history_detail_title">Detail coba-pakai</string>
+    <string name="tryon_history_items_missing">Item sudah tidak tersedia di lemarimu.</string>
+    <string name="tryon_history_items_title">Item yang dipakai</string>
+    <string name="tryon_history_title">Coba-pakai sebelumnya</string>
+    <string name="tryon_missing_photos_items">Foto atau item tidak ada</string>
+    <string name="tryon_outfit_picker_empty">Belum ada setelan tersimpan. Buat satu di tab Setelan untuk dipakai di sini.</string>
+    <string name="tryon_outfit_picker_title">Pilih setelan</string>
+    <string name="tryon_save_to_drive">Simpan</string>
+    <string name="tryon_saved_to_drive">Tersimpan</string>
+    <string name="tryon_saving">Menyimpan…</string>
+    <string name="tryon_slot_back">Belakang</string>
+    <string name="tryon_slot_front">Depan</string>
+    <string name="tryon_slot_side">Samping</string>
+    <string name="tryon_title">Coba di saya</string>
+    <string name="tryon_view_source_outfit">Lihat setelan</string>
+</resources>

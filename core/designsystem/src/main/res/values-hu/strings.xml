@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Lábbeli</string>
     <string name="outfit_layer_accessories">Kiegészítők</string>
     <string name="outfit_layer_other">Egyéb</string>
+    <string name="action_delete">Törlés</string>
+    <string name="action_remove">Eltávolítás</string>
+    <string name="action_sort">Rendezés</string>
+    <string name="error_save_failed">A mentés sikertelen</string>
+    <string name="outfits_no_match">Nincs a szűrőnek megfelelő szett</string>
+    <string name="outfits_sort_most_items">Legtöbb darab</string>
+    <string name="outfits_sort_name_az">Név A–Z</string>
+    <string name="outfits_sort_name_za">Név Z–A</string>
+    <string name="outfits_sort_newest">Legújabb előre</string>
+    <string name="outfits_sort_oldest">Legrégebbi előre</string>
+    <string name="outfits_unnamed">Névtelen szett</string>
+    <string name="travel_day">%d. nap</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Darab hozzáadása</string>
 </resources>

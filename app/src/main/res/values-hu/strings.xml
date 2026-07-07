@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Próbák</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Törlés</string>
     <string name="action_save">Mentés</string>
     <string name="action_edit">Szerkesztés</string>
     <string name="action_saving">Mentés…</string>
-    <string name="action_sort">Rendezés</string>
-    <string name="action_remove">Eltávolítás</string>
     <string name="cd_ai_suggestion">AI javaslat</string>
     <string name="cd_refine">Finomítás</string>
     <string name="filter_location">Helyszín</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Még nincsenek szettek</string>
     <string name="outfits_empty_hint">Koppints a + gombra egy szett összeállításához</string>
-    <string name="outfits_no_match">Nincs a szűrőnek megfelelő szett</string>
-    <string name="outfits_sort_newest">Legújabb előre</string>
-    <string name="outfits_sort_oldest">Legrégebbi előre</string>
     <string name="outfits_sort_most_worn">Legtöbbet hordott</string>
-    <string name="outfits_sort_name_az">Név A–Z</string>
-    <string name="outfits_sort_name_za">Név Z–A</string>
     <string name="outfits_create_manual">Szett létrehozása manuálisan</string>
     <string name="outfits_suggest">Meglévő szett javaslása</string>
     <string name="prediction_setup_title">Keresés AI-val</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">Pakolólista</string>
     <string name="travel_clear">Törlés</string>
     <string name="travel_empty">Adj meg egy úticélt a kezdéshez</string>
-    <string name="travel_day">%d. nap</string>
     <string name="travel_save_as_style">Mentés szettként</string>
     <string name="travel_saved_as_style">Elmentve</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">Offline vagy — csak olvasási mód</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Próbáld rám</string>
     <string name="tryon_fab">Próbáld rám</string>
     <string name="tryon_uploading">Feltöltés…</string>
-    <string name="tryon_generating">Próba generálása…</string>
-    <string name="tryon_error">A generálás sikertelen</string>
     <string name="tryon_save_to_gallery">Mentés a galériába</string>
     <string name="tryon_saved">Mentve: Pictures/LibreLookAI</string>
     <string name="tryon_camera">Kamera</string>
@@ -458,7 +446,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfits_select_all_count">Mind a %d kijelölése</string>
     <string name="outfits_select_item">Kijelölés</string>
     <string name="outfits_selected_count">%d kijelölve</string>
-    <string name="outfits_sort_most_items">Legtöbb darab</string>
     <string name="outfits_suggest_alternatives">10 alternatíva javaslata</string>
     <string name="outfits_suggest_tags">Címkék javaslása AI-val</string>
     <string name="outfits_suggest_tags_apply">Kiválasztottak hozzáadása</string>
@@ -467,7 +454,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfits_suggest_tags_loading">Címkék javaslása…</string>
     <string name="outfits_suggest_tags_title">Javasolt címkék</string>
     <string name="outfits_swap_item_for">Csere: %s</string>
-    <string name="outfits_unnamed">Névtelen szett</string>
     <string name="prediction_setup_weather_pick_day">Válassz napot</string>
     <string name="repair_duplicate_of">Hasonló ehhez: %1$s</string>
     <string name="repair_duplicates_hint">Pipáld be a Drive-ról törlendő darabokat. Koppints a megnézéshez.</string>
@@ -604,39 +590,19 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="travel_refine_rain">Esőre alkalmasabb</string>
     <string name="travel_refine_reuse">Szettek újrafelhasználásának maximalizálása</string>
     <string name="travel_regenerate">Újragenerálás</string>
-    <string name="tryon_add_item">Darab hozzáadása</string>
     <string name="tryon_add_items_title">Darabok hozzáadása a gardróbból</string>
     <string name="tryon_add_photo">%1$s fotó hozzáadása</string>
-    <string name="tryon_change_items">Darabok cseréje</string>
-    <string name="tryon_composer_explain">Az alábbi darabok mindegyikét együtt fogják viselni a generált felpróbáláson. Koppints egy darabra az eltávolításhoz; koppints a „+”-ra továbbiak hozzáadásához.</string>
-    <string name="tryon_composer_items_title">Darabok ebben a felpróbálásban (%1$d)</string>
     <string name="tryon_cost_line">Felpróbálásonként %1$d kredit</string>
-    <string name="tryon_delete_confirm_text">Ez eltávolítja a mentett felpróbálási képet a Drive-ról. A gardróbdarabok megmaradnak.</string>
-    <string name="tryon_delete_confirm_title">Felpróbálás törlése?</string>
     <string name="tryon_from_outfit">Szettből: %1$s</string>
-    <string name="tryon_generate">Felpróbálás generálása</string>
     <string name="tryon_history_action">Előzmények</string>
-    <string name="tryon_history_detail_title">Felpróbálás részletei</string>
     <string name="tryon_history_empty">Még nincs mentett felpróbálás. Generálj egyet és koppints a „Mentés”-re, hogy itt megőrizzük.</string>
-    <string name="tryon_history_items_missing">A darabok már nem érhetők el a gardróbodban.</string>
-    <string name="tryon_history_items_title">Viselt darabok</string>
-    <string name="tryon_history_title">Korábbi felpróbálások</string>
     <string name="tryon_no_photos">Adj hozzá egy felpróbálási fotót a Beállítások → Profilban a funkció használatához.</string>
-    <string name="tryon_outfit_picker_empty">Még nincs mentett szett. Hozz létre egyet a Szettek lapon, hogy itt használhasd.</string>
-    <string name="tryon_outfit_picker_title">Válassz szettet</string>
     <string name="tryon_remove_photo">%1$s eltávolítása</string>
     <string name="tryon_replace_photo">%1$s cseréje</string>
     <string name="tryon_save_failed">Nem sikerült a galériába menteni</string>
-    <string name="tryon_save_to_drive">Mentés</string>
-    <string name="tryon_saved_to_drive">Elmentve</string>
-    <string name="tryon_saving">Mentés…</string>
     <string name="tryon_section_desc">Tölts fel egész alakos fotókat elölről, oldalról és hátulról. Az alkalmazás ezeket referenciaként használja a szett vagy gardróbdarab rólad készült felpróbálási előnézetének generálásához. A fotók a saját Drive-odon maradnak.</string>
     <string name="tryon_section_title">Felpróbálási fotók</string>
-    <string name="tryon_slot_back">Hátulról</string>
-    <string name="tryon_slot_front">Elölről</string>
-    <string name="tryon_slot_side">Oldalról</string>
     <string name="tryon_use_outfit">Szett használata</string>
-    <string name="tryon_view_source_outfit">Szett megtekintése</string>
     <string name="wardrobe_create_style">Szett létrehozása</string>
     <string name="wardrobe_find_by_photo">Darab keresése fotó alapján</string>
     <string name="wardrobe_find_by_photo_empty">Nincs hasonló darab.</string>
@@ -654,7 +620,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="wardrobe_view_original">Eredeti megtekintése</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Tervezett utazás</string>
     <string name="trip_saved_label">Mentve</string>
     <string name="trip_saved_confirmation">Utazás és szettek mentve</string>
@@ -873,7 +838,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Válassz olyan ruhákat, amelyek a felső- és az alsótestet egyaránt fedik — vagy egy egyrészes darabot (ruhát vagy overált), vagy egy felsőt egy alsóval együtt. Így a létrehozott felpróbálás teljesen felöltözött marad.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Részletek betöltése %1$d / %2$d</string>
@@ -883,12 +847,8 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfit_saving">Szett mentése…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">A generálás sikertelen</string>
-    <string name="tryon_missing_photos_items">Hiányzó fotók vagy ruhák</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">A mentés sikertelen</string>
-    <string name="error_delete_failed">A törlés sikertelen</string>
     <string name="error_upload_failed">A feltöltés sikertelen: %1$s</string>
     <string name="error_original_unavailable">Az eredeti nem érhető el</string>
     <string name="error_gemini_no_response">Az MI nem válaszolt.</string>

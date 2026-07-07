@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Не вдалося видалити</string>
+    <string name="tryon_change_items">Змінити речі</string>
+    <string name="tryon_composer_explain">Усі речі нижче будуть одягнені разом у згенерованому приміряному образі. Натисніть на річ, щоб прибрати; натисніть «+», щоб додати ще.</string>
+    <string name="tryon_composer_items_title">Речі в цьому приміряні (%1$d)</string>
+    <string name="tryon_coverage_blocked">Вибери одяг, що закриває і верхню, і нижню частину тіла — або суцільний предмет (сукню чи комбінезон), або верх разом із низом. Так згенерована примірка залишається повністю одягненою.</string>
+    <string name="tryon_delete_confirm_text">Це видалить збережене зображення приміряння з Drive. Речі в гардеробі залишаються.</string>
+    <string name="tryon_delete_confirm_title">Видалити приміряння?</string>
+    <string name="tryon_error">Помилка генерації примірки</string>
+    <string name="tryon_generate">Згенерувати приміряння</string>
+    <string name="tryon_generate_failed">Не вдалося згенерувати</string>
+    <string name="tryon_generating">Генерація вашої примірки…</string>
+    <string name="tryon_history_detail_title">Деталі приміряння</string>
+    <string name="tryon_history_items_missing">Речі більше недоступні у вашому гардеробі.</string>
+    <string name="tryon_history_items_title">Одягнені речі</string>
+    <string name="tryon_history_title">Минулі приміряння</string>
+    <string name="tryon_missing_photos_items">Немає фото або речей</string>
+    <string name="tryon_outfit_picker_empty">Збережених образів поки немає. Створіть один у вкладці Образи, щоб використати його тут.</string>
+    <string name="tryon_outfit_picker_title">Оберіть образ</string>
+    <string name="tryon_save_to_drive">Зберегти</string>
+    <string name="tryon_saved_to_drive">Збережено</string>
+    <string name="tryon_saving">Збереження…</string>
+    <string name="tryon_slot_back">Ззаду</string>
+    <string name="tryon_slot_front">Спереду</string>
+    <string name="tryon_slot_side">Збоку</string>
+    <string name="tryon_title">Приміряти на мені</string>
+    <string name="tryon_view_source_outfit">Переглянути образ</string>
+</resources>

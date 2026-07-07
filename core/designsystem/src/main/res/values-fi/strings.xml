@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Jalkineet</string>
     <string name="outfit_layer_accessories">Asusteet</string>
     <string name="outfit_layer_other">Muut</string>
+    <string name="action_delete">Poista</string>
+    <string name="action_remove">Poista</string>
+    <string name="action_sort">Lajittele</string>
+    <string name="error_save_failed">Tallennus epäonnistui</string>
+    <string name="outfits_no_match">Yksikään asu ei vastaa suodatinta</string>
+    <string name="outfits_sort_most_items">Eniten vaatteita</string>
+    <string name="outfits_sort_name_az">Nimi A–Ö</string>
+    <string name="outfits_sort_name_za">Nimi Ö–A</string>
+    <string name="outfits_sort_newest">Uusin ensin</string>
+    <string name="outfits_sort_oldest">Vanhin ensin</string>
+    <string name="outfits_unnamed">Nimetön asu</string>
+    <string name="travel_day">Päivä %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Lisää vaate</string>
 </resources>

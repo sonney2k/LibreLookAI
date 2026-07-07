@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Kasut</string>
     <string name="outfit_layer_accessories">Aksesori</string>
     <string name="outfit_layer_other">Lain-lain</string>
+    <string name="action_delete">Padam</string>
+    <string name="action_remove">Keluarkan</string>
+    <string name="action_sort">Susun</string>
+    <string name="error_save_failed">Gagal menyimpan</string>
+    <string name="outfits_no_match">Tiada pakaian padan dengan penapis</string>
+    <string name="outfits_sort_most_items">Paling banyak item</string>
+    <string name="outfits_sort_name_az">Nama A–Z</string>
+    <string name="outfits_sort_name_za">Nama Z–A</string>
+    <string name="outfits_sort_newest">Terbaru</string>
+    <string name="outfits_sort_oldest">Terlama</string>
+    <string name="outfits_unnamed">Pakaian tanpa nama</string>
+    <string name="travel_day">Hari %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Tambah item</string>
 </resources>

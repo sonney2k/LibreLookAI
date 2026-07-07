@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Παπούτσια</string>
     <string name="outfit_layer_accessories">Αξεσουάρ</string>
     <string name="outfit_layer_other">Άλλα</string>
+    <string name="action_delete">Διαγραφή</string>
+    <string name="action_remove">Αφαίρεση</string>
+    <string name="action_sort">Ταξινόμηση</string>
+    <string name="error_save_failed">Η αποθήκευση απέτυχε</string>
+    <string name="outfits_no_match">Κανένα σύνολο δεν ταιριάζει στο φίλτρο</string>
+    <string name="outfits_sort_most_items">Περισσότερα είδη</string>
+    <string name="outfits_sort_name_az">Όνομα Α–Ω</string>
+    <string name="outfits_sort_name_za">Όνομα Ω–Α</string>
+    <string name="outfits_sort_newest">Πιο πρόσφατα</string>
+    <string name="outfits_sort_oldest">Παλαιότερα</string>
+    <string name="outfits_unnamed">Σύνολο χωρίς όνομα</string>
+    <string name="travel_day">Ημέρα %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Προσθήκη είδους</string>
 </resources>

@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Vyzkoušení</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Smazat</string>
     <string name="action_save">Uložit</string>
     <string name="action_edit">Upravit</string>
     <string name="action_saving">Ukládání…</string>
-    <string name="action_sort">Seřadit</string>
-    <string name="action_remove">Odstranit</string>
     <string name="cd_ai_suggestion">Návrh AI</string>
     <string name="cd_refine">Vylepšit</string>
     <string name="filter_location">Umístění</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Zatím žádné outfity</string>
     <string name="outfits_empty_hint">Klepnutím na + sestavte outfit ze svého šatníku</string>
-    <string name="outfits_no_match">Filtru neodpovídají žádné outfity</string>
-    <string name="outfits_sort_newest">Nejnovější první</string>
-    <string name="outfits_sort_oldest">Nejstarší první</string>
     <string name="outfits_sort_most_worn">Nejvíc nošené</string>
-    <string name="outfits_sort_name_az">Název A–Z</string>
-    <string name="outfits_sort_name_za">Název Z–A</string>
-    <string name="outfits_sort_most_items">Nejvíc položek</string>
     <string name="outfits_create_manual">Vytvořit outfit ručně</string>
     <string name="outfits_suggest">Navrhnout stávající outfit</string>
     <string name="prediction_setup_title">Najít pomocí AI</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Nebyly navrženy žádné nové štítky.</string>
     <string name="outfits_suggest_tags_apply">Přidat vybrané</string>
     <string name="outfits_suggest_tags_hint">Klepnutím přepnete štítky. Vybrané štítky budou přidány k tomuto outfitu.</string>
-    <string name="outfits_unnamed">Outfit bez názvu</string>
     <string name="outfits_swap_item_for">Vyměnit: %s</string>
     <string name="outfits_suggest_alternatives">Navrhnout 10 alternativ</string>
     <string name="outfits_select_item">Vybrat</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Lepší pro déšť</string>
     <string name="travel_refine_evening">Přidat večerní outfity</string>
     <string name="travel_refine_reuse">Maximalizovat opakované použití outfitů</string>
-    <string name="travel_day">%d. den</string>
     <string name="travel_save_as_style">Uložit jako outfit</string>
     <string name="travel_saved_as_style">Uloženo</string>
     <string name="travel_move_to_travel">Přesunout vše do umístění Cestování</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Jste offline — režim pouze pro čtení</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Vyzkoušet na mně</string>
     <string name="tryon_fab">Vyzkoušet na mně</string>
     <string name="tryon_section_title">Fotografie pro vyzkoušení</string>
     <string name="tryon_section_desc">Nahrajte fotografie celé postavy zepředu, zboku a zezadu. Aplikace je používá jako referenci při generování náhledu outfitu nebo položky šatníku na vás. Fotografie zůstávají na vašem Drive.</string>
-    <string name="tryon_slot_front">Zepředu</string>
-    <string name="tryon_slot_side">Zboku</string>
-    <string name="tryon_slot_back">Zezadu</string>
     <string name="tryon_add_photo">Přidat fotografii %1$s</string>
     <string name="tryon_replace_photo">Nahradit %1$s</string>
     <string name="tryon_remove_photo">Odstranit %1$s</string>
     <string name="tryon_uploading">Nahrávání…</string>
-    <string name="tryon_generating">Generování vašeho vyzkoušení…</string>
-    <string name="tryon_error">Generování vyzkoušení se nezdařilo</string>
     <string name="tryon_no_photos">Chcete-li použít tuto funkci, přidejte fotografii pro vyzkoušení v Nastavení → Profil.</string>
     <string name="tryon_save_to_gallery">Uložit do galerie</string>
     <string name="tryon_saved">Uloženo do Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galerie</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">Všechny níže zobrazené položky budou v generovaném vyzkoušení nošeny společně. Klepnutím na položku ji odstraníte; klepnutím na \"+\" přidáte další.</string>
-    <string name="tryon_composer_items_title">Položky v tomto vyzkoušení (%1$d)</string>
-    <string name="tryon_add_item">Přidat položku</string>
     <string name="tryon_add_items_title">Přidat položky ze šatníku</string>
-    <string name="tryon_generate">Generovat vyzkoušení</string>
-    <string name="tryon_change_items">Změnit položky</string>
-    <string name="tryon_save_to_drive">Uložit</string>
-    <string name="tryon_saved_to_drive">Uloženo</string>
-    <string name="tryon_saving">Ukládání…</string>
     <string name="tryon_history_action">Historie</string>
-    <string name="tryon_history_title">Minulá vyzkoušení</string>
-    <string name="tryon_history_detail_title">Podrobnosti vyzkoušení</string>
     <string name="tryon_history_empty">Zatím žádná uložená vyzkoušení. Jedno vygenerujte a klepnutím na \"Uložit\" jej zde ponechte.</string>
-    <string name="tryon_history_items_title">Nošené položky</string>
-    <string name="tryon_history_items_missing">Položky již nejsou ve vašem šatníku dostupné.</string>
-    <string name="tryon_delete_confirm_title">Smazat vyzkoušení?</string>
-    <string name="tryon_delete_confirm_text">Tímto odstraníte uložený obrázek vyzkoušení z Drive. Položky šatníku zůstanou zachovány.</string>
     <string name="tryon_use_outfit">Použít outfit</string>
-    <string name="tryon_outfit_picker_title">Vybrat outfit</string>
-    <string name="tryon_outfit_picker_empty">Zatím žádné uložené outfity. Vytvořte si jeden na kartě Outfity, abyste jej mohli použít zde.</string>
     <string name="tryon_from_outfit">Z outfitu: %1$s</string>
-    <string name="tryon_view_source_outfit">Zobrazit outfit</string>
 
     <!-- About -->
     <string name="settings_tab_about">O aplikaci</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Zůstatek: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Používáte vlastní klíč Gemini — žádné kredity se neutrácí.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Naplánovaný výlet</string>
     <string name="trip_saved_label">Uloženo</string>
     <string name="trip_saved_confirmation">Výlet a outfity uloženy</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Vyber oblečení, které zakryje horní i dolní část těla — buď celotělový kus (šaty nebo overal), nebo horní díl spolu se spodním dílem. Díky tomu zůstane vygenerované vyzkoušení plně oblečené.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Načítání podrobností %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Ukládání outfitu…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Generování selhalo</string>
-    <string name="tryon_missing_photos_items">Chybí fotky nebo položky</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Uložení selhalo</string>
-    <string name="error_delete_failed">Smazání selhalo</string>
     <string name="error_upload_failed">Nahrání selhalo: %1$s</string>
     <string name="error_original_unavailable">Originál není k dispozici</string>
     <string name="error_gemini_no_response">AI neodpověděla.</string>

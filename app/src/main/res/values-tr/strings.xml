@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Denemeler</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Sil</string>
     <string name="action_save">Kaydet</string>
     <string name="action_edit">Düzenle</string>
     <string name="action_saving">Kaydediliyor…</string>
-    <string name="action_sort">Sırala</string>
-    <string name="action_remove">Kaldır</string>
     <string name="cd_ai_suggestion">Yapay zeka önerisi</string>
     <string name="cd_refine">İyileştir</string>
     <string name="filter_location">Konum</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Henüz kombin yok</string>
     <string name="outfits_empty_hint">Gardırobunuzdan bir kombin oluşturmak için +\'ya dokunun</string>
-    <string name="outfits_no_match">Filtreyle eşleşen kombin yok</string>
-    <string name="outfits_sort_newest">En yeni önce</string>
-    <string name="outfits_sort_oldest">En eski önce</string>
     <string name="outfits_sort_most_worn">En çok giyilen</string>
-    <string name="outfits_sort_name_az">İsim A–Z</string>
-    <string name="outfits_sort_name_za">İsim Z–A</string>
-    <string name="outfits_sort_most_items">En çok öge</string>
     <string name="outfits_create_manual">Manuel kombin oluştur</string>
     <string name="outfits_suggest">Mevcut kombin öner</string>
     <string name="prediction_setup_title">Yapay zeka ile bul</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Yeni etiket önerilmedi.</string>
     <string name="outfits_suggest_tags_apply">Seçilenleri ekle</string>
     <string name="outfits_suggest_tags_hint">Etiketleri değiştirmek için dokunun. Seçilen etiketler bu kombine eklenir.</string>
-    <string name="outfits_unnamed">Adsız kombin</string>
     <string name="outfits_swap_item_for">Değiştir: %s</string>
     <string name="outfits_suggest_alternatives">10 alternatif öner</string>
     <string name="outfits_select_item">Seç</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Yağmur için daha uygun</string>
     <string name="travel_refine_evening">Akşam kombinleri ekle</string>
     <string name="travel_refine_reuse">Kombin tekrarını maksimize et</string>
-    <string name="travel_day">%d. Gün</string>
     <string name="travel_save_as_style">Kombin olarak kaydet</string>
     <string name="travel_saved_as_style">Kaydedildi</string>
     <string name="travel_move_to_travel">Tümünü Seyahat konumuna taşı</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Çevrimdışısınız — yalnızca görüntüleme modu</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Üzerimde dene</string>
     <string name="tryon_fab">Üzerimde dene</string>
     <string name="tryon_section_title">Deneme fotoğrafları</string>
     <string name="tryon_section_desc">Önden, yandan ve arkadan tam vücut fotoğrafları yükleyin. Uygulama, bir kombinin veya gardırop ögesinin üzerinizdeki deneme önizlemesini oluştururken bunları referans olarak kullanır. Fotoğraflar kendi Drive\'ınızda kalır.</string>
-    <string name="tryon_slot_front">Ön</string>
-    <string name="tryon_slot_side">Yan</string>
-    <string name="tryon_slot_back">Arka</string>
     <string name="tryon_add_photo">%1$s fotoğrafı ekle</string>
     <string name="tryon_replace_photo">%1$s fotoğrafını değiştir</string>
     <string name="tryon_remove_photo">%1$s fotoğrafını kaldır</string>
     <string name="tryon_uploading">Yükleniyor…</string>
-    <string name="tryon_generating">Denemeniz oluşturuluyor…</string>
-    <string name="tryon_error">Deneme oluşturma başarısız oldu</string>
     <string name="tryon_no_photos">Bu özelliği kullanmak için Ayarlar → Profil bölümüne bir deneme fotoğrafı ekleyin.</string>
     <string name="tryon_save_to_gallery">Galeriye kaydet</string>
     <string name="tryon_saved">Pictures/LibreLookAI klasörüne kaydedildi</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galeri</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">Aşağıda gösterilen tüm ögeler, oluşturulan denemede birlikte giyilecektir. Bir ögeyi kaldırmak için üzerine dokunun; daha fazlasını eklemek için \"+\"\'ya dokunun.</string>
-    <string name="tryon_composer_items_title">Bu denemedeki ögeler (%1$d)</string>
-    <string name="tryon_add_item">Öge ekle</string>
     <string name="tryon_add_items_title">Gardırop ögeleri ekle</string>
-    <string name="tryon_generate">Deneme oluştur</string>
-    <string name="tryon_change_items">Ögeleri değiştir</string>
-    <string name="tryon_save_to_drive">Kaydet</string>
-    <string name="tryon_saved_to_drive">Kaydedildi</string>
-    <string name="tryon_saving">Kaydediliyor…</string>
     <string name="tryon_history_action">Geçmiş</string>
-    <string name="tryon_history_title">Geçmiş denemeler</string>
-    <string name="tryon_history_detail_title">Deneme detayları</string>
     <string name="tryon_history_empty">Henüz kaydedilmiş deneme yok. Bir tane oluşturun ve burada tutmak için \"Kaydet\"e dokunun.</string>
-    <string name="tryon_history_items_title">Giyilen ögeler</string>
-    <string name="tryon_history_items_missing">Ögeler artık gardırobunuzda mevcut değil.</string>
-    <string name="tryon_delete_confirm_title">Deneme silinsin mi?</string>
-    <string name="tryon_delete_confirm_text">Bu işlem, kaydedilen deneme resmini Drive\'dan kaldırır. Gardırop ögeleri tutulur.</string>
     <string name="tryon_use_outfit">Bir kombin kullan</string>
-    <string name="tryon_outfit_picker_title">Bir kombin seçin</string>
-    <string name="tryon_outfit_picker_empty">Henüz kaydedilmiş kombin yok. Burada kullanmak için Kombinler sekmesinde bir tane oluşturun.</string>
     <string name="tryon_from_outfit">Kombinden: %1$s</string>
-    <string name="tryon_view_source_outfit">Kombini görüntüle</string>
 
     <!-- About -->
     <string name="settings_tab_about">Hakkında</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Bakiye: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Kendi Gemini anahtarınızı kullanıyorsunuz — kredi harcanmaz.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Planlanan gezi</string>
     <string name="trip_saved_label">Kaydedildi</string>
     <string name="trip_saved_confirmation">Gezi ve kombinler kaydedildi</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Hem vücudun üst hem de alt kısmını örten kıyafetler seç — ya tek parça bir giysi (elbise veya tulum) ya da bir üst ile birlikte bir alt. Böylece oluşturulan deneme tamamen giyinik kalır.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Ayrıntılar yükleniyor %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Kıyafet kaydediliyor…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Oluşturma başarısız</string>
-    <string name="tryon_missing_photos_items">Fotoğraf veya parça eksik</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Kaydetme başarısız</string>
-    <string name="error_delete_failed">Silme başarısız</string>
     <string name="error_upload_failed">Yükleme başarısız: %1$s</string>
     <string name="error_original_unavailable">Orijinal kullanılamıyor</string>
     <string name="error_gemini_no_response">Yapay zekâ yanıt vermedi.</string>

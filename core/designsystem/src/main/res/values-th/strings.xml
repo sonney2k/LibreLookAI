@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">รองเท้า</string>
     <string name="outfit_layer_accessories">แอ็คเซสซอรี่</string>
     <string name="outfit_layer_other">อื่นๆ</string>
+    <string name="action_delete">ลบ</string>
+    <string name="action_remove">นำออก</string>
+    <string name="action_sort">จัดเรียง</string>
+    <string name="error_save_failed">บันทึกไม่สำเร็จ</string>
+    <string name="outfits_no_match">ไม่พบชุดที่ตรงตามตัวกรอง</string>
+    <string name="outfits_sort_most_items">รายการมากที่สุด</string>
+    <string name="outfits_sort_name_az">ชื่อ ก–ฮ</string>
+    <string name="outfits_sort_name_za">ชื่อ ฮ–ก</string>
+    <string name="outfits_sort_newest">ใหม่ที่สุดก่อน</string>
+    <string name="outfits_sort_oldest">เก่าที่สุดก่อน</string>
+    <string name="outfits_unnamed">ชุดไม่มีชื่อ</string>
+    <string name="travel_day">วันที่ %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">เพิ่มรายการ</string>
 </resources>

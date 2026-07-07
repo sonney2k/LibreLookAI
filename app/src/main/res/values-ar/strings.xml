@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">التجارب</string>
 
     <!-- Common actions -->
-    <string name="action_delete">حذف</string>
     <string name="action_save">حفظ</string>
     <string name="action_edit">تعديل</string>
     <string name="action_saving">جاري الحفظ…</string>
-    <string name="action_sort">فرز</string>
-    <string name="action_remove">إزالة</string>
     <string name="cd_ai_suggestion">اقتراح ذكاء اصطناعي</string>
     <string name="cd_refine">تحسين</string>
     <string name="filter_location">الموقع</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">لا توجد أطقم بعد</string>
     <string name="outfits_empty_hint">اضغط على + لإنشاء طقم من خزانة ملابسك</string>
-    <string name="outfits_no_match">لا توجد أطقم تطابق الفلتر</string>
-    <string name="outfits_sort_newest">الأحدث أولاً</string>
-    <string name="outfits_sort_oldest">الأقدم أولاً</string>
     <string name="outfits_sort_most_worn">الأكثر ارتداءً</string>
-    <string name="outfits_sort_name_az">الاسم أ–ي</string>
-    <string name="outfits_sort_name_za">الاسم ي–أ</string>
-    <string name="outfits_sort_most_items">الأكثر أصنافًا</string>
     <string name="outfits_create_manual">إنشاء طقم يدويًا</string>
     <string name="outfits_suggest">اقتراح طقم موجود</string>
     <string name="prediction_setup_title">البحث بالذكاء الاصطناعي</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">لا توجد وسوم جديدة مقترحة.</string>
     <string name="outfits_suggest_tags_apply">إضافة المختار</string>
     <string name="outfits_suggest_tags_hint">اضغط على الوسوم للتبديل. سيتم إضافة الوسوم المختارة لهذا الطقم.</string>
-    <string name="outfits_unnamed">طقم بدون عنوان</string>
     <string name="outfits_swap_item_for">تبديل: %s</string>
     <string name="outfits_suggest_alternatives">اقتراح 10 بدائل</string>
     <string name="outfits_select_item">اختيار</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">أفضل للمطر</string>
     <string name="travel_refine_evening">إضافة أطقم مسائية</string>
     <string name="travel_refine_reuse">زيادة إعادة استخدام الأطقم</string>
-    <string name="travel_day">اليوم %d</string>
     <string name="travel_save_as_style">حفظ كطقم</string>
     <string name="travel_saved_as_style">تم الحفظ</string>
     <string name="travel_move_to_travel">نقل الكل إلى موقع السفر</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">أنت غير متصل بالإنترنت — وضع العرض فقط</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">تجربة عليّ</string>
     <string name="tryon_fab">تجربة عليّ</string>
     <string name="tryon_section_title">صور التجربة</string>
     <string name="tryon_section_desc">ارفع صورًا لكامل الجسم من الأمام والجانب والخلف. يستخدم التطبيق هذه الصور كمرجع عند توليد معاينة تجربة لطقم أو صنف من الخزانة عليك. تبقى الصور في Drive الخاص بك.</string>
-    <string name="tryon_slot_front">أمام</string>
-    <string name="tryon_slot_side">جانب</string>
-    <string name="tryon_slot_back">خلف</string>
     <string name="tryon_add_photo">إضافة صورة %1$s</string>
     <string name="tryon_replace_photo">استبدال %1$s</string>
     <string name="tryon_remove_photo">إزالة %1$s</string>
     <string name="tryon_uploading">جاري الرفع…</string>
-    <string name="tryon_generating">جاري توليد التجربة الخاصة بك…</string>
-    <string name="tryon_error">فشل توليد التجربة</string>
     <string name="tryon_no_photos">أضف صورة تجربة في الإعدادات ← الملف الشخصي لاستخدام هذه الميزة.</string>
     <string name="tryon_save_to_gallery">حفظ في المعرض</string>
     <string name="tryon_saved">تم الحفظ في Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">المعرض</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">سيتم ارتداء جميع الأصناف الموضحة أدناه معًا في التجربة المولدة. اضغط على صنف لإزالته؛ اضغط على \"+\" لإضافة المزيد.</string>
-    <string name="tryon_composer_items_title">الأصناف في هذه التجربة (%1$d)</string>
-    <string name="tryon_add_item">إضافة صنف</string>
     <string name="tryon_add_items_title">إضافة أصناف الخزانة</string>
-    <string name="tryon_generate">توليد تجربة</string>
-    <string name="tryon_change_items">تغيير الأصناف</string>
-    <string name="tryon_save_to_drive">حفظ</string>
-    <string name="tryon_saved_to_drive">تم الحفظ</string>
-    <string name="tryon_saving">جاري الحفظ…</string>
     <string name="tryon_history_action">السجل</string>
-    <string name="tryon_history_title">تجارب سابقة</string>
-    <string name="tryon_history_detail_title">تفاصيل التجربة</string>
     <string name="tryon_history_empty">لا توجد تجارب محفوظة بعد. قم بتوليد واحدة واضغط على \"حفظ\" للاحتفاظ بها هنا.</string>
-    <string name="tryon_history_items_title">الأصناف المرتداة</string>
-    <string name="tryon_history_items_missing">أصناف لم تعد متوفرة في خزانة ملابسك.</string>
-    <string name="tryon_delete_confirm_title">حذف التجربة؟</string>
-    <string name="tryon_delete_confirm_text">يؤدي هذا إلى إزالة صورة التجربة المحفوظة من Drive. يتم الاحتفاظ بأصناف الخزانة.</string>
     <string name="tryon_use_outfit">استخدام طقم</string>
-    <string name="tryon_outfit_picker_title">اختر طقمًا</string>
-    <string name="tryon_outfit_picker_empty">لا توجد أطقم محفوظة بعد. أنشئ واحدًا في تبويب الأطقم لاستخدامه هنا.</string>
     <string name="tryon_from_outfit">من طقم: %1$s</string>
-    <string name="tryon_view_source_outfit">عرض الطقم</string>
 
     <!-- About -->
     <string name="settings_tab_about">حول</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">الرصيد: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">تستخدم مفتاح Gemini الخاص بك — لا يتم إنفاق أي أرصدة.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">رحلة مخطط لها</string>
     <string name="trip_saved_label">تم الحفظ</string>
     <string name="trip_saved_confirmation">تم حفظ الرحلة والإطلالات</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">اختر ملابس تغطي الجزأين العلوي والسفلي من الجسم — إما قطعة لكامل الجسم (فستان أو أفرول) أو قطعة علوية مع قطعة سفلية. هذا يُبقي التجربة المُولَّدة مرتدية ملابس كاملة.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">تحميل التفاصيل %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">جارٍ حفظ الإطلالة…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">فشل الإنشاء</string>
-    <string name="tryon_missing_photos_items">صور أو عناصر مفقودة</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">فشل الحفظ</string>
-    <string name="error_delete_failed">فشل الحذف</string>
     <string name="error_upload_failed">فشل الرفع: %1$s</string>
     <string name="error_original_unavailable">الصورة الأصلية غير متوفرة</string>
     <string name="error_gemini_no_response">لم يستجب الذكاء الاصطناعي.</string>

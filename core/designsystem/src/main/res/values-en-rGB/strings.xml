@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Footwear</string>
     <string name="outfit_layer_accessories">Accessories</string>
     <string name="outfit_layer_other">Other</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_sort">Sort</string>
+    <string name="error_save_failed">Save failed</string>
+    <string name="outfits_no_match">No outfits match the filter</string>
+    <string name="outfits_sort_most_items">Most items</string>
+    <string name="outfits_sort_name_az">Name A–Z</string>
+    <string name="outfits_sort_name_za">Name Z–A</string>
+    <string name="outfits_sort_newest">Newest first</string>
+    <string name="outfits_sort_oldest">Oldest first</string>
+    <string name="outfits_unnamed">Untitled outfit</string>
+    <string name="travel_day">Day %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Add item</string>
 </resources>

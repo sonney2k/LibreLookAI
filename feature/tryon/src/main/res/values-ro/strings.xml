@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Ștergerea a eșuat</string>
+    <string name="tryon_change_items">Schimbă articolele</string>
+    <string name="tryon_composer_explain">Toate articolele afișate mai jos vor fi purtate împreună în proba generată. Atinge un articol pentru a-l elimina; atinge „+” pentru a adăuga mai multe.</string>
+    <string name="tryon_composer_items_title">Articole în această probă (%1$d)</string>
+    <string name="tryon_coverage_blocked">Alege haine care acoperă atât partea de sus, cât și partea de jos a corpului — fie o piesă integrală (o rochie sau o salopetă), fie o piesă de sus împreună cu una de jos. Astfel, proba generată rămâne complet îmbrăcată.</string>
+    <string name="tryon_delete_confirm_text">Aceasta elimină imaginea probei salvate din Drive. Articolele din garderobă sunt păstrate.</string>
+    <string name="tryon_delete_confirm_title">Ștergi proba?</string>
+    <string name="tryon_error">Generarea probei a eșuat</string>
+    <string name="tryon_generate">Generează proba</string>
+    <string name="tryon_generate_failed">Generarea a eșuat</string>
+    <string name="tryon_generating">Se generează proba ta…</string>
+    <string name="tryon_history_detail_title">Detalii probă</string>
+    <string name="tryon_history_items_missing">Articolele nu mai sunt disponibile în garderoba ta.</string>
+    <string name="tryon_history_items_title">Articole purtate</string>
+    <string name="tryon_history_title">Probe anterioare</string>
+    <string name="tryon_missing_photos_items">Lipsesc fotografii sau articole</string>
+    <string name="tryon_outfit_picker_empty">Nicio ținută salvată încă. Creează una în tabul Ținute pentru a o folosi aici.</string>
+    <string name="tryon_outfit_picker_title">Alege o ținută</string>
+    <string name="tryon_save_to_drive">Salvează</string>
+    <string name="tryon_saved_to_drive">Salvat</string>
+    <string name="tryon_saving">Se salvează…</string>
+    <string name="tryon_slot_back">Spate</string>
+    <string name="tryon_slot_front">Față</string>
+    <string name="tryon_slot_side">Lateral</string>
+    <string name="tryon_title">Probă pe mine</string>
+    <string name="tryon_view_source_outfit">Vezi ținuta</string>
+</resources>

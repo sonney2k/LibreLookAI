@@ -1562,6 +1562,24 @@ categories:
    `feature/billing` (above core), so designsystem exposes `LocalRemoveBgCostBadge`
    (null → hidden) and `AppContent` provides it from billing — the same
    provide-high/self-hide contract as the other chrome Locals.
+   **`feature:tryon` LANDED (July 2026).** Second enabler first: the three try-on
+   destinations' VM params narrowed to data + callbacks (the onboarding precedent) —
+   `itemPool` (the wardrobe+shopping pool, `rememberTryOnItemPool` moved shell-side into
+   `AppContent`), `profileState: StateFlow<ProfileUiState>` + `tryOnFiles`, and the picker's
+   `onTextFilter`/`findSimilarByPhoto` callbacks — leaving tryon with zero app-side feature
+   imports. Then the whole `tryon/` package moved wholesale (14 files, package kept), Hilt+KSP
+   for the two `@HiltViewModel`s + `@Singleton` repo + the `@IntoSet` `TryOnIndexSyncHandler`.
+   Res split: 68 tryon-only keys → the module's res; 14 keys tryon shares with app code
+   (`action_delete|remove|sort`, the `outfits_sort_*`/`outfits_no_match`/`outfits_unnamed`
+   picker vocabulary, `travel_day`/`trip_viewer_title`/`tryon_add_item`/`error_save_failed`)
+   → the designsystem vocabulary per the recorded precedent, ~13 app files rewritten to `DsR`.
+   The generate button's cost badge got the same `feature/billing` bridge as
+   `PhotoReviewScreen`: `LocalTryOnCostBadge` (designsystem, provided by `AppContent`) —
+   feature→feature deps stay forbidden. The four § 8 test suites stay in `app/src/test`
+   against the module's public API (they only used core fakes + public types;
+   `OutfitPickerDialog` bumped public for the calendar's cross-module call). Tooling:
+   `--module tryon`; `translation_status.sh` aggregates the seventh res root (still 1180
+   keys). Remaining: travel → shopping → outfit → wardrobe → settings.
 
 ### Verification (per slice)
 

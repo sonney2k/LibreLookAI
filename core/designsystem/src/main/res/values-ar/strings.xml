@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">أحذية</string>
     <string name="outfit_layer_accessories">إكسسوارات</string>
     <string name="outfit_layer_other">أخرى</string>
+    <string name="action_delete">حذف</string>
+    <string name="action_remove">إزالة</string>
+    <string name="action_sort">فرز</string>
+    <string name="error_save_failed">فشل الحفظ</string>
+    <string name="outfits_no_match">لا توجد أطقم تطابق الفلتر</string>
+    <string name="outfits_sort_most_items">الأكثر أصنافًا</string>
+    <string name="outfits_sort_name_az">الاسم أ–ي</string>
+    <string name="outfits_sort_name_za">الاسم ي–أ</string>
+    <string name="outfits_sort_newest">الأحدث أولاً</string>
+    <string name="outfits_sort_oldest">الأقدم أولاً</string>
+    <string name="outfits_unnamed">طقم بدون عنوان</string>
+    <string name="travel_day">اليوم %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">إضافة صنف</string>
 </resources>

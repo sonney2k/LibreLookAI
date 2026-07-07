@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Prøvninger</string>
 
     <!-- Almindelige handlinger -->
-    <string name="action_delete">Slet</string>
     <string name="action_save">Gem</string>
     <string name="action_edit">Redigér</string>
     <string name="action_saving">Gemmer…</string>
-    <string name="action_sort">Sortér</string>
-    <string name="action_remove">Fjern</string>
     <string name="cd_ai_suggestion">AI-forslag</string>
     <string name="cd_refine">Finjustér</string>
     <string name="filter_location">Placering</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Ingen outfits endnu</string>
     <string name="outfits_empty_hint">Tryk på + for at bygge et outfit fra din garderobe</string>
-    <string name="outfits_no_match">Ingen outfits matcher filtret</string>
-    <string name="outfits_sort_newest">Nyeste først</string>
-    <string name="outfits_sort_oldest">Ældste først</string>
     <string name="outfits_sort_most_worn">Mest båret</string>
-    <string name="outfits_sort_name_az">Navn A–Å</string>
-    <string name="outfits_sort_name_za">Navn Å–A</string>
-    <string name="outfits_sort_most_items">Flest stykker</string>
     <string name="outfits_create_manual">Opret outfit manuelt</string>
     <string name="outfits_suggest">Foreslå eksisterende outfit</string>
     <string name="prediction_setup_title">Find med AI</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Ingen nye tags foreslået.</string>
     <string name="outfits_suggest_tags_apply">Tilføj valgte</string>
     <string name="outfits_suggest_tags_hint">Tryk på tags for at skifte. Valgte tags tilføjes til dette outfit.</string>
-    <string name="outfits_unnamed">Unavngivet outfit</string>
     <string name="outfits_swap_item_for">Skift: %s</string>
     <string name="outfits_suggest_alternatives">Foreslå 10 alternativer</string>
     <string name="outfits_select_item">Vælg</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Bedre til regn</string>
     <string name="travel_refine_evening">Tilføj aftenoutfits</string>
     <string name="travel_refine_reuse">Maksimér outfit-genbrug</string>
-    <string name="travel_day">Dag %d</string>
     <string name="travel_save_as_style">Gem som outfit</string>
     <string name="travel_saved_as_style">Gemt</string>
     <string name="travel_move_to_travel">Flyt alt til Rejse-placering</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Du er offline — kun visningstilstand</string>
 
     <!-- Prøv på mig -->
-    <string name="tryon_title">Prøv på mig</string>
     <string name="tryon_fab">Prøv på mig</string>
     <string name="tryon_section_title">Prøvningsfotos</string>
     <string name="tryon_section_desc">Upload helkropsfotos forfra, fra siden og bagfra. Appen bruger dem som reference, når den genererer en prøvningsforhåndsvisning af et outfit eller garderobestykke på dig. Fotos forbliver på din egen Drive.</string>
-    <string name="tryon_slot_front">Forfra</string>
-    <string name="tryon_slot_side">Side</string>
-    <string name="tryon_slot_back">Bagside</string>
     <string name="tryon_add_photo">Tilføj %1$s-foto</string>
     <string name="tryon_replace_photo">Erstat %1$s</string>
     <string name="tryon_remove_photo">Fjern %1$s</string>
     <string name="tryon_uploading">Uploader…</string>
-    <string name="tryon_generating">Genererer din prøvning…</string>
-    <string name="tryon_error">Prøvningsgenerering mislykkedes</string>
     <string name="tryon_no_photos">Tilføj et prøvningsfoto under Indstillinger → Profil for at bruge denne funktion.</string>
     <string name="tryon_save_to_gallery">Gem i galleri</string>
     <string name="tryon_saved">Gemt i Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Galleri</string>
 
     <!-- Prøvnings-composer / historik -->
-    <string name="tryon_composer_explain">Alle stykker vist nedenfor bæres sammen i den genererede prøvning. Tryk på et stykke for at fjerne det; tryk på \"+\" for at tilføje flere.</string>
-    <string name="tryon_composer_items_title">Stykker i denne prøvning (%1$d)</string>
-    <string name="tryon_add_item">Tilføj stykke</string>
     <string name="tryon_add_items_title">Tilføj garderobestykker</string>
-    <string name="tryon_generate">Generér prøvning</string>
-    <string name="tryon_change_items">Skift stykker</string>
-    <string name="tryon_save_to_drive">Gem</string>
-    <string name="tryon_saved_to_drive">Gemt</string>
-    <string name="tryon_saving">Gemmer…</string>
     <string name="tryon_history_action">Historik</string>
-    <string name="tryon_history_title">Tidligere prøvninger</string>
-    <string name="tryon_history_detail_title">Prøvningsdetaljer</string>
     <string name="tryon_history_empty">Ingen gemte prøvninger endnu. Generér en og tryk på \"Gem\" for at beholde den her.</string>
-    <string name="tryon_history_items_title">Båret stykker</string>
-    <string name="tryon_history_items_missing">Stykker er ikke længere tilgængelige i din garderobe.</string>
-    <string name="tryon_delete_confirm_title">Slet prøvning?</string>
-    <string name="tryon_delete_confirm_text">Dette fjerner det gemte prøvningsbillede fra Drive. Garderobestykkerne beholdes.</string>
     <string name="tryon_use_outfit">Brug et outfit</string>
-    <string name="tryon_outfit_picker_title">Vælg et outfit</string>
-    <string name="tryon_outfit_picker_empty">Ingen gemte outfits endnu. Opret et i Outfits-fanen for at bruge det her.</string>
     <string name="tryon_from_outfit">Fra outfit: %1$s</string>
-    <string name="tryon_view_source_outfit">Vis outfit</string>
 
     <!-- Om -->
     <string name="settings_tab_about">Om</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Bruger din egen Gemini-nøgle — der bruges ingen kreditter.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Planlagt rejse</string>
     <string name="trip_saved_label">Gemt</string>
     <string name="trip_saved_confirmation">Rejse og outfits gemt</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Vælg tøj, der dækker både overkrop og underkrop — enten et heldragtsstykke (kjole eller buksedragt) eller en overdel sammen med en underdel. Så er din genererede prøvning fuldt påklædt.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Indlæser detaljer %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Gemmer sæt…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Generering mislykkedes</string>
-    <string name="tryon_missing_photos_items">Manglende fotos eller varer</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Lagring mislykkedes</string>
-    <string name="error_delete_failed">Sletning mislykkedes</string>
     <string name="error_upload_failed">Upload mislykkedes: %1$s</string>
     <string name="error_original_unavailable">Original ikke tilgængelig</string>
     <string name="error_gemini_no_response">AI\'en svarede ikke.</string>

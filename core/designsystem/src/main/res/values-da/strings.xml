@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Sko</string>
     <string name="outfit_layer_accessories">Accessories</string>
     <string name="outfit_layer_other">Øvrigt</string>
+    <string name="action_delete">Slet</string>
+    <string name="action_remove">Fjern</string>
+    <string name="action_sort">Sortér</string>
+    <string name="error_save_failed">Lagring mislykkedes</string>
+    <string name="outfits_no_match">Ingen outfits matcher filtret</string>
+    <string name="outfits_sort_most_items">Flest stykker</string>
+    <string name="outfits_sort_name_az">Navn A–Å</string>
+    <string name="outfits_sort_name_za">Navn Å–A</string>
+    <string name="outfits_sort_newest">Nyeste først</string>
+    <string name="outfits_sort_oldest">Ældste først</string>
+    <string name="outfits_unnamed">Unavngivet outfit</string>
+    <string name="travel_day">Dag %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Tilføj stykke</string>
 </resources>

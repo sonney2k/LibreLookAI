@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">נעליים</string>
     <string name="outfit_layer_accessories">אביזרים</string>
     <string name="outfit_layer_other">אחר</string>
+    <string name="action_delete">מחק</string>
+    <string name="action_remove">הסר</string>
+    <string name="action_sort">מיין</string>
+    <string name="error_save_failed">השמירה נכשלה</string>
+    <string name="outfits_no_match">אין אאוטפיטים התואמים למסנן</string>
+    <string name="outfits_sort_most_items">הכי הרבה פריטים</string>
+    <string name="outfits_sort_name_az">שם א–ת</string>
+    <string name="outfits_sort_name_za">שם ת–א</string>
+    <string name="outfits_sort_newest">החדש ביותר קודם</string>
+    <string name="outfits_sort_oldest">הישן ביותר קודם</string>
+    <string name="outfits_unnamed">אאוטפיט ללא שם</string>
+    <string name="travel_day">יום %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">הוסף פריט</string>
 </resources>

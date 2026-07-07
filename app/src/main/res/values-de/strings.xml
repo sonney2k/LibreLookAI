@@ -57,12 +57,9 @@
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>
     <string name="outfits_tab_tryons">Anproben</string>
-    <string name="action_delete">Löschen</string>
     <string name="action_save">Speichern</string>
     <string name="action_edit">Bearbeiten</string>
     <string name="action_saving">Wird gespeichert…</string>
-    <string name="action_sort">Sortieren</string>
-    <string name="action_remove">Entfernen</string>
     <string name="cd_ai_suggestion">KI-Vorschlag</string>
     <string name="cd_refine">Verfeinern</string>
     <string name="filter_location">Standort</string>
@@ -264,13 +261,7 @@
     <!-- Colors -->
     <string name="outfits_empty">Noch keine Outfits</string>
     <string name="outfits_empty_hint">Tippe auf +, um ein Outfit aus deiner Garderobe zu erstellen</string>
-    <string name="outfits_no_match">Keine Outfits entsprechen dem Filter</string>
-    <string name="outfits_sort_newest">Neueste zuerst</string>
-    <string name="outfits_sort_oldest">Älteste zuerst</string>
     <string name="outfits_sort_most_worn">Am häufigsten getragen</string>
-    <string name="outfits_sort_name_az">Name A–Z</string>
-    <string name="outfits_sort_name_za">Name Z–A</string>
-    <string name="outfits_sort_most_items">Meiste Teile</string>
     <string name="outfits_create_manual">Outfit manuell erstellen</string>
     <string name="outfits_suggest">Bestehendes Outfit vorschlagen</string>
     <string name="prediction_setup_title">Mit KI finden</string>
@@ -324,7 +315,6 @@
     <string name="outfits_suggest_tags_empty">Keine neuen Tags vorgeschlagen.</string>
     <string name="outfits_suggest_tags_apply">Auswahl hinzufügen</string>
     <string name="outfits_suggest_tags_hint">Tippe auf Tags, um sie auszuwählen. Ausgewählte Tags werden dem Outfit hinzugefügt.</string>
-    <string name="outfits_unnamed">Unbenanntes Outfit</string>
     <string name="outfits_swap_item_for">Tauschen: %s</string>
     <string name="outfits_suggest_alternatives">10 Alternativen vorschlagen</string>
     <string name="outfits_select_item">Auswählen</string>
@@ -373,7 +363,6 @@
     <string name="travel_refine_rain">Besser für Regen</string>
     <string name="travel_refine_evening">Abendoutfits hinzufügen</string>
     <string name="travel_refine_reuse">Outfit-Wiederverwendung maximieren</string>
-    <string name="travel_day">Tag %d</string>
     <string name="travel_save_as_style">Als Outfit speichern</string>
     <string name="travel_saved_as_style">Gespeichert</string>
     <string name="travel_move_to_travel">Alle in „Reise"-Standort verschieben</string>
@@ -435,19 +424,13 @@
     <string name="offline_banner">Offline — Nur-Ansicht-Modus</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Auf mir anprobieren</string>
     <string name="tryon_fab">Auf mir anprobieren</string>
     <string name="tryon_section_title">Anprobe-Fotos</string>
     <string name="tryon_section_desc">Lade Ganzkörperfotos von vorn, von der Seite und von hinten hoch. Die App nutzt sie als Referenz, um eine virtuelle Anprobe eines Outfits oder Kleidungsstücks an dir zu erzeugen. Die Fotos bleiben in deinem eigenen Drive.</string>
-    <string name="tryon_slot_front">Vorne</string>
-    <string name="tryon_slot_side">Seite</string>
-    <string name="tryon_slot_back">Hinten</string>
     <string name="tryon_add_photo">%1$s-Foto hinzufügen</string>
     <string name="tryon_replace_photo">%1$s ersetzen</string>
     <string name="tryon_remove_photo">%1$s entfernen</string>
     <string name="tryon_uploading">Lädt hoch…</string>
-    <string name="tryon_generating">Deine Anprobe wird erstellt…</string>
-    <string name="tryon_error">Anprobe-Erstellung fehlgeschlagen</string>
     <string name="tryon_no_photos">Lade unter Einstellungen → Profil ein Anprobe-Foto hoch, um diese Funktion zu nutzen.</string>
     <string name="tryon_save_to_gallery">In Galerie speichern</string>
     <string name="tryon_saved">Gespeichert unter Bilder/LibreLookAI</string>
@@ -457,81 +440,22 @@
     <string name="tryon_gallery">Galerie</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">Alle unten gezeigten Teile werden in der Anprobe gemeinsam getragen. Tippe auf ein Teil, um es zu entfernen; tippe auf \"+\", um weitere hinzuzufügen.</string>
-    <string name="tryon_composer_items_title">Teile in dieser Anprobe (%1$d)</string>
-    <string name="tryon_add_item">Teil hinzufügen</string>
     <string name="tryon_add_items_title">Kleidungsstücke hinzufügen</string>
-    <string name="tryon_generate">Anprobe erzeugen</string>
-    <string name="tryon_change_items">Teile ändern</string>
-    <string name="tryon_save_to_drive">Speichern</string>
-    <string name="tryon_saved_to_drive">Gespeichert</string>
-    <string name="tryon_saving">Speichert…</string>
     <string name="tryon_history_action">Verlauf</string>
-    <string name="tryon_history_title">Frühere Anproben</string>
-    <string name="tryon_history_detail_title">Anprobe-Details</string>
     <string name="tryon_history_empty">Noch keine gespeicherten Anproben. Erzeuge eine und tippe auf \"Speichern\", um sie hier zu behalten.</string>
-    <string name="tryon_history_items_title">Getragene Teile</string>
-    <string name="tryon_history_items_missing">Teile sind nicht mehr in deiner Garderobe verfügbar.</string>
-    <string name="tryon_delete_confirm_title">Anprobe löschen?</string>
-    <string name="tryon_delete_confirm_text">Dies entfernt das gespeicherte Anprobe-Bild aus Drive. Die Kleidungsstücke bleiben erhalten.</string>
     <string name="tryon_use_outfit">Outfit verwenden</string>
-    <string name="tryon_outfit_picker_title">Outfit auswählen</string>
-    <string name="tryon_outfit_picker_empty">Noch keine gespeicherten Outfits. Erstelle eines im Outfits-Tab, um es hier zu verwenden.</string>
     <string name="tryon_from_outfit">Aus Outfit: %1$s</string>
-    <string name="tryon_view_source_outfit">Outfit ansehen</string>
 
     <!-- Try-On redesign: entry, quick sheet, history, states -->
     <string name="tryon_nav_label">Anprobe</string>
-    <string name="tryon_quick_sheet_title">Schnelle Anprobe</string>
-    <string name="tryon_quick_sheet_subtitle">Was sollen wir dir anziehen?</string>
-    <string name="tryon_quick_source_outfit">Ein gespeichertes Outfit</string>
-    <string name="tryon_quick_source_outfit_sub">Aus deiner Sammlung wählen</string>
-    <string name="tryon_quick_source_wardrobe">Teile auswählen</string>
-    <string name="tryon_quick_source_wardrobe_sub">Aus deinem Kleiderschrank kombinieren</string>
-    <string name="tryon_quick_source_shopping">Etwas zum Kaufen</string>
-    <string name="tryon_quick_source_shopping_sub">Aus deiner Einkaufsliste</string>
-    <string name="tryon_quick_source_travel">Outfit aus einer Reise</string>
     <string name="tryon_quick_source_travel_sub">Aus %1$s · Tag %2$d</string>
-    <string name="tryon_quick_source_travel_avail">Aus deinen geplanten Reisen</string>
-    <string name="tryon_trip_picker_title">Reise-Outfit anprobieren</string>
-    <string name="tryon_trip_picker_empty">Noch keine Reise-Outfits zum Anprobieren. Plane zuerst eine Reise im Reise-Tab.</string>
     <string name="tryon_trip_context">%1$s · Tag %2$d</string>
-    <string name="tryon_quick_see_history">Frühere Anproben ansehen</string>
     <string name="tryon_history_subtitle">Neueste oben</string>
-    <string name="tryon_history_earlier">Früher</string>
-    <string name="tryon_history_more_count">%1$d weitere</string>
-    <string name="tryon_history_new">Neue Anprobe</string>
-    <string name="tryon_source_label_outfit">Aus Outfit</string>
-    <string name="tryon_source_label_wardrobe">Aus Kleiderschrank</string>
-    <string name="tryon_source_label_shopping">Aus Einkauf</string>
-    <string name="tryon_source_label_travel">Aus Reise</string>
-    <string name="tryon_source_context_items">%1$d Teile</string>
-    <string name="tryon_source_swap">Wechseln</string>
-    <string name="tryon_empty_title">Noch keine Anproben</string>
-    <string name="tryon_empty_body">Erstelle eine Anprobe aus einem Outfit, deinem Kleiderschrank oder einem Einkaufsartikel — wir speichern sie hier, damit du sie jederzeit wieder ansehen kannst.</string>
-    <string name="tryon_empty_cta">Anprobe starten</string>
-    <string name="tryon_empty_chip_outfit">Aus einem Outfit</string>
-    <string name="tryon_empty_chip_wardrobe">Aus Kleiderschrank</string>
-    <string name="tryon_empty_chip_shopping">Aus Einkauf</string>
     <string name="tryon_result_title">Deine Anprobe</string>
-    <string name="tryon_result_zoom_hint">Zum Zoomen ziehen</string>
-    <string name="tryon_result_items_worn">Getragene Teile</string>
-    <string name="tryon_reference_photos_title">Deine Referenzfotos</string>
-    <string name="tryon_reference_photos_edit">Bearbeiten</string>
     <string name="tryon_detail_view_source_trip">Reise ansehen</string>
     <string name="tryon_detail_view_source_wardrobe">Im Kleiderschrank ansehen</string>
     <string name="tryon_detail_view_source_shopping">Einkaufsliste ansehen</string>
-    <string name="tryon_detail_regenerate">Neu erstellen</string>
     <string name="tryon_detail_item_tap_hint">Zum Ansehen im Kleiderschrank tippen</string>
-    <string name="tryon_detail_generated">Erstellt</string>
-    <string name="tryon_detail_source">Quelle</string>
-    <string name="tryon_photos_eyebrow">Referenzfotos benötigt</string>
-    <string name="tryon_photos_title">Füge ein paar Fotos von dir hinzu, damit Gemini Outfits auf deinen Körper setzen kann.</string>
-    <string name="tryon_photos_body">Vorne, seitlich und hinten — ganzkörper, schlichter Hintergrund funktioniert am besten. Fotos bleiben in deinem eigenen Drive.</string>
-    <string name="tryon_photos_section_label">3 Referenzfotos hochladen</string>
-    <string name="tryon_photos_optional">Optional</string>
-    <string name="tryon_photos_tip">Trage schlichte, eng anliegende Kleidung auf deinen Referenzfotos. Muster und dicke Schichten verringern die Genauigkeit.</string>
-    <string name="tryon_photos_open_settings">Einstellungen → Profil öffnen</string>
 
     <!-- About -->
     <string name="settings_tab_about">Info</string>
@@ -740,7 +664,6 @@
     <string name="coins_balance_label">Guthaben: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Eigener Gemini-Schlüssel — kein Guthaben wird verbraucht.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Geplante Reise</string>
     <string name="trip_saved_label">Gespeichert</string>
     <string name="trip_saved_confirmation">Reise &amp; Outfits gespeichert</string>
@@ -959,7 +882,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Wähle Kleidung, die sowohl den Ober- als auch den Unterkörper bedeckt – entweder ein Einteiler (Kleid oder Jumpsuit) oder ein Oberteil zusammen mit einem Unterteil. So bleibt deine erzeugte Anprobe vollständig bekleidet.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Details werden geladen %1$d / %2$d</string>
@@ -969,12 +891,8 @@
     <string name="outfit_saving">Outfit wird gespeichert…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Generierung fehlgeschlagen</string>
-    <string name="tryon_missing_photos_items">Fotos oder Artikel fehlen</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Speichern fehlgeschlagen</string>
-    <string name="error_delete_failed">Löschen fehlgeschlagen</string>
     <string name="error_upload_failed">Upload fehlgeschlagen: %1$s</string>
     <string name="error_original_unavailable">Original nicht verfügbar</string>
     <string name="error_gemini_no_response">Die KI hat nicht geantwortet.</string>

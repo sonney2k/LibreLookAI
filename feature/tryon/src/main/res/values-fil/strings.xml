@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Nabigo ang pag-delete</string>
+    <string name="tryon_change_items">Palitan ang mga item</string>
+    <string name="tryon_composer_explain">Lahat ng item na ipinakita sa ibaba ay isusuot nang magkasama sa nabuong try-on. I-tap ang item para alisin; i-tap ang \"+\" para magdagdag pa.</string>
+    <string name="tryon_composer_items_title">Mga item sa try-on na ito (%1$d)</string>
+    <string name="tryon_coverage_blocked">Pumili ng mga damit na tumatakip sa itaas at ibabang bahagi ng katawan — isang full-body na piraso (damit o jumpsuit) o isang pang-itaas kasama ang isang pang-ibaba. Pinananatili nitong ganap na nakadamit ang nabuong try-on.</string>
+    <string name="tryon_delete_confirm_text">Inaalis nito ang naka-save na try-on image mula sa Drive. Mananatili ang mga wardrobe item.</string>
+    <string name="tryon_delete_confirm_title">Tanggalin ang try-on?</string>
+    <string name="tryon_error">Hindi nagtagumpay ang try-on generation</string>
+    <string name="tryon_generate">Bumuo ng try-on</string>
+    <string name="tryon_generate_failed">Nabigo ang pag-generate</string>
+    <string name="tryon_generating">Bumubuo ng iyong try-on…</string>
+    <string name="tryon_history_detail_title">Mga detalye ng try-on</string>
+    <string name="tryon_history_items_missing">Mga item na wala na sa iyong wardrobe.</string>
+    <string name="tryon_history_items_title">Mga item na isinuot</string>
+    <string name="tryon_history_title">Mga nakaraang try-on</string>
+    <string name="tryon_missing_photos_items">Walang mga larawan o item</string>
+    <string name="tryon_outfit_picker_empty">Wala pang naka-save na outfit. Gumawa ng isa sa Outfits tab para magamit dito.</string>
+    <string name="tryon_outfit_picker_title">Pumili ng outfit</string>
+    <string name="tryon_save_to_drive">I-save</string>
+    <string name="tryon_saved_to_drive">Na-save na</string>
+    <string name="tryon_saving">Sina-save…</string>
+    <string name="tryon_slot_back">Likod</string>
+    <string name="tryon_slot_front">Harap</string>
+    <string name="tryon_slot_side">Gilid</string>
+    <string name="tryon_title">Subukan sa akin</string>
+    <string name="tryon_view_source_outfit">Tingnan ang outfit</string>
+</resources>

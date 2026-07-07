@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Взуття</string>
     <string name="outfit_layer_accessories">Аксесуари</string>
     <string name="outfit_layer_other">Інше</string>
+    <string name="action_delete">Видалити</string>
+    <string name="action_remove">Прибрати</string>
+    <string name="action_sort">Сортувати</string>
+    <string name="error_save_failed">Не вдалося зберегти</string>
+    <string name="outfits_no_match">Образів не знайдено</string>
+    <string name="outfits_sort_most_items">Найбільше речей</string>
+    <string name="outfits_sort_name_az">Назва А–Я</string>
+    <string name="outfits_sort_name_za">Назва Я–А</string>
+    <string name="outfits_sort_newest">Спочатку нові</string>
+    <string name="outfits_sort_oldest">Спочатку старі</string>
+    <string name="outfits_unnamed">Образ без назви</string>
+    <string name="travel_day">День %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Додати річ</string>
 </resources>

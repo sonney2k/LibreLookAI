@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">מדידות</string>
 
     <!-- Common actions -->
-    <string name="action_delete">מחק</string>
     <string name="action_save">שמור</string>
     <string name="action_edit">ערוך</string>
     <string name="action_saving">שומר…</string>
-    <string name="action_sort">מיין</string>
-    <string name="action_remove">הסר</string>
     <string name="cd_ai_suggestion">הצעת בינה מלאכותית</string>
     <string name="cd_refine">דייק</string>
     <string name="filter_location">מיקום</string>
@@ -268,13 +265,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">אין אאוטפיטים עדיין</string>
     <string name="outfits_empty_hint">הקש על + כדי לבנות אאוטפיט מהמלתחה שלך</string>
-    <string name="outfits_no_match">אין אאוטפיטים התואמים למסנן</string>
-    <string name="outfits_sort_newest">החדש ביותר קודם</string>
-    <string name="outfits_sort_oldest">הישן ביותר קודם</string>
     <string name="outfits_sort_most_worn">הנלבשים ביותר</string>
-    <string name="outfits_sort_name_az">שם א–ת</string>
-    <string name="outfits_sort_name_za">שם ת–א</string>
-    <string name="outfits_sort_most_items">הכי הרבה פריטים</string>
     <string name="outfits_create_manual">צור אאוטפיט ידנית</string>
     <string name="outfits_suggest">הצע אאוטפיט קיים</string>
     <string name="prediction_setup_title">מצא עם בינה מלאכותית</string>
@@ -328,7 +319,6 @@
     <string name="outfits_suggest_tags_empty">אין תגיות חדשות.</string>
     <string name="outfits_suggest_tags_apply">הוסף את הנבחרים</string>
     <string name="outfits_suggest_tags_hint">לחץ כדי לשנות. התגיות יתווספו לאאוטפיט.</string>
-    <string name="outfits_unnamed">אאוטפיט ללא שם</string>
     <string name="outfits_swap_item_for">החלף: %s</string>
     <string name="outfits_suggest_alternatives">הצע 10 חלופות</string>
     <string name="outfits_select_item">בחר</string>
@@ -378,7 +368,6 @@
     <string name="travel_refine_rain">מוכן לגשם</string>
     <string name="travel_refine_evening">הוסף אאוטפיטים לערב</string>
     <string name="travel_refine_reuse">מקסם שימוש חוזר</string>
-    <string name="travel_day">יום %d</string>
     <string name="travel_save_as_style">שמור כאאוטפיט</string>
     <string name="travel_saved_as_style">נשמר</string>
     <string name="travel_move_to_travel">העבר הכל למיקום נסיעה</string>
@@ -432,19 +421,13 @@
     <string name="offline_banner">אתה במצב לא מקוון — מצב צפייה בלבד</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">מדידה וירטואלית</string>
     <string name="tryon_fab">מדידה וירטואלית</string>
     <string name="tryon_section_title">תמונות למדידה</string>
     <string name="tryon_section_desc">העלה תמונות גוף מלא מלפנים, מהצד ומאחור.</string>
-    <string name="tryon_slot_front">חזית</string>
-    <string name="tryon_slot_side">צד</string>
-    <string name="tryon_slot_back">גב</string>
     <string name="tryon_add_photo">הוסף תמונת %1$s</string>
     <string name="tryon_replace_photo">החלף תמונת %1$s</string>
     <string name="tryon_remove_photo">הסר תמונת %1$s</string>
     <string name="tryon_uploading">מעלה…</string>
-    <string name="tryon_generating">יוצר מדידה…</string>
-    <string name="tryon_error">יצירה נכשלה</string>
     <string name="tryon_no_photos">הוסף תמונת מדידה בפרופיל.</string>
     <string name="tryon_save_to_gallery">שמור לגלריה</string>
     <string name="tryon_saved">נשמר בתיקייה Pictures/LibreLookAI</string>
@@ -454,28 +437,11 @@
     <string name="tryon_gallery">גלריה</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">כל הפריטים שנבחרו יולבשו יחד בתמונה.</string>
-    <string name="tryon_composer_items_title">פריטים (%1$d)</string>
-    <string name="tryon_add_item">הוסף פריט</string>
     <string name="tryon_add_items_title">הוסף פריטים מהמלתחה</string>
-    <string name="tryon_generate">צור מדידה</string>
-    <string name="tryon_change_items">שנה פריטים</string>
-    <string name="tryon_save_to_drive">שמור</string>
-    <string name="tryon_saved_to_drive">נשמר</string>
-    <string name="tryon_saving">שומר…</string>
     <string name="tryon_history_action">היסטוריה</string>
-    <string name="tryon_history_title">מדידות קודמות</string>
-    <string name="tryon_history_detail_title">פרטים</string>
     <string name="tryon_history_empty">אין עדיין מדידות שמורות.</string>
-    <string name="tryon_history_items_title">פריטים שנלבשו</string>
-    <string name="tryon_history_items_missing">פריטים לא זמינים.</string>
-    <string name="tryon_delete_confirm_title">למחוק?</string>
-    <string name="tryon_delete_confirm_text">התמונה תימחק מה-Drive.</string>
     <string name="tryon_use_outfit">השתמש באאוטפיט</string>
-    <string name="tryon_outfit_picker_title">בחר אאוטפיט</string>
-    <string name="tryon_outfit_picker_empty">אין אאוטפיטים.</string>
     <string name="tryon_from_outfit">מתוך: %1$s</string>
-    <string name="tryon_view_source_outfit">צפה באאוטפיט</string>
 
     <!-- About -->
     <string name="settings_tab_about">אודות</string>
@@ -682,7 +648,6 @@
     <string name="composer_feedback_placeholder">ספר ל-AI מה לשנות או למה לכוון…</string>
     <string name="composer_feedback_history">%1$d בקשות קודמות נשמרות בהקשר</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">טיול מתוכנן</string>
     <string name="trip_saved_label">נשמר</string>
     <string name="trip_saved_confirmation">הטיול והתלבושות נשמרו</string>
@@ -901,7 +866,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">בחרו בגדים שמכסים גם את פלג הגוף העליון וגם את התחתון — או פריט שלם לכל הגוף (שמלה או אוברול) או חולצה יחד עם פריט תחתון. כך המדידה שנוצרת נשארת לבושה לחלוטין.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">טוען פרטים %1$d / %2$d</string>
@@ -911,12 +875,8 @@
     <string name="outfit_saving">שומר את התלבושת…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">היצירה נכשלה</string>
-    <string name="tryon_missing_photos_items">חסרות תמונות או פריטים</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">השמירה נכשלה</string>
-    <string name="error_delete_failed">המחיקה נכשלה</string>
     <string name="error_upload_failed">ההעלאה נכשלה: %1$s</string>
     <string name="error_original_unavailable">המקור אינו זמין</string>
     <string name="error_gemini_no_response">ה-AI לא הגיב.</string>

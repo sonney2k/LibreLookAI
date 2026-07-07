@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Try-Ons</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Tanggalin</string>
     <string name="action_save">I-save</string>
     <string name="action_edit">I-edit</string>
     <string name="action_saving">Sina-save…</string>
-    <string name="action_sort">Pag-uri-uriin</string>
-    <string name="action_remove">Alisin</string>
     <string name="cd_ai_suggestion">Mungkahi ng AI</string>
     <string name="cd_refine">Pinuhin</string>
     <string name="filter_location">Lokasyon</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Walang outfit pa</string>
     <string name="outfits_empty_hint">I-tap ang + para bumuo ng outfit mula sa iyong wardrobe</string>
-    <string name="outfits_no_match">Walang outfit na tumutugma sa filter</string>
-    <string name="outfits_sort_newest">Pinakabago muna</string>
-    <string name="outfits_sort_oldest">Pinakaluma muna</string>
     <string name="outfits_sort_most_worn">Pinakamadalas isuot</string>
-    <string name="outfits_sort_name_az">Pangalan A–Z</string>
-    <string name="outfits_sort_name_za">Pangalan Z–A</string>
-    <string name="outfits_sort_most_items">Pinakamaraming item</string>
     <string name="outfits_create_manual">Gumawa ng outfit manually</string>
     <string name="outfits_suggest">Magmungkahi ng umiiral na outfit</string>
     <string name="prediction_setup_title">Hanapin gamit ang AI</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Walang bagong tag na iminumungkahi.</string>
     <string name="outfits_suggest_tags_apply">Idagdag ang napili</string>
     <string name="outfits_suggest_tags_hint">I-tap ang mga tag para i-toggle. Ang mga napiling tag ay idaragdag sa outfit na ito.</string>
-    <string name="outfits_unnamed">Walang pamagat na outfit</string>
     <string name="outfits_swap_item_for">Palitan: %s</string>
     <string name="outfits_suggest_alternatives">Magmungkahi ng 10 alternatibo</string>
     <string name="outfits_select_item">Piliin</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Mas mabuti sa ulan</string>
     <string name="travel_refine_evening">Magdagdag ng evening outfits</string>
     <string name="travel_refine_reuse">I-maximize ang outfit reuse</string>
-    <string name="travel_day">Araw %d</string>
     <string name="travel_save_as_style">I-save bilang outfit</string>
     <string name="travel_saved_as_style">Na-save na</string>
     <string name="travel_move_to_travel">Ilipat lahat sa Travel location</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Offline ka — view-only mode</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Subukan sa akin</string>
     <string name="tryon_fab">Subukan sa akin</string>
     <string name="tryon_section_title">Mga try-on photo</string>
     <string name="tryon_section_desc">Mag-upload ng full-body photos mula sa harap, gilid, at likod. Gagamitin ng app ang mga ito bilang reference kapag bumubuo ng Try-on preview ng outfit o wardrobe item sa iyo. Mananatili ang mga larawan sa iyong sariling Drive.</string>
-    <string name="tryon_slot_front">Harap</string>
-    <string name="tryon_slot_side">Gilid</string>
-    <string name="tryon_slot_back">Likod</string>
     <string name="tryon_add_photo">Magdagdag ng %1$s na larawan</string>
     <string name="tryon_replace_photo">Palitan ang %1$s</string>
     <string name="tryon_remove_photo">Alisin ang %1$s</string>
     <string name="tryon_uploading">Ina-upload…</string>
-    <string name="tryon_generating">Bumubuo ng iyong try-on…</string>
-    <string name="tryon_error">Hindi nagtagumpay ang try-on generation</string>
     <string name="tryon_no_photos">Magdagdag ng try-on photo sa Settings → Profile para magamit ang feature na ito.</string>
     <string name="tryon_save_to_gallery">I-save sa gallery</string>
     <string name="tryon_saved">Na-save sa Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Gallery</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">Lahat ng item na ipinakita sa ibaba ay isusuot nang magkasama sa nabuong try-on. I-tap ang item para alisin; i-tap ang \"+\" para magdagdag pa.</string>
-    <string name="tryon_composer_items_title">Mga item sa try-on na ito (%1$d)</string>
-    <string name="tryon_add_item">Magdagdag ng item</string>
     <string name="tryon_add_items_title">Magdagdag ng wardrobe items</string>
-    <string name="tryon_generate">Bumuo ng try-on</string>
-    <string name="tryon_change_items">Palitan ang mga item</string>
-    <string name="tryon_save_to_drive">I-save</string>
-    <string name="tryon_saved_to_drive">Na-save na</string>
-    <string name="tryon_saving">Sina-save…</string>
     <string name="tryon_history_action">History</string>
-    <string name="tryon_history_title">Mga nakaraang try-on</string>
-    <string name="tryon_history_detail_title">Mga detalye ng try-on</string>
     <string name="tryon_history_empty">Wala pang naka-save na try-on. Bumuo ng isa at i-tap ang \"I-save\" para itago dito.</string>
-    <string name="tryon_history_items_title">Mga item na isinuot</string>
-    <string name="tryon_history_items_missing">Mga item na wala na sa iyong wardrobe.</string>
-    <string name="tryon_delete_confirm_title">Tanggalin ang try-on?</string>
-    <string name="tryon_delete_confirm_text">Inaalis nito ang naka-save na try-on image mula sa Drive. Mananatili ang mga wardrobe item.</string>
     <string name="tryon_use_outfit">Gumamit ng outfit</string>
-    <string name="tryon_outfit_picker_title">Pumili ng outfit</string>
-    <string name="tryon_outfit_picker_empty">Wala pang naka-save na outfit. Gumawa ng isa sa Outfits tab para magamit dito.</string>
     <string name="tryon_from_outfit">Mula sa outfit: %1$s</string>
-    <string name="tryon_view_source_outfit">Tingnan ang outfit</string>
 
     <!-- About -->
     <string name="settings_tab_about">Tungkol sa</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Balanse: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Ginagamit ang sarili mong Gemini key — walang ginagastos na credit.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Planadong biyahe</string>
     <string name="trip_saved_label">Na-save</string>
     <string name="trip_saved_confirmation">Na-save ang biyahe at mga outfit</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Pumili ng mga damit na tumatakip sa itaas at ibabang bahagi ng katawan — isang full-body na piraso (damit o jumpsuit) o isang pang-itaas kasama ang isang pang-ibaba. Pinananatili nitong ganap na nakadamit ang nabuong try-on.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Naglo-load ng mga detalye %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Sine-save ang outfit…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Nabigo ang pag-generate</string>
-    <string name="tryon_missing_photos_items">Walang mga larawan o item</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Nabigo ang pag-save</string>
-    <string name="error_delete_failed">Nabigo ang pag-delete</string>
     <string name="error_upload_failed">Nabigo ang pag-upload: %1$s</string>
     <string name="error_original_unavailable">Hindi available ang orihinal</string>
     <string name="error_gemini_no_response">Hindi tumugon ang AI.</string>

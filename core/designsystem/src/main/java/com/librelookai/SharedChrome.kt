@@ -65,6 +65,15 @@ val LocalRemoveBgCostBadge =
     androidx.compose.runtime.compositionLocalOf<(@Composable (width: Int, height: Int) -> Unit)?> { null }
 
 /**
+ * Renders the virtual-try-on cost badge on the composer's generate button (person reference
+ * photo paths + chosen item paths drive the token estimate). Same bridge as
+ * [LocalRemoveBgCostBadge]: the badge lives in `feature/billing`, which neither core modules
+ * nor sibling feature modules may depend on, so the app shell provides it; unprovided hides it.
+ */
+val LocalTryOnCostBadge =
+    androidx.compose.runtime.compositionLocalOf<(@Composable (personPaths: List<String>, itemPaths: List<String>) -> Unit)?> { null }
+
+/**
  * Active-closet selector state surfaced to fullscreen Dialog viewers / the try-on composer so they
  * can render the same interactive closet dropdown as the app's screen header. Null hides the dropdown.
  */

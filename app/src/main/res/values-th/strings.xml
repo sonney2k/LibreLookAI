@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">การลองชุด</string>
 
     <!-- Common actions -->
-    <string name="action_delete">ลบ</string>
     <string name="action_save">บันทึก</string>
     <string name="action_edit">แก้ไข</string>
     <string name="action_saving">กำลังบันทึก…</string>
-    <string name="action_sort">จัดเรียง</string>
-    <string name="action_remove">นำออก</string>
     <string name="cd_ai_suggestion">คำแนะนำจาก AI</string>
     <string name="cd_refine">ปรับแต่ง</string>
     <string name="filter_location">สถานที่</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">ยังไม่มีชุดแต่งกาย</string>
     <string name="outfits_empty_hint">แตะ + เพื่อสร้างชุดจากตู้เสื้อผ้าของคุณ</string>
-    <string name="outfits_no_match">ไม่พบชุดที่ตรงตามตัวกรอง</string>
-    <string name="outfits_sort_newest">ใหม่ที่สุดก่อน</string>
-    <string name="outfits_sort_oldest">เก่าที่สุดก่อน</string>
     <string name="outfits_sort_most_worn">สวมใส่บ่อยที่สุด</string>
-    <string name="outfits_sort_name_az">ชื่อ ก–ฮ</string>
-    <string name="outfits_sort_name_za">ชื่อ ฮ–ก</string>
     <string name="outfits_create_manual">สร้างชุดด้วยตนเอง</string>
     <string name="outfits_suggest">แนะนำชุดที่มีอยู่</string>
     <string name="prediction_setup_title">ค้นหาด้วย AI</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">รายการจัดกระเป๋า</string>
     <string name="travel_clear">ล้าง</string>
     <string name="travel_empty">ใส่จุดหมายเพื่อเริ่ม</string>
-    <string name="travel_day">วันที่ %d</string>
     <string name="travel_save_as_style">บันทึกเป็นชุด</string>
     <string name="travel_saved_as_style">บันทึกแล้ว</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">คุณออฟไลน์อยู่ — โหมดดูอย่างเดียว</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">ลองใส่ชุด</string>
     <string name="tryon_fab">ลองใส่ชุด</string>
     <string name="tryon_uploading">กำลังอัปโหลด…</string>
-    <string name="tryon_generating">กำลังสร้างภาพจำลองลองชุด…</string>
-    <string name="tryon_error">การสร้างภาพล้มเหลว</string>
     <string name="tryon_save_to_gallery">บันทึกในแกลเลอรี</string>
     <string name="tryon_saved">บันทึกใน Pictures/LibreLookAI แล้ว</string>
     <string name="tryon_camera">กล้อง</string>
@@ -458,7 +446,6 @@
     <string name="outfits_select_all_count">เลือก %d รายการ</string>
     <string name="outfits_select_item">เลือก</string>
     <string name="outfits_selected_count">เลือก %d รายการ</string>
-    <string name="outfits_sort_most_items">รายการมากที่สุด</string>
     <string name="outfits_suggest_alternatives">แนะนำ 10 ทางเลือก</string>
     <string name="outfits_suggest_tags">แนะนำแท็กด้วย AI</string>
     <string name="outfits_suggest_tags_apply">เพิ่มที่เลือก</string>
@@ -467,7 +454,6 @@
     <string name="outfits_suggest_tags_loading">กำลังแนะนำแท็ก…</string>
     <string name="outfits_suggest_tags_title">แท็กแนะนำ</string>
     <string name="outfits_swap_item_for">แทนที่: %s</string>
-    <string name="outfits_unnamed">ชุดไม่มีชื่อ</string>
     <string name="prediction_setup_weather_pick_day">เลือกวัน</string>
     <string name="repair_duplicate_of">คล้ายกับ %1$s</string>
     <string name="repair_duplicates_hint">ติ๊กรายการที่จะลบจาก Drive แตะเพื่อดูหน้าตา</string>
@@ -604,39 +590,19 @@
     <string name="travel_refine_rain">เหมาะกับฝนมากขึ้น</string>
     <string name="travel_refine_reuse">ใช้ชุดซ้ำให้คุ้มที่สุด</string>
     <string name="travel_regenerate">สร้างใหม่</string>
-    <string name="tryon_add_item">เพิ่มรายการ</string>
     <string name="tryon_add_items_title">เพิ่มรายการจากตู้</string>
     <string name="tryon_add_photo">เพิ่มภาพ %1$s</string>
-    <string name="tryon_change_items">เปลี่ยนรายการ</string>
-    <string name="tryon_composer_explain">รายการทั้งหมดด้านล่างจะถูกสวมใส่ร่วมกันในภาพลองที่สร้าง แตะรายการเพื่อลบ; แตะ „+” เพื่อเพิ่ม</string>
-    <string name="tryon_composer_items_title">รายการในการลองนี้ (%1$d)</string>
     <string name="tryon_cost_line">%1$d เครดิตต่อการลอง</string>
-    <string name="tryon_delete_confirm_text">การกระทำนี้ลบภาพลองที่บันทึกจาก Drive รายการในตู้ยังคงอยู่</string>
-    <string name="tryon_delete_confirm_title">ลบการลอง?</string>
     <string name="tryon_from_outfit">จากชุด: %1$s</string>
-    <string name="tryon_generate">สร้างภาพลอง</string>
     <string name="tryon_history_action">ประวัติ</string>
-    <string name="tryon_history_detail_title">รายละเอียดการลอง</string>
     <string name="tryon_history_empty">ยังไม่มีการลองที่บันทึก สร้างหนึ่งและกด „บันทึก” เพื่อเก็บไว้ที่นี่</string>
-    <string name="tryon_history_items_missing">รายการไม่มีในตู้ของคุณแล้ว</string>
-    <string name="tryon_history_items_title">รายการที่สวม</string>
-    <string name="tryon_history_title">การลองที่ผ่านมา</string>
     <string name="tryon_no_photos">เพิ่มภาพลองใน ตั้งค่า → โปรไฟล์ เพื่อใช้คุณสมบัตินี้</string>
-    <string name="tryon_outfit_picker_empty">ยังไม่มีชุดที่บันทึก สร้างหนึ่งในแท็บชุดเพื่อใช้ที่นี่</string>
-    <string name="tryon_outfit_picker_title">เลือกชุด</string>
     <string name="tryon_remove_photo">ลบ %1$s</string>
     <string name="tryon_replace_photo">แทน %1$s</string>
     <string name="tryon_save_failed">บันทึกไปยังคลังภาพไม่ได้</string>
-    <string name="tryon_save_to_drive">บันทึก</string>
-    <string name="tryon_saved_to_drive">บันทึกแล้ว</string>
-    <string name="tryon_saving">กำลังบันทึก…</string>
     <string name="tryon_section_desc">อัปโหลดภาพเต็มตัวด้านหน้า ด้านข้าง และด้านหลัง แอปใช้สิ่งเหล่านี้เป็นการอ้างอิงเมื่อสร้างภาพลองชุดหรือรายการในตู้กับตัวคุณ ภาพจะยังคงอยู่ใน Drive ของคุณเอง</string>
     <string name="tryon_section_title">ภาพสำหรับการลอง</string>
-    <string name="tryon_slot_back">ด้านหลัง</string>
-    <string name="tryon_slot_front">ด้านหน้า</string>
-    <string name="tryon_slot_side">ด้านข้าง</string>
     <string name="tryon_use_outfit">ใช้ชุด</string>
-    <string name="tryon_view_source_outfit">ดูชุด</string>
     <string name="wardrobe_create_style">สร้างชุด</string>
     <string name="wardrobe_find_by_photo">ค้นหารายการด้วยภาพ</string>
     <string name="wardrobe_find_by_photo_empty">ไม่พบรายการที่คล้าย</string>
@@ -654,7 +620,6 @@
     <string name="wardrobe_view_original">ดูต้นฉบับ</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">ทริปที่วางแผนไว้</string>
     <string name="trip_saved_label">บันทึกแล้ว</string>
     <string name="trip_saved_confirmation">บันทึกทริปและชุดแล้ว</string>
@@ -873,7 +838,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">เลือกเสื้อผ้าที่ปกปิดทั้งร่างกายส่วนบนและส่วนล่าง — ไม่ว่าจะเป็นชุดเต็มตัว (เดรสหรือจัมป์สูท) หรือเสื้อท่อนบนคู่กับท่อนล่าง วิธีนี้จะทำให้การลองสวมที่สร้างขึ้นแต่งกายครบถ้วน</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">กำลังโหลดรายละเอียด %1$d / %2$d</string>
@@ -883,12 +847,8 @@
     <string name="outfit_saving">กำลังบันทึกชุด…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">การสร้างล้มเหลว</string>
-    <string name="tryon_missing_photos_items">ไม่มีรูปภาพหรือรายการ</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">บันทึกไม่สำเร็จ</string>
-    <string name="error_delete_failed">ลบไม่สำเร็จ</string>
     <string name="error_upload_failed">อัปโหลดไม่สำเร็จ: %1$s</string>
     <string name="error_original_unavailable">ไม่มีต้นฉบับ</string>
     <string name="error_gemini_no_response">AI ไม่ตอบสนอง</string>

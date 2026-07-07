@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
@@ -54,10 +55,10 @@ internal enum class TripSortOption { DATE_DESC, DATE_ASC, NAME_AZ, NAME_ZA }
 
 @Composable
 private fun TripSortOption.displayLabel(): String = when (this) {
-    TripSortOption.DATE_DESC -> stringResource(R.string.outfits_sort_newest)
-    TripSortOption.DATE_ASC  -> stringResource(R.string.outfits_sort_oldest)
-    TripSortOption.NAME_AZ   -> stringResource(R.string.outfits_sort_name_az)
-    TripSortOption.NAME_ZA   -> stringResource(R.string.outfits_sort_name_za)
+    TripSortOption.DATE_DESC -> stringResource(DsR.string.outfits_sort_newest)
+    TripSortOption.DATE_ASC  -> stringResource(DsR.string.outfits_sort_oldest)
+    TripSortOption.NAME_AZ   -> stringResource(DsR.string.outfits_sort_name_az)
+    TripSortOption.NAME_ZA   -> stringResource(DsR.string.outfits_sort_name_za)
 }
 
 @Composable
@@ -73,7 +74,7 @@ internal fun TripSortButton(
     val parentConfiguration = LocalConfiguration.current
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(DsR.string.action_sort))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             CompositionLocalProvider(
@@ -145,7 +146,7 @@ internal fun TripCard(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    trip.name.ifBlank { trip.destination.ifBlank { stringResource(R.string.trip_viewer_title) } },
+                    trip.name.ifBlank { trip.destination.ifBlank { stringResource(DsR.string.trip_viewer_title) } },
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
@@ -253,7 +254,7 @@ internal fun ForecastDayChip(dayIndex: Int, forecast: DayForecast) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Text(stringResource(R.string.travel_day, dayIndex), style = MaterialTheme.typography.labelSmall,
+            Text(stringResource(DsR.string.travel_day, dayIndex), style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(wmoEmoji(forecast.weatherCode), style = MaterialTheme.typography.bodyMedium)
             Text(

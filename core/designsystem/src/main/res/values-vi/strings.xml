@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Giày dép</string>
     <string name="outfit_layer_accessories">Phụ kiện</string>
     <string name="outfit_layer_other">Khác</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_remove">Gỡ bỏ</string>
+    <string name="action_sort">Sắp xếp</string>
+    <string name="error_save_failed">Lưu không thành công</string>
+    <string name="outfits_no_match">Không tìm thấy bộ đồ khớp với bộ lọc</string>
+    <string name="outfits_sort_most_items">Nhiều món nhất</string>
+    <string name="outfits_sort_name_az">Tên A–Z</string>
+    <string name="outfits_sort_name_za">Tên Z–A</string>
+    <string name="outfits_sort_newest">Mới nhất</string>
+    <string name="outfits_sort_oldest">Cũ nhất</string>
+    <string name="outfits_unnamed">Trang phục chưa đặt tên</string>
+    <string name="travel_day">Ngày %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Thêm món</string>
 </resources>

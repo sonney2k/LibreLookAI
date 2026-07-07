@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_delete_failed">Échec de la suppression</string>
+    <string name="tryon_change_items">Changer les articles</string>
+    <string name="tryon_composer_explain">Tous les articles affichés ci-dessous seront portés ensemble dans l\'essayage généré. Touche un article pour le retirer ; touche « + » pour en ajouter d\'autres.</string>
+    <string name="tryon_composer_items_title">Articles dans cet essayage (%1$d)</string>
+    <string name="tryon_coverage_blocked">Choisis des vêtements qui couvrent à la fois le haut et le bas du corps — soit une pièce intégrale (une robe ou une combinaison), soit un haut avec un bas. Ainsi, ton essayage généré reste entièrement habillé.</string>
+    <string name="tryon_delete_confirm_text">Cela supprime l\'image d\'essayage enregistrée de Drive. Les articles de garde-robe sont conservés.</string>
+    <string name="tryon_delete_confirm_title">Supprimer l\'essayage ?</string>
+    <string name="tryon_error">Échec de la génération de l\'essayage</string>
+    <string name="tryon_generate">Générer l\'essayage</string>
+    <string name="tryon_generate_failed">Échec de la génération</string>
+    <string name="tryon_generating">Génération de ton essayage…</string>
+    <string name="tryon_history_detail_title">Détails de l\'essayage</string>
+    <string name="tryon_history_items_missing">Articles plus disponibles dans ta garde-robe.</string>
+    <string name="tryon_history_items_title">Articles portés</string>
+    <string name="tryon_history_title">Essayages passés</string>
+    <string name="tryon_missing_photos_items">Photos ou articles manquants</string>
+    <string name="tryon_outfit_picker_empty">Aucune tenue enregistrée. Crées-en une dans l\'onglet Tenues pour l\'utiliser ici.</string>
+    <string name="tryon_outfit_picker_title">Choisir une tenue</string>
+    <string name="tryon_save_to_drive">Enregistrer</string>
+    <string name="tryon_saved_to_drive">Enregistré</string>
+    <string name="tryon_saving">Enregistrement…</string>
+    <string name="tryon_slot_back">Dos</string>
+    <string name="tryon_slot_front">Face</string>
+    <string name="tryon_slot_side">Côté</string>
+    <string name="tryon_title">Essayage sur moi</string>
+    <string name="tryon_view_source_outfit">Voir la tenue</string>
+</resources>

@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Probe</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Șterge</string>
     <string name="action_save">Salvează</string>
     <string name="action_edit">Editează</string>
     <string name="action_saving">Se salvează…</string>
-    <string name="action_sort">Sortează</string>
-    <string name="action_remove">Elimină</string>
     <string name="cd_ai_suggestion">Sugestie AI</string>
     <string name="cd_refine">Rafinează</string>
     <string name="filter_location">Locație</string>
@@ -181,12 +178,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Nicio ținută încă</string>
     <string name="outfits_empty_hint">Apasă + pentru a crea o ținută din garderobă</string>
-    <string name="outfits_no_match">Nicio ținută conform filtrului</string>
-    <string name="outfits_sort_newest">Cele mai noi</string>
-    <string name="outfits_sort_oldest">Cele mai vechi</string>
     <string name="outfits_sort_most_worn">Cele mai purtate</string>
-    <string name="outfits_sort_name_az">Nume A–Z</string>
-    <string name="outfits_sort_name_za">Nume Z–A</string>
     <string name="outfits_create_manual">Creează ținută manual</string>
     <string name="outfits_suggest">Sugerează ținută existentă</string>
     <string name="prediction_setup_title">Caută cu AI</string>
@@ -233,7 +225,6 @@
     <string name="travel_packing_list">Listă Bagaj</string>
     <string name="travel_clear">Șterge</string>
     <string name="travel_empty">Introdu o destinație pentru a începe</string>
-    <string name="travel_day">Ziua %d</string>
     <string name="travel_save_as_style">Salvează ca ținută</string>
     <string name="travel_saved_as_style">Salvată</string>
 
@@ -265,11 +256,8 @@
     <string name="offline_banner">Ești offline — mod doar citire</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Probă pe mine</string>
     <string name="tryon_fab">Probă pe mine</string>
     <string name="tryon_uploading">Se încarcă…</string>
-    <string name="tryon_generating">Se generează proba ta…</string>
-    <string name="tryon_error">Generarea probei a eșuat</string>
     <string name="tryon_save_to_gallery">Salvează în galerie</string>
     <string name="tryon_saved">Salvat în Pictures/LibreLookAI</string>
     <string name="tryon_camera">Cameră</string>
@@ -457,7 +445,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfits_select_all_count">Selectează toate %d</string>
     <string name="outfits_select_item">Selectează</string>
     <string name="outfits_selected_count">%d selectate</string>
-    <string name="outfits_sort_most_items">Cele mai multe articole</string>
     <string name="outfits_suggest_alternatives">Sugerează 10 alternative</string>
     <string name="outfits_suggest_tags">Sugerează etichete cu AI</string>
     <string name="outfits_suggest_tags_apply">Adaugă cele selectate</string>
@@ -466,7 +453,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfits_suggest_tags_loading">Se sugerează etichete…</string>
     <string name="outfits_suggest_tags_title">Etichete sugerate</string>
     <string name="outfits_swap_item_for">Schimbă: %s</string>
-    <string name="outfits_unnamed">Ținută fără titlu</string>
     <string name="prediction_setup_weather_pick_day">Alege o zi</string>
     <string name="repair_duplicate_of">Similar cu %1$s</string>
     <string name="repair_duplicates_hint">Bifează articolele pentru a le șterge din Drive. Atinge pentru a vedea cum arată.</string>
@@ -604,39 +590,19 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="travel_refine_rain">Mai potrivit pentru ploaie</string>
     <string name="travel_refine_reuse">Maximizează refolosirea ținutelor</string>
     <string name="travel_regenerate">Re-generează</string>
-    <string name="tryon_add_item">Adaugă articol</string>
     <string name="tryon_add_items_title">Adaugă articole din garderobă</string>
     <string name="tryon_add_photo">Adaugă fotografie %1$s</string>
-    <string name="tryon_change_items">Schimbă articolele</string>
-    <string name="tryon_composer_explain">Toate articolele afișate mai jos vor fi purtate împreună în proba generată. Atinge un articol pentru a-l elimina; atinge „+” pentru a adăuga mai multe.</string>
-    <string name="tryon_composer_items_title">Articole în această probă (%1$d)</string>
     <string name="tryon_cost_line">Costă %1$d credite per probă</string>
-    <string name="tryon_delete_confirm_text">Aceasta elimină imaginea probei salvate din Drive. Articolele din garderobă sunt păstrate.</string>
-    <string name="tryon_delete_confirm_title">Ștergi proba?</string>
     <string name="tryon_from_outfit">Din ținuta: %1$s</string>
-    <string name="tryon_generate">Generează proba</string>
     <string name="tryon_history_action">Istoric</string>
-    <string name="tryon_history_detail_title">Detalii probă</string>
     <string name="tryon_history_empty">Nicio probă salvată încă. Generează una și atinge „Salvează” pentru a o păstra aici.</string>
-    <string name="tryon_history_items_missing">Articolele nu mai sunt disponibile în garderoba ta.</string>
-    <string name="tryon_history_items_title">Articole purtate</string>
-    <string name="tryon_history_title">Probe anterioare</string>
     <string name="tryon_no_photos">Adaugă o fotografie pentru probă în Setări → Profil pentru a folosi această funcție.</string>
-    <string name="tryon_outfit_picker_empty">Nicio ținută salvată încă. Creează una în tabul Ținute pentru a o folosi aici.</string>
-    <string name="tryon_outfit_picker_title">Alege o ținută</string>
     <string name="tryon_remove_photo">Elimină %1$s</string>
     <string name="tryon_replace_photo">Înlocuiește %1$s</string>
     <string name="tryon_save_failed">Nu s-a putut salva în galerie</string>
-    <string name="tryon_save_to_drive">Salvează</string>
-    <string name="tryon_saved_to_drive">Salvat</string>
-    <string name="tryon_saving">Se salvează…</string>
     <string name="tryon_section_desc">Încarcă fotografii la corp întreg din față, lateral și spate. Aplicația le folosește ca referință la generarea unei probe a unei ținute sau a unui articol pe tine. Fotografiile rămân în propriul tău Drive.</string>
     <string name="tryon_section_title">Fotografii pentru probă</string>
-    <string name="tryon_slot_back">Spate</string>
-    <string name="tryon_slot_front">Față</string>
-    <string name="tryon_slot_side">Lateral</string>
     <string name="tryon_use_outfit">Folosește o ținută</string>
-    <string name="tryon_view_source_outfit">Vezi ținuta</string>
     <string name="wardrobe_create_style">Creează ținută</string>
     <string name="wardrobe_find_by_photo">Găsește articol după fotografie</string>
     <string name="wardrobe_find_by_photo_empty">Nu s-au găsit articole similare.</string>
@@ -654,7 +620,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="wardrobe_view_original">Vezi originalul</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Călătorie planificată</string>
     <string name="trip_saved_label">Salvat</string>
     <string name="trip_saved_confirmation">Călătoria și ținutele au fost salvate</string>
@@ -873,7 +838,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Alege haine care acoperă atât partea de sus, cât și partea de jos a corpului — fie o piesă integrală (o rochie sau o salopetă), fie o piesă de sus împreună cu una de jos. Astfel, proba generată rămâne complet îmbrăcată.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Se încarcă detaliile %1$d / %2$d</string>
@@ -883,12 +847,8 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfit_saving">Se salvează ținuta…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Generarea a eșuat</string>
-    <string name="tryon_missing_photos_items">Lipsesc fotografii sau articole</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Salvarea a eșuat</string>
-    <string name="error_delete_failed">Ștergerea a eșuat</string>
     <string name="error_upload_failed">Încărcarea a eșuat: %1$s</string>
     <string name="error_original_unavailable">Originalul nu este disponibil</string>
     <string name="error_gemini_no_response">IA nu a răspuns.</string>

@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Lần thử</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Xóa</string>
     <string name="action_save">Lưu</string>
     <string name="action_edit">Sửa</string>
     <string name="action_saving">Đang lưu…</string>
-    <string name="action_sort">Sắp xếp</string>
-    <string name="action_remove">Gỡ bỏ</string>
     <string name="cd_ai_suggestion">Gợi ý từ AI</string>
     <string name="cd_refine">Tinh chỉnh</string>
     <string name="filter_location">Vị trí</string>
@@ -182,12 +179,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Chưa có bộ đồ nào</string>
     <string name="outfits_empty_hint">Chạm + để phối bộ đồ từ tủ đồ của bạn</string>
-    <string name="outfits_no_match">Không tìm thấy bộ đồ khớp với bộ lọc</string>
-    <string name="outfits_sort_newest">Mới nhất</string>
-    <string name="outfits_sort_oldest">Cũ nhất</string>
     <string name="outfits_sort_most_worn">Mặc nhiều nhất</string>
-    <string name="outfits_sort_name_az">Tên A–Z</string>
-    <string name="outfits_sort_name_za">Tên Z–A</string>
     <string name="outfits_create_manual">Tạo bộ đồ thủ công</string>
     <string name="outfits_suggest">Gợi ý bộ đồ có sẵn</string>
     <string name="prediction_setup_title">Tìm bằng AI</string>
@@ -234,7 +226,6 @@
     <string name="travel_packing_list">Danh sách mang đồ</string>
     <string name="travel_clear">Xóa sạch</string>
     <string name="travel_empty">Nhập điểm đến để bắt đầu</string>
-    <string name="travel_day">Ngày %d</string>
     <string name="travel_save_as_style">Lưu thành bộ đồ</string>
     <string name="travel_saved_as_style">Đã lưu</string>
 
@@ -266,11 +257,8 @@
     <string name="offline_banner">Bạn đang ngoại tuyến — chế độ chỉ đọc</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Thử đồ trên tôi</string>
     <string name="tryon_fab">Thử đồ trên tôi</string>
     <string name="tryon_uploading">Đang tải lên…</string>
-    <string name="tryon_generating">Đang tạo ảnh thử đồ của bạn…</string>
-    <string name="tryon_error">Tạo ảnh thử đồ thất bại</string>
     <string name="tryon_save_to_gallery">Lưu vào thư viện</string>
     <string name="tryon_saved">Đã lưu vào Pictures/LibreLookAI</string>
     <string name="tryon_camera">Camera</string>
@@ -458,7 +446,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfits_select_all_count">Chọn tất cả %d</string>
     <string name="outfits_select_item">Chọn</string>
     <string name="outfits_selected_count">Đã chọn %d</string>
-    <string name="outfits_sort_most_items">Nhiều món nhất</string>
     <string name="outfits_suggest_alternatives">Gợi ý 10 phương án</string>
     <string name="outfits_suggest_tags">Gợi ý thẻ bằng AI</string>
     <string name="outfits_suggest_tags_apply">Thêm thẻ đã chọn</string>
@@ -467,7 +454,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfits_suggest_tags_loading">Đang gợi ý thẻ…</string>
     <string name="outfits_suggest_tags_title">Thẻ gợi ý</string>
     <string name="outfits_swap_item_for">Đổi: %s</string>
-    <string name="outfits_unnamed">Trang phục chưa đặt tên</string>
     <string name="prediction_setup_weather_pick_day">Chọn ngày</string>
     <string name="repair_duplicate_of">Tương tự %1$s</string>
     <string name="repair_duplicates_hint">Tích chọn món cần xóa khỏi Drive. Chạm để xem nó trông như thế nào.</string>
@@ -604,39 +590,19 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="travel_refine_rain">Hợp với trời mưa hơn</string>
     <string name="travel_refine_reuse">Tối đa hóa tái sử dụng trang phục</string>
     <string name="travel_regenerate">Tạo lại</string>
-    <string name="tryon_add_item">Thêm món</string>
     <string name="tryon_add_items_title">Thêm món từ tủ</string>
     <string name="tryon_add_photo">Thêm ảnh %1$s</string>
-    <string name="tryon_change_items">Đổi món</string>
-    <string name="tryon_composer_explain">Tất cả các món bên dưới sẽ được mặc cùng nhau trong ảnh thử đồ tạo ra. Chạm một món để bỏ; chạm „+” để thêm.</string>
-    <string name="tryon_composer_items_title">Các món trong lần thử này (%1$d)</string>
     <string name="tryon_cost_line">Tốn %1$d điểm mỗi lần thử đồ</string>
-    <string name="tryon_delete_confirm_text">Việc này xóa ảnh thử đồ đã lưu khỏi Drive. Các món trong tủ vẫn còn.</string>
-    <string name="tryon_delete_confirm_title">Xóa lần thử đồ?</string>
     <string name="tryon_from_outfit">Từ trang phục: %1$s</string>
-    <string name="tryon_generate">Tạo ảnh thử đồ</string>
     <string name="tryon_history_action">Lịch sử</string>
-    <string name="tryon_history_detail_title">Chi tiết thử đồ</string>
     <string name="tryon_history_empty">Chưa có lần thử đồ nào được lưu. Hãy tạo một lần và chạm „Lưu” để giữ ở đây.</string>
-    <string name="tryon_history_items_missing">Các món không còn trong tủ của bạn.</string>
-    <string name="tryon_history_items_title">Các món đã mặc</string>
-    <string name="tryon_history_title">Lần thử đồ trước</string>
     <string name="tryon_no_photos">Hãy thêm ảnh thử đồ trong Cài đặt → Hồ sơ để dùng tính năng này.</string>
-    <string name="tryon_outfit_picker_empty">Chưa có trang phục nào được lưu. Hãy tạo trong tab Trang phục để dùng ở đây.</string>
-    <string name="tryon_outfit_picker_title">Chọn một trang phục</string>
     <string name="tryon_remove_photo">Bỏ %1$s</string>
     <string name="tryon_replace_photo">Thay %1$s</string>
     <string name="tryon_save_failed">Không thể lưu vào thư viện</string>
-    <string name="tryon_save_to_drive">Lưu</string>
-    <string name="tryon_saved_to_drive">Đã lưu</string>
-    <string name="tryon_saving">Đang lưu…</string>
     <string name="tryon_section_desc">Tải lên ảnh toàn thân từ phía trước, bên hông và phía sau. Ứng dụng dùng chúng làm tham chiếu khi tạo ảnh thử đồ của một trang phục hoặc món trên người bạn. Ảnh vẫn nằm trong Drive của bạn.</string>
     <string name="tryon_section_title">Ảnh thử đồ</string>
-    <string name="tryon_slot_back">Sau</string>
-    <string name="tryon_slot_front">Trước</string>
-    <string name="tryon_slot_side">Bên</string>
     <string name="tryon_use_outfit">Dùng trang phục</string>
-    <string name="tryon_view_source_outfit">Xem trang phục</string>
     <string name="wardrobe_create_style">Tạo trang phục</string>
     <string name="wardrobe_find_by_photo">Tìm món bằng ảnh</string>
     <string name="wardrobe_find_by_photo_empty">Không tìm thấy món tương tự.</string>
@@ -654,7 +620,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="wardrobe_view_original">Xem ảnh gốc</string>
 
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Chuyến đi đã lên kế hoạch</string>
     <string name="trip_saved_label">Đã lưu</string>
     <string name="trip_saved_confirmation">Đã lưu chuyến đi và trang phục</string>
@@ -873,7 +838,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Chọn trang phục che cả phần thân trên và thân dưới — có thể là một món đồ liền thân (váy hoặc jumpsuit) hoặc một áo kết hợp với một quần/váy. Điều này giúp ảnh thử đồ được tạo ra luôn mặc đầy đủ.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Đang tải chi tiết %1$d / %2$d</string>
@@ -883,12 +847,8 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfit_saving">Đang lưu trang phục…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Tạo không thành công</string>
-    <string name="tryon_missing_photos_items">Thiếu ảnh hoặc trang phục</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Lưu không thành công</string>
-    <string name="error_delete_failed">Xóa không thành công</string>
     <string name="error_upload_failed">Tải lên không thành công: %1$s</string>
     <string name="error_original_unavailable">Bản gốc không khả dụng</string>
     <string name="error_gemini_no_response">AI không phản hồi.</string>

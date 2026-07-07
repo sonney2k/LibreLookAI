@@ -174,4 +174,18 @@
     <string name="outfit_layer_footwear">Încălțăminte</string>
     <string name="outfit_layer_accessories">Accesorii</string>
     <string name="outfit_layer_other">Altele</string>
+    <string name="action_delete">Șterge</string>
+    <string name="action_remove">Elimină</string>
+    <string name="action_sort">Sortează</string>
+    <string name="error_save_failed">Salvarea a eșuat</string>
+    <string name="outfits_no_match">Nicio ținută conform filtrului</string>
+    <string name="outfits_sort_most_items">Cele mai multe articole</string>
+    <string name="outfits_sort_name_az">Nume A–Z</string>
+    <string name="outfits_sort_name_za">Nume Z–A</string>
+    <string name="outfits_sort_newest">Cele mai noi</string>
+    <string name="outfits_sort_oldest">Cele mai vechi</string>
+    <string name="outfits_unnamed">Ținută fără titlu</string>
+    <string name="travel_day">Ziua %d</string>
+    <string name="trip_viewer_title">Trip</string>
+    <string name="tryon_add_item">Adaugă articol</string>
 </resources>

@@ -384,6 +384,15 @@ internal fun AppContent(
                                 tokens = com.librelookai.billing.rememberRemoveBgCostTokens(width, height),
                             )
                         },
+                        LocalTryOnCostBadge provides { personPaths, itemPaths ->
+                            com.librelookai.billing.CostBadge(
+                                com.librelookai.gemini.GeminiActionId.TRY_ON_OUTFIT,
+                                tokens = com.librelookai.billing.rememberTryOnCostTokens(
+                                    personPaths = personPaths,
+                                    itemPaths = itemPaths,
+                                ),
+                            )
+                        },
                         LocalStartTour provides { showOnboarding = true },
                     ) { LibreLookAITheme(
                         paletteId = profileState.preferences.wardrobeTheme,

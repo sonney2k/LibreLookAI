@@ -244,7 +244,7 @@ internal fun ShoppingListTab(
                 )
                 add(
                     SelectionAction(
-                        label = stringResource(R.string.action_delete),
+                        label = stringResource(DsR.string.action_delete),
                         icon = Icons.Default.Delete,
                         kind = SelectionAction.Kind.Danger,
                     ) {
@@ -321,7 +321,7 @@ internal fun ShoppingListTab(
                     Analytics.action("Shopping", "confirm_delete_selected", mapOf("count" to state.selectedIds.size.toString()))
                     shoppingClosetViewModel.deleteItems(state.selectedIds)
                     showDeleteDialog = false
-                }) { Text(stringResource(R.string.action_delete)) }
+                }) { Text(stringResource(DsR.string.action_delete)) }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {

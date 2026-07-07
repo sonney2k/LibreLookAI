@@ -522,7 +522,7 @@ internal fun GridContent(
                 }
                 add(
                     SelectionAction(
-                        label = stringResource(R.string.action_delete),
+                        label = stringResource(DsR.string.action_delete),
                         icon = Icons.Default.Delete,
                         kind = SelectionAction.Kind.Danger,
                     ) {

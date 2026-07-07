@@ -60,12 +60,9 @@
     <string name="outfits_tab_tryons">Δοκιμές</string>
 
     <!-- Common actions -->
-    <string name="action_delete">Διαγραφή</string>
     <string name="action_save">Αποθήκευση</string>
     <string name="action_edit">Επεξεργασία</string>
     <string name="action_saving">Αποθήκευση…</string>
-    <string name="action_sort">Ταξινόμηση</string>
-    <string name="action_remove">Αφαίρεση</string>
     <string name="cd_ai_suggestion">Πρόταση AI</string>
     <string name="cd_refine">Βελτίωση</string>
     <string name="filter_location">Τοποθεσία</string>
@@ -272,13 +269,7 @@
     <!-- Outfits -->
     <string name="outfits_empty">Δεν υπάρχουν σύνολα ακόμα</string>
     <string name="outfits_empty_hint">Πατήστε + για να δημιουργήσετε ένα σύνολο από τη ντουλάπα σας</string>
-    <string name="outfits_no_match">Κανένα σύνολο δεν ταιριάζει στο φίλτρο</string>
-    <string name="outfits_sort_newest">Πιο πρόσφατα</string>
-    <string name="outfits_sort_oldest">Παλαιότερα</string>
     <string name="outfits_sort_most_worn">Πιο φορεμένα</string>
-    <string name="outfits_sort_name_az">Όνομα Α–Ω</string>
-    <string name="outfits_sort_name_za">Όνομα Ω–Α</string>
-    <string name="outfits_sort_most_items">Περισσότερα είδη</string>
     <string name="outfits_create_manual">Χειροκίνητη δημιουργία συνόλου</string>
     <string name="outfits_suggest">Πρόταση υπάρχοντος συνόλου</string>
     <string name="prediction_setup_title">Εύρεση με AI</string>
@@ -332,7 +323,6 @@
     <string name="outfits_suggest_tags_empty">Δεν προτάθηκαν νέες ετικέτες.</string>
     <string name="outfits_suggest_tags_apply">Προσθήκη επιλεγμένων</string>
     <string name="outfits_suggest_tags_hint">Πατήστε για εναλλαγή. Οι επιλεγμένες θα προστεθούν στο σύνολο.</string>
-    <string name="outfits_unnamed">Σύνολο χωρίς όνομα</string>
     <string name="outfits_swap_item_for">Αλλαγή: %s</string>
     <string name="outfits_suggest_alternatives">Πρόταση 10 εναλλακτικών</string>
     <string name="outfits_select_item">Επιλογή</string>
@@ -382,7 +372,6 @@
     <string name="travel_refine_rain">Καλύτερα για βροχή</string>
     <string name="travel_refine_evening">Προσθήκη βραδινών συνόλων</string>
     <string name="travel_refine_reuse">Μεγιστοποίηση επαναχρησιμοποίησης</string>
-    <string name="travel_day">Ημέρα %d</string>
     <string name="travel_save_as_style">Αποθήκευση ως σύνολο</string>
     <string name="travel_saved_as_style">Αποθηκεύτηκε</string>
     <string name="travel_move_to_travel">Μετακίνηση όλων στην τοποθεσία Ταξίδι</string>
@@ -436,19 +425,13 @@
     <string name="offline_banner">Είστε εκτός σύνδεσης — λειτουργία προβολής μόνο</string>
 
     <!-- Try on me -->
-    <string name="tryon_title">Δοκιμή πάνω μου</string>
     <string name="tryon_fab">Δοκιμή πάνω μου</string>
     <string name="tryon_section_title">Φωτογραφίες δοκιμής</string>
     <string name="tryon_section_desc">Ανεβάστε φωτογραφίες ολόκληρου σώματος (εμπρός, πλάι, πίσω). Η εφαρμογή τις χρησιμοποιεί ως αναφορά για τη δημιουργία προεπισκόπησης δοκιμής.</string>
-    <string name="tryon_slot_front">Εμπρός</string>
-    <string name="tryon_slot_side">Πλάι</string>
-    <string name="tryon_slot_back">Πίσω</string>
     <string name="tryon_add_photo">Προσθήκη %1$s φωτογραφίας</string>
     <string name="tryon_replace_photo">Αντικατάσταση %1$s</string>
     <string name="tryon_remove_photo">Αφαίρεση %1$s</string>
     <string name="tryon_uploading">Μεταφόρτωση…</string>
-    <string name="tryon_generating">Δημιουργία δοκιμής…</string>
-    <string name="tryon_error">Η δημιουργία δοκιμής απέτυχε</string>
     <string name="tryon_no_photos">Προσθέστε μια φωτογραφία δοκιμής στις Ρυθμίσεις → Προφίλ.</string>
     <string name="tryon_save_to_gallery">Αποθήκευση στη συλλογή</string>
     <string name="tryon_saved">Αποθηκεύτηκε στο Pictures/LibreLookAI</string>
@@ -458,28 +441,11 @@
     <string name="tryon_gallery">Συλλογή</string>
 
     <!-- Try-on composer / history -->
-    <string name="tryon_composer_explain">Όλα τα είδη παρακάτω θα φορεθούν μαζί στη δοκιμή. Πατήστε για αφαίρεση, + για προσθήκη.</string>
-    <string name="tryon_composer_items_title">Είδη στη δοκιμή (%1$d)</string>
-    <string name="tryon_add_item">Προσθήκη είδους</string>
     <string name="tryon_add_items_title">Προσθήκη ειδών ντουλάπας</string>
-    <string name="tryon_generate">Δημιουργία δοκιμής</string>
-    <string name="tryon_change_items">Αλλαγή ειδών</string>
-    <string name="tryon_save_to_drive">Αποθήκευση</string>
-    <string name="tryon_saved_to_drive">Αποθηκεύτηκε</string>
-    <string name="tryon_saving">Αποθήκευση…</string>
     <string name="tryon_history_action">Ιστορικό</string>
-    <string name="tryon_history_title">Παλαιότερες δοκιμές</string>
-    <string name="tryon_history_detail_title">Λεπτομέρειες δοκιμής</string>
     <string name="tryon_history_empty">Δεν υπάρχουν αποθηκευμένες δοκιμές ακόμα.</string>
-    <string name="tryon_history_items_title">Είδη που φορέθηκαν</string>
-    <string name="tryon_history_items_missing">Κάποια είδη δεν υπάρχουν πια στη ντουλάπα.</string>
-    <string name="tryon_delete_confirm_title">Διαγραφή δοκιμής;</string>
-    <string name="tryon_delete_confirm_text">Αυτό αφαιρεί την εικόνα από το Drive. Τα είδη παραμένουν στη ντουλάπα.</string>
     <string name="tryon_use_outfit">Χρήση συνόλου</string>
-    <string name="tryon_outfit_picker_title">Επιλέξτε σύνολο</string>
-    <string name="tryon_outfit_picker_empty">Δεν υπάρχουν σύνολα ακόμα.</string>
     <string name="tryon_from_outfit">Από σύνολο: %1$s</string>
-    <string name="tryon_view_source_outfit">Προβολή συνόλου</string>
 
     <!-- About -->
     <string name="settings_tab_about">Σχετικά</string>
@@ -678,7 +644,6 @@
     <string name="coins_balance_label">Υπόλοιπο: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Χρησιμοποιείτε το δικό σας κλειδί Gemini — δεν δαπανώνται πιστώσεις.</string>
     <!-- Trips -->
-    <string name="trip_viewer_title">Trip</string>
     <string name="trip_planned_title">Προγραμματισμένο ταξίδι</string>
     <string name="trip_saved_label">Αποθηκεύτηκε</string>
     <string name="trip_saved_confirmation">Το ταξίδι και τα σύνολα αποθηκεύτηκαν</string>
@@ -897,7 +862,6 @@
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->
-    <string name="tryon_coverage_blocked">Διάλεξε ρούχα που καλύπτουν τόσο το πάνω όσο και το κάτω μέρος του σώματος — είτε ένα ολόσωμο ρούχο (φόρεμα ή ολόσωμη φόρμα) είτε ένα πάνω μαζί με ένα κάτω. Έτσι η δοκιμή που δημιουργείται παραμένει πλήρως ντυμένη.</string>
 
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Φόρτωση λεπτομερειών %1$d / %2$d</string>
@@ -907,12 +871,8 @@
     <string name="outfit_saving">Αποθήκευση συνόλου…</string>
 
     <!-- Try-on generation failed dialog -->
-    <string name="tryon_generate_failed">Η δημιουργία απέτυχε</string>
-    <string name="tryon_missing_photos_items">Λείπουν φωτογραφίες ή είδη</string>
 
     <!-- Shared error messages localization -->
-    <string name="error_save_failed">Η αποθήκευση απέτυχε</string>
-    <string name="error_delete_failed">Η διαγραφή απέτυχε</string>
     <string name="error_upload_failed">Η μεταφόρτωση απέτυχε: %1$s</string>
     <string name="error_original_unavailable">Το πρωτότυπο δεν είναι διαθέσιμο</string>
     <string name="error_gemini_no_response">Η τεχνητή νοημοσύνη δεν απάντησε.</string>
