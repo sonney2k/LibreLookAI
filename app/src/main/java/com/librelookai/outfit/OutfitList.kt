@@ -75,10 +75,9 @@ import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.util.scrollbar
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.LocationViewModel
+import com.librelookai.data.session.ClosetSession
 import com.librelookai.wardrobe.QuickCategoryRow
 import com.librelookai.wardrobe.WardrobeFilterSheet
-import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.displayLabel
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.tagStringsForCategory
@@ -115,8 +114,9 @@ internal fun OutfitListScreen(
     canTryOn: Boolean = false,
     brokenOutfits: List<Outfit> = emptyList(),
     onDeleteBrokenOutfits: () -> Unit = {},
+    /** Fuzzy text search over the outfit's item pool (threaded from the wardrobe VM in the shell). */
+    onFuzzyTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, _ -> emptyList() },
     modifier: Modifier = Modifier,
-    wardrobeViewModel: WardrobeViewModel,
 ) {
     val isOffline = LocalIsOffline.current
     // itemsById: ALL locations — used to resolve item IDs to images for card display and tag filters.
@@ -124,7 +124,7 @@ internal fun OutfitListScreen(
 
     // The active closet's folder id (null = All locations). Used for closet-scoped filtering.
     val locationFolderId = remember(activeLocationId, locations) {
-        if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
+        if (activeLocationId != ClosetSession.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
             locations.find { it.folderId == activeLocationId }?.folderId else null
     }
     // Resolve an item's closet by name (legacy outfits store itemNames, not itemIds). Spans every
@@ -156,7 +156,7 @@ internal fun OutfitListScreen(
         val q = textQuery.trim()
         val qLower = q.lowercase()
         val itemsMatchingText: Set<String>? = if (q.isBlank()) null else {
-            wardrobeViewModel.fuzzyFilterByText(q, items).map { it.driveId }.toSet()
+            onFuzzyTextFilter(q, items).map { it.driveId }.toSet()
         }
         styles.filter { style ->
             if (locationFolderId != null) {

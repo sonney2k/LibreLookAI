@@ -622,17 +622,30 @@ internal fun AppContent(
                                     ) {
                                         composable<OutfitsTabRoute> {
                                         CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        val outfitsWardrobeState by wardrobeViewModel.state.collectAsState()
+                                        val outfitsTripsState by tripsViewModel.state.collectAsState()
+                                        val outfitsTripNames = remember(outfitsTripsState.trips) {
+                                            outfitsTripsState.trips.associate { it.id to it.name }
+                                        }
                                         OutfitsScreen(
                                             outfitsViewModel = stylesViewModel,
                                             generationViewModel = outfitGenerationViewModel,
                                             onOpenComposer = {
                                                 navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                             },
-                                            wardrobeViewModel = wardrobeViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
-                                            profileViewModel = profileViewModel,
                                             weatherViewModel = weatherViewModel,
-                                            locationViewModel = locationViewModel,
+                                            wardrobeImages = outfitsWardrobeState.images,
+                                            allLocationImages = outfitsWardrobeState.allLocationImages,
+                                            wardrobeIsSyncing = outfitsWardrobeState.isSyncing,
+                                            wardrobeIsLoading = outfitsWardrobeState.isLoading,
+                                            preferences = profileState.preferences,
+                                            locations = locationState.locations,
+                                            activeLocationId = locationState.activeLocationId,
+                                            activeFolderId = locationViewModel.activeFolderId,
+                                            onSetActiveLocation = locationViewModel::setActiveLocation,
+                                            tripNamesById = outfitsTripNames,
+                                            onFuzzyTextFilter = wardrobeViewModel::fuzzyFilterByText,
                                             onTryOnStyle = runOutfitTryOn,
                                             canTryOn = canTryOn,
                                             onSettingsClick = onSettingsClick,
@@ -1130,17 +1143,25 @@ internal fun AppContent(
                             // the discard-confirm / save success) clears the draft and pops
                             // through onClose. No open-flag mirror any more. No activity pin:
                             // the composer takes every VM as a required parameter.
+                            val composerWardrobeState by wardrobeViewModel.state.collectAsState()
+                            val composerShoppingState by shoppingClosetViewModel.state.collectAsState()
                             OutfitComposerScreen(
                                 generationViewModel = outfitGenerationViewModel,
                                 onClose = {
                                     navController.popBackStack(OutfitComposerRoute, inclusive = true)
                                 },
-                                wardrobeViewModel = wardrobeViewModel,
-                                profileViewModel  = profileViewModel,
                                 weatherViewModel  = weatherViewModel,
-                                shoppingClosetViewModel = shoppingClosetViewModel,
-                                locationViewModel = locationViewModel,
                                 outfitEventsViewModel = outfitEventsViewModel,
+                                wardrobeImages = composerWardrobeState.images,
+                                allLocationImages = composerWardrobeState.allLocationImages,
+                                shoppingItems = composerShoppingState.items,
+                                preferences = profileState.preferences,
+                                locations = locationState.locations,
+                                onTextFilter = wardrobeViewModel::fuzzyFilterByText,
+                                findSimilarByPhoto = { file, candidates ->
+                                    wardrobeViewModel.findSimilarInCandidates(file, candidates)
+                                        .associate { it.driveId to it.score }
+                                },
                                 onOpenItemViewer = { initialItemId ->
                                     navController.navigate(
                                         ItemViewerRoute(
@@ -1310,12 +1331,14 @@ internal fun AppContent(
                                 // regardless of which tab is on top (the composer can be opened
                                 // from Wardrobe and ask for AI suggestions before the user has
                                 // ever visited the Outfits tab).
+                                val predictionWardrobeState by wardrobeViewModel.state.collectAsState()
                                 com.librelookai.outfit.PredictionSetupDialog(
                                     generationViewModel = outfitGenerationViewModel,
-                                    profileViewModel  = profileViewModel,
                                     weatherViewModel  = weatherViewModel,
-                                    locationViewModel = locationViewModel,
-                                    wardrobeViewModel = wardrobeViewModel,
+                                    wardrobeImages = predictionWardrobeState.images,
+                                    allLocationImages = predictionWardrobeState.allLocationImages,
+                                    preferences = profileState.preferences,
+                                    locations = locationState.locations,
                                 )
 
                                 // Replacements result dialog — opened from Wardrobe selection FAB.

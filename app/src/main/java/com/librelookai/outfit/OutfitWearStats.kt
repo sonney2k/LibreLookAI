@@ -44,21 +44,19 @@ import com.librelookai.R
 import com.librelookai.data.model.Outfit
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.WardrobeViewModel
 
 private const val TOP_N = 10
 @Composable
 fun OutfitWearStatsTab(
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
-    wardrobeViewModel: WardrobeViewModel = viewModel(),
+    wardrobeImages: List<DriveImage> = emptyList(),
 ) {
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val outfitsState by stylesViewModel.state.collectAsState()
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
 
     val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
-    val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
+    val imagesById = remember(wardrobeImages) { wardrobeImages.associateBy { it.driveId } }
 
     val topStyles = remember(outfitEventsState.events, outfitsById) {
         outfitEventsState.events

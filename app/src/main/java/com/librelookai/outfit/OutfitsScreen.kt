@@ -33,14 +33,12 @@ import com.librelookai.AppScreenHeader
 import com.librelookai.LocationButton
 import com.librelookai.R
 import com.librelookai.core.designsystem.R as DsR
+import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
+import com.librelookai.settings.UserPreferences
 import com.librelookai.data.model.WearSource
-import com.librelookai.settings.ProfileViewModel
-import com.librelookai.travel.TripsViewModel
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.TagCategory
-import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.displayLabel
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.weather.WeatherViewModel
@@ -91,12 +89,23 @@ internal fun outfitItemPool(
 fun OutfitsScreen(
     outfitsViewModel: OutfitsViewModel = viewModel(),
     generationViewModel: OutfitGenerationViewModel = viewModel(),
-    wardrobeViewModel: WardrobeViewModel = viewModel(),
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
-    locationViewModel: LocationViewModel = viewModel(),
-    tripsViewModel: TripsViewModel = viewModel(),
+    // Wardrobe / location / profile / trips data threaded from the shell (feature modules never
+    // import another feature's VM — § 1 slice 6 narrowing precedent).
+    wardrobeImages: List<DriveImage> = emptyList(),
+    allLocationImages: List<DriveImage> = emptyList(),
+    wardrobeIsSyncing: Boolean = false,
+    wardrobeIsLoading: Boolean = false,
+    preferences: UserPreferences = UserPreferences(),
+    locations: List<Location> = emptyList(),
+    activeLocationId: String = "",
+    activeFolderId: String? = null,
+    onSetActiveLocation: (String) -> Unit = {},
+    /** tripId → trip name, used to label travel outfits with their originating trip. */
+    tripNamesById: Map<String, String> = emptyMap(),
+    /** Fuzzy text search over the outfit item pool (wardrobe VM in the shell). */
+    onFuzzyTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, _ -> emptyList() },
     onTryOnStyle: (Outfit) -> Unit = {},
     /** Navigates to the composer destination — callers seed the generation VM first (§ 5 slice 9). */
     onOpenComposer: () -> Unit = {},
@@ -111,17 +120,8 @@ fun OutfitsScreen(
 ) {
     val outfitsState  by outfitsViewModel.state.collectAsState()
     val generationState by generationViewModel.state.collectAsState()
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val profileState by profileViewModel.state.collectAsState()
     val weatherState by weatherViewModel.state.collectAsState()
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
-    val locationState by locationViewModel.state.collectAsState()
-    val tripsState by tripsViewModel.state.collectAsState()
-
-    // tripId → trip name, used to label travel outfits with their originating trip.
-    val tripNamesById = remember(tripsState.trips) {
-        tripsState.trips.associate { it.id to it.name }
-    }
 
     // (No wardrobe-image refresh needed: OutfitsUiState.wardrobeImages is store-derived and
     // follows the wardrobe Drive sync via Room invalidation — refactor § 5 slice 4b.)
@@ -133,12 +133,12 @@ fun OutfitsScreen(
 
     // Universe of items used to resolve every outfit's thumbnails — see [outfitItemPool].
     val outfitItems = remember(
-        wardrobeState.allLocationImages, outfitsState.wardrobeImages, wardrobeState.images,
+        allLocationImages, outfitsState.wardrobeImages, wardrobeImages,
     ) {
         outfitItemPool(
-            allLocationImages = wardrobeState.allLocationImages,
+            allLocationImages = allLocationImages,
             wardrobeImages = outfitsState.wardrobeImages,
-            activeImages = wardrobeState.images,
+            activeImages = wardrobeImages,
         )
     }
     val outfitImagesById = remember(outfitItems) { outfitItems.associateBy { it.driveId } }
@@ -159,9 +159,9 @@ fun OutfitsScreen(
     // so a single-closet view doesn't flag items that merely live in another closet. These
     // outfits are otherwise hidden by the list's "all items loaded" gate, so the banner is the
     // only way to discover and clean them up. Only trust the result once the wardrobe has synced.
-    val brokenOutfits = remember(outfitsState.outfits, wardrobeState.allLocationImages, wardrobeState.images, wardrobeState.isSyncing) {
-        if (wardrobeState.isSyncing) return@remember emptyList<Outfit>()
-        val knownNames = (wardrobeState.allLocationImages.asSequence() + wardrobeState.images.asSequence())
+    val brokenOutfits = remember(outfitsState.outfits, allLocationImages, wardrobeImages, wardrobeIsSyncing) {
+        if (wardrobeIsSyncing) return@remember emptyList<Outfit>()
+        val knownNames = (allLocationImages.asSequence() + wardrobeImages.asSequence())
             .map { it.name }.toHashSet()
         if (knownNames.isEmpty()) emptyList()
         else outfitsState.outfits.filter { o ->
@@ -187,9 +187,9 @@ fun OutfitsScreen(
                 leadingIcon = Icons.Default.Style,
                 trailingContent = {
                     LocationButton(
-                        locations = locationState.locations,
-                        activeLocationId = locationState.activeLocationId,
-                        onSetActiveLocation = locationViewModel::setActiveLocation,
+                        locations = locations,
+                        activeLocationId = activeLocationId,
+                        onSetActiveLocation = onSetActiveLocation,
                     )
                 },
                 onSettingsClick = onSettingsClick,
@@ -216,30 +216,30 @@ fun OutfitsScreen(
                     styles = outfitsState.outfits,
                     items = outfitItems,
                     wearCounts = wearCounts,
-                    isLoading = outfitsState.isLoading || wardrobeState.isLoading,
+                    isLoading = outfitsState.isLoading || wardrobeIsLoading,
                     isPredicting = generationState.isPredicting,
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
+                    locations = locations,
+                    activeLocationId = activeLocationId,
                     tripNamesById = tripNamesById,
                     predictionError = generationState.predictionError,
                     selectedOutfitIds = outfitsState.selectedOutfitIds,
                     onOpenCreateComposer = {
                         generationViewModel.openComposer(
                             seedItemIds = emptySet(),
-                            images      = wardrobeState.images,
-                            prefs       = profileState.preferences,
+                            images      = wardrobeImages,
+                            prefs       = preferences,
                             // Default to the closet the user is currently viewing (null = All).
-                            defaultSourceFolderId = locationViewModel.activeFolderId,
+                            defaultSourceFolderId = activeFolderId,
                         )
                         onOpenComposer()
                     },
                     onSuggestExisting = {
                         generationViewModel.openPredictionSetup(
-                            defaultSourceFolderId = locationViewModel.activeFolderId,
+                            defaultSourceFolderId = activeFolderId,
                         )
                     },
                     onEditOutfit = { style ->
-                        generationViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                        generationViewModel.startEditing(style, wardrobeImages, preferences)
                         onOpenComposer()
                     },
                     onDeleteOutfit = outfitsViewModel::deleteOutfit,
@@ -261,8 +261,8 @@ fun OutfitsScreen(
                         if (selected.size >= 2) {
                             generationViewModel.openComposerFromSelectedOutfits(
                                 selected = selected,
-                                images = wardrobeState.images,
-                                prefs  = profileState.preferences,
+                                images = wardrobeImages,
+                                prefs  = preferences,
                             )
                             outfitsViewModel.clearOutfitSelection()
                             onOpenComposer()
@@ -276,21 +276,21 @@ fun OutfitsScreen(
                     onDeleteBrokenOutfits = {
                         outfitsViewModel.deleteOutfitsByIds(brokenOutfits.map { it.id })
                     },
-                    wardrobeViewModel = wardrobeViewModel,
+                    onFuzzyTextFilter = onFuzzyTextFilter,
                 )
                 1 -> OutfitCalendarTab(
                     outfitEventsViewModel = outfitEventsViewModel,
                     stylesViewModel = outfitsViewModel,
-                    wardrobeViewModel = wardrobeViewModel,
+                    wardrobeImages = wardrobeImages,
                     onEditOutfit = { style ->
-                        generationViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                        generationViewModel.startEditing(style, wardrobeImages, preferences)
                         onOpenComposer()
                     },
                 )
                 2 -> OutfitWearStatsTab(
                     outfitEventsViewModel = outfitEventsViewModel,
                     stylesViewModel = outfitsViewModel,
-                    wardrobeViewModel = wardrobeViewModel,
+                    wardrobeImages = wardrobeImages,
                 )
             }
         }

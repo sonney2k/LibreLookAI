@@ -91,7 +91,6 @@ import com.librelookai.data.model.WearSource
 import com.librelookai.data.model.WornItem
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.WardrobeViewModel
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -134,17 +133,16 @@ private sealed interface CalendarPick {
 fun OutfitCalendarTab(
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
-    wardrobeViewModel: WardrobeViewModel = viewModel(),
+    wardrobeImages: List<DriveImage> = emptyList(),
     weatherViewModel: com.librelookai.weather.WeatherViewModel = viewModel(),
     onEditOutfit: (Outfit) -> Unit,
 ) {
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val outfitsState by stylesViewModel.state.collectAsState()
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
     val weatherState by weatherViewModel.state.collectAsState()
 
     val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
-    val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
+    val imagesById = remember(wardrobeImages) { wardrobeImages.associateBy { it.driveId } }
 
     // One row per logged wear (so the same outfit worn twice in a day shows twice, each with its
     // own "loved" toggle), resolved against the current outfits.

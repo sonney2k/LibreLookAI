@@ -55,25 +55,25 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.librelookai.R
 import com.librelookai.core.designsystem.R as DsR
-import com.librelookai.settings.ProfileViewModel
-import com.librelookai.wardrobe.LocationViewModel
-import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.data.model.Location
+import com.librelookai.settings.UserPreferences
+import com.librelookai.wardrobe.DriveImage
 import com.librelookai.weather.WeatherViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PredictionSetupDialog(
     generationViewModel: OutfitGenerationViewModel,
-    profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,
-    locationViewModel: LocationViewModel,
-    wardrobeViewModel: WardrobeViewModel,
+    // Wardrobe / profile / location data threaded from the shell (feature modules never import
+    // another feature's VM — § 1 slice 6 narrowing precedent).
+    wardrobeImages: List<DriveImage> = emptyList(),
+    allLocationImages: List<DriveImage> = emptyList(),
+    preferences: UserPreferences = UserPreferences(),
+    locations: List<Location> = emptyList(),
 ) {
     val s by generationViewModel.state.collectAsState()
-    val profile by profileViewModel.state.collectAsState()
     val weather by weatherViewModel.state.collectAsState()
-    val locationState by locationViewModel.state.collectAsState()
-    val wardrobe by wardrobeViewModel.state.collectAsState()
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
 
@@ -94,12 +94,12 @@ fun PredictionSetupDialog(
     }
 
     val sourceFolders = s.composerSourceFolderIds
-    val closetNames = remember(sourceFolders, locationState.locations) {
-        locationState.locations.filter { it.folderId in sourceFolders }.map { it.name }
+    val closetNames = remember(sourceFolders, locations) {
+        locations.filter { it.folderId in sourceFolders }.map { it.name }
     }
-    val crossClosetImages = wardrobe.allLocationImages.ifEmpty { wardrobe.images }
+    val crossClosetImages = allLocationImages.ifEmpty { wardrobeImages }
 
-    val prefsConsiderations = profile.preferences.aiConsiderations
+    val prefsConsiderations = preferences.aiConsiderations
     val effectiveConsiderations = s.composerConsiderationsOverride ?: prefsConsiderations
 
     Dialog(
@@ -162,7 +162,7 @@ fun PredictionSetupDialog(
                                 generationViewModel.setComposerConsideration(prefsConsiderations) { it.toggleItemTag(dim) }
                             },
                         )
-                        if (locationState.locations.size >= 2) {
+                        if (locations.size >= 2) {
                             ClosetChipRow(
                                 closetNames = closetNames,
                                 onClick = { showClosetSheet = true },
@@ -185,7 +185,7 @@ fun PredictionSetupDialog(
                         initialValue = null,
                         crossClosetImages,
                         s.outfits,
-                        profile.preferences,
+                        preferences,
                         weather.data,
                         s.composerSuggestionCount,
                         s.composerSourceFolderIds,
@@ -206,13 +206,13 @@ fun PredictionSetupDialog(
                             // price the composer prompt; the standalone setup prices the prediction.
                             if (s.predictionSetupSource == PredictionSetupSource.COMPOSER) {
                                 generationViewModel.estimateComposerTokens(
-                                    prefs = profile.preferences,
+                                    prefs = preferences,
                                     weather = weather.data,
                                     images = crossClosetImages,
                                 )
                             } else {
                                 generationViewModel.estimatePredictionTokens(
-                                    prefs = profile.preferences,
+                                    prefs = preferences,
                                     weather = weather.data,
                                     images = crossClosetImages,
                                 )
@@ -225,7 +225,7 @@ fun PredictionSetupDialog(
                         onCancel = { generationViewModel.closePredictionSetup() },
                         onGenerate = {
                             generationViewModel.submitPredictionSetup(
-                                prefs = profile.preferences,
+                                prefs = preferences,
                                 weather = weather.data,
                                 images = crossClosetImages,
                             )
@@ -267,7 +267,7 @@ fun PredictionSetupDialog(
     }
     if (showClosetSheet) {
         ClosetPickerSheet(
-            locations = locationState.locations,
+            locations = locations,
             selected = s.composerSourceFolderIds,
             onToggle = generationViewModel::toggleComposerSourceFolder,
             onDismiss = { showClosetSheet = false },

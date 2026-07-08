@@ -52,16 +52,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
 import com.librelookai.core.designsystem.R as DsR
+import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
-import com.librelookai.settings.ProfileViewModel
-import com.librelookai.shopping.ShoppingClosetViewModel
+import com.librelookai.settings.UserPreferences
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.LocationViewModel
-import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.weather.WeatherViewModel
 
 private fun DriveImage.displayLabel(): String =
@@ -78,12 +76,19 @@ private fun DriveImage.displayLabel(): String =
 @Composable
 fun OutfitComposerScreen(
     generationViewModel: OutfitGenerationViewModel,
-    wardrobeViewModel: WardrobeViewModel,
-    profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel,
-    locationViewModel: LocationViewModel,
     outfitEventsViewModel: OutfitEventsViewModel,
+    // Wardrobe / shopping / profile / location data + picker callbacks threaded from the shell
+    // (feature modules never import another feature's VM — § 1 slice 6 narrowing precedent).
+    wardrobeImages: List<DriveImage> = emptyList(),
+    allLocationImages: List<DriveImage> = emptyList(),
+    shoppingItems: List<DriveImage> = emptyList(),
+    preferences: UserPreferences = UserPreferences(),
+    locations: List<Location> = emptyList(),
+    /** Fuzzy text search over the picker candidates (wardrobe VM in the shell). */
+    onTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, _ -> emptyList() },
+    /** Visual similarity over the picker candidates → driveId→score (wardrobe VM in the shell). */
+    findSimilarByPhoto: suspend (java.io.File, List<DriveImage>) -> Map<String, Float> = { _, _ -> emptyMap() },
     /** Open the item-viewer destination over this one (composer source: items track the slots). */
     onOpenItemViewer: (String) -> Unit = {},
     /** Pops the OutfitComposerRoute destination (§ 5 slice 9 — the composer is real navigation;
@@ -91,11 +96,7 @@ fun OutfitComposerScreen(
     onClose: () -> Unit = {},
 ) {
     val s by generationViewModel.state.collectAsState()
-    val wardrobe by wardrobeViewModel.state.collectAsState()
-    val profile by profileViewModel.state.collectAsState()
     val weather by weatherViewModel.state.collectAsState()
-    val shoppingState by shoppingClosetViewModel.state.collectAsState()
-    val locationState by locationViewModel.state.collectAsState()
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
 
     // driveId → number of calendar wear events that include this item (for AddItemSheet sort)
@@ -116,12 +117,12 @@ fun OutfitComposerScreen(
 
     val isEditMode = s.composerMode == ComposerMode.EDIT
     val sourceFolders = s.composerSourceFolderIds
-    val crossClosetImages = wardrobe.allLocationImages.ifEmpty { wardrobe.images }
+    val crossClosetImages = allLocationImages.ifEmpty { wardrobeImages }
     // Items the source-closet filter exposes for *adding/swapping* into slots.
-    val composerImages = remember(crossClosetImages, shoppingState.items, sourceFolders) {
+    val composerImages = remember(crossClosetImages, shoppingItems, sourceFolders) {
         val filteredWardrobe = if (sourceFolders.isEmpty()) crossClosetImages
         else crossClosetImages.filter { it.folderId in sourceFolders }
-        filteredWardrobe + shoppingState.items
+        filteredWardrobe + shoppingItems
     }
     // Resolve slot images from EVERY known source — unfiltered, and including the active
     // closet's `images`, which holds just-uploaded items not yet present in the cross-closet
@@ -129,8 +130,8 @@ fun OutfitComposerScreen(
     // Without this, a seeded or locked slot whose item lies outside the source-closet filter
     // (or is brand-new) renders as a blank silhouette and looks "not preselected". Active-closet
     // and shopping entries are listed last so their fresher copies win on duplicate driveIds.
-    val byId = remember(crossClosetImages, wardrobe.images, shoppingState.items) {
-        (crossClosetImages + wardrobe.images + shoppingState.items).associateBy { it.driveId }
+    val byId = remember(crossClosetImages, wardrobeImages, shoppingItems) {
+        (crossClosetImages + wardrobeImages + shoppingItems).associateBy { it.driveId }
     }
 
     var showAddSlotSheet by remember { mutableStateOf(false) }
@@ -195,7 +196,7 @@ fun OutfitComposerScreen(
                     ComposerStackedView(
                         slots = s.composerSlots,
                         byId = byId,
-                        locations = locationState.locations,
+                        locations = locations,
                         isEditMode = true,
                         onPickItem = { slotId -> exchangeSlotId = slotId },
                         onToggleLock = { slotId -> generationViewModel.toggleSlotLock(slotId) },
@@ -274,7 +275,7 @@ fun OutfitComposerScreen(
                         OutfitPageBody(
                             outfit = draftOutfit,
                             itemsById = byId,
-                            locations = locationState.locations,
+                            locations = locations,
                             onItemClick = { onOpenItemViewer(it.driveId) },
                             bottomPadding = effectiveBottom,
                         )
@@ -364,7 +365,7 @@ fun OutfitComposerScreen(
                         s.composerSlots,
                         s.composerSuggestionCount,
                         s.composerVibes,
-                        profile.preferences,
+                        preferences,
                         weather.data,
                         s.composerConsiderationsOverride,
                         s.composerWeatherMode,
@@ -377,7 +378,7 @@ fun OutfitComposerScreen(
                     ) {
                         value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
                             generationViewModel.estimateComposerTokens(
-                                prefs = profile.preferences,
+                                prefs = preferences,
                                 weather = weather.data,
                                 images = crossClosetImages,
                             )
@@ -524,7 +525,7 @@ fun OutfitComposerScreen(
             initialIndex = s.composerSuggestionIndex,
             slots = s.composerSlots,
             itemsById = byId,
-            locations = locationState.locations,
+            locations = locations,
             onSelect = { index ->
                 Analytics.action("OutfitComposer", "suggestion_select_from_viewer")
                 // Commits the pick and drops the other suggestions — once the user has
@@ -546,13 +547,10 @@ fun OutfitComposerScreen(
             AddItemSheet(
                 allItems = layerItems,
                 alreadyChosen = alreadyChosen,
-                locations = locationState.locations,
+                locations = locations,
                 popularityMap = popularityMap,
-                onTextFilter = wardrobeViewModel::fuzzyFilterByText,
-                findSimilarByPhoto = { file, candidates ->
-                    wardrobeViewModel.findSimilarInCandidates(file, candidates)
-                        .associate { it.driveId to it.score }
-                },
+                onTextFilter = onTextFilter,
+                findSimilarByPhoto = findSimilarByPhoto,
                 onConfirm = { picked ->
                     picked.firstOrNull()?.let { generationViewModel.setSlotItem(slotId, it) }
                     exchangeSlotId = null
@@ -589,7 +587,7 @@ fun OutfitComposerScreen(
 
     if (showClosetSheet) {
         ClosetPickerSheet(
-            locations = locationState.locations,
+            locations = locations,
             selected = sourceFolders,
             onToggle = { generationViewModel.toggleComposerSourceFolder(it) },
             onDismiss = { showClosetSheet = false },
