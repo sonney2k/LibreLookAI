@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Lisää URL:sta</string>
+    <string name="shop_list_url_hint">Liitä ostossivun URL. Haemme tuotekuvan automaattisesti.</string>
+    <string name="shop_list_uploading">Ladataan…</string>
+    <string name="shop_list_processing">Käsitellään %1$d vaate(tta)…</string>
+    <string name="shop_list_moving">Siirretään…</string>
+    <string name="shop_list_move_title">Siirrä vaatekaappiin</string>
+    <string name="shop_list_loading">Ladataan…</string>
+    <string name="shop_list_empty_title">Toivelistasi on tyhjä</string>
+    <string name="shop_list_empty_hint">Lisää vaatteita, joita harkitset ostavasi, kamerasta, galleriasta tai ostos-URL:stä.</string>
+    <string name="shop_list_delete_title">Poistetaanko toivelistalta?</string>
+    <string name="shop_list_delete_text">Poistetaanko %1$d vaate(tta) pysyvästi toivelistaltasi?</string>
+    <string name="shop_error_model_missing">Visuaalisen haun mallia ei ole asennettu.</string>
+    <string name="shop_error_embed_failed">Kuvaa ei voitu analysoida. Kokeile toista.</string>
+    <string name="sel_add_to_closet">Kaappiin</string>
+    <string name="fab_shopping_add">Lisää löytö</string>
+    <string name="error_query_photo_missing">Hakukuvaa ei enää ole.</string>
+    <string name="error_import_query_failed">Hakukuvan tuonti epäonnistui.</string>
+</resources>

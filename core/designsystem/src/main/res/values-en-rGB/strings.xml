@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Wear history</string>
     <string name="error_gemini_no_response">The AI did not respond.</string>
     <string name="error_gemini_parse">Could not read the AI response.</string>
+    <string name="url_import_failed">Could not find a product image at this URL.</string>
+    <string name="action_continue">Continue</string>
+    <string name="wardrobe_selected_count">%1$d selected</string>
+    <string name="wardrobe_move_failed">Couldn\'t move some items. They\'ve been restored.</string>
+    <string name="wardrobe_empty_filter">No items match the filter</string>
+    <string name="sel_style">Style</string>
+    <string name="error_upload_failed">Upload failed: %1$s</string>
+    <string name="error_original_unavailable">Original not available</string>
+    <string name="action_deselect_all">Deselect all</string>
 </resources>

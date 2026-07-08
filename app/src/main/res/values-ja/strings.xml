@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">不足アイテム検出</string>
 
     <!-- ショッピングリストサブタブ -->
-    <string name="shop_list_empty_title">ウィッシュリストは空です</string>
-    <string name="shop_list_empty_hint">購入を検討中のアイテムをカメラ・ギャラリー・ショッピングURLから追加できます。</string>
     <string name="shop_list_add_camera">カメラから追加</string>
     <string name="shop_list_add_gallery">ギャラリーから追加</string>
     <string name="shop_list_add_url">URLから追加</string>
-    <string name="shop_list_url_title">URLから追加</string>
-    <string name="shop_list_url_hint">ショッピングページのURLを貼り付けてください。商品画像を自動取得します。</string>
-    <string name="shop_list_uploading">アップロード中…</string>
-    <string name="shop_list_moving">移動中…</string>
-    <string name="shop_list_loading">読み込み中…</string>
-    <string name="shop_list_processing">%1$d 件のアイテムを処理中…</string>
     <string name="shop_list_move_to_closet">クローゼットに移動</string>
-    <string name="shop_list_move_title">クローゼットに移動</string>
-    <string name="shop_list_delete_title">ウィッシュリストから削除しますか?</string>
-    <string name="shop_list_delete_text">%1$d 件のアイテムをウィッシュリストから完全に削除しますか?</string>
 
     <!-- URLインポート(クローゼット + ショッピングリスト) -->
     <string name="wardrobe_add_url">URLから追加</string>
     <string name="wardrobe_url_import_title">ショッピングURLからインポート</string>
     <string name="wardrobe_url_import_hint">ショッピングページのURLを貼り付けてください。商品画像を自動取得します。</string>
-    <string name="url_import_failed">このURLで商品画像が見つかりませんでした。</string>
     <string name="url_import_pick_title">商品画像を選択</string>
     <string name="url_import_pick_hint">インポートしたい画像をタップしてください。適切なものがない場合はブラウザでページを開きます。</string>
     <string name="url_import_browser_title">ページを開く</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">背景削除 %1$d / %2$d…</string>
     <string name="wardrobe_progress_moving">新しい場所へ移動中…</string>
     <string name="action_select_all">すべて選択</string>
-    <string name="action_deselect_all">選択解除</string>
 
     <!-- サインイン -->
     <!-- 設定 -->
@@ -223,7 +210,6 @@
 
     <!-- クローゼット -->
     <string name="wardrobe_sync_progress">クローゼットを復元中: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">フィルターに一致するアイテムがありません</string>
     <string name="wardrobe_item_count">%1$d 件のアイテム</string>
     <string name="wardrobe_filtered_count">%2$d 件中 %1$d 件を表示</string>
     <string name="wardrobe_stats_total">合計 %1$d 件</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">写真を撮るか、ギャラリーから選択してください</string>
     <string name="wardrobe_create_outfit">コーデを手動で作成</string>
     <string name="wardrobe_compose_ai">AIで構成</string>
-    <string name="wardrobe_selected_count">%1$d 件選択中</string>
     <string name="wardrobe_select_all_count">すべて選択 (%1$d)</string>
     <string name="wardrobe_delete_title">アイテムを削除しますか?</string>
     <string name="wardrobe_delete_text">選択した %d 件のアイテムを削除しますか? この操作は取り消せません。</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">カメラ</string>
     <string name="wardrobe_add_to_closet">%1$s に追加</string>
     <string name="wardrobe_add_to_closet_title">クローゼットに追加</string>
-    <string name="action_continue">続ける</string>
     <string name="tag_label">名前</string>
     <string name="tag_label_placeholder">例: ネイビーチノパン、白オックスフォードシャツ</string>
     <string name="tag_add_custom">カスタム追加…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">クローゼットをインデックス中… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d 件のアイテムをインデックス済み</string>
     <string name="shop_model_missing">端末のモデルが見つかりません。efficientnet_lite0.tflite を app/src/main/assets/embedder/ に、magic_touch.tflite を app/src/main/assets/segmenter/ に配置してください。</string>
-    <string name="shop_error_model_missing">ビジュアル検索モデルがインストールされていません。</string>
-    <string name="shop_error_embed_failed">この写真を分析できませんでした。別のものを試してください。</string>
 
     <!-- 類似性チェック(キャプチャ / インポート / 修復と同期) -->
     <string name="settings_dedupe_title">類似性チェック</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">一部のアイテムを移動できませんでした。元に戻しました。</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">アップロードに失敗しました: %1$s</string>
-    <string name="error_original_unavailable">オリジナルを利用できません</string>
     <string name="error_import_failed_item">%1$s のインポートに失敗しました: %2$s</string>
     <string name="error_tag_save_failed">タグのDriveへの保存に失敗しました: %1$s</string>
     <string name="error_add_items_first">まずワードローブにアイテムを追加してください。</string>
-    <string name="error_query_photo_missing">検索用の写真は存在しません。</string>
-    <string name="error_import_query_failed">検索用の写真のインポートに失敗しました。</string>
     <string name="error_trips_folder_not_ready">旅行フォルダの準備ができていません。</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">コーディネートをカレンダーに追加</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">新しいコーデ</string>
     <string name="fab_wardrobe_add">アイテム追加</string>
     <string name="fab_calendar_log">コーデを記録</string>
-    <string name="fab_shopping_add">見つけた物を追加</string>
-    <string name="sel_style">コーデ作成</string>
     <string name="sel_swap">入れ替え</string>
     <string name="sel_move">移動</string>
     <string name="sel_combine">組み合わせ</string>
     <string name="sel_love">お気に入り</string>
-    <string name="sel_add_to_closet">クローゼットへ</string>
     <string name="sel_copy_to_day">コピー</string>
     <string name="sel_remove">削除</string>
 

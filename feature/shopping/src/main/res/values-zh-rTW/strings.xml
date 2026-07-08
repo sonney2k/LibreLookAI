@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">從連結添加</string>
+    <string name="shop_list_url_hint">貼上購物頁面的連結。我們將自動獲取產品圖片。</string>
+    <string name="shop_list_uploading">正在上傳…</string>
+    <string name="shop_list_processing">正在處理 %1$d 個項目…</string>
+    <string name="shop_list_moving">正在移動…</string>
+    <string name="shop_list_move_title">移至衣櫥</string>
+    <string name="shop_list_loading">正在載入…</string>
+    <string name="shop_list_empty_title">您的願望清單是空的</string>
+    <string name="shop_list_empty_hint">透過相機、相簿或購物連結添加您考慮購買的單品。</string>
+    <string name="shop_list_delete_title">從願望清單刪除？</string>
+    <string name="shop_list_delete_text">要永久從願望清單中移除 %1$d 個項目嗎？</string>
+    <string name="shop_error_model_missing">未安裝視覺搜尋模型。</string>
+    <string name="shop_error_embed_failed">無法分析此相片。請試試其他相片。</string>
+    <string name="sel_add_to_closet">加入衣櫥</string>
+    <string name="fab_shopping_add">新增發現</string>
+    <string name="error_query_photo_missing">查詢照片已不存在。</string>
+    <string name="error_import_query_failed">匯入查詢照片失敗。</string>
+</resources>

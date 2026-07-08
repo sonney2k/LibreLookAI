@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Toevoegen via URL</string>
+    <string name="shop_list_url_hint">Plak de URL van een winkelpagina. Wij halen de productfoto automatisch op.</string>
+    <string name="shop_list_uploading">Uploaden…</string>
+    <string name="shop_list_processing">%1$d item(s) verwerken…</string>
+    <string name="shop_list_moving">Verplaatsen…</string>
+    <string name="shop_list_move_title">Verplaats naar kast</string>
+    <string name="shop_list_loading">Laden…</string>
+    <string name="shop_list_empty_title">Je verlanglijst is leeg</string>
+    <string name="shop_list_empty_hint">Voeg items toe die je overweegt te kopen via camera, galerij of een winkellink.</string>
+    <string name="shop_list_delete_title">Van verlanglijst verwijderen?</string>
+    <string name="shop_list_delete_text">%1$d item(s) definitief van je verlanglijst verwijderen?</string>
+    <string name="shop_error_model_missing">Visueel-zoekmodel is niet geïnstalleerd.</string>
+    <string name="shop_error_embed_failed">Foto kon niet geanalyseerd worden. Probeer een andere.</string>
+    <string name="sel_add_to_closet">Naar kast</string>
+    <string name="fab_shopping_add">Vondst toevoegen</string>
+    <string name="error_query_photo_missing">De zoekfoto bestaat niet meer.</string>
+    <string name="error_import_query_failed">Importeren van zoekfoto mislukt.</string>
+</resources>

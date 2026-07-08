@@ -304,7 +304,7 @@ internal fun GridContent(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        stringResource(R.string.wardrobe_selected_count, state.selectedIds.size),
+                        stringResource(DsR.string.wardrobe_selected_count, state.selectedIds.size),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f),
@@ -334,7 +334,7 @@ internal fun GridContent(
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                     ) {
                         Text(
-                            stringResource(R.string.action_deselect_all),
+                            stringResource(DsR.string.action_deselect_all),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -402,7 +402,7 @@ internal fun GridContent(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             if (selectedTags.values.any { it.isNotEmpty() } || textQuery.isNotBlank()) {
-                                Text(stringResource(R.string.wardrobe_empty_filter), style = MaterialTheme.typography.bodyLarge)
+                                Text(stringResource(DsR.string.wardrobe_empty_filter), style = MaterialTheme.typography.bodyLarge)
                             } else {
                                 Text(stringResource(R.string.wardrobe_empty), style = MaterialTheme.typography.bodyLarge)
                                 Spacer(Modifier.height(4.dp))
@@ -498,7 +498,7 @@ internal fun GridContent(
             if (!isOffline) {
                 add(
                     SelectionAction(
-                        label = stringResource(R.string.sel_style),
+                        label = stringResource(DsR.string.sel_style),
                         icon = Icons.Default.AutoFixHigh,
                         kind = SelectionAction.Kind.Primary,
                     ) { onCreateOutfitFromSelection(state.selectedIds) },

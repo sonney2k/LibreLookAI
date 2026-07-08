@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Lägg till via URL</string>
+    <string name="shop_list_url_hint">Klistra in URL:en till en shoppingsida. Vi hämtar produktbilden automatiskt.</string>
+    <string name="shop_list_uploading">Laddar upp…</string>
+    <string name="shop_list_processing">Bearbetar %1$d plagg…</string>
+    <string name="shop_list_moving">Flyttar…</string>
+    <string name="shop_list_move_title">Flytta till garderob</string>
+    <string name="shop_list_loading">Laddar…</string>
+    <string name="shop_list_empty_title">Din önskelista är tom</string>
+    <string name="shop_list_empty_hint">Lägg till plagg du funderar på att köpa via kamera, galleri eller shoppinglänk.</string>
+    <string name="shop_list_delete_title">Ta bort från önskelistan?</string>
+    <string name="shop_list_delete_text">Ta permanent bort %1$d plagg från din önskelista?</string>
+    <string name="shop_error_model_missing">Visuell sökmodell är inte installerad.</string>
+    <string name="shop_error_embed_failed">Kunde inte analysera fotot. Prova ett annat.</string>
+    <string name="sel_add_to_closet">Till garderob</string>
+    <string name="fab_shopping_add">Lägg till fynd</string>
+    <string name="error_query_photo_missing">Sökfotot finns inte längre.</string>
+    <string name="error_import_query_failed">Det gick inte att importera sökfotot.</string>
+</resources>

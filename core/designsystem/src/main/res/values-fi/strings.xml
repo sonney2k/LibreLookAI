@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Käyttöhistoria</string>
     <string name="error_gemini_no_response">Tekoäly ei vastannut.</string>
     <string name="error_gemini_parse">Tekoälyn vastausta ei voitu lukea.</string>
+    <string name="url_import_failed">Tuotekuvaa ei löytynyt tästä URL:sta.</string>
+    <string name="action_continue">Jatka</string>
+    <string name="wardrobe_selected_count">%1$d valittu</string>
+    <string name="wardrobe_move_failed">Joitakin kohteita ei voitu siirtää. Ne on palautettu.</string>
+    <string name="wardrobe_empty_filter">Yksikään vaate ei vastaa suodatinta</string>
+    <string name="sel_style">Tyyli</string>
+    <string name="error_upload_failed">Lataus epäonnistui: %1$s</string>
+    <string name="error_original_unavailable">Alkuperäistä ei saatavilla</string>
+    <string name="action_deselect_all">Poista valinnat</string>
 </resources>

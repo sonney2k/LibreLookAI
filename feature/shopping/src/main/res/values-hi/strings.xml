@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">URL से जोड़ें</string>
+    <string name="shop_list_url_hint">शॉपिंग पेज का URL पेस्ट करें। हम उत्पाद की छवि अपने आप निकाल लेंगे।</string>
+    <string name="shop_list_uploading">अपलोड हो रहा है…</string>
+    <string name="shop_list_processing">%1$d आइटम प्रोसेस किए जा रहे हैं…</string>
+    <string name="shop_list_moving">स्थानांतरित हो रहा है…</string>
+    <string name="shop_list_move_title">क्लोसेट में भेजें</string>
+    <string name="shop_list_loading">लोड हो रहा है…</string>
+    <string name="shop_list_empty_title">आपकी विशलिस्ट खाली है</string>
+    <string name="shop_list_empty_hint">कैमरा, गैलरी या शॉपिंग यूआरएल के ज़रिए वे आइटम जोड़ें जिन्हें आप खरीदने की सोच रहे हैं।</string>
+    <string name="shop_list_delete_title">विशलिस्ट से हटाएं?</string>
+    <string name="shop_list_delete_text">क्या आप अपनी विशलिस्ट से %1$d आइटम स्थायी रूप से हटाना चाहते हैं?</string>
+    <string name="shop_error_model_missing">विज़ुअल खोज मॉडल इंस्टॉल नहीं है।</string>
+    <string name="shop_error_embed_failed">उस फ़ोटो का विश्लेषण नहीं हो सका। दूसरी आज़माएँ।</string>
+    <string name="sel_add_to_closet">क्लोज़ेट में</string>
+    <string name="fab_shopping_add">खोज जोड़ें</string>
+    <string name="error_query_photo_missing">खोज फ़ोटो अब मौजूद नहीं है।</string>
+    <string name="error_import_query_failed">खोज फ़ोटो आयात करने में विफल।</string>
+</resources>

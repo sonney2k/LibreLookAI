@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">ค้นหาส่วนที่ขาดหาย</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">รายการที่คุณอยากได้ยังว่างเปล่า</string>
-    <string name="shop_list_empty_hint">เพิ่มรายการที่คุณกำลังพิจารณาจะซื้อด้วยกล้อง แกลเลอรี หรือ URL ของร้านค้า</string>
     <string name="shop_list_add_camera">เพิ่มจากกล้อง</string>
     <string name="shop_list_add_gallery">เพิ่มจากแกลเลอรี</string>
     <string name="shop_list_add_url">เพิ่มจาก URL</string>
-    <string name="shop_list_url_title">เพิ่มจาก URL</string>
-    <string name="shop_list_url_hint">วาง URL ของหน้าช้อปปิ้ง เราจะดึงรูปภาพสินค้าให้โดยอัตโนมัติ</string>
-    <string name="shop_list_uploading">กำลังอัปโหลด…</string>
-    <string name="shop_list_moving">กำลังย้าย…</string>
-    <string name="shop_list_loading">กำลังโหลด…</string>
-    <string name="shop_list_processing">กำลังประมวลผล %1$d รายการ…</string>
     <string name="shop_list_move_to_closet">ย้ายไปที่ตู้เสื้อผ้า</string>
-    <string name="shop_list_move_title">ย้ายไปที่ตู้เสื้อผ้า</string>
-    <string name="shop_list_delete_title">ลบออกจากรายการที่อยากได้?</string>
-    <string name="shop_list_delete_text">ลบ %1$d รายการออกจากรายการที่อยากได้ของคุณอย่างถาวรหรือไม่?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">เพิ่มจาก URL</string>
     <string name="wardrobe_url_import_title">นำเข้าจาก URL ของร้านค้า</string>
     <string name="wardrobe_url_import_hint">วาง URL ของหน้าช้อปปิ้ง เราจะดึงรูปภาพสินค้าให้โดยอัตโนมัติ</string>
-    <string name="url_import_failed">ไม่พบรูปภาพสินค้าที่ URL นี้</string>
     <string name="url_import_pick_title">เลือกรูปภาพสินค้า</string>
     <string name="url_import_pick_hint">แตะรูปภาพที่คุณต้องการนำเข้า หากไม่มีรูปใดถูกต้อง ให้เปิดหน้าเว็บในเบราว์เซอร์</string>
     <string name="url_import_browser_title">เปิดหน้าเว็บ</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">กำลังลบพื้นหลัง %1$d จาก %2$d…</string>
     <string name="wardrobe_progress_moving">กำลังย้ายไปที่สถานที่ใหม่…</string>
     <string name="action_select_all">เลือกทั้งหมด</string>
-    <string name="action_deselect_all">ยกเลิกการเลือกทั้งหมด</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">กำลังกู้คืนตู้เสื้อผ้า: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">ไม่พบรายการที่ตรงตามตัวกรอง</string>
     <string name="wardrobe_item_count">%1$d รายการ</string>
     <string name="wardrobe_filtered_count">แสดง %1$d จาก %2$d รายการ</string>
     <string name="wardrobe_stats_total">ทั้งหมด %1$d รายการ</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">ถ่ายรูปหรือเลือกจากแกลเลอรี</string>
     <string name="wardrobe_create_outfit">สร้างชุดด้วยตนเอง</string>
     <string name="wardrobe_compose_ai">สร้างด้วย AI</string>
-    <string name="wardrobe_selected_count">เลือกแล้ว %1$d รายการ</string>
     <string name="wardrobe_select_all_count">เลือกทั้งหมด (%1$d)</string>
     <string name="wardrobe_delete_title">ลบรายการ?</string>
     <string name="wardrobe_delete_text">คุณแน่ใจหรือไม่ว่าต้องการลบ %d รายการที่เลือก? การดำเนินการนี้ไม่สามารถย้อนกลับได้</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">กล้อง</string>
     <string name="wardrobe_add_to_closet">เพิ่มใน %1$s</string>
     <string name="wardrobe_add_to_closet_title">เพิ่มในตู้เสื้อผ้า</string>
-    <string name="action_continue">ดำเนินการต่อ</string>
     <string name="tag_label">ชื่อ</string>
     <string name="tag_label_placeholder">เช่น กางเกงชิโนสีกรมท่า, เสื้อเชิ้ตอ็อกซ์ฟอร์ดสีขาว</string>
     <string name="tag_add_custom">เพิ่มแบบกำหนดเอง…</string>
@@ -537,8 +521,6 @@
     <string name="settings_tab_feedback">ฟีดแบ็ค</string>
     <string name="shop_clear">ล้าง</string>
     <string name="shop_description">ถ่ายภาพชิ้นที่คุณกำลังพิจารณา และเราจะแสดงรายการในตู้ที่คล้ายที่สุดทางสายตา — ทำงานในเครื่องทั้งหมด</string>
-    <string name="shop_error_embed_failed">วิเคราะห์ภาพนั้นไม่ได้ ลองภาพอื่น</string>
-    <string name="shop_error_model_missing">ยังไม่ได้ติดตั้งโมเดลค้นหาด้วยภาพ</string>
     <string name="shop_index_size">จัดทำดัชนี %1$d รายการ</string>
     <string name="shop_indexing">กำลังจัดทำดัชนีตู้… %1$d / %2$d</string>
     <string name="shop_matches_title">ผลตรงกันที่สุด (%1$d)</string>
@@ -668,7 +650,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">ย้ายบางรายการไม่สำเร็จ ระบบได้กู้คืนรายการเหล่านั้นแล้ว</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">อัปโหลดไม่สำเร็จ: %1$s</string>
-    <string name="error_original_unavailable">ไม่มีต้นฉบับ</string>
     <string name="error_import_failed_item">นำเข้า %1$s ไม่สำเร็จ: %2$s</string>
     <string name="error_tag_save_failed">บันทึกแท็กไปยัง Drive ไม่สำเร็จ: %1$s</string>
     <string name="error_add_items_first">เพิ่มไอเทมลงในตู้เสื้อผ้าของคุณก่อน</string>
-    <string name="error_query_photo_missing">ไม่มีรูปค้นหาอีกต่อไป</string>
-    <string name="error_import_query_failed">นำเข้ารูปค้นหาไม่สำเร็จ</string>
     <string name="error_trips_folder_not_ready">โฟลเดอร์ทริปยังไม่พร้อม</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">เพิ่มชุดลงในปฏิทิน</string>
@@ -814,13 +791,10 @@
     <string name="fab_outfits_new">ลุคใหม่</string>
     <string name="fab_wardrobe_add">เพิ่มไอเทม</string>
     <string name="fab_calendar_log">บันทึกลุค</string>
-    <string name="fab_shopping_add">เพิ่มรายการที่พบ</string>
-    <string name="sel_style">จัดลุค</string>
     <string name="sel_swap">สลับ</string>
     <string name="sel_move">ย้าย</string>
     <string name="sel_combine">รวม</string>
     <string name="sel_love">ถูกใจ</string>
-    <string name="sel_add_to_closet">เพิ่มลงตู้เสื้อผ้า</string>
     <string name="sel_copy_to_day">คัดลอก</string>
     <string name="sel_remove">นำออก</string>
 

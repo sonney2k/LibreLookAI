@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Idagdag mula sa URL</string>
+    <string name="shop_list_url_hint">I-paste ang URL ng shopping page. Awtomatiko naming kukunin ang larawan ng produkto.</string>
+    <string name="shop_list_uploading">Ina-upload…</string>
+    <string name="shop_list_processing">Pinoproseso ang %1$d item…</string>
+    <string name="shop_list_moving">Inililipat…</string>
+    <string name="shop_list_move_title">Ilipat sa closet</string>
+    <string name="shop_list_loading">Naglo-load…</string>
+    <string name="shop_list_empty_title">Walang laman ang iyong wishlist</string>
+    <string name="shop_list_empty_hint">Magdagdag ng mga item na binabalak mong bilhin gamit ang camera, gallery, o shopping URL.</string>
+    <string name="shop_list_delete_title">Tanggalin sa wishlist?</string>
+    <string name="shop_list_delete_text">Permanenteng tanggalin ang %1$d item sa iyong wishlist?</string>
+    <string name="shop_error_model_missing">Hindi naka-install ang visual search model.</string>
+    <string name="shop_error_embed_failed">Hindi masuri ang larawang iyon. Subukan ang iba.</string>
+    <string name="sel_add_to_closet">Sa closet</string>
+    <string name="fab_shopping_add">Magdagdag ng nahanap</string>
+    <string name="error_query_photo_missing">Wala na ang query photo.</string>
+    <string name="error_import_query_failed">Nabigong i-import ang query photo.</string>
+</resources>

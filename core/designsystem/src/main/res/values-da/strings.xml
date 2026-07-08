@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Brugshistorik</string>
     <string name="error_gemini_no_response">AI\'en svarede ikke.</string>
     <string name="error_gemini_parse">Kunne ikke læse AI-svaret.</string>
+    <string name="url_import_failed">Kunne ikke finde et produktbillede på denne URL.</string>
+    <string name="action_continue">Fortsæt</string>
+    <string name="wardrobe_selected_count">%1$d valgt</string>
+    <string name="wardrobe_move_failed">Nogle ting kunne ikke flyttes. De er gendannet.</string>
+    <string name="wardrobe_empty_filter">Ingen stykker matcher filtret</string>
+    <string name="sel_style">Style</string>
+    <string name="error_upload_failed">Upload mislykkedes: %1$s</string>
+    <string name="error_original_unavailable">Original ikke tilgængelig</string>
+    <string name="action_deselect_all">Fravælg alle</string>
 </resources>

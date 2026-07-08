@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Add from URL</string>
+    <string name="shop_list_url_hint">Paste the URL of a shopping page. We will pull the product image automatically.</string>
+    <string name="shop_list_uploading">Uploading…</string>
+    <string name="shop_list_processing">Processing %1$d item(s)…</string>
+    <string name="shop_list_moving">Moving…</string>
+    <string name="shop_list_move_title">Move to wardrobe</string>
+    <string name="shop_list_loading">Loading…</string>
+    <string name="shop_list_empty_title">Your wishlist is empty</string>
+    <string name="shop_list_empty_hint">Add items you are considering buying with the camera, gallery, or a shopping URL.</string>
+    <string name="shop_list_delete_title">Delete from wishlist?</string>
+    <string name="shop_list_delete_text">Permanently remove %1$d item(s) from your wishlist?</string>
+    <string name="shop_error_model_missing">Visual search model is not installed.</string>
+    <string name="shop_error_embed_failed">Could not analyse that photo. Try another one.</string>
+    <string name="sel_add_to_closet">Add to wardrobe</string>
+    <string name="fab_shopping_add">Add find</string>
+    <string name="error_query_photo_missing">Query photo no longer exists.</string>
+    <string name="error_import_query_failed">Failed to import query photo.</string>
+</resources>

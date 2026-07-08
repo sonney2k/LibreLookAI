@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">कमी पहचानें</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">आपकी विशलिस्ट खाली है</string>
-    <string name="shop_list_empty_hint">कैमरा, गैलरी या शॉपिंग यूआरएल के ज़रिए वे आइटम जोड़ें जिन्हें आप खरीदने की सोच रहे हैं।</string>
     <string name="shop_list_add_camera">कैमरे से जोड़ें</string>
     <string name="shop_list_add_gallery">गैलरी से जोड़ें</string>
     <string name="shop_list_add_url">URL से जोड़ें</string>
-    <string name="shop_list_url_title">URL से जोड़ें</string>
-    <string name="shop_list_url_hint">शॉपिंग पेज का URL पेस्ट करें। हम उत्पाद की छवि अपने आप निकाल लेंगे।</string>
-    <string name="shop_list_uploading">अपलोड हो रहा है…</string>
-    <string name="shop_list_moving">स्थानांतरित हो रहा है…</string>
-    <string name="shop_list_loading">लोड हो रहा है…</string>
-    <string name="shop_list_processing">%1$d आइटम प्रोसेस किए जा रहे हैं…</string>
     <string name="shop_list_move_to_closet">क्लोसेट में भेजें</string>
-    <string name="shop_list_move_title">क्लोसेट में भेजें</string>
-    <string name="shop_list_delete_title">विशलिस्ट से हटाएं?</string>
-    <string name="shop_list_delete_text">क्या आप अपनी विशलिस्ट से %1$d आइटम स्थायी रूप से हटाना चाहते हैं?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">URL से जोड़ें</string>
     <string name="wardrobe_url_import_title">शॉपिंग URL से इंपोर्ट करें</string>
     <string name="wardrobe_url_import_hint">शॉपिंग पेज का URL पेस्ट करें। हम उत्पाद की छवि अपने आप निकाल लेंगे।</string>
-    <string name="url_import_failed">इस URL पर कोई उत्पाद छवि नहीं मिली।</string>
     <string name="url_import_pick_title">उत्पाद की छवि चुनें</string>
     <string name="url_import_pick_hint">उस छवि पर टैप करें जिसे आप इंपोर्ट करना चाहते हैं। यदि कोई भी सही नहीं लगती है, तो ब्राउज़र में पेज खोलें।</string>
     <string name="url_import_browser_title">पेज खोलें</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">%2$d में से %1$d का बैकग्राउंड हटाया जा रहा है…</string>
     <string name="wardrobe_progress_moving">नए स्थान पर भेजा जा रहा है…</string>
     <string name="action_select_all">सभी चुनें</string>
-    <string name="action_deselect_all">सभी अनसेलेक्ट करें</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">वॉर्डरोब बहाल किया जा रहा है: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">फ़िल्टर से मेल खाने वाला कोई आइटम नहीं है</string>
     <string name="wardrobe_item_count">%1$d आइटम</string>
     <string name="wardrobe_filtered_count">%2$d में से %1$d आइटम दिखाए जा रहे हैं</string>
     <string name="wardrobe_stats_total">कुल %1$d आइटम</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">फ़ोटो लें या अपनी गैलरी से चुनें</string>
     <string name="wardrobe_create_outfit">मैन्युअल रूप से आउटफ़िट बनाएं</string>
     <string name="wardrobe_compose_ai">AI के साथ बनाएं</string>
-    <string name="wardrobe_selected_count">%1$d चयनित</string>
     <string name="wardrobe_select_all_count">सभी चुनें (%1$d)</string>
     <string name="wardrobe_delete_title">आइटम हटाएं?</string>
     <string name="wardrobe_delete_text">क्या आप वाकई %d चयनित आइटम हटाना चाहते हैं? इसे वापस नहीं लिया जा सकता।</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">कैमरा</string>
     <string name="wardrobe_add_to_closet">%1$s में जोड़ें</string>
     <string name="wardrobe_add_to_closet_title">क्लोसेट में जोड़ें</string>
-    <string name="action_continue">जारी रखें</string>
     <string name="tag_label">नाम</string>
     <string name="tag_label_placeholder">जैसे नेवी चिनोस, व्हाइट ऑक्सफ़ोर्ड शर्ट</string>
     <string name="tag_add_custom">कस्टम जोड़ें…</string>
@@ -537,8 +521,6 @@
     <string name="settings_tab_feedback">फ़ीडबैक</string>
     <string name="shop_clear">साफ़ करें</string>
     <string name="shop_description">जिस टुकड़े पर विचार कर रहे हैं उसकी तस्वीर लें, और हम आपके वॉर्डरोब में पहले से मौजूद सबसे दृश्य रूप से समान आइटम दिखाएंगे — पूरी तरह डिवाइस पर।</string>
-    <string name="shop_error_embed_failed">उस फ़ोटो का विश्लेषण नहीं हो सका। दूसरी आज़माएँ।</string>
-    <string name="shop_error_model_missing">विज़ुअल खोज मॉडल इंस्टॉल नहीं है।</string>
     <string name="shop_index_size">%1$d आइटम इंडेक्स किए गए</string>
     <string name="shop_indexing">वॉर्डरोब इंडेक्सिंग… %1$d / %2$d</string>
     <string name="shop_matches_title">शीर्ष मिलान (%1$d)</string>
@@ -668,7 +650,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">कुछ आइटम स्थानांतरित नहीं हो सके. उन्हें पुनर्स्थापित कर दिया गया है.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">अपलोड विफल: %1$s</string>
-    <string name="error_original_unavailable">मूल उपलब्ध नहीं</string>
     <string name="error_import_failed_item">%1$s के लिए आयात विफल: %2$s</string>
     <string name="error_tag_save_failed">Drive में टैग सहेजना विफल: %1$s</string>
     <string name="error_add_items_first">पहले अपने वॉर्डरोब में आइटम जोड़ें।</string>
-    <string name="error_query_photo_missing">खोज फ़ोटो अब मौजूद नहीं है।</string>
-    <string name="error_import_query_failed">खोज फ़ोटो आयात करने में विफल।</string>
     <string name="error_trips_folder_not_ready">यात्राएँ फ़ोल्डर तैयार नहीं है।</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">आउटफ़िट को कैलेंडर में जोड़ें</string>
@@ -814,13 +791,10 @@
     <string name="fab_outfits_new">नया आउटफ़िट</string>
     <string name="fab_wardrobe_add">आइटम जोड़ें</string>
     <string name="fab_calendar_log">आउटफ़िट लॉग करें</string>
-    <string name="fab_shopping_add">खोज जोड़ें</string>
-    <string name="sel_style">स्टाइल</string>
     <string name="sel_swap">बदलें</string>
     <string name="sel_move">ले जाएँ</string>
     <string name="sel_combine">मिलाएँ</string>
     <string name="sel_love">पसंद</string>
-    <string name="sel_add_to_closet">क्लोज़ेट में</string>
     <string name="sel_copy_to_day">कॉपी</string>
     <string name="sel_remove">हटाएँ</string>
 

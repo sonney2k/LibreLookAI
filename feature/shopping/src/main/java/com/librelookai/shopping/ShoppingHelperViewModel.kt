@@ -15,7 +15,7 @@ import java.io.File
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.R
+import com.librelookai.feature.shopping.R
 
 data class ShoppingHelperUiState(
     /** User is on the camera screen. */

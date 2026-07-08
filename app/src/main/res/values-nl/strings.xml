@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Gaten opsporen</string>
 
     <!-- Winkellijst sub-tab -->
-    <string name="shop_list_empty_title">Je verlanglijst is leeg</string>
-    <string name="shop_list_empty_hint">Voeg items toe die je overweegt te kopen via camera, galerij of een winkellink.</string>
     <string name="shop_list_add_camera">Toevoegen via camera</string>
     <string name="shop_list_add_gallery">Toevoegen via galerij</string>
     <string name="shop_list_add_url">Toevoegen via URL</string>
-    <string name="shop_list_url_title">Toevoegen via URL</string>
-    <string name="shop_list_url_hint">Plak de URL van een winkelpagina. Wij halen de productfoto automatisch op.</string>
-    <string name="shop_list_uploading">Uploaden…</string>
-    <string name="shop_list_moving">Verplaatsen…</string>
-    <string name="shop_list_loading">Laden…</string>
-    <string name="shop_list_processing">%1$d item(s) verwerken…</string>
     <string name="shop_list_move_to_closet">Verplaats naar kast</string>
-    <string name="shop_list_move_title">Verplaats naar kast</string>
-    <string name="shop_list_delete_title">Van verlanglijst verwijderen?</string>
-    <string name="shop_list_delete_text">%1$d item(s) definitief van je verlanglijst verwijderen?</string>
 
     <!-- URL-import (Garderobe + Winkellijst) -->
     <string name="wardrobe_add_url">Toevoegen via URL</string>
     <string name="wardrobe_url_import_title">Importeren via winkel-URL</string>
     <string name="wardrobe_url_import_hint">Plak de URL van een winkelpagina. Wij halen de productfoto automatisch op.</string>
-    <string name="url_import_failed">Geen productfoto gevonden op deze URL.</string>
     <string name="url_import_pick_title">Kies de productfoto</string>
     <string name="url_import_pick_hint">Tik op de foto die je wilt importeren. Als geen enkele past, open de pagina in de browser.</string>
     <string name="url_import_browser_title">Pagina openen</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Achtergrond %1$d van %2$d verwijderen…</string>
     <string name="wardrobe_progress_moving">Verplaatsen naar nieuwe locatie…</string>
     <string name="action_select_all">Alles selecteren</string>
-    <string name="action_deselect_all">Niets selecteren</string>
 
     <!-- Aanmelden -->
     <!-- Instellingen -->
@@ -223,7 +210,6 @@
 
     <!-- Garderobe -->
     <string name="wardrobe_sync_progress">Garderobe herstellen: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Geen items voldoen aan het filter</string>
     <string name="wardrobe_item_count">%1$d items</string>
     <string name="wardrobe_filtered_count">%1$d van %2$d items getoond</string>
     <string name="wardrobe_stats_total">%1$d items totaal</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Maak een foto of kies uit je galerij</string>
     <string name="wardrobe_create_outfit">Outfit handmatig maken</string>
     <string name="wardrobe_compose_ai">Samenstellen met AI</string>
-    <string name="wardrobe_selected_count">%1$d geselecteerd</string>
     <string name="wardrobe_select_all_count">Alles selecteren (%1$d)</string>
     <string name="wardrobe_delete_title">Items verwijderen?</string>
     <string name="wardrobe_delete_text">Weet je zeker dat je %d geselecteerde items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Toevoegen aan %1$s</string>
     <string name="wardrobe_add_to_closet_title">Toevoegen aan kast</string>
-    <string name="action_continue">Doorgaan</string>
     <string name="tag_label">Naam</string>
     <string name="tag_label_placeholder">bv. Marineblauwe chino, Wit Oxford-overhemd</string>
     <string name="tag_add_custom">Aangepast toevoegen…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Garderobe indexeren… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d items geïndexeerd</string>
     <string name="shop_model_missing">Lokaal model ontbreekt. Plaats efficientnet_lite0.tflite onder app/src/main/assets/embedder/ en magic_touch.tflite onder app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">Visueel-zoekmodel is niet geïnstalleerd.</string>
-    <string name="shop_error_embed_failed">Foto kon niet geanalyseerd worden. Probeer een andere.</string>
 
     <!-- Gelijkeniscontrole (opname / import / Reparatie &amp; Sync) -->
     <string name="settings_dedupe_title">Gelijkeniscontrole</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Sommige items konden niet worden verplaatst. Ze zijn hersteld.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Uploaden mislukt: %1$s</string>
-    <string name="error_original_unavailable">Origineel niet beschikbaar</string>
     <string name="error_import_failed_item">Importeren van %1$s mislukt: %2$s</string>
     <string name="error_tag_save_failed">Tags opslaan naar Drive mislukt: %1$s</string>
     <string name="error_add_items_first">Voeg eerst items toe aan je garderobe.</string>
-    <string name="error_query_photo_missing">De zoekfoto bestaat niet meer.</string>
-    <string name="error_import_query_failed">Importeren van zoekfoto mislukt.</string>
     <string name="error_trips_folder_not_ready">Reizenmap is niet gereed.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Outfit aan agenda toevoegen</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Nieuwe outfit</string>
     <string name="fab_wardrobe_add">Item toevoegen</string>
     <string name="fab_calendar_log">Outfit loggen</string>
-    <string name="fab_shopping_add">Vondst toevoegen</string>
-    <string name="sel_style">Stylen</string>
     <string name="sel_swap">Wisselen</string>
     <string name="sel_move">Verplaatsen</string>
     <string name="sel_combine">Combineren</string>
     <string name="sel_love">Liken</string>
-    <string name="sel_add_to_closet">Naar kast</string>
     <string name="sel_copy_to_day">Kopiëren</string>
     <string name="sel_remove">Verwijderen</string>
 

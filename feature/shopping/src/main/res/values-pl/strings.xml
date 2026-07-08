@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Dodaj z URL</string>
+    <string name="shop_list_url_hint">Wklej URL strony zakupowej. Pobierzemy obraz produktu automatycznie.</string>
+    <string name="shop_list_uploading">Przesyłanie…</string>
+    <string name="shop_list_processing">Przetwarzanie %1$d elementów…</string>
+    <string name="shop_list_moving">Przenoszenie…</string>
+    <string name="shop_list_move_title">Przenieś do szafy</string>
+    <string name="shop_list_loading">Ładowanie…</string>
+    <string name="shop_list_empty_title">Twoja lista życzeń jest pusta</string>
+    <string name="shop_list_empty_hint">Dodaj rzeczy, które rozważasz kupić, za pomocą aparatu, galerii lub linku do sklepu.</string>
+    <string name="shop_list_delete_title">Usunąć z listy życzeń?</string>
+    <string name="shop_list_delete_text">Trwale usunąć %1$d elementów z listy życzeń?</string>
+    <string name="shop_error_model_missing">Model wyszukiwania wizualnego nie jest zainstalowany.</string>
+    <string name="shop_error_embed_failed">Nie udało się przeanalizować tego zdjęcia. Spróbuj innego.</string>
+    <string name="sel_add_to_closet">Do szafy</string>
+    <string name="fab_shopping_add">Dodaj znalezisko</string>
+    <string name="error_query_photo_missing">Zdjęcie zapytania już nie istnieje.</string>
+    <string name="error_import_query_failed">Nie udało się zaimportować zdjęcia zapytania.</string>
+</resources>

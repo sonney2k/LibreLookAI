@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Giyim geçmişi</string>
     <string name="error_gemini_no_response">Yapay zekâ yanıt vermedi.</string>
     <string name="error_gemini_parse">Yapay zekâ yanıtı okunamadı.</string>
+    <string name="url_import_failed">Bu URL\'de bir ürün resmi bulunamadı.</string>
+    <string name="action_continue">Devam et</string>
+    <string name="wardrobe_selected_count">%1$d seçildi</string>
+    <string name="wardrobe_move_failed">Bazı öğeler taşınamadı. Geri yüklendiler.</string>
+    <string name="wardrobe_empty_filter">Filtreyle eşleşen öge yok</string>
+    <string name="sel_style">Stil</string>
+    <string name="error_upload_failed">Yükleme başarısız: %1$s</string>
+    <string name="error_original_unavailable">Orijinal kullanılamıyor</string>
+    <string name="action_deselect_all">Seçimi kaldır</string>
 </resources>

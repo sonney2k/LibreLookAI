@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Kenalpasti Kekosongan</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">Senarai hajat anda kosong</string>
-    <string name="shop_list_empty_hint">Tambah barangan yang anda pertimbangkan untuk beli melalui kamera, galeri, atau URL membeli-belah.</string>
     <string name="shop_list_add_camera">Tambah dari kamera</string>
     <string name="shop_list_add_gallery">Tambah dari galeri</string>
     <string name="shop_list_add_url">Tambah dari URL</string>
-    <string name="shop_list_url_title">Tambah dari URL</string>
-    <string name="shop_list_url_hint">Tampal URL halaman membeli-belah. Kami akan mengambil imej produk secara automatik.</string>
-    <string name="shop_list_uploading">Memuat naik…</string>
-    <string name="shop_list_moving">Memindahkan…</string>
-    <string name="shop_list_loading">Memuatkan…</string>
-    <string name="shop_list_processing">Memproses %1$d barangan…</string>
     <string name="shop_list_move_to_closet">Pindah ke almari</string>
-    <string name="shop_list_move_title">Pindah ke almari</string>
-    <string name="shop_list_delete_title">Padam dari senarai hajat?</string>
-    <string name="shop_list_delete_text">Padamkan %1$d barangan secara kekal dari senarai hajat anda?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Tambah dari URL</string>
     <string name="wardrobe_url_import_title">Import dari URL membeli-belah</string>
     <string name="wardrobe_url_import_hint">Tampal URL halaman membeli-belah. Kami akan mengambil imej produk secara automatik.</string>
-    <string name="url_import_failed">Tidak menemui imej produk di URL ini.</string>
     <string name="url_import_pick_title">Pilih imej produk</string>
     <string name="url_import_pick_hint">Ketik imej yang anda mahu import. Jika tiada yang sesuai, buka halaman dalam pelayar.</string>
     <string name="url_import_browser_title">Buka halaman</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Membuang latar belakang %1$d daripada %2$d…</string>
     <string name="wardrobe_progress_moving">Berpindah ke lokasi baru…</string>
     <string name="action_select_all">Pilih semua</string>
-    <string name="action_deselect_all">Nyahpilih semua</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Memulihkan almari: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Tiada barangan padan dengan penapis</string>
     <string name="wardrobe_item_count">%1$d barangan</string>
     <string name="wardrobe_filtered_count">Menunjukkan %1$d daripada %2$d barangan</string>
     <string name="wardrobe_stats_total">Jumlah %1$d barangan</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">Ambil foto atau pilih dari galeri anda</string>
     <string name="wardrobe_create_outfit">Buat pakaian secara manual</string>
     <string name="wardrobe_compose_ai">Susun dengan AI</string>
-    <string name="wardrobe_selected_count">%1$d dipilih</string>
     <string name="wardrobe_select_all_count">Pilih semua (%1$d)</string>
     <string name="wardrobe_delete_title">Padam barangan?</string>
     <string name="wardrobe_delete_text">Adakah anda pasti mahu memadam %d barangan terpilih? Ini tidak boleh dibatalkan.</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Tambah ke %1$s</string>
     <string name="wardrobe_add_to_closet_title">Tambah ke almari</string>
-    <string name="action_continue">Teruskan</string>
     <string name="tag_label">Nama</string>
     <string name="tag_label_placeholder">cth. Chino Navy, Kemeja Oxford Putih</string>
     <string name="tag_add_custom">Tambah kustom…</string>
@@ -537,8 +521,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="settings_tab_feedback">Maklum balas</string>
     <string name="shop_clear">Kosongkan</string>
     <string name="shop_description">Ambil gambar item yang anda pertimbangkan dan kami akan tunjukkan item paling serupa secara visual dalam almari anda — sepenuhnya pada peranti.</string>
-    <string name="shop_error_embed_failed">Tidak dapat menganalisis foto itu. Cuba yang lain.</string>
-    <string name="shop_error_model_missing">Model carian visual belum dipasang.</string>
     <string name="shop_index_size">%1$d item diindeks</string>
     <string name="shop_indexing">Mengindeks almari… %1$d / %2$d</string>
     <string name="shop_matches_title">Padanan teratas (%1$d)</string>
@@ -668,7 +650,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Sesetengah item tidak dapat dialihkan. Item telah dipulihkan.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Gagal memuat naik: %1$s</string>
-    <string name="error_original_unavailable">Asal tidak tersedia</string>
     <string name="error_import_failed_item">Import %1$s gagal: %2$s</string>
     <string name="error_tag_save_failed">Gagal menyimpan tag ke Drive: %1$s</string>
     <string name="error_add_items_first">Tambah item ke almari pakaian anda dahulu.</string>
-    <string name="error_query_photo_missing">Foto carian tidak wujud lagi.</string>
-    <string name="error_import_query_failed">Gagal mengimport foto carian.</string>
     <string name="error_trips_folder_not_ready">Folder perjalanan belum sedia.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Tambah set pakaian ke kalendar</string>
@@ -814,13 +791,10 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="fab_outfits_new">Set baharu</string>
     <string name="fab_wardrobe_add">Tambah item</string>
     <string name="fab_calendar_log">Log set</string>
-    <string name="fab_shopping_add">Tambah jumpaan</string>
-    <string name="sel_style">Gaya</string>
     <string name="sel_swap">Tukar</string>
     <string name="sel_move">Alih</string>
     <string name="sel_combine">Gabung</string>
     <string name="sel_love">Suka</string>
-    <string name="sel_add_to_closet">Ke almari</string>
     <string name="sel_copy_to_day">Salin</string>
     <string name="sel_remove">Buang</string>
 

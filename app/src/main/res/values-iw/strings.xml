@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">זיהוי חוסרים</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">רשימת המשאלות שלך ריקה</string>
-    <string name="shop_list_empty_hint">הוסף פריטים שאתה שוקל לקנות באמצעות המצלמה, הגלריה או כתובת אתר קניות.</string>
     <string name="shop_list_add_camera">הוסף מהמצלמה</string>
     <string name="shop_list_add_gallery">הוסף מהגלריה</string>
     <string name="shop_list_add_url">הוסף מכתובת אתר</string>
-    <string name="shop_list_url_title">הוסף מכתובת אתר</string>
-    <string name="shop_list_url_hint">הדבק כתובת אתר של דף קניות. אנו נמשוך את תמונת המוצר באופן אוטומטי.</string>
-    <string name="shop_list_uploading">מעלה…</string>
-    <string name="shop_list_moving">מעביר…</string>
-    <string name="shop_list_loading">טוען…</string>
-    <string name="shop_list_processing">מעבד %1$d פריטים…</string>
     <string name="shop_list_move_to_closet">העבר לארון</string>
-    <string name="shop_list_move_title">העבר לארון</string>
-    <string name="shop_list_delete_title">למחוק מרשימת המשאלות?</string>
-    <string name="shop_list_delete_text">להסיר לצמיתות %1$d פריטים מרשימת המשאלות שלך?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">הוסף מכתובת אתר</string>
     <string name="wardrobe_url_import_title">ייבוא מכתובת אתר קניות</string>
     <string name="wardrobe_url_import_hint">הדבק כתובת אתר של דף קניות. אנו נמשוך את תמונת המוצר באופן אוטומטי.</string>
-    <string name="url_import_failed">לא ניתן היה למצוא תמונת מוצר בכתובת אתר זו.</string>
     <string name="url_import_pick_title">בחר את תמונת המוצר</string>
     <string name="url_import_pick_hint">הקש על התמונה שברצונך לייבא. אם אף אחת מהן לא נראית נכונה, פתח את הדף בדפדפן.</string>
     <string name="url_import_browser_title">פתח דף</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">מסיר רקע %1$d מתוך %2$d…</string>
     <string name="wardrobe_progress_moving">מעביר למיקום חדש…</string>
     <string name="action_select_all">בחר הכל</string>
-    <string name="action_deselect_all">בטל בחירה הכל</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -222,7 +209,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">משחזר ארון בגדים: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">אין פריטים התואמים למסנן</string>
     <string name="wardrobe_item_count">%1$d פריטים</string>
     <string name="wardrobe_filtered_count">מציג %1$d מתוך %2$d פריטים</string>
     <string name="wardrobe_stats_total">סה\"כ %1$d פריטים</string>
@@ -231,7 +217,6 @@
     <string name="wardrobe_empty_hint">צלם תמונה או בחר מהגלריה שלך</string>
     <string name="wardrobe_create_outfit">צור אאוטפיט ידנית</string>
     <string name="wardrobe_compose_ai">צור באמצעות AI</string>
-    <string name="wardrobe_selected_count">%1$d נבחרו</string>
     <string name="wardrobe_select_all_count">בחר הכל (%1$d)</string>
     <string name="wardrobe_delete_title">למחוק פריטים?</string>
     <string name="wardrobe_delete_text">האם אתה בטוח שברצונך למחוק את %d הפריטים שנבחרו? לא ניתן לבטל פעולה זו.</string>
@@ -252,7 +237,6 @@
     <string name="wardrobe_add_camera">מצלמה</string>
     <string name="wardrobe_add_to_closet">הוסף ל-%1$s</string>
     <string name="wardrobe_add_to_closet_title">הוסף לארון</string>
-    <string name="action_continue">המשך</string>
     <string name="tag_label">שם</string>
     <string name="tag_label_placeholder">למשל צ\'ינו נייבי, חולצת אוקספורד לבנה</string>
     <string name="tag_add_custom">הוסף מותאם אישית…</string>
@@ -521,8 +505,6 @@
     <string name="shop_indexing">מכין אינדקס למלתחה… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d פריטים אונדקסו</string>
     <string name="shop_model_missing">דגם במכשיר חסר. הנח את efficientnet_lite0.tflite תחת app/src/main/assets/embedder/ ואת magic_touch.tflite תחת app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">מודל החיפוש הוויזואלי לא מותקן.</string>
-    <string name="shop_error_embed_failed">לא ניתן לנתח את התמונה הזו. נסה תמונה אחרת.</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">בדיקת דמיון</string>
@@ -696,7 +678,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">לא ניתן היה להעביר חלק מהפריטים. הם שוחזרו.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -815,13 +796,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">ההעלאה נכשלה: %1$s</string>
-    <string name="error_original_unavailable">המקור אינו זמין</string>
     <string name="error_import_failed_item">הייבוא של %1$s נכשל: %2$s</string>
     <string name="error_tag_save_failed">שמירת התגיות ל-Drive נכשלה: %1$s</string>
     <string name="error_add_items_first">הוסף תחילה פריטים לארון שלך.</string>
-    <string name="error_query_photo_missing">תמונת החיפוש כבר לא קיימת.</string>
-    <string name="error_import_query_failed">ייבוא תמונת החיפוש נכשל.</string>
     <string name="error_trips_folder_not_ready">תיקיית הנסיעות אינה מוכנה.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">הוסף תלבושת ליומן</string>
@@ -842,13 +819,10 @@
     <string name="fab_outfits_new">תלבושת חדשה</string>
     <string name="fab_wardrobe_add">הוספת פריט</string>
     <string name="fab_calendar_log">תיעוד תלבושת</string>
-    <string name="fab_shopping_add">הוספת מציאה</string>
-    <string name="sel_style">סטיילינג</string>
     <string name="sel_swap">החלפה</string>
     <string name="sel_move">העברה</string>
     <string name="sel_combine">שילוב</string>
     <string name="sel_love">אהבתי</string>
-    <string name="sel_add_to_closet">לארון</string>
     <string name="sel_copy_to_day">העתקה</string>
     <string name="sel_remove">הסרה</string>
 

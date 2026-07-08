@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">เพิ่มจาก URL</string>
+    <string name="shop_list_url_hint">วาง URL ของหน้าช้อปปิ้ง เราจะดึงรูปภาพสินค้าให้โดยอัตโนมัติ</string>
+    <string name="shop_list_uploading">กำลังอัปโหลด…</string>
+    <string name="shop_list_processing">กำลังประมวลผล %1$d รายการ…</string>
+    <string name="shop_list_moving">กำลังย้าย…</string>
+    <string name="shop_list_move_title">ย้ายไปที่ตู้เสื้อผ้า</string>
+    <string name="shop_list_loading">กำลังโหลด…</string>
+    <string name="shop_list_empty_title">รายการที่คุณอยากได้ยังว่างเปล่า</string>
+    <string name="shop_list_empty_hint">เพิ่มรายการที่คุณกำลังพิจารณาจะซื้อด้วยกล้อง แกลเลอรี หรือ URL ของร้านค้า</string>
+    <string name="shop_list_delete_title">ลบออกจากรายการที่อยากได้?</string>
+    <string name="shop_list_delete_text">ลบ %1$d รายการออกจากรายการที่อยากได้ของคุณอย่างถาวรหรือไม่?</string>
+    <string name="shop_error_model_missing">ยังไม่ได้ติดตั้งโมเดลค้นหาด้วยภาพ</string>
+    <string name="shop_error_embed_failed">วิเคราะห์ภาพนั้นไม่ได้ ลองภาพอื่น</string>
+    <string name="sel_add_to_closet">เพิ่มลงตู้เสื้อผ้า</string>
+    <string name="fab_shopping_add">เพิ่มรายการที่พบ</string>
+    <string name="error_query_photo_missing">ไม่มีรูปค้นหาอีกต่อไป</string>
+    <string name="error_import_query_failed">นำเข้ารูปค้นหาไม่สำเร็จ</string>
+</resources>

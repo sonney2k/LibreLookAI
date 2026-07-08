@@ -38,9 +38,8 @@ import com.librelookai.wardrobe.toCachedItem
 import com.librelookai.wardrobe.WebProductFetcher
 import com.librelookai.wardrobe.rotateBitmapFileBy90
 import com.librelookai.wardrobe.ItemVersions
-import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
-import com.librelookai.wardrobe.WardrobeViewModel
 
 /**
  * State of the user's shopping wishlist (separate Drive folder `_shopping/`).
@@ -126,7 +125,7 @@ class ShoppingClosetViewModel @Inject constructor(
             moveSync.moveRolledBack.collect { rollback ->
                 if (rollback.sourceFolderId != repo.folderId.value) return@collect
                 _state.update {
-                    it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
+                    it.copy(error = getApplication<Application>().localized().getString(DsR.string.wardrobe_move_failed))
                 }
             }
         }
@@ -304,7 +303,7 @@ class ShoppingClosetViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(processingImageId = driveId, error = null) }
             val source = resolveOriginalFile(driveId)
-                ?: run { _state.update { it.copy(processingImageId = null, error = getApplication<Application>().localized().getString(R.string.error_original_unavailable)) }; return@launch }
+                ?: run { _state.update { it.copy(processingImageId = null, error = getApplication<Application>().localized().getString(DsR.string.error_original_unavailable)) }; return@launch }
             val processedFile = gemini.removeBackground(source, drive.cacheDir).getOrNull()
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             runCatching {

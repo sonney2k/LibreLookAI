@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Lịch sử mặc</string>
     <string name="error_gemini_no_response">AI không phản hồi.</string>
     <string name="error_gemini_parse">Không thể đọc phản hồi của AI.</string>
+    <string name="url_import_failed">Không tìm thấy ảnh sản phẩm tại URL này.</string>
+    <string name="action_continue">Tiếp tục</string>
+    <string name="wardrobe_selected_count">Đã chọn %1$d</string>
+    <string name="wardrobe_move_failed">Không thể di chuyển một số mục. Chúng đã được khôi phục.</string>
+    <string name="wardrobe_empty_filter">Không có món đồ nào khớp với bộ lọc</string>
+    <string name="sel_style">Phối đồ</string>
+    <string name="error_upload_failed">Tải lên không thành công: %1$s</string>
+    <string name="error_original_unavailable">Bản gốc không khả dụng</string>
+    <string name="action_deselect_all">Bỏ chọn tất cả</string>
 </resources>

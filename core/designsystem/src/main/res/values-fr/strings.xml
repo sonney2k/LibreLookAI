@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Historique de port</string>
     <string name="error_gemini_no_response">L\'IA n\'a pas répondu.</string>
     <string name="error_gemini_parse">Impossible de lire la réponse de l\'IA.</string>
+    <string name="url_import_failed">Aucune image de produit trouvée à cette URL.</string>
+    <string name="action_continue">Continuer</string>
+    <string name="wardrobe_selected_count">%1$d sélectionnés</string>
+    <string name="wardrobe_move_failed">Impossible de déplacer certains articles. Ils ont été restaurés.</string>
+    <string name="wardrobe_empty_filter">Aucun article ne correspond au filtre</string>
+    <string name="sel_style">Styliser</string>
+    <string name="error_upload_failed">Échec de l\'envoi : %1$s</string>
+    <string name="error_original_unavailable">Original non disponible</string>
+    <string name="action_deselect_all">Tout désélectionner</string>
 </resources>

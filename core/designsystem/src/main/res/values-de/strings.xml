@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Tragehistorie</string>
     <string name="error_gemini_no_response">Die KI hat nicht geantwortet.</string>
     <string name="error_gemini_parse">Antwort der KI konnte nicht gelesen werden.</string>
+    <string name="url_import_failed">Auf dieser URL konnte kein Produktbild gefunden werden.</string>
+    <string name="action_continue">Weiter</string>
+    <string name="wardrobe_selected_count">%1$d ausgewählt</string>
+    <string name="wardrobe_move_failed">Einige Artikel konnten nicht verschoben werden. Sie wurden wiederhergestellt.</string>
+    <string name="wardrobe_empty_filter">Keine Artikel entsprechen dem Filter</string>
+    <string name="sel_style">Stylen</string>
+    <string name="error_upload_failed">Upload fehlgeschlagen: %1$s</string>
+    <string name="error_original_unavailable">Original nicht verfügbar</string>
+    <string name="action_deselect_all">Auswahl aufheben</string>
 </resources>

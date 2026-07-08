@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Find huller</string>
 
     <!-- Indkøbsliste underfane -->
-    <string name="shop_list_empty_title">Din ønskeseddel er tom</string>
-    <string name="shop_list_empty_hint">Tilføj stykker, du overvejer at købe, via kamera, galleri eller et shoppinglink.</string>
     <string name="shop_list_add_camera">Tilføj fra kamera</string>
     <string name="shop_list_add_gallery">Tilføj fra galleri</string>
     <string name="shop_list_add_url">Tilføj via URL</string>
-    <string name="shop_list_url_title">Tilføj via URL</string>
-    <string name="shop_list_url_hint">Indsæt URL\'en til en shoppingside. Vi henter produktbilledet automatisk.</string>
-    <string name="shop_list_uploading">Uploader…</string>
-    <string name="shop_list_moving">Flytter…</string>
-    <string name="shop_list_loading">Indlæser…</string>
-    <string name="shop_list_processing">Behandler %1$d stykke(r)…</string>
     <string name="shop_list_move_to_closet">Flyt til garderobe</string>
-    <string name="shop_list_move_title">Flyt til garderobe</string>
-    <string name="shop_list_delete_title">Fjern fra ønskeseddel?</string>
-    <string name="shop_list_delete_text">Fjern %1$d stykke(r) permanent fra din ønskeseddel?</string>
 
     <!-- URL-import (Garderobe + Indkøbsliste) -->
     <string name="wardrobe_add_url">Tilføj via URL</string>
     <string name="wardrobe_url_import_title">Importér fra shopping-URL</string>
     <string name="wardrobe_url_import_hint">Indsæt URL\'en til en shoppingside. Vi henter produktbilledet automatisk.</string>
-    <string name="url_import_failed">Kunne ikke finde et produktbillede på denne URL.</string>
     <string name="url_import_pick_title">Vælg produktbillede</string>
     <string name="url_import_pick_hint">Tryk på det billede, du vil importere. Hvis ingen passer, åbn siden i browseren.</string>
     <string name="url_import_browser_title">Åbn side</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Fjerner baggrund %1$d af %2$d…</string>
     <string name="wardrobe_progress_moving">Flytter til ny placering…</string>
     <string name="action_select_all">Markér alle</string>
-    <string name="action_deselect_all">Fravælg alle</string>
 
     <!-- Log ind -->
     <!-- Indstillinger -->
@@ -223,7 +210,6 @@
 
     <!-- Garderobe -->
     <string name="wardrobe_sync_progress">Gendanner garderobe: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Ingen stykker matcher filtret</string>
     <string name="wardrobe_item_count">%1$d stykker</string>
     <string name="wardrobe_filtered_count">Viser %1$d af %2$d stykker</string>
     <string name="wardrobe_stats_total">%1$d stykker i alt</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Tag et foto eller vælg fra dit galleri</string>
     <string name="wardrobe_create_outfit">Opret outfit manuelt</string>
     <string name="wardrobe_compose_ai">Sammensæt med AI</string>
-    <string name="wardrobe_selected_count">%1$d valgt</string>
     <string name="wardrobe_select_all_count">Markér alle (%1$d)</string>
     <string name="wardrobe_delete_title">Slet stykker?</string>
     <string name="wardrobe_delete_text">Er du sikker på, at du vil slette %d valgte stykker? Dette kan ikke fortrydes.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Tilføj til %1$s</string>
     <string name="wardrobe_add_to_closet_title">Tilføj til garderobe</string>
-    <string name="action_continue">Fortsæt</string>
     <string name="tag_label">Navn</string>
     <string name="tag_label_placeholder">f.eks. Marineblå chinos, Hvid Oxford-skjorte</string>
     <string name="tag_add_custom">Tilføj brugerdefineret…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Indekserer garderobe… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d stykker indekseret</string>
     <string name="shop_model_missing">Lokal model mangler. Placér efficientnet_lite0.tflite under app/src/main/assets/embedder/ og magic_touch.tflite under app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">Visuel søgemodel er ikke installeret.</string>
-    <string name="shop_error_embed_failed">Kunne ikke analysere fotoet. Prøv et andet.</string>
 
     <!-- Lighedscheck (optagelse / import / Reparér &amp; synkronisér) -->
     <string name="settings_dedupe_title">Lighedscheck</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Nogle ting kunne ikke flyttes. De er gendannet.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Upload mislykkedes: %1$s</string>
-    <string name="error_original_unavailable">Original ikke tilgængelig</string>
     <string name="error_import_failed_item">Import af %1$s mislykkedes: %2$s</string>
     <string name="error_tag_save_failed">Kunne ikke gemme tags til Drive: %1$s</string>
     <string name="error_add_items_first">Tilføj først ting til din garderobe.</string>
-    <string name="error_query_photo_missing">Søgefotoet findes ikke længere.</string>
-    <string name="error_import_query_failed">Kunne ikke importere søgefotoet.</string>
     <string name="error_trips_folder_not_ready">Rejsemappen er ikke klar.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Føj outfit til kalender</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Nyt outfit</string>
     <string name="fab_wardrobe_add">Tilføj ting</string>
     <string name="fab_calendar_log">Log outfit</string>
-    <string name="fab_shopping_add">Tilføj fund</string>
-    <string name="sel_style">Style</string>
     <string name="sel_swap">Byt</string>
     <string name="sel_move">Flyt</string>
     <string name="sel_combine">Kombinér</string>
     <string name="sel_love">Elsk</string>
-    <string name="sel_add_to_closet">Til skab</string>
     <string name="sel_copy_to_day">Kopiér</string>
     <string name="sel_remove">Fjern</string>
 

@@ -1,6 +1,7 @@
 package com.librelookai.wardrobe
 
 import android.content.Context
+import com.librelookai.core.designsystem.R as DsR
 import android.graphics.Bitmap
 import android.util.Log
 import com.librelookai.R
@@ -174,7 +175,7 @@ class WardrobeItemOps @Inject constructor(
                     // Reset the id too (parity with the failure paths below) — leaving it set
                     // kept the item tile's spinner stuck after the error banner.
                     _progress.update { it.copy(isProcessing = false, processingImageId = null) }
-                    _errors.emit(context.localized().getString(R.string.error_original_unavailable))
+                    _errors.emit(context.localized().getString(DsR.string.error_original_unavailable))
                     return@launch
                 }
             val result = gemini.removeBackground(source, drive.cacheDir)

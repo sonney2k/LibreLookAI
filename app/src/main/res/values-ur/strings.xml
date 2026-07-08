@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">کمیوں کی نشاندہی</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">آپ کی وش لسٹ خالی ہے</string>
-    <string name="shop_list_empty_hint">کیمرہ، گیلری یا شاپنگ یو آر ایل کے ذریعے وہ اشیاء شامل کریں جنہیں آپ خریدنے کا سوچ رہے ہیں۔</string>
     <string name="shop_list_add_camera">کیمرے سے شامل کریں</string>
     <string name="shop_list_add_gallery">گیلری سے شامل کریں</string>
     <string name="shop_list_add_url">یو آر ایل سے شامل کریں</string>
-    <string name="shop_list_url_title">یو آر ایل سے شامل کریں</string>
-    <string name="shop_list_url_hint">شاپنگ پیج کا لنک یہاں پیسٹ کریں۔ ہم خود بخود تصویر حاصل کر لیں گے۔</string>
-    <string name="shop_list_uploading">اپ لوڈ ہو رہا ہے…</string>
-    <string name="shop_list_moving">منتقل ہو رہا ہے…</string>
-    <string name="shop_list_loading">لوڈ ہو رہا ہے…</string>
-    <string name="shop_list_processing">%1$d اشیاء پر کام ہو رہا ہے…</string>
     <string name="shop_list_move_to_closet">الماری میں بھیجیں</string>
-    <string name="shop_list_move_title">الماری میں بھیجیں</string>
-    <string name="shop_list_delete_title">وش لسٹ سے حذف کریں؟</string>
-    <string name="shop_list_delete_text">کیا آپ اپنی وش لسٹ سے %1$d اشیاء مستقل طور پر حذف کرنا چاہتے ہیں؟</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">لنک سے شامل کریں</string>
     <string name="wardrobe_url_import_title">شاپنگ لنک سے درآمد کریں</string>
     <string name="wardrobe_url_import_hint">شاپنگ پیج کا لنک پیسٹ کریں۔</string>
-    <string name="url_import_failed">اس لنک پر کوئی تصویر نہیں ملی۔</string>
     <string name="url_import_pick_title">پراڈکٹ کی تصویر منتخب کریں</string>
     <string name="url_import_pick_hint">جس تصویر کو آپ شامل کرنا چاہتے ہیں اس پر ٹیپ کریں۔</string>
     <string name="url_import_browser_title">صفحہ کھولیں</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">%2$d میں سے %1$d کا پس منظر ہٹایا جا رہا ہے…</string>
     <string name="wardrobe_progress_moving">نئے مقام پر منتقل ہو رہا ہے…</string>
     <string name="action_select_all">تمام منتخب کریں</string>
-    <string name="action_deselect_all">انتخاب ختم کریں</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">وارڈروب بحال ہو رہا ہے: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">فلٹر سے مطابقت رکھنے والی کوئی شے نہیں ملی</string>
     <string name="wardrobe_item_count">%1$d اشیاء</string>
     <string name="wardrobe_filtered_count">%2$d میں سے %1$d اشیاء دکھائی جا رہی ہیں</string>
     <string name="wardrobe_stats_total">کل %1$d اشیاء</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">تصویر لیں یا گیلری سے منتخب کریں</string>
     <string name="wardrobe_create_outfit">خود سے لباس تیار کریں</string>
     <string name="wardrobe_compose_ai">AI کے ساتھ تیار کریں</string>
-    <string name="wardrobe_selected_count">%1$d منتخب</string>
     <string name="wardrobe_select_all_count">تمام منتخب کریں (%1$d)</string>
     <string name="wardrobe_delete_title">اشیاء حذف کریں؟</string>
     <string name="wardrobe_delete_text">کیا آپ واقعی %d منتخب اشیاء حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں لیا جا سکتا۔</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">کیمرہ</string>
     <string name="wardrobe_add_to_closet">%1$s میں شامل کریں</string>
     <string name="wardrobe_add_to_closet_title">الماری میں شامل کریں</string>
-    <string name="action_continue">جاری رکھیں</string>
     <string name="tag_label">نام</string>
     <string name="tag_label_placeholder">مثلاً نیوی چینو، سفید آکسفورڈ شرٹ</string>
     <string name="tag_add_custom">اپنی مرضی کا ٹیگ شامل کریں…</string>
@@ -537,8 +521,6 @@
     <string name="settings_tab_feedback">رائے</string>
     <string name="shop_clear">صاف کریں</string>
     <string name="shop_description">جس ٹکڑے پر غور کر رہے ہیں اس کی تصویر لیں، اور ہم آپ کے وارڈروب میں سب سے زیادہ بصری طور پر ملتے جلتے آئٹم دکھائیں گے — مکمل طور پر ڈیوائس پر۔</string>
-    <string name="shop_error_embed_failed">اس تصویر کا تجزیہ نہیں ہو سکا۔ کوئی اور آزمائیں۔</string>
-    <string name="shop_error_model_missing">بصری تلاش کا ماڈل انسٹال نہیں ہے۔</string>
     <string name="shop_index_size">%1$d آئٹمز انڈیکس</string>
     <string name="shop_indexing">وارڈروب انڈیکسنگ… %1$d / %2$d</string>
     <string name="shop_matches_title">بہترین مماثلت (%1$d)</string>
@@ -668,7 +650,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">کچھ آئٹمز منتقل نہیں ہو سکے۔ انہیں بحال کر دیا گیا ہے۔</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">اپ لوڈ ناکام: %1$s</string>
-    <string name="error_original_unavailable">اصل دستیاب نہیں</string>
     <string name="error_import_failed_item">%1$s کے لیے درآمد ناکام: %2$s</string>
     <string name="error_tag_save_failed">ٹیگز کو Drive میں محفوظ کرنا ناکام: %1$s</string>
     <string name="error_add_items_first">پہلے اپنی الماری میں اشیاء شامل کریں۔</string>
-    <string name="error_query_photo_missing">تلاش کی تصویر اب موجود نہیں ہے۔</string>
-    <string name="error_import_query_failed">تلاش کی تصویر درآمد کرنے میں ناکام۔</string>
     <string name="error_trips_folder_not_ready">سفر کا فولڈر تیار نہیں ہے۔</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">آؤٹ فٹ کو کیلنڈر میں شامل کریں</string>
@@ -814,13 +791,10 @@
     <string name="fab_outfits_new">نیا آؤٹ فٹ</string>
     <string name="fab_wardrobe_add">آئٹم شامل کریں</string>
     <string name="fab_calendar_log">آؤٹ فٹ لاگ کریں</string>
-    <string name="fab_shopping_add">دریافت شامل کریں</string>
-    <string name="sel_style">اسٹائل</string>
     <string name="sel_swap">تبدیل کریں</string>
     <string name="sel_move">منتقل کریں</string>
     <string name="sel_combine">ملا دیں</string>
     <string name="sel_love">پسند</string>
-    <string name="sel_add_to_closet">الماری میں</string>
     <string name="sel_copy_to_day">کاپی</string>
     <string name="sel_remove">ہٹا دیں</string>
 

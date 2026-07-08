@@ -359,7 +359,7 @@ internal fun OutfitListScreen(
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                     ) {
                         Text(
-                            stringResource(R.string.action_deselect_all),
+                            stringResource(DsR.string.action_deselect_all),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )

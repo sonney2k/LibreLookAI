@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">הוסף מכתובת אתר</string>
+    <string name="shop_list_url_hint">הדבק כתובת אתר של דף קניות. אנו נמשוך את תמונת המוצר באופן אוטומטי.</string>
+    <string name="shop_list_uploading">מעלה…</string>
+    <string name="shop_list_processing">מעבד %1$d פריטים…</string>
+    <string name="shop_list_moving">מעביר…</string>
+    <string name="shop_list_move_title">העבר לארון</string>
+    <string name="shop_list_loading">טוען…</string>
+    <string name="shop_list_empty_title">רשימת המשאלות שלך ריקה</string>
+    <string name="shop_list_empty_hint">הוסף פריטים שאתה שוקל לקנות באמצעות המצלמה, הגלריה או כתובת אתר קניות.</string>
+    <string name="shop_list_delete_title">למחוק מרשימת המשאלות?</string>
+    <string name="shop_list_delete_text">להסיר לצמיתות %1$d פריטים מרשימת המשאלות שלך?</string>
+    <string name="shop_error_model_missing">מודל החיפוש הוויזואלי לא מותקן.</string>
+    <string name="shop_error_embed_failed">לא ניתן לנתח את התמונה הזו. נסה תמונה אחרת.</string>
+    <string name="sel_add_to_closet">לארון</string>
+    <string name="fab_shopping_add">הוספת מציאה</string>
+    <string name="error_query_photo_missing">תמונת החיפוש כבר לא קיימת.</string>
+    <string name="error_import_query_failed">ייבוא תמונת החיפוש נכשל.</string>
+</resources>

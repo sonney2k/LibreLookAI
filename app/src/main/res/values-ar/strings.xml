@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">تحديد النواقص</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">قائمة أمنياتك فارغة</string>
-    <string name="shop_list_empty_hint">أضف الأصناف التي تفكر في شرائها عبر الكاميرا أو المعرض أو رابط تسوق.</string>
     <string name="shop_list_add_camera">إضافة من الكاميرا</string>
     <string name="shop_list_add_gallery">إضافة من المعرض</string>
     <string name="shop_list_add_url">إضافة من رابط</string>
-    <string name="shop_list_url_title">إضافة من رابط</string>
-    <string name="shop_list_url_hint">الصق رابط صفحة التسوق. سنقوم بسحب صورة المنتج تلقائيًا.</string>
-    <string name="shop_list_uploading">جاري الرفع…</string>
-    <string name="shop_list_moving">جاري النقل…</string>
-    <string name="shop_list_loading">جاري التحميل…</string>
-    <string name="shop_list_processing">جاري معالجة %1$d صنف…</string>
     <string name="shop_list_move_to_closet">نقل إلى الخزانة</string>
-    <string name="shop_list_move_title">نقل إلى الخزانة</string>
-    <string name="shop_list_delete_title">حذف من قائمة الأمنيات؟</string>
-    <string name="shop_list_delete_text">هل تريد حذف %1$d صنف نهائيًا من قائمة أمنياتك؟</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">إضافة من رابط</string>
     <string name="wardrobe_url_import_title">استيراد من رابط تسوق</string>
     <string name="wardrobe_url_import_hint">الصق رابط صفحة التسوق. سنقوم بسحب صورة المنتج تلقائيًا.</string>
-    <string name="url_import_failed">تعذر العثور على صورة منتج في هذا الرابط.</string>
     <string name="url_import_pick_title">اختر صورة المنتج</string>
     <string name="url_import_pick_hint">اضغط على الصورة التي تريد استيرادها. إذا لم تبدو أي منها مناسبة، افتح الصفحة في المتصفح.</string>
     <string name="url_import_browser_title">افتح الصفحة</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">جاري إزالة الخلفية %1$d من %2$d…</string>
     <string name="wardrobe_progress_moving">جاري النقل إلى موقع جديد…</string>
     <string name="action_select_all">تحديد الكل</string>
-    <string name="action_deselect_all">إلغاء تحديد الكل</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -223,7 +210,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">جاري استعادة الخزانة: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">لا توجد أصناف تطابق الفلتر</string>
     <string name="wardrobe_item_count">%1$d صنف</string>
     <string name="wardrobe_filtered_count">عرض %1$d من %2$d صنف</string>
     <string name="wardrobe_stats_total">%1$d صنف إجمالي</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">التقط صورة أو اختر من المعرض</string>
     <string name="wardrobe_create_outfit">إنشاء طقم يدويًا</string>
     <string name="wardrobe_compose_ai">تكوين بالذكاء الاصطناعي</string>
-    <string name="wardrobe_selected_count">تم اختيار %1$d</string>
     <string name="wardrobe_select_all_count">تحديد الكل (%1$d)</string>
     <string name="wardrobe_delete_title">حذف الأصناف؟</string>
     <string name="wardrobe_delete_text">هل أنت متأكد من رغبتك في حذف %d صنف مختار؟ لا يمكن التراجع عن هذا الإجراء.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">الكاميرا</string>
     <string name="wardrobe_add_to_closet">إضافة إلى %1$s</string>
     <string name="wardrobe_add_to_closet_title">إضافة إلى الخزانة</string>
-    <string name="action_continue">متابعة</string>
     <string name="tag_label">الاسم</string>
     <string name="tag_label_placeholder">مثلاً: بنطال تشينو كحلي، قميص أكسفورد أبيض</string>
     <string name="tag_add_custom">إضافة مخصص…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">جاري فهرسة الخزانة… %1$d / %2$d</string>
     <string name="shop_index_size">تم فهرسة %1$d صنف</string>
     <string name="shop_model_missing">النموذج الموجود على الجهاز مفقود. ضع efficientnet_lite0.tflite تحت app/src/main/assets/embedder/ و magic_touch.tflite تحت app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">نموذج البحث البصري غير مثبت.</string>
-    <string name="shop_error_embed_failed">تعذر تحليل تلك الصورة. جرب صورة أخرى.</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">فحص التشابه</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">تعذّر نقل بعض العناصر. تمت استعادتها.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">فشل الرفع: %1$s</string>
-    <string name="error_original_unavailable">الصورة الأصلية غير متوفرة</string>
     <string name="error_import_failed_item">فشل استيراد %1$s: %2$s</string>
     <string name="error_tag_save_failed">فشل حفظ الوسوم في Drive: %1$s</string>
     <string name="error_add_items_first">أضف عناصر إلى خزانتك أولاً.</string>
-    <string name="error_query_photo_missing">لم تعد صورة البحث موجودة.</string>
-    <string name="error_import_query_failed">فشل استيراد صورة البحث.</string>
     <string name="error_trips_folder_not_ready">مجلد الرحلات غير جاهز.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">أضف الزي إلى التقويم</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">إطلالة جديدة</string>
     <string name="fab_wardrobe_add">إضافة قطعة</string>
     <string name="fab_calendar_log">تسجيل إطلالة</string>
-    <string name="fab_shopping_add">إضافة منتج</string>
-    <string name="sel_style">تنسيق</string>
     <string name="sel_swap">استبدال</string>
     <string name="sel_move">نقل</string>
     <string name="sel_combine">دمج</string>
     <string name="sel_love">إعجاب</string>
-    <string name="sel_add_to_closet">إضافة إلى الخزانة</string>
     <string name="sel_copy_to_day">نسخ</string>
     <string name="sel_remove">إزالة</string>
 

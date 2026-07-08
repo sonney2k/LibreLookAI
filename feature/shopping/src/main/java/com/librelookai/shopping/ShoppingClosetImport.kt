@@ -5,12 +5,12 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.librelookai.R
+import com.librelookai.feature.shopping.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.drive.DriveService
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.UrlImportPickerState
-import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.WebProductFetcher
 import com.librelookai.wardrobe.toCachedItem
 import java.io.File
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal fun ShoppingClosetViewModel.addFromCamera(rawFile: File) {
+fun ShoppingClosetViewModel.addFromCamera(rawFile: File) {
         viewModelScope.launch {
             val folderId = ensureFolder() ?: run {
                 runCatching { rawFile.delete() }
@@ -35,7 +35,7 @@ internal fun ShoppingClosetViewModel.addFromCamera(rawFile: File) {
      * cache before handing it to [uploadRaw] so the caller can keep using the original to display
      * the active query.
      */
-internal fun ShoppingClosetViewModel.importQuery(queryRawPath: String) {
+fun ShoppingClosetViewModel.importQuery(queryRawPath: String) {
         viewModelScope.launch {
             val source = File(queryRawPath)
             if (!source.exists()) {
@@ -54,7 +54,7 @@ internal fun ShoppingClosetViewModel.importQuery(queryRawPath: String) {
         }
     }
 
-internal fun ShoppingClosetViewModel.addFromGallery(uris: List<Uri>) {
+fun ShoppingClosetViewModel.addFromGallery(uris: List<Uri>) {
         if (uris.isEmpty()) return
         viewModelScope.launch {
             val folderId = ensureFolder() ?: return@launch
@@ -66,14 +66,14 @@ internal fun ShoppingClosetViewModel.addFromGallery(uris: List<Uri>) {
                     uploadRaw(tempFile, folderId, "gallery")
                 }.onFailure { e ->
                     Log.w(ShoppingClosetViewModel.TAG, "gallery import failed", e)
-                    _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.error_upload_failed, e.message ?: "")) }
+                    _state.update { it.copy(error = getApplication<Application>().localized().getString(DsR.string.error_upload_failed, e.message ?: "")) }
                     runCatching { tempFile.delete() }
                 }
             }
         }
     }
 
-internal fun ShoppingClosetViewModel.addFromUrl(url: String) {
+fun ShoppingClosetViewModel.addFromUrl(url: String) {
         if (url.isBlank()) return
         viewModelScope.launch {
             val folderId = ensureFolder() ?: return@launch
@@ -83,7 +83,7 @@ internal fun ShoppingClosetViewModel.addFromUrl(url: String) {
                 _state.update {
                     it.copy(
                         isUploading = false,
-                        error = getApplication<Application>().localized().getString(R.string.url_import_failed),
+                        error = getApplication<Application>().localized().getString(DsR.string.url_import_failed),
                     )
                 }
                 return@launch
@@ -101,7 +101,7 @@ internal fun ShoppingClosetViewModel.addFromUrl(url: String) {
         }
     }
 
-internal fun ShoppingClosetViewModel.confirmUrlImportPick(absoluteImageUrl: String) {
+fun ShoppingClosetViewModel.confirmUrlImportPick(absoluteImageUrl: String) {
         val picker = _state.value.urlImportPicker ?: return
         val folderId = picker.targetFolderId ?: return
         viewModelScope.launch {
@@ -111,7 +111,7 @@ internal fun ShoppingClosetViewModel.confirmUrlImportPick(absoluteImageUrl: Stri
                 _state.update {
                     it.copy(
                         urlImportPicker = picker.copy(isDownloading = false),
-                        error = getApplication<Application>().localized().getString(R.string.url_import_failed),
+                        error = getApplication<Application>().localized().getString(DsR.string.url_import_failed),
                     )
                 }
                 return@launch
@@ -121,7 +121,7 @@ internal fun ShoppingClosetViewModel.confirmUrlImportPick(absoluteImageUrl: Stri
         }
     }
 
-internal fun ShoppingClosetViewModel.cancelUrlImport() {
+fun ShoppingClosetViewModel.cancelUrlImport() {
         _state.update { it.copy(urlImportPicker = null) }
     }
 
@@ -161,6 +161,6 @@ internal suspend fun ShoppingClosetViewModel.uploadRaw(rawFile: File, folderId: 
      * Moves [driveIds] from `_shopping/` to [targetFolderId] (a regular closet). Tags + cutout +
      * original + sidecar are preserved verbatim — Drive only changes parents, no re-upload, no
      * re-tagging. [onMoved] fires once Drive moves complete (called even for partial success); the
-     * caller is responsible for telling [WardrobeViewModel] to reload the destination closet so
+     * caller is responsible for telling the wardrobe to reload the destination closet so
      * the items appear there.
      */

@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Ιστορικό χρήσης</string>
     <string name="error_gemini_no_response">Η τεχνητή νοημοσύνη δεν απάντησε.</string>
     <string name="error_gemini_parse">Δεν ήταν δυνατή η ανάγνωση της απάντησης της τεχνητής νοημοσύνης.</string>
+    <string name="url_import_failed">Δεν βρέθηκε εικόνα προϊόντος σε αυτό το URL.</string>
+    <string name="action_continue">Συνέχεια</string>
+    <string name="wardrobe_selected_count">%1$d επιλέχθηκαν</string>
+    <string name="wardrobe_move_failed">Δεν ήταν δυνατή η μετακίνηση ορισμένων στοιχείων. Επαναφέρθηκαν.</string>
+    <string name="wardrobe_empty_filter">Κανένα είδος δεν ταιριάζει στο φίλτρο</string>
+    <string name="sel_style">Στιλ</string>
+    <string name="error_upload_failed">Η μεταφόρτωση απέτυχε: %1$s</string>
+    <string name="error_original_unavailable">Το πρωτότυπο δεν είναι διαθέσιμο</string>
+    <string name="action_deselect_all">Αποεπιλογή όλων</string>
 </resources>

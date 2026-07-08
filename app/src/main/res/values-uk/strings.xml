@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Знайти прогалини</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">Список побажань порожній</string>
-    <string name="shop_list_empty_hint">Додавайте речі за допомогою камери, галереї або посилання на товар.</string>
     <string name="shop_list_add_camera">Додати з камери</string>
     <string name="shop_list_add_gallery">Додати з галереї</string>
     <string name="shop_list_add_url">Додати за посиланням</string>
-    <string name="shop_list_url_title">Додати за посиланням</string>
-    <string name="shop_list_url_hint">Вставте посилання на товар. Ми автоматично отримаємо зображення.</string>
-    <string name="shop_list_uploading">Завантаження…</string>
-    <string name="shop_list_moving">Переміщення…</string>
-    <string name="shop_list_loading">Завантаження…</string>
-    <string name="shop_list_processing">Обробка %1$d речей…</string>
     <string name="shop_list_move_to_closet">Перемістити в гардероб</string>
-    <string name="shop_list_move_title">Перемістити в гардероб</string>
-    <string name="shop_list_delete_title">Видалити зі списку побажань?</string>
-    <string name="shop_list_delete_text">Видалити %1$d речей назавжди?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Додати за посиланням</string>
     <string name="wardrobe_url_import_title">Імпорт за посиланням</string>
     <string name="wardrobe_url_import_hint">Вставте посилання на товар. Ми отримаємо фото автоматично.</string>
-    <string name="url_import_failed">Не вдалося знайти зображення за цим посиланням.</string>
     <string name="url_import_pick_title">Оберіть зображення товару</string>
     <string name="url_import_pick_hint">Натисніть на фото, яке хочете додати.</string>
     <string name="url_import_browser_title">Відкрити сторінку</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Видалення фону %1$d з %2$d…</string>
     <string name="wardrobe_progress_moving">Переміщення…</string>
     <string name="action_select_all">Вибрати все</string>
-    <string name="action_deselect_all">Зняти вибір</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Відновлення гардероба: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Нічого не знайдено за фільтром</string>
     <string name="wardrobe_item_count">%1$d речей</string>
     <string name="wardrobe_filtered_count">Показано %1$d з %2$d речей</string>
     <string name="wardrobe_stats_total">Всього %1$d речей</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">Зробіть фото або оберіть із галереї</string>
     <string name="wardrobe_create_outfit">Створити образ вручну</string>
     <string name="wardrobe_compose_ai">Створити за допомогою ШІ</string>
-    <string name="wardrobe_selected_count">%1$d вибрано</string>
     <string name="wardrobe_select_all_count">Вибрати всі (%1$d)</string>
     <string name="wardrobe_delete_title">Видалити речі?</string>
     <string name="wardrobe_delete_text">Ви впевнені, що хочете видалити %d вибраних речей? Це неможливо скасувати.</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">Камера</string>
     <string name="wardrobe_add_to_closet">Додати в %1$s</string>
     <string name="wardrobe_add_to_closet_title">Додати в гардероб</string>
-    <string name="action_continue">Продовжити</string>
     <string name="tag_label">Назва</string>
     <string name="tag_label_placeholder">напр. Сині чіноси, Біла сорочка</string>
     <string name="tag_add_custom">Додати свій тег…</string>
@@ -537,8 +521,6 @@
     <string name="settings_tab_feedback">Відгук</string>
     <string name="shop_clear">Очистити</string>
     <string name="shop_description">Зробіть фото речі, яку розглядаєте, і ми покажемо найбільш візуально схожі речі з вашого гардероба — повністю на пристрої.</string>
-    <string name="shop_error_embed_failed">Не вдалося проаналізувати фото. Спробуйте інше.</string>
-    <string name="shop_error_model_missing">Модель візуального пошуку не встановлена.</string>
     <string name="shop_index_size">%1$d речей проіндексовано</string>
     <string name="shop_indexing">Індексація гардероба… %1$d / %2$d</string>
     <string name="shop_matches_title">Найкращі збіги (%1$d)</string>
@@ -668,7 +650,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Не вдалося перемістити деякі елементи. Їх відновлено.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Не вдалося завантажити: %1$s</string>
-    <string name="error_original_unavailable">Оригінал недоступний</string>
     <string name="error_import_failed_item">Не вдалося імпортувати %1$s: %2$s</string>
     <string name="error_tag_save_failed">Не вдалося зберегти теги на Диск: %1$s</string>
     <string name="error_add_items_first">Спочатку додайте речі до свого гардероба.</string>
-    <string name="error_query_photo_missing">Фото запиту більше не існує.</string>
-    <string name="error_import_query_failed">Не вдалося імпортувати фото запиту.</string>
     <string name="error_trips_folder_not_ready">Папка подорожей не готова.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Додати образ до календаря</string>
@@ -814,13 +791,10 @@
     <string name="fab_outfits_new">Новий образ</string>
     <string name="fab_wardrobe_add">Додати річ</string>
     <string name="fab_calendar_log">Записати образ</string>
-    <string name="fab_shopping_add">Додати знахідку</string>
-    <string name="sel_style">Стиль</string>
     <string name="sel_swap">Замінити</string>
     <string name="sel_move">Перемістити</string>
     <string name="sel_combine">Поєднати</string>
     <string name="sel_love">Вподобати</string>
-    <string name="sel_add_to_closet">До шафи</string>
     <string name="sel_copy_to_day">Копіювати</string>
     <string name="sel_remove">Видалити</string>
 

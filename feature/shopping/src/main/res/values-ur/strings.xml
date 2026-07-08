@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">یو آر ایل سے شامل کریں</string>
+    <string name="shop_list_url_hint">شاپنگ پیج کا لنک یہاں پیسٹ کریں۔ ہم خود بخود تصویر حاصل کر لیں گے۔</string>
+    <string name="shop_list_uploading">اپ لوڈ ہو رہا ہے…</string>
+    <string name="shop_list_processing">%1$d اشیاء پر کام ہو رہا ہے…</string>
+    <string name="shop_list_moving">منتقل ہو رہا ہے…</string>
+    <string name="shop_list_move_title">الماری میں بھیجیں</string>
+    <string name="shop_list_loading">لوڈ ہو رہا ہے…</string>
+    <string name="shop_list_empty_title">آپ کی وش لسٹ خالی ہے</string>
+    <string name="shop_list_empty_hint">کیمرہ، گیلری یا شاپنگ یو آر ایل کے ذریعے وہ اشیاء شامل کریں جنہیں آپ خریدنے کا سوچ رہے ہیں۔</string>
+    <string name="shop_list_delete_title">وش لسٹ سے حذف کریں؟</string>
+    <string name="shop_list_delete_text">کیا آپ اپنی وش لسٹ سے %1$d اشیاء مستقل طور پر حذف کرنا چاہتے ہیں؟</string>
+    <string name="shop_error_model_missing">بصری تلاش کا ماڈل انسٹال نہیں ہے۔</string>
+    <string name="shop_error_embed_failed">اس تصویر کا تجزیہ نہیں ہو سکا۔ کوئی اور آزمائیں۔</string>
+    <string name="sel_add_to_closet">الماری میں</string>
+    <string name="fab_shopping_add">دریافت شامل کریں</string>
+    <string name="error_query_photo_missing">تلاش کی تصویر اب موجود نہیں ہے۔</string>
+    <string name="error_import_query_failed">تلاش کی تصویر درآمد کرنے میں ناکام۔</string>
+</resources>

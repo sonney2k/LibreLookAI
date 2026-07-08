@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Istoric purtare</string>
     <string name="error_gemini_no_response">IA nu a răspuns.</string>
     <string name="error_gemini_parse">Nu s-a putut citi răspunsul IA.</string>
+    <string name="url_import_failed">Nu s-a găsit nicio imagine la acest URL.</string>
+    <string name="action_continue">Continuă</string>
+    <string name="wardrobe_selected_count">%1$d selectate</string>
+    <string name="wardrobe_move_failed">Unele articole nu au putut fi mutate. Au fost restaurate.</string>
+    <string name="wardrobe_empty_filter">Niciun articol conform filtrului</string>
+    <string name="sel_style">Stil</string>
+    <string name="error_upload_failed">Încărcarea a eșuat: %1$s</string>
+    <string name="error_original_unavailable">Originalul nu este disponibil</string>
+    <string name="action_deselect_all">Deselectează tot</string>
 </resources>

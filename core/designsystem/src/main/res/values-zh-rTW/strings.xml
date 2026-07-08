@@ -216,4 +216,13 @@
     <string name="ai_consider_history">穿著紀錄</string>
     <string name="error_gemini_no_response">AI 未回應。</string>
     <string name="error_gemini_parse">無法讀取 AI 回應。</string>
+    <string name="url_import_failed">在此連結中找不到產品圖片。</string>
+    <string name="action_continue">繼續</string>
+    <string name="wardrobe_selected_count">已選擇 %1$d 件</string>
+    <string name="wardrobe_move_failed">部分項目無法移動，已還原。</string>
+    <string name="wardrobe_empty_filter">沒有符合篩選條件的單品</string>
+    <string name="sel_style">搭配</string>
+    <string name="error_upload_failed">上傳失敗：%1$s</string>
+    <string name="error_original_unavailable">原始檔無法使用</string>
+    <string name="action_deselect_all">取消全選</string>
 </resources>

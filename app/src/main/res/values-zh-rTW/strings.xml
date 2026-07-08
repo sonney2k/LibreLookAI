@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">尋找空缺</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">您的願望清單是空的</string>
-    <string name="shop_list_empty_hint">透過相機、相簿或購物連結添加您考慮購買的單品。</string>
     <string name="shop_list_add_camera">從相機添加</string>
     <string name="shop_list_add_gallery">從相簿添加</string>
     <string name="shop_list_add_url">從連結添加</string>
-    <string name="shop_list_url_title">從連結添加</string>
-    <string name="shop_list_url_hint">貼上購物頁面的連結。我們將自動獲取產品圖片。</string>
-    <string name="shop_list_uploading">正在上傳…</string>
-    <string name="shop_list_moving">正在移動…</string>
-    <string name="shop_list_loading">正在載入…</string>
-    <string name="shop_list_processing">正在處理 %1$d 個項目…</string>
     <string name="shop_list_move_to_closet">移至衣櫥</string>
-    <string name="shop_list_move_title">移至衣櫥</string>
-    <string name="shop_list_delete_title">從願望清單刪除？</string>
-    <string name="shop_list_delete_text">要永久從願望清單中移除 %1$d 個項目嗎？</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">從連結添加</string>
     <string name="wardrobe_url_import_title">從購物連結匯入</string>
     <string name="wardrobe_url_import_hint">貼上購物頁面的連結。我們將自動獲取產品圖片。</string>
-    <string name="url_import_failed">在此連結中找不到產品圖片。</string>
     <string name="url_import_pick_title">選擇產品圖片</string>
     <string name="url_import_pick_hint">點擊您要匯入的圖片。如果都不正確，請在瀏覽器中開啟頁面。</string>
     <string name="url_import_browser_title">開啟頁面</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">正在移除第 %1$d / %2$d 張照片的背景…</string>
     <string name="wardrobe_progress_moving">正在移至新位置…</string>
     <string name="action_select_all">全選</string>
-    <string name="action_deselect_all">取消全選</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">正在恢復衣櫥：%1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">沒有符合篩選條件的單品</string>
     <string name="wardrobe_item_count">%1$d 件單品</string>
     <string name="wardrobe_filtered_count">顯示第 %1$d / %2$d 件單品</string>
     <string name="wardrobe_stats_total">共 %1$d 件單品</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">拍照或從相簿中選擇</string>
     <string name="wardrobe_create_outfit">手動建立穿搭</string>
     <string name="wardrobe_compose_ai">使用 AI 組合</string>
-    <string name="wardrobe_selected_count">已選擇 %1$d 件</string>
     <string name="wardrobe_select_all_count">全選 (%1$d)</string>
     <string name="wardrobe_delete_title">刪除單品？</string>
     <string name="wardrobe_delete_text">您確定要刪除 %d 件選擇的單品嗎？此操作無法撤銷。</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">相機</string>
     <string name="wardrobe_add_to_closet">添加到 %1$s</string>
     <string name="wardrobe_add_to_closet_title">添加到衣櫥</string>
-    <string name="action_continue">繼續</string>
     <string name="tag_label">名稱</string>
     <string name="tag_label_placeholder">例如：海軍藍卡其褲、白色牛津襯衫</string>
     <string name="tag_add_custom">添加自定義…</string>
@@ -537,8 +521,6 @@
     <string name="settings_tab_feedback">回饋</string>
     <string name="shop_clear">清除</string>
     <string name="shop_description">拍下你正在考慮的單品，我們會顯示衣櫥中視覺最相似的單品——完全在裝置上運作。</string>
-    <string name="shop_error_embed_failed">無法分析此相片。請試試其他相片。</string>
-    <string name="shop_error_model_missing">未安裝視覺搜尋模型。</string>
     <string name="shop_index_size">已索引 %1$d 件單品</string>
     <string name="shop_indexing">索引衣櫥中… %1$d / %2$d</string>
     <string name="shop_matches_title">最相符（%1$d）</string>
@@ -668,7 +650,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">部分項目無法移動，已還原。</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">上傳失敗：%1$s</string>
-    <string name="error_original_unavailable">原始檔無法使用</string>
     <string name="error_import_failed_item">匯入 %1$s 失敗：%2$s</string>
     <string name="error_tag_save_failed">將標籤儲存至雲端硬碟失敗：%1$s</string>
     <string name="error_add_items_first">請先將單品加入你的衣櫥。</string>
-    <string name="error_query_photo_missing">查詢照片已不存在。</string>
-    <string name="error_import_query_failed">匯入查詢照片失敗。</string>
     <string name="error_trips_folder_not_ready">旅行資料夾尚未就緒。</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">將穿搭加入日曆</string>
@@ -814,13 +791,10 @@
     <string name="fab_outfits_new">新穿搭</string>
     <string name="fab_wardrobe_add">新增單品</string>
     <string name="fab_calendar_log">記錄穿搭</string>
-    <string name="fab_shopping_add">新增發現</string>
-    <string name="sel_style">搭配</string>
     <string name="sel_swap">替換</string>
     <string name="sel_move">移動</string>
     <string name="sel_combine">合併</string>
     <string name="sel_love">喜愛</string>
-    <string name="sel_add_to_closet">加入衣櫥</string>
     <string name="sel_copy_to_day">複製</string>
     <string name="sel_remove">移除</string>
 

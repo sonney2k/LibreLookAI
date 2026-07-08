@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Najít mezery</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">Váš seznam přání je prázdný</string>
-    <string name="shop_list_empty_hint">Přidejte položky, které zvažujete koupit, pomocí fotoaparátu, galerie nebo nákupní URL adresy.</string>
     <string name="shop_list_add_camera">Přidat z fotoaparátu</string>
     <string name="shop_list_add_gallery">Přidat z galerie</string>
     <string name="shop_list_add_url">Přidat z URL</string>
-    <string name="shop_list_url_title">Přidat z URL</string>
-    <string name="shop_list_url_hint">Vložte URL nákupní stránky. Obrázek produktu stáhneme automaticky.</string>
-    <string name="shop_list_uploading">Nahrávání…</string>
-    <string name="shop_list_moving">Přesouvání…</string>
-    <string name="shop_list_loading">Načítání…</string>
-    <string name="shop_list_processing">Zpracování %1$d položek…</string>
     <string name="shop_list_move_to_closet">Přesunout do šatníku</string>
-    <string name="shop_list_move_title">Přesunout do šatníku</string>
-    <string name="shop_list_delete_title">Smazat ze seznamu přání?</string>
-    <string name="shop_list_delete_text">Trvale odstranit %1$d položek ze seznamu přání?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Přidat z URL</string>
     <string name="wardrobe_url_import_title">Importovat z nákupní URL</string>
     <string name="wardrobe_url_import_hint">Vložte URL nákupní stránky. Obrázek produktu stáhneme automaticky.</string>
-    <string name="url_import_failed">Na této URL se nepodařilo najít obrázek produktu.</string>
     <string name="url_import_pick_title">Vyberte obrázek produktu</string>
     <string name="url_import_pick_hint">Klepněte na obrázek, který chcete importovat. Pokud žádný nevypadá správně, otevřete stránku v prohlížeči.</string>
     <string name="url_import_browser_title">Otevřít stránku</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Odstraňování pozadí %1$d z %2$d…</string>
     <string name="wardrobe_progress_moving">Přesouvání na nové místo…</string>
     <string name="action_select_all">Vybrat vše</string>
-    <string name="action_deselect_all">Zrušit výběr</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -223,7 +210,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Obnovování šatníku: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Filtru neodpovídají žádné položky</string>
     <string name="wardrobe_item_count">%1$d položek</string>
     <string name="wardrobe_filtered_count">Zobrazeno %1$d z %2$d položek</string>
     <string name="wardrobe_stats_total">Celkem %1$d položek</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Vyfoťte něco nebo vyberte z galerie</string>
     <string name="wardrobe_create_outfit">Vytvořit outfit ručně</string>
     <string name="wardrobe_compose_ai">Sestavit pomocí AI</string>
-    <string name="wardrobe_selected_count">%1$d vybráno</string>
     <string name="wardrobe_select_all_count">Vybrat vše (%1$d)</string>
     <string name="wardrobe_delete_title">Smazat položky?</string>
     <string name="wardrobe_delete_text">Opravdu chcete smazat %d vybraných položek? Tuto akci nelze vrátit zpět.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Fotoaparát</string>
     <string name="wardrobe_add_to_closet">Přidat do %1$s</string>
     <string name="wardrobe_add_to_closet_title">Přidat do šatníku</string>
-    <string name="action_continue">Pokračovat</string>
     <string name="tag_label">Název</string>
     <string name="tag_label_placeholder">např. Tmavě modré chinos, Bílá Oxford košile</string>
     <string name="tag_add_custom">Přidat vlastní…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Indexování šatníku… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d položek zaindexováno</string>
     <string name="shop_model_missing">Model v zařízení chybí. Umístěte efficientnet_lite0.tflite do app/src/main/assets/embedder/ a magic_touch.tflite do app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">Model pro vizuální vyhledávání není nainstalován.</string>
-    <string name="shop_error_embed_failed">Tuto fotografii se nepodařilo analyzovat. Zkuste jinou.</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">Kontrola podobnosti</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Některé položky se nepodařilo přesunout. Byly obnoveny.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Nahrání selhalo: %1$s</string>
-    <string name="error_original_unavailable">Originál není k dispozici</string>
     <string name="error_import_failed_item">Import %1$s selhal: %2$s</string>
     <string name="error_tag_save_failed">Uložení štítků na Disk selhalo: %1$s</string>
     <string name="error_add_items_first">Nejprve přidejte položky do šatníku.</string>
-    <string name="error_query_photo_missing">Fotka dotazu už neexistuje.</string>
-    <string name="error_import_query_failed">Import fotky dotazu selhal.</string>
     <string name="error_trips_folder_not_ready">Složka cest není připravena.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Přidat outfit do kalendáře</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Nový outfit</string>
     <string name="fab_wardrobe_add">Přidat kus</string>
     <string name="fab_calendar_log">Zaznamenat outfit</string>
-    <string name="fab_shopping_add">Přidat nález</string>
-    <string name="sel_style">Styl</string>
     <string name="sel_swap">Vyměnit</string>
     <string name="sel_move">Přesunout</string>
     <string name="sel_combine">Zkombinovat</string>
     <string name="sel_love">Oblíbit</string>
-    <string name="sel_add_to_closet">Do šatníku</string>
     <string name="sel_copy_to_day">Kopírovat</string>
     <string name="sel_remove">Odebrat</string>
 

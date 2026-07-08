@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Додати за посиланням</string>
+    <string name="shop_list_url_hint">Вставте посилання на товар. Ми автоматично отримаємо зображення.</string>
+    <string name="shop_list_uploading">Завантаження…</string>
+    <string name="shop_list_processing">Обробка %1$d речей…</string>
+    <string name="shop_list_moving">Переміщення…</string>
+    <string name="shop_list_move_title">Перемістити в гардероб</string>
+    <string name="shop_list_loading">Завантаження…</string>
+    <string name="shop_list_empty_title">Список побажань порожній</string>
+    <string name="shop_list_empty_hint">Додавайте речі за допомогою камери, галереї або посилання на товар.</string>
+    <string name="shop_list_delete_title">Видалити зі списку побажань?</string>
+    <string name="shop_list_delete_text">Видалити %1$d речей назавжди?</string>
+    <string name="shop_error_model_missing">Модель візуального пошуку не встановлена.</string>
+    <string name="shop_error_embed_failed">Не вдалося проаналізувати фото. Спробуйте інше.</string>
+    <string name="sel_add_to_closet">До шафи</string>
+    <string name="fab_shopping_add">Додати знахідку</string>
+    <string name="error_query_photo_missing">Фото запиту більше не існує.</string>
+    <string name="error_import_query_failed">Не вдалося імпортувати фото запиту.</string>
+</resources>

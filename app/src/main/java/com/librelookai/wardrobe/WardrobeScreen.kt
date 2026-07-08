@@ -288,7 +288,7 @@ fun WardrobeScreen(
                     selectedFolderId?.let { viewModel.setDefaultImportFolderId(it) }
                     showGalleryClosetPicker = false
                     galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                }) { Text(stringResource(R.string.action_continue)) }
+                }) { Text(stringResource(DsR.string.action_continue)) }
             },
             dismissButton = {
                 TextButton(onClick = { showGalleryClosetPicker = false }) {

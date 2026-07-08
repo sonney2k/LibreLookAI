@@ -1,6 +1,7 @@
 package com.librelookai.wardrobe
 
 import android.app.Application
+import com.librelookai.core.designsystem.R as DsR
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -204,7 +205,7 @@ class WardrobeViewModel @Inject constructor(
                 repo.forgetRecentlyMoved(listOf(rollback.driveId))
                 if (rollback.sourceFolderId != repo.shoppingFolderId) {
                     _state.update {
-                        it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
+                        it.copy(error = getApplication<Application>().localized().getString(DsR.string.wardrobe_move_failed))
                     }
                 }
             }
@@ -281,7 +282,7 @@ class WardrobeViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         isUploading = false,
-                        error = getApplication<Application>().localized().getString(R.string.url_import_failed),
+                        error = getApplication<Application>().localized().getString(DsR.string.url_import_failed),
                     )
                 }
                 return@launch
@@ -311,7 +312,7 @@ class WardrobeViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         urlImportPicker = picker.copy(isDownloading = false),
-                        error = getApplication<Application>().localized().getString(R.string.url_import_failed),
+                        error = getApplication<Application>().localized().getString(DsR.string.url_import_failed),
                     )
                 }
                 return@launch

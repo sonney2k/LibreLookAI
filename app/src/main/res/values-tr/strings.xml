@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Eksikleri Belirle</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">İstek listeniz boş</string>
-    <string name="shop_list_empty_hint">Satın almayı düşündüğünüz ürünleri kamera, galeri veya bir alışveriş URL\'si ile ekleyin.</string>
     <string name="shop_list_add_camera">Kameradan ekle</string>
     <string name="shop_list_add_gallery">Galeriden ekle</string>
     <string name="shop_list_add_url">URL\'den ekle</string>
-    <string name="shop_list_url_title">URL\'den ekle</string>
-    <string name="shop_list_url_hint">Bir alışveriş sayfasının URL\'sini yapıştırın. Ürün resmini otomatik olarak çekeceğiz.</string>
-    <string name="shop_list_uploading">Yükleniyor…</string>
-    <string name="shop_list_moving">Taşınıyor…</string>
-    <string name="shop_list_loading">Yükleniyor…</string>
-    <string name="shop_list_processing">%1$d öğe işleniyor…</string>
     <string name="shop_list_move_to_closet">Gardıroba taşı</string>
-    <string name="shop_list_move_title">Gardıroba taşı</string>
-    <string name="shop_list_delete_title">İstek listesinden silinsin mi?</string>
-    <string name="shop_list_delete_text">%1$d öğe istek listenizden kalıcı olarak kaldırılsın mı?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">URL\'den ekle</string>
     <string name="wardrobe_url_import_title">Alışveriş URL\'sinden içe aktar</string>
     <string name="wardrobe_url_import_hint">Bir alışveriş sayfasının URL\'sini yapıştırın. Ürün resmini otomatik olarak çekeceğiz.</string>
-    <string name="url_import_failed">Bu URL\'de bir ürün resmi bulunamadı.</string>
     <string name="url_import_pick_title">Ürün resmini seçin</string>
     <string name="url_import_pick_hint">İçe aktarmak istediğiniz resme dokunun. Hiçbiri doğru görünmüyorsa, sayfayı tarayıcıda açın.</string>
     <string name="url_import_browser_title">Sayfayı aç</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Arka plan kaldırılıyor: %1$d / %2$d…</string>
     <string name="wardrobe_progress_moving">Yeni konuma taşınıyor…</string>
     <string name="action_select_all">Tümünü seç</string>
-    <string name="action_deselect_all">Seçimi kaldır</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -223,7 +210,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Gardırop geri yükleniyor: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Filtreyle eşleşen öge yok</string>
     <string name="wardrobe_item_count">%1$d öge</string>
     <string name="wardrobe_filtered_count">%1$d / %2$d öge gösteriliyor</string>
     <string name="wardrobe_stats_total">Toplam %1$d öge</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Bir fotoğraf çekin veya galerinizden seçin</string>
     <string name="wardrobe_create_outfit">Manuel kombin oluştur</string>
     <string name="wardrobe_compose_ai">Yapay zeka ile oluştur</string>
-    <string name="wardrobe_selected_count">%1$d seçildi</string>
     <string name="wardrobe_select_all_count">Tümünü seç (%1$d)</string>
     <string name="wardrobe_delete_title">Ögeler silinsin mi?</string>
     <string name="wardrobe_delete_text">Seçili %d ögeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">%1$s\'ye ekle</string>
     <string name="wardrobe_add_to_closet_title">Gardıroba ekle</string>
-    <string name="action_continue">Devam et</string>
     <string name="tag_label">İsim</string>
     <string name="tag_label_placeholder">örn. Lacivert Kanvas Pantolon, Beyaz Oxford Gömlek</string>
     <string name="tag_add_custom">Özel ekle…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Gardırop endeksleniyor… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d öge endekslendi</string>
     <string name="shop_model_missing">Cihaz içi model eksik. efficientnet_lite0.tflite dosyasını app/src/main/assets/embedder/ altına ve magic_touch.tflite dosyasını app/src/main/assets/segmenter/ altına yerleştirin.</string>
-    <string name="shop_error_model_missing">Görsel arama modeli yüklü değil.</string>
-    <string name="shop_error_embed_failed">Bu fotoğraf analiz edilemedi. Başka bir tane deneyin.</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">Benzerlik kontrolü</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Bazı öğeler taşınamadı. Geri yüklendiler.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Yükleme başarısız: %1$s</string>
-    <string name="error_original_unavailable">Orijinal kullanılamıyor</string>
     <string name="error_import_failed_item">%1$s içe aktarılamadı: %2$s</string>
     <string name="error_tag_save_failed">Etiketleri Drive\'a kaydetme başarısız: %1$s</string>
     <string name="error_add_items_first">Önce gardırobunuza parça ekleyin.</string>
-    <string name="error_query_photo_missing">Sorgu fotoğrafı artık mevcut değil.</string>
-    <string name="error_import_query_failed">Sorgu fotoğrafı içe aktarılamadı.</string>
     <string name="error_trips_folder_not_ready">Geziler klasörü hazır değil.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Kombini takvime ekle</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Yeni kombin</string>
     <string name="fab_wardrobe_add">Parça ekle</string>
     <string name="fab_calendar_log">Kombini kaydet</string>
-    <string name="fab_shopping_add">Bulgu ekle</string>
-    <string name="sel_style">Stil</string>
     <string name="sel_swap">Değiştir</string>
     <string name="sel_move">Taşı</string>
     <string name="sel_combine">Birleştir</string>
     <string name="sel_love">Beğen</string>
-    <string name="sel_add_to_closet">Dolaba ekle</string>
     <string name="sel_copy_to_day">Kopyala</string>
     <string name="sel_remove">Kaldır</string>
 

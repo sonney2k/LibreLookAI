@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Identificare Lipsuri</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">Lista ta este goală</string>
-    <string name="shop_list_empty_hint">Adaugă articole pe care vrei să le cumperi folosind camera, galeria sau un URL de produs.</string>
     <string name="shop_list_add_camera">Adaugă din cameră</string>
     <string name="shop_list_add_gallery">Adaugă din galerie</string>
     <string name="shop_list_add_url">Adaugă din URL</string>
-    <string name="shop_list_url_title">Adaugă din URL</string>
-    <string name="shop_list_url_hint">Lipește URL-ul unei pagini de produs. Vom prelua automat imaginea.</string>
-    <string name="shop_list_uploading">Se încarcă…</string>
-    <string name="shop_list_moving">Se mută…</string>
-    <string name="shop_list_loading">Se încarcă…</string>
-    <string name="shop_list_processing">Se procesează %1$d articole…</string>
     <string name="shop_list_move_to_closet">Mută în garderobă</string>
-    <string name="shop_list_move_title">Mută în garderobă</string>
-    <string name="shop_list_delete_title">Ștergi din listă?</string>
-    <string name="shop_list_delete_text">Elimini definitiv %1$d articole din lista ta?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Adaugă din URL</string>
     <string name="wardrobe_url_import_title">Importă din URL produs</string>
     <string name="wardrobe_url_import_hint">Lipește URL-ul unei pagini de produs. Vom prelua imaginea automat.</string>
-    <string name="url_import_failed">Nu s-a găsit nicio imagine la acest URL.</string>
     <string name="url_import_pick_title">Alege imaginea produsului</string>
     <string name="url_import_pick_hint">Apasă pe imaginea pe care vrei să o imporți.</string>
     <string name="url_import_browser_title">Deschide pagina</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Eliminare fundal %1$d din %2$d…</string>
     <string name="wardrobe_progress_moving">Se mută în locație nouă…</string>
     <string name="action_select_all">Selectează tot</string>
-    <string name="action_deselect_all">Deselectează tot</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -138,7 +125,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Restaurare garderobă: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Niciun articol conform filtrului</string>
     <string name="wardrobe_item_count">%1$d articole</string>
     <string name="wardrobe_filtered_count">Se afișează %1$d din %2$d articole</string>
     <string name="wardrobe_stats_total">Total %1$d articole</string>
@@ -147,7 +133,6 @@
     <string name="wardrobe_empty_hint">Fă o poză sau alege din galerie</string>
     <string name="wardrobe_create_outfit">Creează ținută manual</string>
     <string name="wardrobe_compose_ai">Compune cu AI</string>
-    <string name="wardrobe_selected_count">%1$d selectate</string>
     <string name="wardrobe_select_all_count">Selectează tot (%1$d)</string>
     <string name="wardrobe_delete_title">Ștergi articolele?</string>
     <string name="wardrobe_delete_text">Ești sigur că vrei să ștergi cele %d articole selectate? Acțiunea este ireversibilă.</string>
@@ -168,7 +153,6 @@
     <string name="wardrobe_add_camera">Cameră</string>
     <string name="wardrobe_add_to_closet">Adaugă în %1$s</string>
     <string name="wardrobe_add_to_closet_title">Adaugă în garderobă</string>
-    <string name="action_continue">Continuă</string>
     <string name="tag_label">Nume</string>
     <string name="tag_label_placeholder">ex. Chinos bleumarin, Cămașă Oxford albă</string>
     <string name="tag_add_custom">Adaugă personalizat…</string>
@@ -537,8 +521,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_tab_feedback">Feedback</string>
     <string name="shop_clear">Șterge</string>
     <string name="shop_description">Fă o fotografie a unei piese pe care o ai în vedere și îți vom arăta cele mai similare vizual articole pe care le ai deja în garderobă — totul direct pe dispozitiv.</string>
-    <string name="shop_error_embed_failed">Nu s-a putut analiza fotografia. Încearcă alta.</string>
-    <string name="shop_error_model_missing">Modelul de căutare vizuală nu este instalat.</string>
     <string name="shop_index_size">%1$d articole indexate</string>
     <string name="shop_indexing">Se indexează garderoba… %1$d / %2$d</string>
     <string name="shop_matches_title">Cele mai bune potriviri (%1$d)</string>
@@ -668,7 +650,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Unele articole nu au putut fi mutate. Au fost restaurate.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Încărcarea a eșuat: %1$s</string>
-    <string name="error_original_unavailable">Originalul nu este disponibil</string>
     <string name="error_import_failed_item">Importul pentru %1$s a eșuat: %2$s</string>
     <string name="error_tag_save_failed">Salvarea etichetelor în Drive a eșuat: %1$s</string>
     <string name="error_add_items_first">Adaugă mai întâi articole în garderoba ta.</string>
-    <string name="error_query_photo_missing">Fotografia de căutare nu mai există.</string>
-    <string name="error_import_query_failed">Importul fotografiei de căutare a eșuat.</string>
     <string name="error_trips_folder_not_ready">Folderul de călătorii nu este pregatit.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Adaugă ținuta în calendar</string>
@@ -814,13 +791,10 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="fab_outfits_new">Ținută nouă</string>
     <string name="fab_wardrobe_add">Adaugă articol</string>
     <string name="fab_calendar_log">Înregistrează ținuta</string>
-    <string name="fab_shopping_add">Adaugă găsire</string>
-    <string name="sel_style">Stil</string>
     <string name="sel_swap">Schimbă</string>
     <string name="sel_move">Mută</string>
     <string name="sel_combine">Combină</string>
     <string name="sel_love">Apreciază</string>
-    <string name="sel_add_to_closet">În dulap</string>
     <string name="sel_copy_to_day">Copiază</string>
     <string name="sel_remove">Elimină</string>
 

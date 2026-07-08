@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Hiányosságok keresése</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">A kívánságlistád üres</string>
-    <string name="shop_list_empty_hint">Adj hozzá darabokat, amiket megvenni készülsz a kamerával, galériából vagy egy webáruház linkjével.</string>
     <string name="shop_list_add_camera">Hozzáadás kamerával</string>
     <string name="shop_list_add_gallery">Hozzáadás galériából</string>
     <string name="shop_list_add_url">Hozzáadás linkkel</string>
-    <string name="shop_list_url_title">Hozzáadás linkkel</string>
-    <string name="shop_list_url_hint">Másold be egy termékoldal linkjét. Automatikusan lekérjük a termék képét.</string>
-    <string name="shop_list_uploading">Feltöltés…</string>
-    <string name="shop_list_moving">Mozgatás…</string>
-    <string name="shop_list_loading">Betöltés…</string>
-    <string name="shop_list_processing">%1$d darab feldolgozása…</string>
     <string name="shop_list_move_to_closet">Mozgatás a gardróbba</string>
-    <string name="shop_list_move_title">Mozgatás a gardróbba</string>
-    <string name="shop_list_delete_title">Törlés a kívánságlistáról?</string>
-    <string name="shop_list_delete_text">Véglegesen eltávolítasz %1$d darabot a kívánságlistáról?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Hozzáadás linkkel</string>
     <string name="wardrobe_url_import_title">Importálás webáruház linkjéről</string>
     <string name="wardrobe_url_import_hint">Másold be egy termékoldal linkjét. Automatikusan lekérjük a termék képét.</string>
-    <string name="url_import_failed">Nem található termékkép ezen a linken.</string>
     <string name="url_import_pick_title">Válaszd ki a termékképet</string>
     <string name="url_import_pick_hint">Koppints a képre, amit importálni szeretnél. Ha egyik sem jó, nyisd meg az oldalt böngészőben.</string>
     <string name="url_import_browser_title">Oldal megnyitása</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Háttér eltávolítása: %1$d / %2$d…</string>
     <string name="wardrobe_progress_moving">Mozgatás új helyre…</string>
     <string name="action_select_all">Összes kijelölése</string>
-    <string name="action_deselect_all">Kijelölés törlése</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Gardrób visszaállítása: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Nincs a szűrőnek megfelelő darab</string>
     <string name="wardrobe_item_count">%1$d darab</string>
     <string name="wardrobe_filtered_count">%1$d / %2$d darab megjelenítve</string>
     <string name="wardrobe_stats_total">Összesen %1$d darab</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">Készíts egy fotót vagy válassz a galériából</string>
     <string name="wardrobe_create_outfit">Szett létrehozása manuálisan</string>
     <string name="wardrobe_compose_ai">Összeállítás AI-val</string>
-    <string name="wardrobe_selected_count">%1$d kijelölve</string>
     <string name="wardrobe_select_all_count">Összes kijelölése (%1$d)</string>
     <string name="wardrobe_delete_title">Darabok törlése?</string>
     <string name="wardrobe_delete_text">Biztosan törlöd a kijelölt %d darabot? Ezt nem lehet visszavonni.</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Hozzáadás ide: %1$s</string>
     <string name="wardrobe_add_to_closet_title">Hozzáadás a gardróbhoz</string>
-    <string name="action_continue">Folytatás</string>
     <string name="tag_label">Név</string>
     <string name="tag_label_placeholder">pl. Sötétkék Chino, Fehér Oxford ing</string>
     <string name="tag_add_custom">Egyéni hozzáadása…</string>
@@ -537,8 +521,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_tab_feedback">Visszajelzés</string>
     <string name="shop_clear">Törlés</string>
     <string name="shop_description">Készíts fotót egy darabról, amit fontolgatsz, és megmutatjuk a vizuálisan leginkább hasonló darabokat a gardróbodból — teljesen az eszközön.</string>
-    <string name="shop_error_embed_failed">Nem sikerült elemezni a fotót. Próbálj másikat.</string>
-    <string name="shop_error_model_missing">A vizuális keresési modell nincs telepítve.</string>
     <string name="shop_index_size">%1$d darab indexelve</string>
     <string name="shop_indexing">Gardrób indexelése… %1$d / %2$d</string>
     <string name="shop_matches_title">Top találatok (%1$d)</string>
@@ -668,7 +650,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Néhány elemet nem sikerült áthelyezni. Visszaállítottuk őket.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">A feltöltés sikertelen: %1$s</string>
-    <string name="error_original_unavailable">Az eredeti nem érhető el</string>
     <string name="error_import_failed_item">%1$s importálása sikertelen: %2$s</string>
     <string name="error_tag_save_failed">A címkék Drive-ra mentése sikertelen: %1$s</string>
     <string name="error_add_items_first">Először adj hozzá darabokat a gardróbodhoz.</string>
-    <string name="error_query_photo_missing">A keresési fotó már nem létezik.</string>
-    <string name="error_import_query_failed">A keresési fotó importálása sikertelen.</string>
     <string name="error_trips_folder_not_ready">Az utazások mappa nem áll készen.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Szett hozzáadása a naptárhoz</string>
@@ -814,13 +791,10 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="fab_outfits_new">Új szett</string>
     <string name="fab_wardrobe_add">Tárgy hozzáadása</string>
     <string name="fab_calendar_log">Szett rögzítése</string>
-    <string name="fab_shopping_add">Talált tárgy</string>
-    <string name="sel_style">Stílus</string>
     <string name="sel_swap">Csere</string>
     <string name="sel_move">Áthelyezés</string>
     <string name="sel_combine">Kombinálás</string>
     <string name="sel_love">Kedvelés</string>
-    <string name="sel_add_to_closet">Szekrénybe</string>
     <string name="sel_copy_to_day">Másolás</string>
     <string name="sel_remove">Eltávolítás</string>
 

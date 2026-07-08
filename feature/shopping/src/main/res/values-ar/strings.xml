@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">إضافة من رابط</string>
+    <string name="shop_list_url_hint">الصق رابط صفحة التسوق. سنقوم بسحب صورة المنتج تلقائيًا.</string>
+    <string name="shop_list_uploading">جاري الرفع…</string>
+    <string name="shop_list_processing">جاري معالجة %1$d صنف…</string>
+    <string name="shop_list_moving">جاري النقل…</string>
+    <string name="shop_list_move_title">نقل إلى الخزانة</string>
+    <string name="shop_list_loading">جاري التحميل…</string>
+    <string name="shop_list_empty_title">قائمة أمنياتك فارغة</string>
+    <string name="shop_list_empty_hint">أضف الأصناف التي تفكر في شرائها عبر الكاميرا أو المعرض أو رابط تسوق.</string>
+    <string name="shop_list_delete_title">حذف من قائمة الأمنيات؟</string>
+    <string name="shop_list_delete_text">هل تريد حذف %1$d صنف نهائيًا من قائمة أمنياتك؟</string>
+    <string name="shop_error_model_missing">نموذج البحث البصري غير مثبت.</string>
+    <string name="shop_error_embed_failed">تعذر تحليل تلك الصورة. جرب صورة أخرى.</string>
+    <string name="sel_add_to_closet">إضافة إلى الخزانة</string>
+    <string name="fab_shopping_add">إضافة منتج</string>
+    <string name="error_query_photo_missing">لم تعد صورة البحث موجودة.</string>
+    <string name="error_import_query_failed">فشل استيراد صورة البحث.</string>
+</resources>

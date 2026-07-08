@@ -8,7 +8,7 @@ deferred and inter-blocking:
 
 | § | Layer | Status |
 |---|-------|--------|
-| 1 | Multi-module Gradle | **In progress** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4). § 5's completion unblocked `feature/*`, and the ground truth is measured (July 2026 — see the § 1 execution plan): the feature packages are still cyclic at the screen/plumbing level (multi-feature host files, shared plumbing homed in `wardrobe/`, settings data types read by everyone), so the plan sinks shared code down / lifts hosts into the shell first, then extracts leaf-first (`weather`/`auth`/`billing` are genuine leaves). `core/designsystem` rides slice 4 with the recorded res-split decision (module-scoped `R` for shared-UI strings, no key renames). **Slice 1 LANDED** (July 2026): `UserPreferences`+`AppFont`/`AppLanguage`/`TryOnSlot`/`ImageQuality`/`PromptItemJson` sank to `core/model` (packages kept; `core/common` gained `api(:core:model)`); the taxonomy data half was re-scoped to slice 4 (normalizer + color-order deps — see the slice notes). **Slices 2–4 LANDED** (July 2026): slice 2 sank the shared item plumbing (`core/sync`/`core/database`/`core/model`/`core/common`), slice 3 lifted the multi-feature hosts into the app shell, and slice 4 landed `:core:designsystem` with the res-split (144 shared-UI string keys module-scoped across all 33 locale dirs, `DsR` alias convention app-side, `add_translations.py --module`) — see the slice notes. **Slice 5 LANDED** (July 2026): `core:weather`, `core:service`, `feature:auth`, `feature:billing` extracted (enablers: `PreloadedUiPrefs`+`localized()`+`Analytics` sank to `core/common`; `PROXY_BASE_URL` left `:app` for `feature/billing`'s own BuildConfig). **Slice 6 in progress**: `core:session` (the `data/session` sink) + `feature:onboarding` landed (July 2026) — see the slice notes |
+| 1 | Multi-module Gradle | **In progress** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4). § 5's completion unblocked `feature/*`, and the ground truth is measured (July 2026 — see the § 1 execution plan): the feature packages are still cyclic at the screen/plumbing level (multi-feature host files, shared plumbing homed in `wardrobe/`, settings data types read by everyone), so the plan sinks shared code down / lifts hosts into the shell first, then extracts leaf-first (`weather`/`auth`/`billing` are genuine leaves). `core/designsystem` rides slice 4 with the recorded res-split decision (module-scoped `R` for shared-UI strings, no key renames). **Slice 1 LANDED** (July 2026): `UserPreferences`+`AppFont`/`AppLanguage`/`TryOnSlot`/`ImageQuality`/`PromptItemJson` sank to `core/model` (packages kept; `core/common` gained `api(:core:model)`); the taxonomy data half was re-scoped to slice 4 (normalizer + color-order deps — see the slice notes). **Slices 2–4 LANDED** (July 2026): slice 2 sank the shared item plumbing (`core/sync`/`core/database`/`core/model`/`core/common`), slice 3 lifted the multi-feature hosts into the app shell, and slice 4 landed `:core:designsystem` with the res-split (144 shared-UI string keys module-scoped across all 33 locale dirs, `DsR` alias convention app-side, `add_translations.py --module`) — see the slice notes. **Slice 5 LANDED** (July 2026): `core:weather`, `core:service`, `feature:auth`, `feature:billing` extracted (enablers: `PreloadedUiPrefs`+`localized()`+`Analytics` sank to `core/common`; `PROXY_BASE_URL` left `:app` for `feature/billing`'s own BuildConfig). **Slice 6 in progress**: `core:session` (the `data/session` sink) + `feature:onboarding`, then `feature:tryon`, `feature:travel` (+ the `core:outfit`/chrome enablers) and `feature:shopping` landed (July 2026) — see the slice notes; remaining: `feature:outfit` → `feature:wardrobe` → `feature:settings` |
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), try-ons (`tryon.syncIndex` + reused `wardrobe.deleteItem` — the last leftover, converted July 2026; only the image *byte* uploads stay direct), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Done** (July 2026 — slices 1–5 landed; the one deferred sub-item, the `ImageEncoding.tier` static kill, was resolved by § 7's recorded reduced-scope decision: it *stays* on the `StaticPreferenceMirrors` mechanism, revisit only if the pref gains a cross-process or observe-for-change requirement). The trail: Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; **the § 2 sync handlers are on the interface too** (July 2026, § 3 slice 2, all seven incl. the later try-on index handler — handler surface absorbed, drain/retry/rollback/wipe-guard invariants fake-tested); **the pipeline / use-case / VM seams flipped as well** (July 2026, § 3 slice 3 — every app- and `:core:ai`-side consumer takes the interface; concrete type remains only in the Hilt graph, `AppContent` threading and the deliberate `DriveMigrationViewModel` exception); **`AiClient` landed at the Gemini seam** (July 2026, § 3 slice 4 — the four consumer-called ops virtual, all ten AI consumers on the interface, first fake-based use-case tests via `FakeAiClient`); **`AiRetry` + `GeminiProgress` are injected `@Singleton`s** (July 2026, § 3 slice 5 — two of the three static globals killed; `ImageEncoding.tier` deferred to § 7's settings seam) |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
@@ -1650,13 +1650,39 @@ categories:
    app-`R` keys with a grep that excludes `DsR.string.` matches — plain `R\.string\.`
    false-positives on the `DsR` alias.
 
+   **`feature:shopping` LANDED** (July 2026) — the re-measure found shopping was already a
+   leaf: its only feature→feature edges were two **doc-comment-only** `WardrobeViewModel`
+   imports (deleted, KDoc kept as plain text); everything else it imports already lives in
+   core under the kept packages (`DriveImage`/`ItemSidecar`/`UrlImportPickerState`/`toCachedItem`
+   in model+database, `SidecarSyncQueue` + the § 2 move/delete kinds/payloads in sync, the
+   grid/taxonomy/filter/`MatchPreviewDialog` UI in designsystem, `WebProductFetcher`/
+   `rotateBitmapFileBy90` in common). No VM-param narrowing enabler was needed (shopping's
+   screens already take data + callbacks; `ShoppingClosetViewModel`/`ShoppingHelperViewModel`
+   are threaded by the app-shell hosts `ShoppingHelperScreen`/`SimilarityFinderTab`/
+   `IdentifyGapsTab`, which stay app-side). The 6 kt files moved wholesale (package kept),
+   Hilt+KSP for the `@HiltViewModel` + the `@Singleton` repo/ingestion-queue. Module deps:
+   `api(core:model)`, impl `core:sync`/`core:database`/`core:ai`/**`core:ml`** (the similarity
+   finder's `EmbeddingService`)/`core:common`/`core:session`/`core:designsystem`; no Hilt
+   `@IntoSet` handlers (shopping reuses wardrobe's mutation kinds), no BuildConfig, no manifest.
+   Res split: 17 shopping-only keys → `feature/shopping/res` (32 locales), 9 keys shared with
+   app-side wardrobe/outfit (`url_import_failed`/`action_continue`/`wardrobe_selected_count`/
+   `wardrobe_move_failed`/`wardrobe_empty_filter`/`sel_style`/`error_upload_failed`/
+   `error_original_unavailable`/`action_deselect_all`) → the designsystem vocabulary per the
+   recorded precedent, 7 app files flipped to `DsR`. Visibility bumps: `ShoppingListTab`/
+   `ShopUrlImportDialog` + the six `ShoppingClosetViewModel.*` import extensions (`addFromCamera`/
+   `addFromGallery`/`addFromUrl`/`cancelUrlImport`/`confirmUrlImportPick`/`importQuery`)
+   `internal`→public (app-shell callers). The three § 8 suites (14 tests: `ShoppingClosetViewModelTest`/
+   `ShoppingRepositoryTest`/`ShoppingIngestionQueueTest`) stay in `app/src/test` against the
+   module's public API (public constructors, public `folderId`/`items`/`refreshFromDrive`/
+   `resolveFolder`/`enqueue`/`errors`/`pendingJobs`). Tooling: `--module shopping`;
+   `translation_status.sh` aggregates the ninth res root (still 1180 keys).
+   `./gradlew :app:assembleDebug testDebugUnitTest` green.
+
    **Remaining (§ 1 slice 6, leaf-first, re-measure each before starting) — next:
-   `feature:shopping`** (needs the shopping↔wardrobe VM edges measured; `ShoppingRepository`/
-   `ShoppingIngestionQueue` are already singleton-shaped) → `feature:outfit` (largest;
-   `core:outfit` domain home exists, the composer/generation VM split is done — the knot is
-   the app-shell hosts `OutfitViewerDestination`/calendar and the prediction surfaces) →
-   `feature:wardrobe` (after outfit — the shared grid/viewer chrome is already in
-   designsystem; `FullScreenViewer`/`ItemViewerDestination` stay app-shell) →
+   `feature:outfit`** (largest; `core:outfit` domain home exists, the composer/generation VM
+   split is done — the knot is the app-shell hosts `OutfitViewerDestination`/calendar and the
+   prediction surfaces) → `feature:wardrobe` (after outfit — the shared grid/viewer chrome is
+   already in designsystem; `FullScreenViewer`/`ItemViewerDestination` stay app-shell) →
    `feature:settings` last (hosts cross-feature reporting + the VMs everything narrows
    against). Each slice repeats this template: measure edges → narrow VM params to
    data+callbacks (enabler) → sink shared composables/strings to designsystem → move the

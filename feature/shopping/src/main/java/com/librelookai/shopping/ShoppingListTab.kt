@@ -47,7 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.librelookai.R
+import com.librelookai.feature.shopping.R
 import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.util.Analytics
@@ -63,7 +63,7 @@ import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.tagStringsForCategory
 
 @Composable
-internal fun ShoppingListTab(
+fun ShoppingListTab(
     shoppingClosetViewModel: ShoppingClosetViewModel,
     locations: List<Location>,
     onCaptureClick: () -> Unit,
@@ -114,7 +114,7 @@ internal fun ShoppingListTab(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            stringResource(R.string.wardrobe_selected_count, state.selectedIds.size),
+                            stringResource(DsR.string.wardrobe_selected_count, state.selectedIds.size),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.weight(1f),
@@ -123,7 +123,7 @@ internal fun ShoppingListTab(
                             onClick = shoppingClosetViewModel::clearSelection,
                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                         ) {
-                            Text(stringResource(R.string.action_deselect_all))
+                            Text(stringResource(DsR.string.action_deselect_all))
                         }
                     }
                 }
@@ -156,7 +156,7 @@ internal fun ShoppingListTab(
                 }
             } else if (displayedItems.isEmpty()) {
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.wardrobe_empty_filter), style = MaterialTheme.typography.bodyLarge)
+                    Text(stringResource(DsR.string.wardrobe_empty_filter), style = MaterialTheme.typography.bodyLarge)
                 }
             } else {
                 WardrobeZoomableItemGrid(
@@ -235,7 +235,7 @@ internal fun ShoppingListTab(
                 }
                 add(
                     SelectionAction(
-                        label = stringResource(R.string.sel_style),
+                        label = stringResource(DsR.string.sel_style),
                         icon = Icons.Default.AutoAwesome,
                     ) {
                         Analytics.action("Shopping", "create_outfit_from_selection", mapOf("count" to state.selectedIds.size.toString()))
@@ -333,7 +333,7 @@ internal fun ShoppingListTab(
 }
 
 @Composable
-internal fun ShopUrlImportDialog(
+fun ShopUrlImportDialog(
     onSubmit: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -362,7 +362,7 @@ internal fun ShopUrlImportDialog(
                 Analytics.action("Shopping", "submit_url_import")
                 onSubmit(url.trim())
             }) {
-                Text(stringResource(R.string.action_continue))
+                Text(stringResource(DsR.string.action_continue))
             }
         },
         dismissButton = {
@@ -408,7 +408,7 @@ private fun MoveToClosetDialog(
                     Analytics.action("Shopping", "confirm_move_to_closet")
                     selectedFolderId?.let(onConfirm)
                 },
-            ) { Text(stringResource(R.string.action_continue)) }
+            ) { Text(stringResource(DsR.string.action_continue)) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }

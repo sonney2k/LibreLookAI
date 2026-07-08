@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Per URL hinzufügen</string>
+    <string name="shop_list_url_hint">Füge die URL einer Shopping-Seite ein. Wir laden das Produktbild automatisch.</string>
+    <string name="shop_list_uploading">Wird hochgeladen…</string>
+    <string name="shop_list_processing">%1$d Artikel werden verarbeitet…</string>
+    <string name="shop_list_moving">Wird verschoben…</string>
+    <string name="shop_list_move_title">In Kleiderschrank verschieben</string>
+    <string name="shop_list_loading">Wird geladen…</string>
+    <string name="shop_list_empty_title">Deine Wunschliste ist leer</string>
+    <string name="shop_list_empty_hint">Füge Artikel hinzu, die du dir überlegst zu kaufen — per Kamera, Galerie oder Shopping-Link.</string>
+    <string name="shop_list_delete_title">Von Wunschliste löschen?</string>
+    <string name="shop_list_delete_text">%1$d Artikel dauerhaft von der Wunschliste entfernen?</string>
+    <string name="shop_error_model_missing">Das Modell für die visuelle Suche ist nicht installiert.</string>
+    <string name="shop_error_embed_failed">Das Foto konnte nicht analysiert werden. Probiere es erneut.</string>
+    <string name="sel_add_to_closet">In Schrank</string>
+    <string name="fab_shopping_add">Fund hinzufügen</string>
+    <string name="error_query_photo_missing">Das Suchfoto existiert nicht mehr.</string>
+    <string name="error_import_query_failed">Suchfoto konnte nicht importiert werden.</string>
+</resources>

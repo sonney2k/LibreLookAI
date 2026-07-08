@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Historie nošení</string>
     <string name="error_gemini_no_response">AI neodpověděla.</string>
     <string name="error_gemini_parse">Nelze přečíst odpověď AI.</string>
+    <string name="url_import_failed">Na této URL se nepodařilo najít obrázek produktu.</string>
+    <string name="action_continue">Pokračovat</string>
+    <string name="wardrobe_selected_count">%1$d vybráno</string>
+    <string name="wardrobe_move_failed">Některé položky se nepodařilo přesunout. Byly obnoveny.</string>
+    <string name="wardrobe_empty_filter">Filtru neodpovídají žádné položky</string>
+    <string name="sel_style">Styl</string>
+    <string name="error_upload_failed">Nahrání selhalo: %1$s</string>
+    <string name="error_original_unavailable">Originál není k dispozici</string>
+    <string name="action_deselect_all">Zrušit výběr</string>
 </resources>

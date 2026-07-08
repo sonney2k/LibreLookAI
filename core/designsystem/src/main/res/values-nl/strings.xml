@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Draaggeschiedenis</string>
     <string name="error_gemini_no_response">De AI reageerde niet.</string>
     <string name="error_gemini_parse">Kan het AI-antwoord niet lezen.</string>
+    <string name="url_import_failed">Geen productfoto gevonden op deze URL.</string>
+    <string name="action_continue">Doorgaan</string>
+    <string name="wardrobe_selected_count">%1$d geselecteerd</string>
+    <string name="wardrobe_move_failed">Sommige items konden niet worden verplaatst. Ze zijn hersteld.</string>
+    <string name="wardrobe_empty_filter">Geen items voldoen aan het filter</string>
+    <string name="sel_style">Stylen</string>
+    <string name="error_upload_failed">Uploaden mislukt: %1$s</string>
+    <string name="error_original_unavailable">Origineel niet beschikbaar</string>
+    <string name="action_deselect_all">Niets selecteren</string>
 </resources>

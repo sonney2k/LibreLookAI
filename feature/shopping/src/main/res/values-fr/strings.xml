@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Ajouter depuis une URL</string>
+    <string name="shop_list_url_hint">Colle l\'URL d\'une page shopping. Nous récupérerons l\'image du produit automatiquement.</string>
+    <string name="shop_list_uploading">Envoi en cours…</string>
+    <string name="shop_list_processing">Traitement de %1$d article(s)…</string>
+    <string name="shop_list_moving">Déplacement…</string>
+    <string name="shop_list_move_title">Déplacer vers la garde-robe</string>
+    <string name="shop_list_loading">Chargement…</string>
+    <string name="shop_list_empty_title">Ta liste de souhaits est vide</string>
+    <string name="shop_list_empty_hint">Ajoute des articles que tu envisages d\'acheter avec l\'appareil photo, la galerie ou une URL shopping.</string>
+    <string name="shop_list_delete_title">Supprimer de la liste de souhaits ?</string>
+    <string name="shop_list_delete_text">Supprimer définitivement %1$d article(s) de ta liste de souhaits ?</string>
+    <string name="shop_error_model_missing">Modèle de recherche visuelle non installé.</string>
+    <string name="shop_error_embed_failed">Impossible d\'analyser cette photo. Essaies-en une autre.</string>
+    <string name="sel_add_to_closet">Au dressing</string>
+    <string name="fab_shopping_add">Ajouter une trouvaille</string>
+    <string name="error_query_photo_missing">La photo de recherche n\'existe plus.</string>
+    <string name="error_import_query_failed">Échec de l\'import de la photo de recherche.</string>
+</resources>

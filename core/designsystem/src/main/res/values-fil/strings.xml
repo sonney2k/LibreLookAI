@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Kasaysayan ng suot</string>
     <string name="error_gemini_no_response">Hindi tumugon ang AI.</string>
     <string name="error_gemini_parse">Hindi mabasa ang tugon ng AI.</string>
+    <string name="url_import_failed">Walang nakitang larawan ng produkto sa URL na ito.</string>
+    <string name="action_continue">Magpatuloy</string>
+    <string name="wardrobe_selected_count">%1$d ang napili</string>
+    <string name="wardrobe_move_failed">Hindi nailipat ang ilang item. Naibalik na ang mga ito.</string>
+    <string name="wardrobe_empty_filter">Walang item na tumutugma sa filter</string>
+    <string name="sel_style">I-style</string>
+    <string name="error_upload_failed">Nabigo ang pag-upload: %1$s</string>
+    <string name="error_original_unavailable">Hindi available ang orihinal</string>
+    <string name="action_deselect_all">Alisin sa pagpili</string>
 </resources>

@@ -122,7 +122,7 @@ internal fun UrlImportDialog(
                     Analytics.action("Wardrobe", "submit_url_import")
                     onSubmit(url.trim(), selectedFolderId)
                 },
-            ) { Text(stringResource(R.string.action_continue)) }
+            ) { Text(stringResource(DsR.string.action_continue)) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }

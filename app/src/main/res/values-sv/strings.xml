@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Hitta luckor</string>
 
     <!-- Inköpslista underflik -->
-    <string name="shop_list_empty_title">Din önskelista är tom</string>
-    <string name="shop_list_empty_hint">Lägg till plagg du funderar på att köpa via kamera, galleri eller shoppinglänk.</string>
     <string name="shop_list_add_camera">Lägg till från kamera</string>
     <string name="shop_list_add_gallery">Lägg till från galleri</string>
     <string name="shop_list_add_url">Lägg till via URL</string>
-    <string name="shop_list_url_title">Lägg till via URL</string>
-    <string name="shop_list_url_hint">Klistra in URL:en till en shoppingsida. Vi hämtar produktbilden automatiskt.</string>
-    <string name="shop_list_uploading">Laddar upp…</string>
-    <string name="shop_list_moving">Flyttar…</string>
-    <string name="shop_list_loading">Laddar…</string>
-    <string name="shop_list_processing">Bearbetar %1$d plagg…</string>
     <string name="shop_list_move_to_closet">Flytta till garderob</string>
-    <string name="shop_list_move_title">Flytta till garderob</string>
-    <string name="shop_list_delete_title">Ta bort från önskelistan?</string>
-    <string name="shop_list_delete_text">Ta permanent bort %1$d plagg från din önskelista?</string>
 
     <!-- URL-import (Garderob + Inköpslista) -->
     <string name="wardrobe_add_url">Lägg till via URL</string>
     <string name="wardrobe_url_import_title">Importera från shopping-URL</string>
     <string name="wardrobe_url_import_hint">Klistra in URL:en till en shoppingsida. Vi hämtar produktbilden automatiskt.</string>
-    <string name="url_import_failed">Hittade ingen produktbild på denna URL.</string>
     <string name="url_import_pick_title">Välj produktbild</string>
     <string name="url_import_pick_hint">Tryck på bilden du vill importera. Om ingen passar, öppna sidan i webbläsaren.</string>
     <string name="url_import_browser_title">Öppna sida</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Tar bort bakgrund %1$d av %2$d…</string>
     <string name="wardrobe_progress_moving">Flyttar till ny plats…</string>
     <string name="action_select_all">Markera alla</string>
-    <string name="action_deselect_all">Avmarkera alla</string>
 
     <!-- Inloggning -->
     <!-- Inställningar -->
@@ -223,7 +210,6 @@
 
     <!-- Garderob -->
     <string name="wardrobe_sync_progress">Återställer garderob: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Inga plagg matchar filtret</string>
     <string name="wardrobe_item_count">%1$d plagg</string>
     <string name="wardrobe_filtered_count">Visar %1$d av %2$d plagg</string>
     <string name="wardrobe_stats_total">%1$d plagg totalt</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Ta ett foto eller välj från ditt galleri</string>
     <string name="wardrobe_create_outfit">Skapa outfit manuellt</string>
     <string name="wardrobe_compose_ai">Skapa med AI</string>
-    <string name="wardrobe_selected_count">%1$d valda</string>
     <string name="wardrobe_select_all_count">Markera alla (%1$d)</string>
     <string name="wardrobe_delete_title">Ta bort plagg?</string>
     <string name="wardrobe_delete_text">Är du säker på att du vill ta bort %d valda plagg? Detta kan inte ångras.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Lägg till i %1$s</string>
     <string name="wardrobe_add_to_closet_title">Lägg till i garderob</string>
-    <string name="action_continue">Fortsätt</string>
     <string name="tag_label">Namn</string>
     <string name="tag_label_placeholder">t.ex. Marinblå chinos, Vit Oxfordskjorta</string>
     <string name="tag_add_custom">Lägg till anpassad…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Indexerar garderob… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d plagg indexerade</string>
     <string name="shop_model_missing">Lokal modell saknas. Placera efficientnet_lite0.tflite under app/src/main/assets/embedder/ och magic_touch.tflite under app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">Visuell sökmodell är inte installerad.</string>
-    <string name="shop_error_embed_failed">Kunde inte analysera fotot. Prova ett annat.</string>
 
     <!-- Likhetskontroll (foto / import / Reparera &amp; synka) -->
     <string name="settings_dedupe_title">Likhetskontroll</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Det gick inte att flytta vissa objekt. De har återställts.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Uppladdningen misslyckades: %1$s</string>
-    <string name="error_original_unavailable">Originalet är inte tillgängligt</string>
     <string name="error_import_failed_item">Importen av %1$s misslyckades: %2$s</string>
     <string name="error_tag_save_failed">Det gick inte att spara taggar till Drive: %1$s</string>
     <string name="error_add_items_first">Lägg först till plagg i din garderob.</string>
-    <string name="error_query_photo_missing">Sökfotot finns inte längre.</string>
-    <string name="error_import_query_failed">Det gick inte att importera sökfotot.</string>
     <string name="error_trips_folder_not_ready">Resmappen är inte klar.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Lägg till outfit i kalendern</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Ny outfit</string>
     <string name="fab_wardrobe_add">Lägg till plagg</string>
     <string name="fab_calendar_log">Logga outfit</string>
-    <string name="fab_shopping_add">Lägg till fynd</string>
-    <string name="sel_style">Styla</string>
     <string name="sel_swap">Byt</string>
     <string name="sel_move">Flytta</string>
     <string name="sel_combine">Kombinera</string>
     <string name="sel_love">Gilla</string>
-    <string name="sel_add_to_closet">Till garderob</string>
     <string name="sel_copy_to_day">Kopiera</string>
     <string name="sel_remove">Ta bort</string>
 

@@ -216,4 +216,13 @@
     <string name="ai_consider_history">पहनने का इतिहास</string>
     <string name="error_gemini_no_response">AI ने जवाब नहीं दिया।</string>
     <string name="error_gemini_parse">AI की प्रतिक्रिया पढ़ी नहीं जा सकी।</string>
+    <string name="url_import_failed">इस URL पर कोई उत्पाद छवि नहीं मिली।</string>
+    <string name="action_continue">जारी रखें</string>
+    <string name="wardrobe_selected_count">%1$d चयनित</string>
+    <string name="wardrobe_move_failed">कुछ आइटम स्थानांतरित नहीं हो सके. उन्हें पुनर्स्थापित कर दिया गया है.</string>
+    <string name="wardrobe_empty_filter">फ़िल्टर से मेल खाने वाला कोई आइटम नहीं है</string>
+    <string name="sel_style">स्टाइल</string>
+    <string name="error_upload_failed">अपलोड विफल: %1$s</string>
+    <string name="error_original_unavailable">मूल उपलब्ध नहीं</string>
+    <string name="action_deselect_all">सभी अनसेलेक्ट करें</string>
 </resources>

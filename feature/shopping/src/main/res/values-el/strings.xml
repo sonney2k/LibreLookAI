@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Προσθήκη από URL</string>
+    <string name="shop_list_url_hint">Επικολλήστε το URL μιας σελίδας αγορών. Θα τραβήξουμε αυτόματα την εικόνα του προϊόντος.</string>
+    <string name="shop_list_uploading">Μεταφόρτωση…</string>
+    <string name="shop_list_processing">Επεξεργασία %1$d ειδών…</string>
+    <string name="shop_list_moving">Μετακίνηση…</string>
+    <string name="shop_list_move_title">Μετακίνηση στη ντουλάπα</string>
+    <string name="shop_list_loading">Φόρτωση…</string>
+    <string name="shop_list_empty_title">Η λίστα επιθυμιών σας είναι άδεια</string>
+    <string name="shop_list_empty_hint">Προσθέστε είδη που σκέφτεστε να αγοράσετε μέσω κάμερας, συλλογής ή URL αγορών.</string>
+    <string name="shop_list_delete_title">Διαγραφή από τη λίστα επιθυμιών;</string>
+    <string name="shop_list_delete_text">Μόνιμη αφαίρεση %1$d ειδών από τη λίστα επιθυμιών σας;</string>
+    <string name="shop_error_model_missing">Το μοντέλο οπτικής αναζήτησης δεν είναι εγκατεστημένο.</string>
+    <string name="shop_error_embed_failed">Αδυναμία ανάλυσης φωτογραφίας.</string>
+    <string name="sel_add_to_closet">Στην ντουλάπα</string>
+    <string name="fab_shopping_add">Προσθήκη εύρεσης</string>
+    <string name="error_query_photo_missing">Η φωτογραφία αναζήτησης δεν υπάρχει πλέον.</string>
+    <string name="error_import_query_failed">Αποτυχία εισαγωγής φωτογραφίας αναζήτησης.</string>
+</resources>

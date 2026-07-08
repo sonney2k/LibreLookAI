@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Tilføj via URL</string>
+    <string name="shop_list_url_hint">Indsæt URL\'en til en shoppingside. Vi henter produktbilledet automatisk.</string>
+    <string name="shop_list_uploading">Uploader…</string>
+    <string name="shop_list_processing">Behandler %1$d stykke(r)…</string>
+    <string name="shop_list_moving">Flytter…</string>
+    <string name="shop_list_move_title">Flyt til garderobe</string>
+    <string name="shop_list_loading">Indlæser…</string>
+    <string name="shop_list_empty_title">Din ønskeseddel er tom</string>
+    <string name="shop_list_empty_hint">Tilføj stykker, du overvejer at købe, via kamera, galleri eller et shoppinglink.</string>
+    <string name="shop_list_delete_title">Fjern fra ønskeseddel?</string>
+    <string name="shop_list_delete_text">Fjern %1$d stykke(r) permanent fra din ønskeseddel?</string>
+    <string name="shop_error_model_missing">Visuel søgemodel er ikke installeret.</string>
+    <string name="shop_error_embed_failed">Kunne ikke analysere fotoet. Prøv et andet.</string>
+    <string name="sel_add_to_closet">Til skab</string>
+    <string name="fab_shopping_add">Tilføj fund</string>
+    <string name="error_query_photo_missing">Søgefotoet findes ikke længere.</string>
+    <string name="error_import_query_failed">Kunne ikke importere søgefotoet.</string>
+</resources>

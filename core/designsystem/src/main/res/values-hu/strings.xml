@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Viselési előzmények</string>
     <string name="error_gemini_no_response">Az MI nem válaszolt.</string>
     <string name="error_gemini_parse">Az MI válasza nem olvasható.</string>
+    <string name="url_import_failed">Nem található termékkép ezen a linken.</string>
+    <string name="action_continue">Folytatás</string>
+    <string name="wardrobe_selected_count">%1$d kijelölve</string>
+    <string name="wardrobe_move_failed">Néhány elemet nem sikerült áthelyezni. Visszaállítottuk őket.</string>
+    <string name="wardrobe_empty_filter">Nincs a szűrőnek megfelelő darab</string>
+    <string name="sel_style">Stílus</string>
+    <string name="error_upload_failed">A feltöltés sikertelen: %1$s</string>
+    <string name="error_original_unavailable">Az eredeti nem érhető el</string>
+    <string name="action_deselect_all">Kijelölés törlése</string>
 </resources>

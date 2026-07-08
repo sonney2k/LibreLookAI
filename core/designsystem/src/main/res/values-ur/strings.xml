@@ -216,4 +216,13 @@
     <string name="ai_consider_history">پہننے کی تاریخ</string>
     <string name="error_gemini_no_response">AI نے جواب نہیں دیا۔</string>
     <string name="error_gemini_parse">AI کا جواب پڑھا نہیں جا سکا۔</string>
+    <string name="url_import_failed">اس لنک پر کوئی تصویر نہیں ملی۔</string>
+    <string name="action_continue">جاری رکھیں</string>
+    <string name="wardrobe_selected_count">%1$d منتخب</string>
+    <string name="wardrobe_move_failed">کچھ آئٹمز منتقل نہیں ہو سکے۔ انہیں بحال کر دیا گیا ہے۔</string>
+    <string name="wardrobe_empty_filter">فلٹر سے مطابقت رکھنے والی کوئی شے نہیں ملی</string>
+    <string name="sel_style">اسٹائل</string>
+    <string name="error_upload_failed">اپ لوڈ ناکام: %1$s</string>
+    <string name="error_original_unavailable">اصل دستیاب نہیں</string>
+    <string name="action_deselect_all">انتخاب ختم کریں</string>
 </resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Přidat z URL</string>
+    <string name="shop_list_url_hint">Vložte URL nákupní stránky. Obrázek produktu stáhneme automaticky.</string>
+    <string name="shop_list_uploading">Nahrávání…</string>
+    <string name="shop_list_processing">Zpracování %1$d položek…</string>
+    <string name="shop_list_moving">Přesouvání…</string>
+    <string name="shop_list_move_title">Přesunout do šatníku</string>
+    <string name="shop_list_loading">Načítání…</string>
+    <string name="shop_list_empty_title">Váš seznam přání je prázdný</string>
+    <string name="shop_list_empty_hint">Přidejte položky, které zvažujete koupit, pomocí fotoaparátu, galerie nebo nákupní URL adresy.</string>
+    <string name="shop_list_delete_title">Smazat ze seznamu přání?</string>
+    <string name="shop_list_delete_text">Trvale odstranit %1$d položek ze seznamu přání?</string>
+    <string name="shop_error_model_missing">Model pro vizuální vyhledávání není nainstalován.</string>
+    <string name="shop_error_embed_failed">Tuto fotografii se nepodařilo analyzovat. Zkuste jinou.</string>
+    <string name="sel_add_to_closet">Do šatníku</string>
+    <string name="fab_shopping_add">Přidat nález</string>
+    <string name="error_query_photo_missing">Fotka dotazu už neexistuje.</string>
+    <string name="error_import_query_failed">Import fotky dotazu selhal.</string>
+</resources>

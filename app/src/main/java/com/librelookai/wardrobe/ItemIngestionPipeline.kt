@@ -1,5 +1,6 @@
 package com.librelookai.wardrobe
 import com.librelookai.util.localized
+import com.librelookai.core.designsystem.R as DsR
 
 import android.content.Context
 import android.net.Uri
@@ -356,7 +357,7 @@ class ItemIngestionPipeline @Inject constructor(
                         // Enqueue for review; ingest handles dedupe + queue routing.
                         ingest(f, folderId, skippableLocalReview = true, source = AddSource.GALLERY)
                     }.onFailure { e ->
-                        _errors.emit(context.localized().getString(R.string.error_upload_failed, e.message ?: ""))
+                        _errors.emit(context.localized().getString(DsR.string.error_upload_failed, e.message ?: ""))
                         runCatching { tempFile.delete() }
                     }
                 }
@@ -387,7 +388,7 @@ class ItemIngestionPipeline @Inject constructor(
                     workQueue.send(PendingJob(newImage.driveId, folderId, source = AddSource.GALLERY))
                 }.onFailure { e ->
                     logWardrobeAdd("failed", AddSource.GALLERY, mapOf("reason" to "upload"))
-                    _errors.emit(context.localized().getString(R.string.error_upload_failed, e.message ?: ""))
+                    _errors.emit(context.localized().getString(DsR.string.error_upload_failed, e.message ?: ""))
                 }
                 tempFile.delete()
             }

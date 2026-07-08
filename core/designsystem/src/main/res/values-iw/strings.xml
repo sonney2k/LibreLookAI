@@ -216,4 +216,13 @@
     <string name="ai_consider_history">היסטוריית לבישה</string>
     <string name="error_gemini_no_response">ה-AI לא הגיב.</string>
     <string name="error_gemini_parse">לא ניתן לקרוא את תגובת ה-AI.</string>
+    <string name="url_import_failed">לא ניתן היה למצוא תמונת מוצר בכתובת אתר זו.</string>
+    <string name="action_continue">המשך</string>
+    <string name="wardrobe_selected_count">%1$d נבחרו</string>
+    <string name="wardrobe_move_failed">לא ניתן היה להעביר חלק מהפריטים. הם שוחזרו.</string>
+    <string name="wardrobe_empty_filter">אין פריטים התואמים למסנן</string>
+    <string name="sel_style">סטיילינג</string>
+    <string name="error_upload_failed">ההעלאה נכשלה: %1$s</string>
+    <string name="error_original_unavailable">המקור אינו זמין</string>
+    <string name="action_deselect_all">בטל בחירה הכל</string>
 </resources>

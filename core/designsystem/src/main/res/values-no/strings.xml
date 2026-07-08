@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Brukshistorikk</string>
     <string name="error_gemini_no_response">AI-en svarte ikke.</string>
     <string name="error_gemini_parse">Kunne ikke lese AI-svaret.</string>
+    <string name="url_import_failed">Fant ikke noe produktbilde på denne URL-en.</string>
+    <string name="action_continue">Fortsett</string>
+    <string name="wardrobe_selected_count">%1$d valgt</string>
+    <string name="wardrobe_move_failed">Kunne ikke flytte noen elementer. De er gjenopprettet.</string>
+    <string name="wardrobe_empty_filter">Ingen plagg matcher filteret</string>
+    <string name="sel_style">Stil</string>
+    <string name="error_upload_failed">Opplasting mislyktes: %1$s</string>
+    <string name="error_original_unavailable">Original ikke tilgjengelig</string>
+    <string name="action_deselect_all">Fjern markering</string>
 </resources>

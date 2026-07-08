@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Thêm từ URL</string>
+    <string name="shop_list_url_hint">Dán URL của trang mua sắm. Chúng tôi sẽ tự động lấy ảnh sản phẩm.</string>
+    <string name="shop_list_uploading">Đang tải lên…</string>
+    <string name="shop_list_processing">Đang xử lý %1$d món đồ…</string>
+    <string name="shop_list_moving">Đang di chuyển…</string>
+    <string name="shop_list_move_title">Chuyển vào tủ đồ</string>
+    <string name="shop_list_loading">Đang tải…</string>
+    <string name="shop_list_empty_title">Danh sách mong muốn trống</string>
+    <string name="shop_list_empty_hint">Thêm các món đồ bạn muốn mua bằng camera, thư viện hoặc URL sản phẩm.</string>
+    <string name="shop_list_delete_title">Xóa khỏi danh sách?</string>
+    <string name="shop_list_delete_text">Xóa vĩnh viễn %1$d món đồ khỏi danh sách mong muốn?</string>
+    <string name="shop_error_model_missing">Mô hình tìm kiếm hình ảnh chưa cài đặt.</string>
+    <string name="shop_error_embed_failed">Không thể phân tích ảnh đó. Hãy thử ảnh khác.</string>
+    <string name="sel_add_to_closet">Vào tủ đồ</string>
+    <string name="fab_shopping_add">Thêm món tìm thấy</string>
+    <string name="error_query_photo_missing">Ảnh tìm kiếm không còn tồn tại.</string>
+    <string name="error_import_query_failed">Nhập ảnh tìm kiếm không thành công.</string>
+</resources>

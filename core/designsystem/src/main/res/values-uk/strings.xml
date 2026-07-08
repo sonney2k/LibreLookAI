@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Історія носіння</string>
     <string name="error_gemini_no_response">ШІ не відповів.</string>
     <string name="error_gemini_parse">Не вдалося прочитати відповідь ШІ.</string>
+    <string name="url_import_failed">Не вдалося знайти зображення за цим посиланням.</string>
+    <string name="action_continue">Продовжити</string>
+    <string name="wardrobe_selected_count">%1$d вибрано</string>
+    <string name="wardrobe_move_failed">Не вдалося перемістити деякі елементи. Їх відновлено.</string>
+    <string name="wardrobe_empty_filter">Нічого не знайдено за фільтром</string>
+    <string name="sel_style">Стиль</string>
+    <string name="error_upload_failed">Не вдалося завантажити: %1$s</string>
+    <string name="error_original_unavailable">Оригінал недоступний</string>
+    <string name="action_deselect_all">Зняти вибір</string>
 </resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Tambah dari URL</string>
+    <string name="shop_list_url_hint">Tampal URL halaman membeli-belah. Kami akan mengambil imej produk secara automatik.</string>
+    <string name="shop_list_uploading">Memuat naik…</string>
+    <string name="shop_list_processing">Memproses %1$d barangan…</string>
+    <string name="shop_list_moving">Memindahkan…</string>
+    <string name="shop_list_move_title">Pindah ke almari</string>
+    <string name="shop_list_loading">Memuatkan…</string>
+    <string name="shop_list_empty_title">Senarai hajat anda kosong</string>
+    <string name="shop_list_empty_hint">Tambah barangan yang anda pertimbangkan untuk beli melalui kamera, galeri, atau URL membeli-belah.</string>
+    <string name="shop_list_delete_title">Padam dari senarai hajat?</string>
+    <string name="shop_list_delete_text">Padamkan %1$d barangan secara kekal dari senarai hajat anda?</string>
+    <string name="shop_error_model_missing">Model carian visual belum dipasang.</string>
+    <string name="shop_error_embed_failed">Tidak dapat menganalisis foto itu. Cuba yang lain.</string>
+    <string name="sel_add_to_closet">Ke almari</string>
+    <string name="fab_shopping_add">Tambah jumpaan</string>
+    <string name="error_query_photo_missing">Foto carian tidak wujud lagi.</string>
+    <string name="error_import_query_failed">Gagal mengimport foto carian.</string>
+</resources>

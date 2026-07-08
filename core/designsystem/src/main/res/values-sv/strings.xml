@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Användningshistorik</string>
     <string name="error_gemini_no_response">AI:n svarade inte.</string>
     <string name="error_gemini_parse">Det gick inte att läsa AI-svaret.</string>
+    <string name="url_import_failed">Hittade ingen produktbild på denna URL.</string>
+    <string name="action_continue">Fortsätt</string>
+    <string name="wardrobe_selected_count">%1$d valda</string>
+    <string name="wardrobe_move_failed">Det gick inte att flytta vissa objekt. De har återställts.</string>
+    <string name="wardrobe_empty_filter">Inga plagg matchar filtret</string>
+    <string name="sel_style">Styla</string>
+    <string name="error_upload_failed">Uppladdningen misslyckades: %1$s</string>
+    <string name="error_original_unavailable">Originalet är inte tillgängligt</string>
+    <string name="action_deselect_all">Avmarkera alla</string>
 </resources>

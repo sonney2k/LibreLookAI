@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Sejarah pemakaian</string>
     <string name="error_gemini_no_response">AI tidak membalas.</string>
     <string name="error_gemini_parse">Tidak dapat membaca respons AI.</string>
+    <string name="url_import_failed">Tidak menemui imej produk di URL ini.</string>
+    <string name="action_continue">Teruskan</string>
+    <string name="wardrobe_selected_count">%1$d dipilih</string>
+    <string name="wardrobe_move_failed">Sesetengah item tidak dapat dialihkan. Item telah dipulihkan.</string>
+    <string name="wardrobe_empty_filter">Tiada barangan padan dengan penapis</string>
+    <string name="sel_style">Gaya</string>
+    <string name="error_upload_failed">Gagal memuat naik: %1$s</string>
+    <string name="error_original_unavailable">Asal tidak tersedia</string>
+    <string name="action_deselect_all">Nyahpilih semua</string>
 </resources>

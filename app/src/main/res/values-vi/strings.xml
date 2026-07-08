@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Tìm món đồ thiếu</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">Danh sách mong muốn trống</string>
-    <string name="shop_list_empty_hint">Thêm các món đồ bạn muốn mua bằng camera, thư viện hoặc URL sản phẩm.</string>
     <string name="shop_list_add_camera">Thêm từ camera</string>
     <string name="shop_list_add_gallery">Thêm từ thư viện</string>
     <string name="shop_list_add_url">Thêm từ URL</string>
-    <string name="shop_list_url_title">Thêm từ URL</string>
-    <string name="shop_list_url_hint">Dán URL của trang mua sắm. Chúng tôi sẽ tự động lấy ảnh sản phẩm.</string>
-    <string name="shop_list_uploading">Đang tải lên…</string>
-    <string name="shop_list_moving">Đang di chuyển…</string>
-    <string name="shop_list_loading">Đang tải…</string>
-    <string name="shop_list_processing">Đang xử lý %1$d món đồ…</string>
     <string name="shop_list_move_to_closet">Chuyển vào tủ đồ</string>
-    <string name="shop_list_move_title">Chuyển vào tủ đồ</string>
-    <string name="shop_list_delete_title">Xóa khỏi danh sách?</string>
-    <string name="shop_list_delete_text">Xóa vĩnh viễn %1$d món đồ khỏi danh sách mong muốn?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Thêm từ URL</string>
     <string name="wardrobe_url_import_title">Nhập từ URL mua sắm</string>
     <string name="wardrobe_url_import_hint">Dán URL trang mua sắm vào đây.</string>
-    <string name="url_import_failed">Không tìm thấy ảnh sản phẩm tại URL này.</string>
     <string name="url_import_pick_title">Chọn ảnh sản phẩm</string>
     <string name="url_import_pick_hint">Chạm vào ảnh bạn muốn nhập vào.</string>
     <string name="url_import_browser_title">Mở trang web</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Xóa nền %1$d / %2$d…</string>
     <string name="wardrobe_progress_moving">Đang chuyển đến vị trí mới…</string>
     <string name="action_select_all">Chọn tất cả</string>
-    <string name="action_deselect_all">Bỏ chọn tất cả</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -139,7 +126,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Đang khôi phục tủ đồ: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Không có món đồ nào khớp với bộ lọc</string>
     <string name="wardrobe_item_count">%1$d món đồ</string>
     <string name="wardrobe_filtered_count">Đang hiện %1$d / %2$d món đồ</string>
     <string name="wardrobe_stats_total">Tổng cộng %1$d món đồ</string>
@@ -148,7 +134,6 @@
     <string name="wardrobe_empty_hint">Chụp ảnh hoặc chọn từ thư viện của bạn</string>
     <string name="wardrobe_create_outfit">Tạo bộ đồ thủ công</string>
     <string name="wardrobe_compose_ai">Phối đồ bằng AI</string>
-    <string name="wardrobe_selected_count">Đã chọn %1$d</string>
     <string name="wardrobe_select_all_count">Chọn tất cả (%1$d)</string>
     <string name="wardrobe_delete_title">Xóa món đồ?</string>
     <string name="wardrobe_delete_text">Bạn có chắc muốn xóa %d món đồ đã chọn? Thao tác này không thể hoàn tác.</string>
@@ -169,7 +154,6 @@
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Thêm vào %1$s</string>
     <string name="wardrobe_add_to_closet_title">Thêm vào tủ đồ</string>
-    <string name="action_continue">Tiếp tục</string>
     <string name="tag_label">Tên</string>
     <string name="tag_label_placeholder">vd: Quần Chino xanh navy, Áo sơ mi Oxford trắng</string>
     <string name="tag_add_custom">Thêm thẻ tùy chỉnh…</string>
@@ -537,8 +521,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_tab_feedback">Phản hồi</string>
     <string name="shop_clear">Xóa</string>
     <string name="shop_description">Chụp ảnh một món bạn đang cân nhắc, và chúng tôi sẽ hiển thị các món trông tương tự nhất trong tủ — hoàn toàn trên thiết bị.</string>
-    <string name="shop_error_embed_failed">Không thể phân tích ảnh đó. Hãy thử ảnh khác.</string>
-    <string name="shop_error_model_missing">Mô hình tìm kiếm hình ảnh chưa cài đặt.</string>
     <string name="shop_index_size">Đã lập chỉ mục %1$d món</string>
     <string name="shop_indexing">Đang lập chỉ mục tủ… %1$d / %2$d</string>
     <string name="shop_matches_title">Kết quả khớp nhất (%1$d)</string>
@@ -668,7 +650,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Không thể di chuyển một số mục. Chúng đã được khôi phục.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -787,13 +768,9 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Tải lên không thành công: %1$s</string>
-    <string name="error_original_unavailable">Bản gốc không khả dụng</string>
     <string name="error_import_failed_item">Nhập %1$s không thành công: %2$s</string>
     <string name="error_tag_save_failed">Lưu thẻ vào Drive không thành công: %1$s</string>
     <string name="error_add_items_first">Hãy thêm trang phục vào tủ đồ của bạn trước.</string>
-    <string name="error_query_photo_missing">Ảnh tìm kiếm không còn tồn tại.</string>
-    <string name="error_import_query_failed">Nhập ảnh tìm kiếm không thành công.</string>
     <string name="error_trips_folder_not_ready">Thư mục chuyến đi chưa sẵn sàng.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Thêm trang phục vào lịch</string>
@@ -814,13 +791,10 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="fab_outfits_new">Bộ đồ mới</string>
     <string name="fab_wardrobe_add">Thêm món</string>
     <string name="fab_calendar_log">Ghi lại bộ đồ</string>
-    <string name="fab_shopping_add">Thêm món tìm thấy</string>
-    <string name="sel_style">Phối đồ</string>
     <string name="sel_swap">Đổi</string>
     <string name="sel_move">Chuyển</string>
     <string name="sel_combine">Kết hợp</string>
     <string name="sel_love">Thích</string>
-    <string name="sel_add_to_closet">Vào tủ đồ</string>
     <string name="sel_copy_to_day">Sao chép</string>
     <string name="sel_remove">Gỡ</string>
 

@@ -216,4 +216,13 @@
     <string name="ai_consider_history">سجل الارتداء</string>
     <string name="error_gemini_no_response">لم يستجب الذكاء الاصطناعي.</string>
     <string name="error_gemini_parse">تعذّرت قراءة رد الذكاء الاصطناعي.</string>
+    <string name="url_import_failed">تعذر العثور على صورة منتج في هذا الرابط.</string>
+    <string name="action_continue">متابعة</string>
+    <string name="wardrobe_selected_count">تم اختيار %1$d</string>
+    <string name="wardrobe_move_failed">تعذّر نقل بعض العناصر. تمت استعادتها.</string>
+    <string name="wardrobe_empty_filter">لا توجد أصناف تطابق الفلتر</string>
+    <string name="sel_style">تنسيق</string>
+    <string name="error_upload_failed">فشل الرفع: %1$s</string>
+    <string name="error_original_unavailable">الصورة الأصلية غير متوفرة</string>
+    <string name="action_deselect_all">إلغاء تحديد الكل</string>
 </resources>

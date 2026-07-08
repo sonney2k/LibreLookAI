@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Hozzáadás linkkel</string>
+    <string name="shop_list_url_hint">Másold be egy termékoldal linkjét. Automatikusan lekérjük a termék képét.</string>
+    <string name="shop_list_uploading">Feltöltés…</string>
+    <string name="shop_list_processing">%1$d darab feldolgozása…</string>
+    <string name="shop_list_moving">Mozgatás…</string>
+    <string name="shop_list_move_title">Mozgatás a gardróbba</string>
+    <string name="shop_list_loading">Betöltés…</string>
+    <string name="shop_list_empty_title">A kívánságlistád üres</string>
+    <string name="shop_list_empty_hint">Adj hozzá darabokat, amiket megvenni készülsz a kamerával, galériából vagy egy webáruház linkjével.</string>
+    <string name="shop_list_delete_title">Törlés a kívánságlistáról?</string>
+    <string name="shop_list_delete_text">Véglegesen eltávolítasz %1$d darabot a kívánságlistáról?</string>
+    <string name="shop_error_model_missing">A vizuális keresési modell nincs telepítve.</string>
+    <string name="shop_error_embed_failed">Nem sikerült elemezni a fotót. Próbálj másikat.</string>
+    <string name="sel_add_to_closet">Szekrénybe</string>
+    <string name="fab_shopping_add">Talált tárgy</string>
+    <string name="error_query_photo_missing">A keresési fotó már nem létezik.</string>
+    <string name="error_import_query_failed">A keresési fotó importálása sikertelen.</string>
+</resources>

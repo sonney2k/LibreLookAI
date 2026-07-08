@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">URLから追加</string>
+    <string name="shop_list_url_hint">ショッピングページのURLを貼り付けてください。商品画像を自動取得します。</string>
+    <string name="shop_list_uploading">アップロード中…</string>
+    <string name="shop_list_processing">%1$d 件のアイテムを処理中…</string>
+    <string name="shop_list_moving">移動中…</string>
+    <string name="shop_list_move_title">クローゼットに移動</string>
+    <string name="shop_list_loading">読み込み中…</string>
+    <string name="shop_list_empty_title">ウィッシュリストは空です</string>
+    <string name="shop_list_empty_hint">購入を検討中のアイテムをカメラ・ギャラリー・ショッピングURLから追加できます。</string>
+    <string name="shop_list_delete_title">ウィッシュリストから削除しますか?</string>
+    <string name="shop_list_delete_text">%1$d 件のアイテムをウィッシュリストから完全に削除しますか?</string>
+    <string name="shop_error_model_missing">ビジュアル検索モデルがインストールされていません。</string>
+    <string name="shop_error_embed_failed">この写真を分析できませんでした。別のものを試してください。</string>
+    <string name="sel_add_to_closet">クローゼットへ</string>
+    <string name="fab_shopping_add">見つけた物を追加</string>
+    <string name="error_query_photo_missing">検索用の写真は存在しません。</string>
+    <string name="error_import_query_failed">検索用の写真のインポートに失敗しました。</string>
+</resources>

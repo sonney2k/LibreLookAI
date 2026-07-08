@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">Adicionar por URL</string>
+    <string name="shop_list_url_hint">Cole a URL de uma página de compras. Vamos buscar a imagem do produto automaticamente.</string>
+    <string name="shop_list_uploading">Enviando…</string>
+    <string name="shop_list_processing">Processando %1$d item(s)…</string>
+    <string name="shop_list_moving">Movendo…</string>
+    <string name="shop_list_move_title">Mover para o guarda-roupa</string>
+    <string name="shop_list_loading">Carregando…</string>
+    <string name="shop_list_empty_title">Sua lista de desejos está vazia</string>
+    <string name="shop_list_empty_hint">Adicione itens que você está pensando em comprar pela câmera, galeria ou URL de compra.</string>
+    <string name="shop_list_delete_title">Excluir da lista de desejos?</string>
+    <string name="shop_list_delete_text">Remover permanentemente %1$d item(s) da sua lista de desejos?</string>
+    <string name="shop_error_model_missing">Modelo de busca visual não instalado.</string>
+    <string name="shop_error_embed_failed">Não foi possível analisar essa foto. Tente outra.</string>
+    <string name="sel_add_to_closet">Ao guarda-roupa</string>
+    <string name="fab_shopping_add">Adicionar achado</string>
+    <string name="error_query_photo_missing">A foto de busca não existe mais.</string>
+    <string name="error_import_query_failed">Falha ao importar a foto de busca.</string>
+</resources>

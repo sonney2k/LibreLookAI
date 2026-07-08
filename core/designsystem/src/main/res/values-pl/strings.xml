@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Historia noszenia</string>
     <string name="error_gemini_no_response">AI nie odpowiedziała.</string>
     <string name="error_gemini_parse">Nie można odczytać odpowiedzi AI.</string>
+    <string name="url_import_failed">Nie znaleziono obrazu produktu pod tym URL.</string>
+    <string name="action_continue">Dalej</string>
+    <string name="wardrobe_selected_count">%1$d wybrano</string>
+    <string name="wardrobe_move_failed">Nie udało się przenieść niektórych elementów. Zostały przywrócone.</string>
+    <string name="wardrobe_empty_filter">Żadne elementy nie pasują do filtru</string>
+    <string name="sel_style">Stylizuj</string>
+    <string name="error_upload_failed">Przesyłanie nie powiodło się: %1$s</string>
+    <string name="error_original_unavailable">Oryginał niedostępny</string>
+    <string name="action_deselect_all">Odznacz wszystko</string>
 </resources>

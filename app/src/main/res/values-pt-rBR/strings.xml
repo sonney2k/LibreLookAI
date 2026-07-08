@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Identificar lacunas</string>
 
     <!-- Sub-aba Lista de compras -->
-    <string name="shop_list_empty_title">Sua lista de desejos está vazia</string>
-    <string name="shop_list_empty_hint">Adicione itens que você está pensando em comprar pela câmera, galeria ou URL de compra.</string>
     <string name="shop_list_add_camera">Adicionar da câmera</string>
     <string name="shop_list_add_gallery">Adicionar da galeria</string>
     <string name="shop_list_add_url">Adicionar por URL</string>
-    <string name="shop_list_url_title">Adicionar por URL</string>
-    <string name="shop_list_url_hint">Cole a URL de uma página de compras. Vamos buscar a imagem do produto automaticamente.</string>
-    <string name="shop_list_uploading">Enviando…</string>
-    <string name="shop_list_moving">Movendo…</string>
-    <string name="shop_list_loading">Carregando…</string>
-    <string name="shop_list_processing">Processando %1$d item(s)…</string>
     <string name="shop_list_move_to_closet">Mover para o guarda-roupa</string>
-    <string name="shop_list_move_title">Mover para o guarda-roupa</string>
-    <string name="shop_list_delete_title">Excluir da lista de desejos?</string>
-    <string name="shop_list_delete_text">Remover permanentemente %1$d item(s) da sua lista de desejos?</string>
 
     <!-- Importar URL (Guarda-roupa + Lista de compras) -->
     <string name="wardrobe_add_url">Adicionar por URL</string>
     <string name="wardrobe_url_import_title">Importar da URL de compras</string>
     <string name="wardrobe_url_import_hint">Cole a URL de uma página de compras. Vamos buscar a imagem do produto automaticamente.</string>
-    <string name="url_import_failed">Nenhuma imagem de produto encontrada nesta URL.</string>
     <string name="url_import_pick_title">Escolha a imagem do produto</string>
     <string name="url_import_pick_hint">Toque na imagem que quer importar. Se nenhuma parecer certa, abra a página no navegador.</string>
     <string name="url_import_browser_title">Abrir página</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Removendo fundo %1$d de %2$d…</string>
     <string name="wardrobe_progress_moving">Movendo para novo local…</string>
     <string name="action_select_all">Selecionar tudo</string>
-    <string name="action_deselect_all">Desmarcar tudo</string>
 
     <!-- Login -->
     <!-- Configurações -->
@@ -223,7 +210,6 @@
 
     <!-- Guarda-roupa -->
     <string name="wardrobe_sync_progress">Restaurando guarda-roupa: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Nenhum item corresponde ao filtro</string>
     <string name="wardrobe_item_count">%1$d itens</string>
     <string name="wardrobe_filtered_count">Mostrando %1$d de %2$d itens</string>
     <string name="wardrobe_stats_total">%1$d itens no total</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Tire uma foto ou escolha da galeria</string>
     <string name="wardrobe_create_outfit">Criar look manualmente</string>
     <string name="wardrobe_compose_ai">Compor com IA</string>
-    <string name="wardrobe_selected_count">%1$d selecionados</string>
     <string name="wardrobe_select_all_count">Selecionar tudo (%1$d)</string>
     <string name="wardrobe_delete_title">Excluir itens?</string>
     <string name="wardrobe_delete_text">Tem certeza que quer excluir %d itens selecionados? Isso não pode ser desfeito.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Câmera</string>
     <string name="wardrobe_add_to_closet">Adicionar a %1$s</string>
     <string name="wardrobe_add_to_closet_title">Adicionar ao guarda-roupa</string>
-    <string name="action_continue">Continuar</string>
     <string name="tag_label">Nome</string>
     <string name="tag_label_placeholder">ex. Chinos azul marinho, camisa Oxford branca</string>
     <string name="tag_add_custom">Adicionar personalizado…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Indexando guarda-roupa… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d peças indexadas</string>
     <string name="shop_model_missing">Modelo no dispositivo ausente. Coloque efficientnet_lite0.tflite em app/src/main/assets/embedder/ e magic_touch.tflite em app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">Modelo de busca visual não instalado.</string>
-    <string name="shop_error_embed_failed">Não foi possível analisar essa foto. Tente outra.</string>
 
     <!-- Verificação de similaridade (captura / importação / Reparar e sincronizar) -->
     <string name="settings_dedupe_title">Verificação de similaridade</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Não foi possível mover alguns itens. Eles foram restaurados.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Falha no envio: %1$s</string>
-    <string name="error_original_unavailable">Original não disponível</string>
     <string name="error_import_failed_item">Falha ao importar %1$s: %2$s</string>
     <string name="error_tag_save_failed">Falha ao salvar as tags no Drive: %1$s</string>
     <string name="error_add_items_first">Adicione peças ao seu guarda-roupa primeiro.</string>
-    <string name="error_query_photo_missing">A foto de busca não existe mais.</string>
-    <string name="error_import_query_failed">Falha ao importar a foto de busca.</string>
     <string name="error_trips_folder_not_ready">A pasta de viagens não está pronta.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Adicionar look ao calendário</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Novo look</string>
     <string name="fab_wardrobe_add">Adicionar peça</string>
     <string name="fab_calendar_log">Registrar look</string>
-    <string name="fab_shopping_add">Adicionar achado</string>
-    <string name="sel_style">Estilo</string>
     <string name="sel_swap">Trocar</string>
     <string name="sel_move">Mover</string>
     <string name="sel_combine">Combinar</string>
     <string name="sel_love">Curtir</string>
-    <string name="sel_add_to_closet">Ao guarda-roupa</string>
     <string name="sel_copy_to_day">Copiar</string>
     <string name="sel_remove">Remover</string>
 

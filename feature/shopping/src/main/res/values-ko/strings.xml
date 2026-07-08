@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_list_url_title">URL로 추가</string>
+    <string name="shop_list_url_hint">쇼핑 페이지의 URL을 붙여넣으세요. 상품 이미지를 자동으로 가져옵니다.</string>
+    <string name="shop_list_uploading">업로드 중…</string>
+    <string name="shop_list_processing">%1$d개 아이템 처리 중…</string>
+    <string name="shop_list_moving">이동 중…</string>
+    <string name="shop_list_move_title">옷장으로 이동</string>
+    <string name="shop_list_loading">불러오는 중…</string>
+    <string name="shop_list_empty_title">위시리스트가 비어 있습니다</string>
+    <string name="shop_list_empty_hint">구매를 고려 중인 아이템을 카메라, 갤러리 또는 쇼핑 URL로 추가하세요.</string>
+    <string name="shop_list_delete_title">위시리스트에서 삭제하시겠습니까?</string>
+    <string name="shop_list_delete_text">위시리스트에서 %1$d개 아이템을 영구적으로 삭제하시겠습니까?</string>
+    <string name="shop_error_model_missing">비주얼 검색 모델이 설치되지 않았습니다.</string>
+    <string name="shop_error_embed_failed">이 사진을 분석할 수 없습니다. 다른 사진을 시도해 보세요.</string>
+    <string name="sel_add_to_closet">옷장에 추가</string>
+    <string name="fab_shopping_add">발견 추가</string>
+    <string name="error_query_photo_missing">검색 사진이 더 이상 존재하지 않습니다.</string>
+    <string name="error_import_query_failed">검색 사진을 가져오지 못했습니다.</string>
+</resources>

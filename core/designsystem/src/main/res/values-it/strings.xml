@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Cronologia look</string>
     <string name="error_gemini_no_response">L\'IA non ha risposto.</string>
     <string name="error_gemini_parse">Impossibile leggere la risposta dell\'IA.</string>
+    <string name="url_import_failed">Nessuna immagine prodotto trovata a questo URL.</string>
+    <string name="action_continue">Continua</string>
+    <string name="wardrobe_selected_count">%1$d selezionati</string>
+    <string name="wardrobe_move_failed">Impossibile spostare alcuni articoli. Sono stati ripristinati.</string>
+    <string name="wardrobe_empty_filter">Nessun capo corrisponde al filtro</string>
+    <string name="sel_style">Stile</string>
+    <string name="error_upload_failed">Caricamento non riuscito: %1$s</string>
+    <string name="error_original_unavailable">Originale non disponibile</string>
+    <string name="action_deselect_all">Deseleziona tutto</string>
 </resources>

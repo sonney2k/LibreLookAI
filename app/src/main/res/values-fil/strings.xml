@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Hanapin ang Kakulangan</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">Walang laman ang iyong wishlist</string>
-    <string name="shop_list_empty_hint">Magdagdag ng mga item na binabalak mong bilhin gamit ang camera, gallery, o shopping URL.</string>
     <string name="shop_list_add_camera">Idagdag mula sa camera</string>
     <string name="shop_list_add_gallery">Idagdag mula sa gallery</string>
     <string name="shop_list_add_url">Idagdag mula sa URL</string>
-    <string name="shop_list_url_title">Idagdag mula sa URL</string>
-    <string name="shop_list_url_hint">I-paste ang URL ng shopping page. Awtomatiko naming kukunin ang larawan ng produkto.</string>
-    <string name="shop_list_uploading">Ina-upload…</string>
-    <string name="shop_list_moving">Inililipat…</string>
-    <string name="shop_list_loading">Naglo-load…</string>
-    <string name="shop_list_processing">Pinoproseso ang %1$d item…</string>
     <string name="shop_list_move_to_closet">Ilipat sa closet</string>
-    <string name="shop_list_move_title">Ilipat sa closet</string>
-    <string name="shop_list_delete_title">Tanggalin sa wishlist?</string>
-    <string name="shop_list_delete_text">Permanenteng tanggalin ang %1$d item sa iyong wishlist?</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Idagdag mula sa URL</string>
     <string name="wardrobe_url_import_title">I-import mula sa shopping URL</string>
     <string name="wardrobe_url_import_hint">I-paste ang URL ng shopping page. Awtomatiko naming kukunin ang larawan ng produkto.</string>
-    <string name="url_import_failed">Walang nakitang larawan ng produkto sa URL na ito.</string>
     <string name="url_import_pick_title">Piliin ang larawan ng produkto</string>
     <string name="url_import_pick_hint">I-tap ang larawang gusto mong i-import. Kung walang tama, buksan ang page sa browser.</string>
     <string name="url_import_browser_title">Buksan ang page</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Inaalis ang background %1$d ng %2$d…</string>
     <string name="wardrobe_progress_moving">Inililipat sa bagong lokasyon…</string>
     <string name="action_select_all">Piliin lahat</string>
-    <string name="action_deselect_all">Alisin sa pagpili</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -223,7 +210,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Ibinabalik ang wardrobe: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Walang item na tumutugma sa filter</string>
     <string name="wardrobe_item_count">%1$d item</string>
     <string name="wardrobe_filtered_count">Ipinapakita ang %1$d ng %2$d item</string>
     <string name="wardrobe_stats_total">%1$d item sa kabuuan</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Kumuha ng larawan o pumili mula sa iyong gallery</string>
     <string name="wardrobe_create_outfit">Gumawa ng outfit manually</string>
     <string name="wardrobe_compose_ai">Bumuo gamit ang AI</string>
-    <string name="wardrobe_selected_count">%1$d ang napili</string>
     <string name="wardrobe_select_all_count">Piliin lahat (%1$d)</string>
     <string name="wardrobe_delete_title">Tanggalin ang mga item?</string>
     <string name="wardrobe_delete_text">Sigurado ka bang gusto mong tanggalin ang %d napiling item? Hindi ito mababawi.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Idagdag sa %1$s</string>
     <string name="wardrobe_add_to_closet_title">Idagdag sa closet</string>
-    <string name="action_continue">Magpatuloy</string>
     <string name="tag_label">Pangalan</string>
     <string name="tag_label_placeholder">hal. Navy Chinos, White Oxford Shirt</string>
     <string name="tag_add_custom">Magdagdag ng custom…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Ini-index ang wardrobe… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d item ang naka-index</string>
     <string name="shop_model_missing">Nawawala ang on-device model. Ilagay ang efficientnet_lite0.tflite sa ilalim ng app/src/main/assets/embedder/ at magic_touch.tflite sa ilalim ng app/src/main/assets/segmenter/.</string>
-    <string name="shop_error_model_missing">Hindi naka-install ang visual search model.</string>
-    <string name="shop_error_embed_failed">Hindi masuri ang larawang iyon. Subukan ang iba.</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">Pagtatsek ng pagkakatulad</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Hindi nailipat ang ilang item. Naibalik na ang mga ito.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Nabigo ang pag-upload: %1$s</string>
-    <string name="error_original_unavailable">Hindi available ang orihinal</string>
     <string name="error_import_failed_item">Nabigo ang pag-import ng %1$s: %2$s</string>
     <string name="error_tag_save_failed">Nabigo ang pag-save ng mga tag sa Drive: %1$s</string>
     <string name="error_add_items_first">Magdagdag muna ng mga item sa iyong wardrobe.</string>
-    <string name="error_query_photo_missing">Wala na ang query photo.</string>
-    <string name="error_import_query_failed">Nabigong i-import ang query photo.</string>
     <string name="error_trips_folder_not_ready">Hindi pa handa ang folder ng mga biyahe.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Idagdag ang outfit sa kalendaryo</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Bagong outfit</string>
     <string name="fab_wardrobe_add">Magdagdag</string>
     <string name="fab_calendar_log">I-log ang outfit</string>
-    <string name="fab_shopping_add">Magdagdag ng nahanap</string>
-    <string name="sel_style">I-style</string>
     <string name="sel_swap">Palitan</string>
     <string name="sel_move">Ilipat</string>
     <string name="sel_combine">Pagsamahin</string>
     <string name="sel_love">I-love</string>
-    <string name="sel_add_to_closet">Sa closet</string>
     <string name="sel_copy_to_day">Kopyahin</string>
     <string name="sel_remove">Alisin</string>
 

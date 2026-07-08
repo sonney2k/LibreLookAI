@@ -26,27 +26,15 @@
     <string name="shopping_tab_gaps">Εντοπισμός Ελλείψεων</string>
 
     <!-- Shopping list sub-tab -->
-    <string name="shop_list_empty_title">Η λίστα επιθυμιών σας είναι άδεια</string>
-    <string name="shop_list_empty_hint">Προσθέστε είδη που σκέφτεστε να αγοράσετε μέσω κάμερας, συλλογής ή URL αγορών.</string>
     <string name="shop_list_add_camera">Προσθήκη από κάμερα</string>
     <string name="shop_list_add_gallery">Προσθήκη από συλλογή</string>
     <string name="shop_list_add_url">Προσθήκη από URL</string>
-    <string name="shop_list_url_title">Προσθήκη από URL</string>
-    <string name="shop_list_url_hint">Επικολλήστε το URL μιας σελίδας αγορών. Θα τραβήξουμε αυτόματα την εικόνα του προϊόντος.</string>
-    <string name="shop_list_uploading">Μεταφόρτωση…</string>
-    <string name="shop_list_moving">Μετακίνηση…</string>
-    <string name="shop_list_loading">Φόρτωση…</string>
-    <string name="shop_list_processing">Επεξεργασία %1$d ειδών…</string>
     <string name="shop_list_move_to_closet">Μετακίνηση στη ντουλάπα</string>
-    <string name="shop_list_move_title">Μετακίνηση στη ντουλάπα</string>
-    <string name="shop_list_delete_title">Διαγραφή από τη λίστα επιθυμιών;</string>
-    <string name="shop_list_delete_text">Μόνιμη αφαίρεση %1$d ειδών από τη λίστα επιθυμιών σας;</string>
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Προσθήκη από URL</string>
     <string name="wardrobe_url_import_title">Εισαγωγή από URL αγορών</string>
     <string name="wardrobe_url_import_hint">Επικολλήστε το URL μιας σελίδας αγορών. Θα τραβήξουμε αυτόματα την εικόνα του προϊόντος.</string>
-    <string name="url_import_failed">Δεν βρέθηκε εικόνα προϊόντος σε αυτό το URL.</string>
     <string name="url_import_pick_title">Επιλέξτε την εικόνα του προϊόντος</string>
     <string name="url_import_pick_hint">Πατήστε στην εικόνα που θέλετε να εισαγάγετε. Αν καμία δεν φαίνεται σωστή, ανοίξτε τη σελίδα στο πρόγραμμα περιήγησης.</string>
     <string name="url_import_browser_title">Άνοιγμα σελίδας</string>
@@ -72,7 +60,6 @@
     <string name="wardrobe_progress_removing_bg_batch">Αφαίρεση φόντου %1$d από %2$d…</string>
     <string name="wardrobe_progress_moving">Μετακίνηση σε νέα τοποθεσία…</string>
     <string name="action_select_all">Επιλογή όλων</string>
-    <string name="action_deselect_all">Αποεπιλογή όλων</string>
 
     <!-- Sign In -->
     <!-- Settings -->
@@ -223,7 +210,6 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Επαναφορά ντουλάπας: %1$d / %2$d</string>
-    <string name="wardrobe_empty_filter">Κανένα είδος δεν ταιριάζει στο φίλτρο</string>
     <string name="wardrobe_item_count">%1$d είδη</string>
     <string name="wardrobe_filtered_count">Εμφάνιση %1$d από %2$d ειδών</string>
     <string name="wardrobe_stats_total">%1$d είδη συνολικά</string>
@@ -232,7 +218,6 @@
     <string name="wardrobe_empty_hint">Τραβήξτε μια φωτογραφία ή επιλέξτε από τη συλλογή</string>
     <string name="wardrobe_create_outfit">Χειροκίνητη δημιουργία συνόλου</string>
     <string name="wardrobe_compose_ai">Σύνθεση με AI</string>
-    <string name="wardrobe_selected_count">%1$d επιλέχθηκαν</string>
     <string name="wardrobe_select_all_count">Επιλογή όλων (%1$d)</string>
     <string name="wardrobe_delete_title">Διαγραφή ειδών;</string>
     <string name="wardrobe_delete_text">Είστε σίγουροι ότι θέλετε να διαγράψετε τα %d επιλεγμένα είδη; Αυτή η ενέργεια δεν αναιρείται.</string>
@@ -256,7 +241,6 @@
     <string name="wardrobe_add_camera">Κάμερα</string>
     <string name="wardrobe_add_to_closet">Προσθήκη στη %1$s</string>
     <string name="wardrobe_add_to_closet_title">Προσθήκη στη ντουλάπα</string>
-    <string name="action_continue">Συνέχεια</string>
     <string name="tag_label">Όνομα</string>
     <string name="tag_label_placeholder">π.χ. Μπλε Chino Παντελόνι, Λευκό Πουκάμισο</string>
     <string name="tag_add_custom">Προσθήκη δικού σας…</string>
@@ -549,8 +533,6 @@
     <string name="shop_indexing">Ευρετηρίαση ντουλάπας… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d είδη ευρετηριάστηκαν</string>
     <string name="shop_model_missing">Λείπει το μοντέλο από τη συσκευή.</string>
-    <string name="shop_error_model_missing">Το μοντέλο οπτικής αναζήτησης δεν είναι εγκατεστημένο.</string>
-    <string name="shop_error_embed_failed">Αδυναμία ανάλυσης φωτογραφίας.</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">Έλεγχος ομοιότητας</string>
@@ -692,7 +674,6 @@
     <!-- Needs-tagging badge -->
     <!-- BYOK API-key onboarding step -->
     <!-- Optimistic move rollback -->
-    <string name="wardrobe_move_failed">Δεν ήταν δυνατή η μετακίνηση ορισμένων στοιχείων. Επαναφέρθηκαν.</string>
 
     <!-- Onboarding: Drive sign-in + background permission -->
     <!-- Onboarding location step + finish-page setup summary -->
@@ -811,13 +792,9 @@
     <!-- Try-on generation failed dialog -->
 
     <!-- Shared error messages localization -->
-    <string name="error_upload_failed">Η μεταφόρτωση απέτυχε: %1$s</string>
-    <string name="error_original_unavailable">Το πρωτότυπο δεν είναι διαθέσιμο</string>
     <string name="error_import_failed_item">Η εισαγωγή του %1$s απέτυχε: %2$s</string>
     <string name="error_tag_save_failed">Η αποθήκευση ετικετών στο Drive απέτυχε: %1$s</string>
     <string name="error_add_items_first">Προσθέστε πρώτα είδη στην γκαρνταρόμπα σας.</string>
-    <string name="error_query_photo_missing">Η φωτογραφία αναζήτησης δεν υπάρχει πλέον.</string>
-    <string name="error_import_query_failed">Αποτυχία εισαγωγής φωτογραφίας αναζήτησης.</string>
     <string name="error_trips_folder_not_ready">Ο φάκελος ταξιδιών δεν είναι έτοιμος.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Προσθήκη συνόλου στο ημερολόγιο</string>
@@ -838,13 +815,10 @@
     <string name="fab_outfits_new">Νέο σύνολο</string>
     <string name="fab_wardrobe_add">Προσθήκη</string>
     <string name="fab_calendar_log">Καταγραφή συνόλου</string>
-    <string name="fab_shopping_add">Προσθήκη εύρεσης</string>
-    <string name="sel_style">Στιλ</string>
     <string name="sel_swap">Αλλαγή</string>
     <string name="sel_move">Μετακίνηση</string>
     <string name="sel_combine">Συνδυασμός</string>
     <string name="sel_love">Αγαπημένο</string>
-    <string name="sel_add_to_closet">Στην ντουλάπα</string>
     <string name="sel_copy_to_day">Αντιγραφή</string>
     <string name="sel_remove">Αφαίρεση</string>
 

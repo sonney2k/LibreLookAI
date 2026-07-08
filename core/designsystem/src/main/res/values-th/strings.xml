@@ -216,4 +216,13 @@
     <string name="ai_consider_history">ประวัติการสวมใส่</string>
     <string name="error_gemini_no_response">AI ไม่ตอบสนอง</string>
     <string name="error_gemini_parse">ไม่สามารถอ่านการตอบกลับของ AI ได้</string>
+    <string name="url_import_failed">ไม่พบรูปภาพสินค้าที่ URL นี้</string>
+    <string name="action_continue">ดำเนินการต่อ</string>
+    <string name="wardrobe_selected_count">เลือกแล้ว %1$d รายการ</string>
+    <string name="wardrobe_move_failed">ย้ายบางรายการไม่สำเร็จ ระบบได้กู้คืนรายการเหล่านั้นแล้ว</string>
+    <string name="wardrobe_empty_filter">ไม่พบรายการที่ตรงตามตัวกรอง</string>
+    <string name="sel_style">จัดลุค</string>
+    <string name="error_upload_failed">อัปโหลดไม่สำเร็จ: %1$s</string>
+    <string name="error_original_unavailable">ไม่มีต้นฉบับ</string>
+    <string name="action_deselect_all">ยกเลิกการเลือกทั้งหมด</string>
 </resources>

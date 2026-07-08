@@ -216,4 +216,13 @@
     <string name="ai_consider_history">Histórico de uso</string>
     <string name="error_gemini_no_response">A IA não respondeu.</string>
     <string name="error_gemini_parse">Não foi possível ler a resposta da IA.</string>
+    <string name="url_import_failed">Nenhuma imagem de produto encontrada nesta URL.</string>
+    <string name="action_continue">Continuar</string>
+    <string name="wardrobe_selected_count">%1$d selecionados</string>
+    <string name="wardrobe_move_failed">Não foi possível mover alguns itens. Eles foram restaurados.</string>
+    <string name="wardrobe_empty_filter">Nenhum item corresponde ao filtro</string>
+    <string name="sel_style">Estilo</string>
+    <string name="error_upload_failed">Falha no envio: %1$s</string>
+    <string name="error_original_unavailable">Original não disponível</string>
+    <string name="action_deselect_all">Desmarcar tudo</string>
 </resources>
