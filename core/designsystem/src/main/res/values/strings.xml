@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Upload failed: %1$s</string>
     <string name="error_original_unavailable">Original not available</string>
     <string name="action_deselect_all">Deselect all</string>
+    <string name="action_save">Save</string>
+    <string name="nav_styles">Outfits</string>
+    <string name="sel_move">Move</string>
+    <string name="tryon_outfit_picker_title">Pick an outfit</string>
+    <string name="tryon_outfit_picker_empty">No saved outfits yet. Create one in the Outfits tab to use it here.</string>
 </resources>

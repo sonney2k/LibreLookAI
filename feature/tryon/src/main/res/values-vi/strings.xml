@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Các món đã mặc</string>
     <string name="tryon_history_title">Lần thử đồ trước</string>
     <string name="tryon_missing_photos_items">Thiếu ảnh hoặc trang phục</string>
-    <string name="tryon_outfit_picker_empty">Chưa có trang phục nào được lưu. Hãy tạo trong tab Trang phục để dùng ở đây.</string>
-    <string name="tryon_outfit_picker_title">Chọn một trang phục</string>
     <string name="tryon_save_to_drive">Lưu</string>
     <string name="tryon_saved_to_drive">Đã lưu</string>
     <string name="tryon_saving">Đang lưu…</string>

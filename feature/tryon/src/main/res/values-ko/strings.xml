@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">착용한 아이템</string>
     <string name="tryon_history_title">이전 시뮬레이션</string>
     <string name="tryon_missing_photos_items">사진 또는 항목 없음</string>
-    <string name="tryon_outfit_picker_empty">아직 저장된 코디가 없습니다. 코디 탭에서 생성하여 여기서 사용하세요.</string>
-    <string name="tryon_outfit_picker_title">코디 선택</string>
     <string name="tryon_save_to_drive">저장</string>
     <string name="tryon_saved_to_drive">저장됨</string>
     <string name="tryon_saving">저장 중…</string>

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- 내비게이션 -->
-    <string name="nav_styles">코디</string>
     <string name="nav_wardrobe">옷장</string>
     <string name="nav_shopping">쇼핑</string>
     <string name="nav_travel">여행</string>
     <string name="nav_settings">설정</string>
 
     <!-- 인사이트 탭 -->
-    <string name="insights_tab_calendar">캘린더</string>
     <string name="insights_tab_wardrobe_stats">옷장 통계</string>
-    <string name="insights_tab_calendar_stats">캘린더 통계</string>
     <string name="insights_tab_costs">비용</string>
     <string name="costs_count_items">아이템</string>
     <string name="costs_count_outfits">코디</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">착용 시뮬레이션</string>
 
     <!-- 공통 액션 -->
-    <string name="action_save">저장</string>
     <string name="action_saving">저장 중…</string>
     <string name="cd_ai_suggestion">AI 제안</string>
-    <string name="cd_refine">세부 조정</string>
     <string name="filter_location">위치</string>
     <string name="wardrobe_processing_photos">%1$d장 사진 처리 중…</string>
     <string name="wardrobe_progress_uploading">사진 업로드 중…</string>
@@ -250,28 +245,12 @@
     <!-- 태그 값 번역 (영어로 저장; UI 언어로 표시) -->
     <!-- 색상 -->
     <!-- 코디 -->
-    <string name="outfits_empty_hint">+를 탭하여 옷장에서 코디를 만드세요</string>
-    <string name="outfits_sort_most_worn">착용 빈도순</string>
     <string name="outfits_create_manual">수동으로 코디 만들기</string>
-    <string name="outfits_suggest">기존 코디 제안</string>
-    <string name="prediction_setup_title">AI로 찾기</string>
-    <string name="prediction_setup_find">찾기</string>
-    <string name="prediction_setup_title_compose">AI로 만들기</string>
-    <string name="prediction_setup_create">만들기</string>
-    <string name="prediction_setup_suggestions">제안</string>
     <string name="prediction_setup_considerations">이번 실행에 반영</string>
-    <string name="prediction_setup_weather_pick_day">날짜 선택</string>
-    <string name="prediction_setup_weather_today">오늘</string>
-    <string name="prediction_setup_weather_tomorrow">내일</string>
-    <string name="composer_mode_fullscreen">전체화면</string>
-    <string name="composer_empty_slot_ai_hint">AI가 빈 슬롯을 채워줍니다</string>
-    <string name="outfit_save_dialog_tag_suggestions">기존 태그</string>
     <string name="outfits_compose">새 코디 만들기</string>
     <string name="outfits_thinking">생각 중…</string>
     <string name="outfits_suggesting">코디 제안 중…</string>
     <string name="outfits_composing">코디 만드는 중…</string>
-    <string name="outfits_delete_title">코디를 삭제하시겠습니까?</string>
-    <string name="outfits_delete_text">\"%s\"이(가) 영구적으로 삭제됩니다.</string>
     <string name="outfits_items_away">다른 위치에 %d개 아이템</string>
     <string name="outfits_suggested_title">오늘의 제안</string>
     <string name="outfits_composed_title">당신을 위해 만든 코디</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">코디 이름</string>
     <string name="outfits_description_placeholder">설명 (선택)</string>
     <string name="outfits_create_this">이 코디 만들기</string>
-    <string name="outfits_refine_label">AI로 세부 조정</string>
-    <string name="outfits_refine_custom">사용자 정의 피드백…</string>
-    <string name="outfits_refine_casual">더 캐주얼하게</string>
-    <string name="outfits_refine_formal">더 포멀하게</string>
-    <string name="outfits_refine_diff_colors">다른 색상</string>
-    <string name="outfits_refine_warmer">더 따뜻한 옷</string>
-    <string name="outfits_refine_lighter">더 가벼운 옷</string>
-    <string name="outfits_refine_trendy">더 트렌디하게</string>
-    <string name="outfits_refine_simpler">더 심플하게</string>
-    <string name="outfits_refine_bold">더 대담하게</string>
     <string name="outfits_items_label">코디 아이템</string>
     <string name="outfits_add_item">아이템 추가</string>
-    <string name="outfits_tags_label">태그</string>
-    <string name="outfits_prediction_prev">이전 제안</string>
-    <string name="outfits_prediction_next">다음 제안</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">이 코디 사용</string>
-    <string name="outfits_suggest_tags">AI로 태그 제안</string>
-    <string name="outfits_suggest_tags_title">제안된 태그</string>
-    <string name="outfits_suggest_tags_loading">태그 제안 중…</string>
-    <string name="outfits_suggest_tags_empty">새로 제안된 태그가 없습니다.</string>
-    <string name="outfits_suggest_tags_apply">선택 추가</string>
-    <string name="outfits_suggest_tags_hint">태그를 탭하여 전환하세요. 선택된 태그가 이 코디에 추가됩니다.</string>
     <string name="outfits_swap_item_for">교체: %s</string>
     <string name="outfits_suggest_alternatives">10개 대안 제안</string>
     <string name="outfits_select_item">선택</string>
-    <string name="outfits_saved_wear_today">코디가 저장되었습니다! 오늘 입으시겠습니까?</string>
-    <string name="outfits_selected_count">%d개 선택됨</string>
-    <string name="outfits_select_all_count">%d개 모두 선택</string>
-    <string name="outfits_delete_selected_title">코디를 삭제하시겠습니까?</string>
-    <string name="outfits_delete_selected_text">%d개 코디가 영구적으로 삭제됩니다.</string>
     <string name="outfits_combine">AI로 조합</string>
-    <string name="outfit_slot_lock">잠금</string>
-    <string name="outfit_slot_unlock">잠금 해제</string>
-    <string name="outfit_slot_remove">제거</string>
-    <string name="outfit_slot_add">아이템 추가</string>
-    <string name="outfit_generate_with_ai">AI로 생성</string>
-    <string name="outfit_discard_changes_title">변경 사항을 취소하시겠습니까?</string>
-    <string name="outfit_discard_changes_body">저장하지 않은 변경 사항이 손실됩니다.</string>
-    <string name="outfit_discard_changes_confirm">취소</string>
-    <string name="outfit_save_dialog_title">코디 저장</string>
-    <string name="outfit_save_dialog_name">이름</string>
-    <string name="outfit_save_dialog_description">설명</string>
-    <string name="outfit_save_dialog_tags">태그</string>
-    <string name="outfit_save_dialog_confirm">저장</string>
     <string name="outfit_mode_view">보기</string>
     <string name="outfit_mode_edit">편집</string>
-    <string name="outfit_pick_category">카테고리 선택</string>
 
     <!-- 여행 -->
     <string name="travel_title">여행 패킹 리스트</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">아이템을 이동할 수 없습니다</string>
 
     <!-- 캘린더 -->
-    <string name="calendar_day_mo">월</string>
-    <string name="calendar_day_tu">화</string>
-    <string name="calendar_day_we">수</string>
-    <string name="calendar_day_th">목</string>
-    <string name="calendar_day_fr">금</string>
-    <string name="calendar_day_sa">토</string>
-    <string name="calendar_day_su">일</string>
-    <string name="calendar_stats_styles">가장 많이 입은 코디</string>
-    <string name="calendar_stats_items">가장 많이 입은 아이템</string>
-    <string name="calendar_empty">아직 코디 기록이 없습니다</string>
-    <string name="calendar_empty_hint">코디 탭에서 코디를 입어 추적을 시작하세요</string>
-    <string name="calendar_wear_again">오늘 다시 입기</string>
 
     <!-- 갭 분석기 -->
     <string name="gap_description">기존 옷장에서 가장 많은 새로운 코디 조합을 만들어낼 부족 아이템 3가지를 찾아냅니다.</string>
@@ -383,7 +310,6 @@
     <!-- 크레딧 / 관리 모드 -->
     <!-- AI 오버레이 -->
     <string name="ai_analyzing_wardrobe">옷장 분석 중…</string>
-    <string name="ai_suggesting_style">코디 제안 중…</string>
     <string name="ai_composing_outfit">코디 만드는 중…</string>
 
     <!-- 포그라운드 서비스 알림 -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">오프라인 — 보기 전용 모드</string>
 
     <!-- 나에게 입혀보기 -->
-    <string name="tryon_fab">나에게 입혀보기</string>
     <string name="tryon_section_title">착용 시뮬레이션 사진</string>
     <string name="tryon_section_desc">정면, 측면, 후면의 전신 사진을 업로드하세요. 앱은 코디나 옷장 아이템을 입은 미리보기를 생성할 때 이 사진을 참고로 사용합니다. 사진은 본인의 Drive에 저장됩니다.</string>
     <string name="tryon_add_photo">%1$s 사진 추가</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">자신의 API 키를 만들고 싶지 않은 사용자를 위해 앱은 코인 기반 크레딧 시스템을 제공합니다. 크레딧은 크레딧 탭에서 구매할 수 있으며 위의 요금에 따라 AI 액션마다 소비됩니다. 이 모드는 서버 측 프록시를 통해 요청을 라우팅합니다.</string>
 
     <!-- 통합 코디 컴포저 -->
-    <string name="composer_title">코디 만들기</string>
     <string name="composer_discard_title">코디를 취소하시겠습니까?</string>
     <string name="composer_discard_message">선택 사항이 손실됩니다.</string>
     <string name="composer_discard_confirm">취소</string>
-    <string name="composer_header_subtitle">5개 레이어 중 %1$d · 탭하여 교체</string>
     <string name="composer_fill_missing">누락 채우기</string>
     <string name="composer_see_all_count">모두 %1$d</string>
     <string name="composer_layer_picked_count">%1$d개 선택됨</string>
-    <string name="composer_weather_title">날씨</string>
-    <string name="composer_save">저장</string>
     <string name="composer_section_goal">어떤 상황인가요?</string>
-    <string name="composer_goal_placeholder">예: 리스본 저녁식사, 따뜻한 저녁</string>
     <string name="composer_goal_generate">생성</string>
     <string name="composer_advanced">고급 옵션</string>
     <string name="composer_chip_work">직장</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">데이트</string>
     <string name="composer_section_quick_start">빠른 시작</string>
     <string name="composer_section_items">아이템</string>
-    <string name="composer_section_weather">날씨</string>
-    <string name="composer_section_vibe">스타일 바이브</string>
     <string name="composer_section_targets">구성</string>
     <string name="composer_targets_hint">각 레이어에 포함할 개수를 설정하세요. 0으로 두면 AI가 결정합니다.</string>
     <string name="composer_tags_optional">태그 (선택)</string>
     <string name="composer_section_name">이름과 설명</string>
     <string name="composer_section_ai">AI로 향상</string>
-    <string name="composer_weather_auto">현재</string>
-    <string name="composer_weather_manual">수동</string>
-    <string name="composer_weather_unknown">날씨 정보 없음</string>
-    <string name="composer_weather_season">계절</string>
-    <string name="composer_weather_temp">온도</string>
-    <string name="composer_weather_precip">강수</string>
-    <string name="composer_season_spring">봄</string>
-    <string name="composer_season_summer">여름</string>
-    <string name="composer_season_fall">가을</string>
-    <string name="composer_season_winter">겨울</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">없음</string>
-    <string name="composer_precip_light">약함</string>
-    <string name="composer_precip_heavy">강함</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">베이스 상의</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">AI에게 변경하거나 목표로 할 내용을 알려주세요…</string>
     <string name="composer_feedback_history">컨텍스트에 유지된 이전 요청 %1$d개</string>
     <string name="composer_enhance">AI로 향상</string>
-    <string name="composer_enhancing">Gemini에 묻는 중…</string>
     <string name="composer_picked_count">%1$d개 선택됨</string>
     <string name="composer_add_selected">선택 추가</string>
     <string name="composer_factors_label">사용 중</string>
-    <string name="composer_factor_weather_auto">실시간 날씨</string>
     <string name="composer_factor_weather_manual">수동 날씨</string>
     <string name="composer_factor_vibes">%1$d개 바이브</string>
     <string name="composer_factor_items">%1$d개 아이템</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">이 아이템을 사용하는 %d개의 코디도 삭제</string>
     <string name="wardrobe_delete_cascade_tryons">이 아이템이 포함된 %d개의 가상 피팅도 삭제</string>
-    <string name="outfits_broken_banner">%d개의 코디가 옷장에 더 이상 없는 아이템을 사용합니다.</string>
-    <string name="outfits_broken_review">검토</string>
-    <string name="outfits_broken_delete_title">불완전한 코디를 삭제할까요?</string>
-    <string name="outfits_broken_delete_text">이 %d개의 코디는 옷장에 더 이상 없는 아이템을 참조하며 영구적으로 삭제됩니다:</string>
-    <string name="outfits_broken_more">외 %d개</string>
-    <string name="insights_items_removed">옷장에 없는 아이템</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">나</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">닫기</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">마음에 들어요</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">실제로 입고 마음에 들어한 옷에서 학습합니다.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">유지 관리</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">추가 옵션</string>
-    <string name="calendar_move_to_day">다른 날로 이동</string>
-    <string name="calendar_copy_to_day">다른 날로 복사</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">옷차림을 옮길 날짜를 탭하세요</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">옷차림을 복사할 날짜를 탭하세요</string>
     <string name="calendar_mode_move">이동</string>
     <string name="calendar_mode_copy">복사</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">이 날에서 제거</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">착용</string>
-    <string name="outfits_favorite">즐겨찾기</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">마무리하는 중…</string>
     <string name="wardrobe_sync_details">세부 정보 불러오는 중: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">마무리하는 중…</string>
-    <string name="outfit_saving">코디 저장 중…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">여행 폴더가 준비되지 않았습니다.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">코디를 캘린더에 추가</string>
-    <string name="calendar_add_pick">코디 선택</string>
-    <string name="calendar_add_empty">추가할 코디가 없습니다</string>
     <string name="calendar_pick_source_prompt">코디가 있는 날을 탭하여 선택하세요</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">캘린더에서 코디 삭제</string>
     <string name="calendar_delete_prompt">그날의 코디를 삭제하려면 날짜를 탭하세요</string>
-    <string name="calendar_delete_confirm_title">코디를 삭제할까요?</string>
-    <string name="calendar_delete_confirm_msg">%1$s에 착용한 코디를 모두 삭제할까요?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">%1$s에 코디 추가</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">새 코디</string>
     <string name="fab_wardrobe_add">아이템 추가</string>
-    <string name="fab_calendar_log">코디 기록</string>
     <string name="sel_swap">교체</string>
-    <string name="sel_move">이동</string>
-    <string name="sel_combine">조합</string>
-    <string name="sel_love">좋아요</string>
-    <string name="sel_copy_to_day">복사</string>
-    <string name="sel_remove">삭제</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">“%1$s”을(를) 입을 날짜를 탭하세요</string>
-    <string name="calendar_done_wear">%1$s에 기록됨</string>
-    <string name="calendar_done_move">%1$s(으)로 이동됨</string>
-    <string name="calendar_done_copy">%1$s(으)로 복사됨</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">웹사이트</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">이메일 앱을 찾을 수 없습니다. %1$s 로 직접 이메일을 보내주세요.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">선택한 %1$d일에 착용한 모든 코디를 삭제할까요?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">코디 추가</string>
-    <string name="calendar_today">오늘</string>
 </resources>

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">Outfity</string>
     <string name="nav_wardrobe">Šatník</string>
     <string name="nav_shopping">Nákupy</string>
     <string name="nav_travel">Cestování</string>
     <string name="nav_settings">Nastavení</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">Kalendář</string>
     <string name="insights_tab_wardrobe_stats">Statistiky šatníku</string>
-    <string name="insights_tab_calendar_stats">Statistiky kalendáře</string>
     <string name="insights_tab_costs">Náklady</string>
     <string name="costs_count_items">Položky</string>
     <string name="costs_count_outfits">Outfity</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Vyzkoušení</string>
 
     <!-- Common actions -->
-    <string name="action_save">Uložit</string>
     <string name="action_saving">Ukládání…</string>
     <string name="cd_ai_suggestion">Návrh AI</string>
-    <string name="cd_refine">Vylepšit</string>
     <string name="filter_location">Umístění</string>
     <string name="wardrobe_processing_photos">Zpracování %1$d fotografií…</string>
     <string name="wardrobe_progress_uploading">Nahrávání fotografie…</string>
@@ -250,28 +245,12 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">Klepnutím na + sestavte outfit ze svého šatníku</string>
-    <string name="outfits_sort_most_worn">Nejvíc nošené</string>
     <string name="outfits_create_manual">Vytvořit outfit ručně</string>
-    <string name="outfits_suggest">Navrhnout stávající outfit</string>
-    <string name="prediction_setup_title">Najít pomocí AI</string>
-    <string name="prediction_setup_find">Najít</string>
-    <string name="prediction_setup_title_compose">Vytvořit pomocí AI</string>
-    <string name="prediction_setup_create">Vytvořit</string>
-    <string name="prediction_setup_suggestions">Návrhy</string>
     <string name="prediction_setup_considerations">Zvážit pro tento běh</string>
-    <string name="prediction_setup_weather_pick_day">Vyberte den</string>
-    <string name="prediction_setup_weather_today">Dnes</string>
-    <string name="prediction_setup_weather_tomorrow">Zítra</string>
-    <string name="composer_mode_fullscreen">Celá obrazovka</string>
-    <string name="composer_empty_slot_ai_hint">AI doplní prázdná místa</string>
-    <string name="outfit_save_dialog_tag_suggestions">Stávající štítky</string>
     <string name="outfits_compose">Sestavit nový outfit</string>
     <string name="outfits_thinking">Přemýšlím…</string>
     <string name="outfits_suggesting">Navrhuji outfit…</string>
     <string name="outfits_composing">Sestavuji outfit…</string>
-    <string name="outfits_delete_title">Smazat outfit?</string>
-    <string name="outfits_delete_text">\"%s\" bude trvale odstraněn.</string>
     <string name="outfits_items_away">%d položek je na jiném místě</string>
     <string name="outfits_suggested_title">Navrženo pro dnešek</string>
     <string name="outfits_composed_title">Sestaveno pro vás</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Název outfitu</string>
     <string name="outfits_description_placeholder">Popis (volitelně)</string>
     <string name="outfits_create_this">Vytvořit tento outfit</string>
-    <string name="outfits_refine_label">Vylepšit pomocí AI</string>
-    <string name="outfits_refine_custom">Vlastní zpětná vazba…</string>
-    <string name="outfits_refine_casual">Více ležérní</string>
-    <string name="outfits_refine_formal">Více formální</string>
-    <string name="outfits_refine_diff_colors">Jiné barvy</string>
-    <string name="outfits_refine_warmer">Teplejší oblečení</string>
-    <string name="outfits_refine_lighter">Lehčí oblečení</string>
-    <string name="outfits_refine_trendy">Více trendy</string>
-    <string name="outfits_refine_simpler">Jednodušší</string>
-    <string name="outfits_refine_bold">Odvážnější</string>
     <string name="outfits_items_label">Položky outfitu</string>
     <string name="outfits_add_item">Přidat položku</string>
-    <string name="outfits_tags_label">Štítky</string>
-    <string name="outfits_prediction_prev">Předchozí návrh</string>
-    <string name="outfits_prediction_next">Další návrh</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Použít tento outfit</string>
-    <string name="outfits_suggest_tags">Navrhnout štítky pomocí AI</string>
-    <string name="outfits_suggest_tags_title">Navržené štítky</string>
-    <string name="outfits_suggest_tags_loading">Navrhování štítků…</string>
-    <string name="outfits_suggest_tags_empty">Nebyly navrženy žádné nové štítky.</string>
-    <string name="outfits_suggest_tags_apply">Přidat vybrané</string>
-    <string name="outfits_suggest_tags_hint">Klepnutím přepnete štítky. Vybrané štítky budou přidány k tomuto outfitu.</string>
     <string name="outfits_swap_item_for">Vyměnit: %s</string>
     <string name="outfits_suggest_alternatives">Navrhnout 10 alternativ</string>
     <string name="outfits_select_item">Vybrat</string>
-    <string name="outfits_saved_wear_today">Outfit uložen! Obléknout dnes?</string>
-    <string name="outfits_selected_count">%d vybráno</string>
-    <string name="outfits_select_all_count">Vybrat všech %d</string>
-    <string name="outfits_delete_selected_title">Smazat outfity?</string>
-    <string name="outfits_delete_selected_text">%d outfitů bude trvale odstraněno.</string>
     <string name="outfits_combine">Kombinovat pomocí AI</string>
-    <string name="outfit_slot_lock">Zamknout</string>
-    <string name="outfit_slot_unlock">Odemknout</string>
-    <string name="outfit_slot_remove">Odstranit</string>
-    <string name="outfit_slot_add">Přidat položku</string>
-    <string name="outfit_generate_with_ai">Generovat pomocí AI</string>
-    <string name="outfit_discard_changes_title">Zahodit změny?</string>
-    <string name="outfit_discard_changes_body">Vaše neuložené změny budou ztraceny.</string>
-    <string name="outfit_discard_changes_confirm">Zahodit</string>
-    <string name="outfit_save_dialog_title">Uložit outfit</string>
-    <string name="outfit_save_dialog_name">Název</string>
-    <string name="outfit_save_dialog_description">Popis</string>
-    <string name="outfit_save_dialog_tags">Štítky</string>
-    <string name="outfit_save_dialog_confirm">Uložit</string>
     <string name="outfit_mode_view">Prohlížet</string>
     <string name="outfit_mode_edit">Upravit</string>
-    <string name="outfit_pick_category">Vyberte kategorii</string>
 
     <!-- Travel -->
     <string name="travel_title">Cestovní seznam</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Položky se nepodařilo přesunout</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">Po</string>
-    <string name="calendar_day_tu">Út</string>
-    <string name="calendar_day_we">St</string>
-    <string name="calendar_day_th">Čt</string>
-    <string name="calendar_day_fr">Pá</string>
-    <string name="calendar_day_sa">So</string>
-    <string name="calendar_day_su">Ne</string>
-    <string name="calendar_stats_styles">Nejvíce nošené outfity</string>
-    <string name="calendar_stats_items">Nejvíce nošené položky</string>
-    <string name="calendar_empty">Zatím žádná historie outfitů</string>
-    <string name="calendar_empty_hint">Začněte sledování tím, že si vezmete outfit z karty Outfity</string>
-    <string name="calendar_wear_again">Vzít si dnes znovu</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Objevte 3 chybějící kousky, které by odemkly nejvíce nových kombinací outfitů z vašeho stávajícího šatníku.</string>
@@ -383,7 +310,6 @@
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">Analyzování vašeho šatníku…</string>
-    <string name="ai_suggesting_style">Navrhování outfitu…</string>
     <string name="ai_composing_outfit">Sestavování outfitu…</string>
 
     <!-- Foreground service notification -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Jste offline — režim pouze pro čtení</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">Vyzkoušet na mně</string>
     <string name="tryon_section_title">Fotografie pro vyzkoušení</string>
     <string name="tryon_section_desc">Nahrajte fotografie celé postavy zepředu, zboku a zezadu. Aplikace je používá jako referenci při generování náhledu outfitu nebo položky šatníku na vás. Fotografie zůstávají na vašem Drive.</string>
     <string name="tryon_add_photo">Přidat fotografii %1$s</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Pro uživatele, kteří si raději nechtějí vytvářet vlastní API klíč, aplikace nabízí kreditní systém. Kredity lze zakoupit na kartě Kredity a spotřebovávají se za každou AI akci podle výše uvedených sazeb. Tento režim směruje požadavky přes proxy server.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">Vytvořit outfit</string>
     <string name="composer_discard_title">Zahodit outfit?</string>
     <string name="composer_discard_message">Váš výběr bude ztracen.</string>
     <string name="composer_discard_confirm">Zahodit</string>
-    <string name="composer_header_subtitle">%1$d z 5 vrstev · klepnutím vyměňte</string>
     <string name="composer_fill_missing">Doplnit chybějící</string>
     <string name="composer_see_all_count">Všech %1$d</string>
     <string name="composer_layer_picked_count">%1$d vybráno</string>
-    <string name="composer_weather_title">Počasí</string>
-    <string name="composer_save">Uložit</string>
     <string name="composer_section_goal">Jaká je příležitost?</string>
-    <string name="composer_goal_placeholder">např. Večeře v Lisabonu, teplý večer</string>
     <string name="composer_goal_generate">Generovat</string>
     <string name="composer_advanced">Pokročilé možnosti</string>
     <string name="composer_chip_work">Práce</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Rande</string>
     <string name="composer_section_quick_start">Rychlý start</string>
     <string name="composer_section_items">Položky</string>
-    <string name="composer_section_weather">Počasí</string>
-    <string name="composer_section_vibe">Styl</string>
     <string name="composer_section_targets">Složení</string>
     <string name="composer_targets_hint">Nastavte, kolik kusů z každé vrstvy zahrnout. Ponechte na 0, aby rozhodla AI.</string>
     <string name="composer_tags_optional">Štítky (volitelně)</string>
     <string name="composer_section_name">Název a popis</string>
     <string name="composer_section_ai">Vylepšit pomocí AI</string>
-    <string name="composer_weather_auto">Aktuální</string>
-    <string name="composer_weather_manual">Ruční</string>
-    <string name="composer_weather_unknown">Počasí není dostupné</string>
-    <string name="composer_weather_season">Sezóna</string>
-    <string name="composer_weather_temp">Teplota</string>
-    <string name="composer_weather_precip">Srážky</string>
-    <string name="composer_season_spring">Jaro</string>
-    <string name="composer_season_summer">Léto</string>
-    <string name="composer_season_fall">Podzim</string>
-    <string name="composer_season_winter">Zima</string>
-    <string name="composer_temp_value">%1$d °C</string>
-    <string name="composer_precip_none">Žádné</string>
-    <string name="composer_precip_light">Mírné</string>
-    <string name="composer_precip_heavy">Silné</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Základní vršek</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Řekněte AI, co změnit nebo na co se zaměřit…</string>
     <string name="composer_feedback_history">V kontextu zachováno %1$d dřívějších požadavků</string>
     <string name="composer_enhance">Vylepšit pomocí AI</string>
-    <string name="composer_enhancing">Ptám se Gemini…</string>
     <string name="composer_picked_count">%1$d vybráno</string>
     <string name="composer_add_selected">Přidat vybrané</string>
     <string name="composer_factors_label">Použití</string>
-    <string name="composer_factor_weather_auto">Živé počasí</string>
     <string name="composer_factor_weather_manual">Ruční počasí</string>
     <string name="composer_factor_vibes">%1$d stylů</string>
     <string name="composer_factor_items">%1$d položek</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Smazat také %d outfit(ů), které používají tyto kousky</string>
     <string name="wardrobe_delete_cascade_tryons">Smazat také %d zkoušku/zkoušek s těmito kousky</string>
-    <string name="outfits_broken_banner">%d outfitů používá kousky, které už nejsou ve tvém šatníku.</string>
-    <string name="outfits_broken_review">Zkontrolovat</string>
-    <string name="outfits_broken_delete_title">Smazat neúplné outfity?</string>
-    <string name="outfits_broken_delete_text">Těchto %d outfitů odkazuje na kousky, které už nejsou ve tvém šatníku, a budou trvale smazány:</string>
-    <string name="outfits_broken_more">+%d dalších</string>
-    <string name="insights_items_removed">Kousky už nejsou v šatníku</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Ty</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Zavřít</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Líbilo se mi</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Učí se z toho, co skutečně nosíš a co se ti líbilo.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Údržba</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Další možnosti</string>
-    <string name="calendar_move_to_day">Přesunout na jiný den</string>
-    <string name="calendar_copy_to_day">Kopírovat na jiný den</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Klepnutím na den přesuňte outfit</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Klepnutím na den zkopírujte outfit</string>
     <string name="calendar_mode_move">Přesunout</string>
     <string name="calendar_mode_copy">Kopírovat</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Odebrat z tohoto dne</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Nosit</string>
-    <string name="outfits_favorite">Oblíbené</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Dokončování…</string>
     <string name="wardrobe_sync_details">Načítání podrobností: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Dokončování…</string>
-    <string name="outfit_saving">Ukládání outfitu…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Složka cest není připravena.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Přidat outfit do kalendáře</string>
-    <string name="calendar_add_pick">Vyberte outfit</string>
-    <string name="calendar_add_empty">Zatím žádné outfity k přidání</string>
     <string name="calendar_pick_source_prompt">Klepnutím na den s outfity jej vyberete</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Odebrat outfit z kalendáře</string>
     <string name="calendar_delete_prompt">Klepnutím na den odeberete jeho outfity</string>
-    <string name="calendar_delete_confirm_title">Odebrat outfity?</string>
-    <string name="calendar_delete_confirm_msg">Odebrat všechny outfity nošené dne %1$s?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Přidat outfit na %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Nový outfit</string>
     <string name="fab_wardrobe_add">Přidat kus</string>
-    <string name="fab_calendar_log">Zaznamenat outfit</string>
     <string name="sel_swap">Vyměnit</string>
-    <string name="sel_move">Přesunout</string>
-    <string name="sel_combine">Zkombinovat</string>
-    <string name="sel_love">Oblíbit</string>
-    <string name="sel_copy_to_day">Kopírovat</string>
-    <string name="sel_remove">Odebrat</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Klepnutím na den si oblékněte „%1$s“</string>
-    <string name="calendar_done_wear">Zaznamenáno na %1$s</string>
-    <string name="calendar_done_move">Přesunuto na %1$s</string>
-    <string name="calendar_done_copy">Zkopírováno na %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Webové stránky</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Nebyla nalezena žádná e-mailová aplikace. Napište nám ručně na %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Odebrat všechny outfity nošené ve vybraných dnech (%1$d)?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Přidat outfit</string>
-    <string name="calendar_today">Dnes</string>
 </resources>

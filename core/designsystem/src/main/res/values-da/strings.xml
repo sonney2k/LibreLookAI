@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Upload mislykkedes: %1$s</string>
     <string name="error_original_unavailable">Original ikke tilgængelig</string>
     <string name="action_deselect_all">Fravælg alle</string>
+    <string name="action_save">Gem</string>
+    <string name="nav_styles">Outfits</string>
+    <string name="sel_move">Flyt</string>
+    <string name="tryon_outfit_picker_title">Vælg et outfit</string>
+    <string name="tryon_outfit_picker_empty">Ingen gemte outfits endnu. Opret et i Outfits-fanen for at bruge det her.</string>
 </resources>

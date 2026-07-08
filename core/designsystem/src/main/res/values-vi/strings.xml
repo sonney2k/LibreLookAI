@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Tải lên không thành công: %1$s</string>
     <string name="error_original_unavailable">Bản gốc không khả dụng</string>
     <string name="action_deselect_all">Bỏ chọn tất cả</string>
+    <string name="action_save">Lưu</string>
+    <string name="nav_styles">Trang phục</string>
+    <string name="sel_move">Chuyển</string>
+    <string name="tryon_outfit_picker_title">Chọn một trang phục</string>
+    <string name="tryon_outfit_picker_empty">Chưa có trang phục nào được lưu. Hãy tạo trong tab Trang phục để dùng ở đây.</string>
 </resources>

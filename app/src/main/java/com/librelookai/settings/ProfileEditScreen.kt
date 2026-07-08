@@ -117,7 +117,7 @@ fun ProfileEditScreen(
                 onToggleTag = { dim -> considerations = considerations.toggleItemTag(dim) },
             )
             Button(onClick = ::commitAndBack, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.action_save))
+                Text(stringResource(DsR.string.action_save))
             }
         }
     }

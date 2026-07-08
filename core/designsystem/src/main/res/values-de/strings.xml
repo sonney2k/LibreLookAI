@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Upload fehlgeschlagen: %1$s</string>
     <string name="error_original_unavailable">Original nicht verfügbar</string>
     <string name="action_deselect_all">Auswahl aufheben</string>
+    <string name="action_save">Speichern</string>
+    <string name="nav_styles">Outfits</string>
+    <string name="sel_move">Verschieben</string>
+    <string name="tryon_outfit_picker_title">Outfit auswählen</string>
+    <string name="tryon_outfit_picker_empty">Noch keine gespeicherten Outfits. Erstelle eines im Outfits-Tab, um es hier zu verwenden.</string>
 </resources>

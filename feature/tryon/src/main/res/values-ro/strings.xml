@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Articole purtate</string>
     <string name="tryon_history_title">Probe anterioare</string>
     <string name="tryon_missing_photos_items">Lipsesc fotografii sau articole</string>
-    <string name="tryon_outfit_picker_empty">Nicio ținută salvată încă. Creează una în tabul Ținute pentru a o folosi aici.</string>
-    <string name="tryon_outfit_picker_title">Alege o ținută</string>
     <string name="tryon_save_to_drive">Salvează</string>
     <string name="tryon_saved_to_drive">Salvat</string>
     <string name="tryon_saving">Se salvează…</string>

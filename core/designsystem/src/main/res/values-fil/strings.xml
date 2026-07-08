@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Nabigo ang pag-upload: %1$s</string>
     <string name="error_original_unavailable">Hindi available ang orihinal</string>
     <string name="action_deselect_all">Alisin sa pagpili</string>
+    <string name="action_save">I-save</string>
+    <string name="nav_styles">Outfits</string>
+    <string name="sel_move">Ilipat</string>
+    <string name="tryon_outfit_picker_title">Pumili ng outfit</string>
+    <string name="tryon_outfit_picker_empty">Wala pang naka-save na outfit. Gumawa ng isa sa Outfits tab para magamit dito.</string>
 </resources>

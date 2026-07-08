@@ -28,8 +28,6 @@
     <string name="tryon_history_new">New try-on</string>
     <string name="tryon_history_title">Past try-ons</string>
     <string name="tryon_missing_photos_items">Missing photos or items</string>
-    <string name="tryon_outfit_picker_empty">No saved outfits yet. Create one in the Outfits tab to use it here.</string>
-    <string name="tryon_outfit_picker_title">Pick an outfit</string>
     <string name="tryon_photos_body">Front, side, and back — full-body, plain background works best. Photos stay in your own Drive.</string>
     <string name="tryon_photos_eyebrow">Reference photos needed</string>
     <string name="tryon_photos_open_settings">Open Settings → Profile</string>

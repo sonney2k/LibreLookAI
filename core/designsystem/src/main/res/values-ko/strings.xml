@@ -225,4 +225,9 @@
     <string name="error_upload_failed">업로드 실패: %1$s</string>
     <string name="error_original_unavailable">원본을 사용할 수 없음</string>
     <string name="action_deselect_all">선택 해제</string>
+    <string name="action_save">저장</string>
+    <string name="nav_styles">코디</string>
+    <string name="sel_move">이동</string>
+    <string name="tryon_outfit_picker_title">코디 선택</string>
+    <string name="tryon_outfit_picker_empty">아직 저장된 코디가 없습니다. 코디 탭에서 생성하여 여기서 사용하세요.</string>
 </resources>

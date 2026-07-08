@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Prendas llevadas</string>
     <string name="tryon_history_title">Try-ons anteriores</string>
     <string name="tryon_missing_photos_items">Faltan fotos o prendas</string>
-    <string name="tryon_outfit_picker_empty">Aún no hay outfits guardados. Crea uno en la pestaña Outfits para usarlo aquí.</string>
-    <string name="tryon_outfit_picker_title">Elige un outfit</string>
     <string name="tryon_save_to_drive">Guardar</string>
     <string name="tryon_saved_to_drive">Guardado</string>
     <string name="tryon_saving">Guardando…</string>

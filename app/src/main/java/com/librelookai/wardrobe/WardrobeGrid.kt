@@ -512,7 +512,7 @@ internal fun GridContent(
                 if (locations.size > 1) {
                     add(
                         SelectionAction(
-                            label = stringResource(R.string.sel_move),
+                            label = stringResource(DsR.string.sel_move),
                             icon = Icons.Default.Place,
                         ) {
                             Analytics.action("Wardrobe", "open_move_dialog", mapOf("count" to state.selectedIds.size.toString()))

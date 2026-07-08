@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Viselt darabok</string>
     <string name="tryon_history_title">Korábbi felpróbálások</string>
     <string name="tryon_missing_photos_items">Hiányzó fotók vagy ruhák</string>
-    <string name="tryon_outfit_picker_empty">Még nincs mentett szett. Hozz létre egyet a Szettek lapon, hogy itt használhasd.</string>
-    <string name="tryon_outfit_picker_title">Válassz szettet</string>
     <string name="tryon_save_to_drive">Mentés</string>
     <string name="tryon_saved_to_drive">Elmentve</string>
     <string name="tryon_saving">Mentés…</string>

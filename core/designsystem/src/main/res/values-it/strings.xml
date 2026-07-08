@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Caricamento non riuscito: %1$s</string>
     <string name="error_original_unavailable">Originale non disponibile</string>
     <string name="action_deselect_all">Deseleziona tutto</string>
+    <string name="action_save">Salva</string>
+    <string name="nav_styles">Outfit</string>
+    <string name="sel_move">Sposta</string>
+    <string name="tryon_outfit_picker_title">Scegli un outfit</string>
+    <string name="tryon_outfit_picker_empty">Nessun outfit salvato. Creane uno nella scheda Outfit per usarlo qui.</string>
 </resources>

@@ -28,8 +28,6 @@
     <string name="tryon_history_new">Neue Anprobe</string>
     <string name="tryon_history_title">Frühere Anproben</string>
     <string name="tryon_missing_photos_items">Fotos oder Artikel fehlen</string>
-    <string name="tryon_outfit_picker_empty">Noch keine gespeicherten Outfits. Erstelle eines im Outfits-Tab, um es hier zu verwenden.</string>
-    <string name="tryon_outfit_picker_title">Outfit auswählen</string>
     <string name="tryon_photos_body">Vorne, seitlich und hinten — ganzkörper, schlichter Hintergrund funktioniert am besten. Fotos bleiben in deinem eigenen Drive.</string>
     <string name="tryon_photos_eyebrow">Referenzfotos benötigt</string>
     <string name="tryon_photos_open_settings">Einstellungen → Profil öffnen</string>

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">ชุดแต่งกาย</string>
     <string name="nav_wardrobe">ตู้เสื้อผ้า</string>
     <string name="nav_shopping">ช้อปปิ้ง</string>
     <string name="nav_travel">ท่องเที่ยว</string>
     <string name="nav_settings">ตั้งค่า</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">ปฏิทิน</string>
     <string name="insights_tab_wardrobe_stats">สถิติตู้เสื้อผ้า</string>
-    <string name="insights_tab_calendar_stats">สถิติปฏิทิน</string>
     <string name="insights_tab_costs">ค่าใช้จ่าย</string>
     <string name="costs_count_items">รายการ</string>
     <string name="costs_count_outfits">ชุด</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">การลองชุด</string>
 
     <!-- Common actions -->
-    <string name="action_save">บันทึก</string>
     <string name="action_saving">กำลังบันทึก…</string>
     <string name="cd_ai_suggestion">คำแนะนำจาก AI</string>
-    <string name="cd_refine">ปรับแต่ง</string>
     <string name="filter_location">สถานที่</string>
     <string name="wardrobe_processing_photos">กำลังประมวลผล %1$d รูป…</string>
     <string name="wardrobe_progress_uploading">กำลังอัปโหลดรูปภาพ…</string>
@@ -160,38 +155,19 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">แตะ + เพื่อสร้างชุดจากตู้เสื้อผ้าของคุณ</string>
-    <string name="outfits_sort_most_worn">สวมใส่บ่อยที่สุด</string>
     <string name="outfits_create_manual">สร้างชุดด้วยตนเอง</string>
-    <string name="outfits_suggest">แนะนำชุดที่มีอยู่</string>
-    <string name="prediction_setup_title">ค้นหาด้วย AI</string>
-    <string name="prediction_setup_find">ค้นหา</string>
-    <string name="prediction_setup_title_compose">สร้างด้วย AI</string>
-    <string name="prediction_setup_create">สร้าง</string>
-    <string name="prediction_setup_suggestions">คำแนะนำ</string>
     <string name="prediction_setup_considerations">พิจารณาในรอบนี้</string>
-    <string name="prediction_setup_weather_today">วันนี้</string>
-    <string name="prediction_setup_weather_tomorrow">พรุ่งนี้</string>
     <string name="outfits_compose">สร้างชุดใหม่</string>
     <string name="outfits_thinking">กำลังคิด…</string>
     <string name="outfits_suggesting">กำลังแนะนำชุด…</string>
     <string name="outfits_composing">กำลังสร้างชุด…</string>
-    <string name="outfits_delete_title">ลบชุดแต่งกาย?</string>
-    <string name="outfits_delete_text">\"%s\" จะถูกลบออกอย่างถาวร</string>
     <string name="outfits_suggested_title">แนะนำสำหรับวันนี้</string>
     <string name="outfits_composed_title">สร้างขึ้นเพื่อคุณ</string>
     <string name="outfits_name_dialog_title">ตั้งชื่อชุดนี้</string>
     <string name="outfits_name_placeholder">ชื่อชุด</string>
     <string name="outfits_create_this">สร้างชุดนี้</string>
-    <string name="outfits_refine_label">ปรับแต่งด้วย AI</string>
     <string name="outfits_add_item">เพิ่มรายการ</string>
-    <string name="outfits_tags_label">แท็ก</string>
-    <string name="composer_select_suggestion">ใช้ชุดนี้</string>
-    <string name="outfits_saved_wear_today">บันทึกชุดแล้ว! จะใส่ชุดนี้วันนี้ไหม?</string>
     <string name="outfits_combine">รวมชุดด้วย AI</string>
-    <string name="outfit_generate_with_ai">สร้างด้วย AI</string>
-    <string name="outfit_save_dialog_title">บันทึกชุด</string>
-    <string name="outfit_save_dialog_confirm">บันทึก</string>
 
     <!-- Travel -->
     <string name="travel_title">รายการจัดกระเป๋า</string>
@@ -208,17 +184,6 @@
     <string name="travel_saved_as_style">บันทึกแล้ว</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">จ.</string>
-    <string name="calendar_day_tu">อ.</string>
-    <string name="calendar_day_we">พ.</string>
-    <string name="calendar_day_th">พฤ.</string>
-    <string name="calendar_day_fr">ศ.</string>
-    <string name="calendar_day_sa">ส.</string>
-    <string name="calendar_day_su">อา.</string>
-    <string name="calendar_stats_styles">ชุดที่ใส่บ่อยที่สุด</string>
-    <string name="calendar_stats_items">รายการที่ใส่บ่อยที่สุด</string>
-    <string name="calendar_empty">ยังไม่มีประวัติชุดที่ใส่</string>
-    <string name="calendar_wear_again">ใส่ซ้ำอีกวันนี้</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_analyze">วิเคราะห์ตู้เสื้อผ้าของฉัน</string>
@@ -226,14 +191,12 @@
 
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">กำลังวิเคราะห์ตู้เสื้อผ้าของคุณ…</string>
-    <string name="ai_suggesting_style">กำลังแนะนำชุด…</string>
     <string name="ai_composing_outfit">กำลังสร้างชุด…</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">คุณออฟไลน์อยู่ — โหมดดูอย่างเดียว</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">ลองใส่ชุด</string>
     <string name="tryon_uploading">กำลังอัปโหลด…</string>
     <string name="tryon_save_to_gallery">บันทึกในแกลเลอรี</string>
     <string name="tryon_saved">บันทึกใน Pictures/LibreLookAI แล้ว</string>
@@ -246,8 +209,6 @@
     <string name="about_open_source">แอปนี้เป็นโอเพนซอร์สและใช้งานฟรี</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">สร้างชุด</string>
-    <string name="composer_save">บันทึก</string>
     <string name="composer_goal_generate">สร้าง</string>
     <string name="composer_advanced">ตัวเลือกขั้นสูง</string>
     <string name="composer_chip_work">งาน</string>
@@ -256,15 +217,7 @@
     <string name="composer_chip_workout">กีฬา</string>
     <string name="composer_chip_travel">ท่องเที่ยว</string>
     <string name="composer_chip_date">ออกเดท</string>
-    <string name="composer_weather_auto">ปัจจุบัน</string>
-    <string name="composer_weather_manual">กำหนดเอง</string>
-    <string name="composer_season_spring">ฤดูใบไม้ผลิ</string>
-    <string name="composer_season_summer">ฤดูร้อน</string>
-    <string name="composer_season_fall">ฤดูใบไม้ร่วง</string>
-    <string name="composer_season_winter">ฤดูหนาว</string>
-    <string name="composer_temp_value">%1$d°C</string>
     <string name="composer_enhance">ปรับปรุงด้วย AI</string>
-    <string name="composer_enhancing">กำลังถาม Gemini…</string>
 
     <!-- Monetization / cost badges -->
     <string name="cost_badge_tokens_estimate">~%1$s โทเค็น</string>
@@ -295,55 +248,39 @@
 
 กรุณาปิดการปรับให้แบตเตอรี่เหมาะสมสำหรับ LibreLookAI เพื่อดำเนินการต่อ</string>
     <string name="battery_exempt_title">ต้องการการประมวลผลพื้นหลัง</string>
-    <string name="calendar_empty_hint">สวมชุดจากแท็บชุดเพื่อเริ่มติดตาม</string>
     <string name="composer_add_selected">เพิ่มที่เลือก</string>
     <string name="composer_desc_placeholder">คำอธิบายสั้น (ไม่บังคับ)</string>
     <string name="composer_discard_confirm">ยกเลิก</string>
     <string name="composer_discard_message">การเลือกของคุณจะสูญหาย</string>
     <string name="composer_discard_title">ยกเลิกชุด?</string>
-    <string name="composer_empty_slot_ai_hint">AI จะเติมช่องว่าง</string>
     <string name="composer_factor_closets">%1$d ตู้</string>
     <string name="composer_factor_composition">องค์ประกอบกำหนดเอง</string>
     <string name="composer_factor_items">%1$d รายการ</string>
     <string name="composer_factor_vibes">%1$d สไตล์</string>
-    <string name="composer_factor_weather_auto">อากาศสด</string>
     <string name="composer_factor_weather_manual">อากาศกำหนดเอง</string>
     <string name="composer_factors_label">กำลังใช้</string>
     <string name="composer_feedback_history">%1$d คำขอก่อนหน้าเก็บในบริบท</string>
     <string name="composer_feedback_placeholder">บอก AI ว่าจะเปลี่ยนหรือมุ่งหวังอะไร…</string>
     <string name="composer_fill_missing">เติมที่ขาด</string>
-    <string name="composer_goal_placeholder">เช่น อาหารค่ำในลิสบอน ค่ำคืนอบอุ่น</string>
-    <string name="composer_header_subtitle">%1$d จาก 5 ชั้น · แตะเพื่อสลับ</string>
     <string name="composer_layer_accessory">แอ็คเซสซอรี่</string>
     <string name="composer_layer_bottom">ล่าง</string>
     <string name="composer_layer_footwear">รองเท้า</string>
     <string name="composer_layer_outerwear">เสื้อคลุม</string>
     <string name="composer_layer_picked_count">เลือก %1$d</string>
     <string name="composer_layer_top">บนพื้นฐาน</string>
-    <string name="composer_mode_fullscreen">เต็มจอ</string>
     <string name="composer_name_placeholder">ชื่อชุด (ไม่บังคับ)</string>
     <string name="composer_picked_count">เลือก %1$d</string>
-    <string name="composer_precip_heavy">หนัก</string>
-    <string name="composer_precip_light">เบา</string>
-    <string name="composer_precip_none">ไม่มี</string>
     <string name="composer_section_ai">ปรับปรุงด้วย AI</string>
     <string name="composer_section_goal">โอกาสอะไร?</string>
     <string name="composer_section_items">รายการ</string>
     <string name="composer_section_name">ชื่อ &amp; คำอธิบาย</string>
     <string name="composer_section_quick_start">เริ่มเร็ว</string>
     <string name="composer_section_targets">องค์ประกอบ</string>
-    <string name="composer_section_vibe">อารมณ์สไตล์</string>
-    <string name="composer_section_weather">สภาพอากาศ</string>
     <string name="composer_see_all_count">ทั้งหมด %1$d</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">แท็ก (ไม่บังคับ)</string>
     <string name="composer_targets_hint">กำหนดจำนวนของแต่ละชั้นที่จะรวม ปล่อย 0 เพื่อให้ AI ตัดสิน</string>
-    <string name="composer_weather_precip">ฝน/หิมะ</string>
-    <string name="composer_weather_season">ฤดู</string>
-    <string name="composer_weather_temp">อุณหภูมิ</string>
-    <string name="composer_weather_title">สภาพอากาศ</string>
-    <string name="composer_weather_unknown">ไม่มีข้อมูลอากาศ</string>
     <string name="dedupe_dialog_cancel">ยกเลิก</string>
     <string name="dedupe_dialog_desc">เราพบ %1$d รายการในตู้เสื้อผ้าของคุณที่ดูคล้ายกับรูปนี้มาก</string>
     <string name="dedupe_dialog_import_anyway">นำเข้าต่อไป</string>
@@ -369,49 +306,14 @@
     <string name="local_bg_recomputing">กำลังคำนวณการตัดใหม่…</string>
     <string name="local_bg_skip">ข้าม (ใช้ Gemini)</string>
     <string name="local_bg_title">ปรับการตัด</string>
-    <string name="outfit_discard_changes_body">การเปลี่ยนแปลงที่ยังไม่บันทึกจะสูญหาย</string>
-    <string name="outfit_discard_changes_confirm">ยกเลิก</string>
-    <string name="outfit_discard_changes_title">ยกเลิกการเปลี่ยนแปลง?</string>
     <string name="outfit_mode_edit">แก้ไข</string>
     <string name="outfit_mode_view">ดู</string>
-    <string name="outfit_pick_category">เลือกหมวด</string>
-    <string name="outfit_save_dialog_description">คำอธิบาย</string>
-    <string name="outfit_save_dialog_name">ชื่อ</string>
-    <string name="outfit_save_dialog_tag_suggestions">แท็กที่มีอยู่</string>
-    <string name="outfit_save_dialog_tags">แท็ก</string>
-    <string name="outfit_slot_add">เพิ่มรายการ</string>
-    <string name="outfit_slot_lock">ล็อก</string>
-    <string name="outfit_slot_remove">ลบ</string>
-    <string name="outfit_slot_unlock">ปลดล็อก</string>
-    <string name="outfits_delete_selected_text">จะลบ %d ชุดอย่างถาวร</string>
-    <string name="outfits_delete_selected_title">ลบชุด?</string>
     <string name="outfits_description_placeholder">คำอธิบาย (ไม่บังคับ)</string>
     <string name="outfits_items_away">%d รายการอยู่ที่อื่น</string>
     <string name="outfits_items_label">รายการชุด</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="outfits_prediction_next">คำแนะนำถัดไป</string>
-    <string name="outfits_prediction_prev">คำแนะนำก่อนหน้า</string>
-    <string name="outfits_refine_bold">กล้ามากขึ้น</string>
-    <string name="outfits_refine_casual">ลำลองมากขึ้น</string>
-    <string name="outfits_refine_custom">ฟีดแบ็คกำหนดเอง…</string>
-    <string name="outfits_refine_diff_colors">สีอื่น</string>
-    <string name="outfits_refine_formal">เป็นทางการมากขึ้น</string>
-    <string name="outfits_refine_lighter">เสื้อผ้าบางลง</string>
-    <string name="outfits_refine_simpler">เรียบง่ายขึ้น</string>
-    <string name="outfits_refine_trendy">ทันสมัยขึ้น</string>
-    <string name="outfits_refine_warmer">เสื้อผ้าอบอุ่นขึ้น</string>
-    <string name="outfits_select_all_count">เลือก %d รายการ</string>
     <string name="outfits_select_item">เลือก</string>
-    <string name="outfits_selected_count">เลือก %d รายการ</string>
     <string name="outfits_suggest_alternatives">แนะนำ 10 ทางเลือก</string>
-    <string name="outfits_suggest_tags">แนะนำแท็กด้วย AI</string>
-    <string name="outfits_suggest_tags_apply">เพิ่มที่เลือก</string>
-    <string name="outfits_suggest_tags_empty">ไม่มีแท็กใหม่ที่แนะนำ</string>
-    <string name="outfits_suggest_tags_hint">แตะแท็กเพื่อสลับ แท็กที่เลือกจะถูกเพิ่มในชุดนี้</string>
-    <string name="outfits_suggest_tags_loading">กำลังแนะนำแท็ก…</string>
-    <string name="outfits_suggest_tags_title">แท็กแนะนำ</string>
     <string name="outfits_swap_item_for">แทนที่: %s</string>
-    <string name="prediction_setup_weather_pick_day">เลือกวัน</string>
     <string name="repair_duplicate_of">คล้ายกับ %1$s</string>
     <string name="repair_duplicates_hint">ติ๊กรายการที่จะลบจาก Drive แตะเพื่อดูหน้าตา</string>
     <string name="repair_section_duplicates">อาจซ้ำ</string>
@@ -573,12 +475,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">ลบชุด %d ชุดที่ใช้ไอเท็มเหล่านี้ด้วย</string>
     <string name="wardrobe_delete_cascade_tryons">ลบการลองสวม %d ครั้งที่มีไอเท็มเหล่านี้ด้วย</string>
-    <string name="outfits_broken_banner">%d ชุดใช้ไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าของคุณแล้ว</string>
-    <string name="outfits_broken_review">ตรวจสอบ</string>
-    <string name="outfits_broken_delete_title">ลบชุดที่ไม่สมบูรณ์หรือไม่</string>
-    <string name="outfits_broken_delete_text">ชุด %d ชุดเหล่านี้อ้างอิงไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าแล้ว และจะถูกลบอย่างถาวร:</string>
-    <string name="outfits_broken_more">อีก %d รายการ</string>
-    <string name="insights_items_removed">ไอเท็มไม่อยู่ในตู้เสื้อผ้าแล้ว</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">คุณ</string>
@@ -668,7 +564,6 @@
     <string name="ai_dismiss">ปิด</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">ชอบมาก</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">เรียนรู้จากสิ่งที่คุณสวมใส่จริงและชื่นชอบ</string>
@@ -734,24 +629,16 @@
     <string name="wardrobe_maintenance_menu">การบำรุงรักษา</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">ตัวเลือกเพิ่มเติม</string>
-    <string name="calendar_move_to_day">ย้ายไปยังวันอื่น</string>
-    <string name="calendar_copy_to_day">คัดลอกไปยังวันอื่น</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">แตะวันเพื่อย้ายชุด</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">แตะวันเพื่อคัดลอกชุด</string>
     <string name="calendar_mode_move">ย้าย</string>
     <string name="calendar_mode_copy">คัดลอก</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">นำออกจากวันนี้</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">สวมใส่</string>
-    <string name="outfits_favorite">รายการโปรด</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -763,7 +650,6 @@
     <string name="restore_finishing">กำลังเสร็จสิ้น…</string>
     <string name="wardrobe_sync_details">กำลังโหลดรายละเอียด: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">กำลังเสร็จสิ้น…</string>
-    <string name="outfit_saving">กำลังบันทึกชุด…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -774,35 +660,19 @@
     <string name="error_trips_folder_not_ready">โฟลเดอร์ทริปยังไม่พร้อม</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">เพิ่มชุดลงในปฏิทิน</string>
-    <string name="calendar_add_pick">เลือกชุด</string>
-    <string name="calendar_add_empty">ยังไม่มีชุดให้เพิ่ม</string>
     <string name="calendar_pick_source_prompt">แตะวันที่มีชุดเพื่อเลือก</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">ลบชุดออกจากปฏิทิน</string>
     <string name="calendar_delete_prompt">แตะวันเพื่อลบชุดของวันนั้น</string>
-    <string name="calendar_delete_confirm_title">ลบชุดไหม?</string>
-    <string name="calendar_delete_confirm_msg">ลบชุดทั้งหมดที่สวมเมื่อ %1$s ไหม?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">เพิ่มชุดสำหรับ %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">ลุคใหม่</string>
     <string name="fab_wardrobe_add">เพิ่มไอเทม</string>
-    <string name="fab_calendar_log">บันทึกลุค</string>
     <string name="sel_swap">สลับ</string>
-    <string name="sel_move">ย้าย</string>
-    <string name="sel_combine">รวม</string>
-    <string name="sel_love">ถูกใจ</string>
-    <string name="sel_copy_to_day">คัดลอก</string>
-    <string name="sel_remove">นำออก</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">แตะวันเพื่อสวม “%1$s”</string>
-    <string name="calendar_done_wear">บันทึกเมื่อ %1$s</string>
-    <string name="calendar_done_move">ย้ายไปยัง %1$s</string>
-    <string name="calendar_done_copy">คัดลอกไปยัง %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">เว็บไซต์</string>
@@ -823,9 +693,6 @@
     <string name="feedback_no_email_app">ไม่พบแอปอีเมล โปรดส่งอีเมลถึงเราด้วยตนเองที่ %1$s</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">นำชุดทั้งหมดที่สวมในวันที่เลือก %1$d วันออกไหม</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">เพิ่มชุด</string>
-    <string name="calendar_today">วันนี้</string>
 </resources>

@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Mga item na isinuot</string>
     <string name="tryon_history_title">Mga nakaraang try-on</string>
     <string name="tryon_missing_photos_items">Walang mga larawan o item</string>
-    <string name="tryon_outfit_picker_empty">Wala pang naka-save na outfit. Gumawa ng isa sa Outfits tab para magamit dito.</string>
-    <string name="tryon_outfit_picker_title">Pumili ng outfit</string>
     <string name="tryon_save_to_drive">I-save</string>
     <string name="tryon_saved_to_drive">Na-save na</string>
     <string name="tryon_saving">Sina-save…</string>

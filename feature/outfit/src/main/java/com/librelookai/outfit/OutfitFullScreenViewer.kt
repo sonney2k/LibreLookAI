@@ -1,0 +1,372 @@
+package com.librelookai.outfit
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.librelookai.feature.outfit.R
+import com.librelookai.core.designsystem.R as DsR
+import com.librelookai.data.model.Location
+import com.librelookai.data.model.Outfit
+import com.librelookai.util.Analytics
+import com.librelookai.util.LocalIsOffline
+import com.librelookai.util.LocalSystemBarsPadding
+import com.librelookai.wardrobe.DriveImage
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
+@Composable
+fun OutfitFullScreenViewer(
+    outfits: List<Outfit>,
+    initialIndex: Int,
+    itemsById: Map<String, DriveImage>,
+    locations: List<Location>,
+    onDismiss: () -> Unit,
+    onEdit: (Outfit) -> Unit,
+    onWear: (Outfit) -> Unit,
+    onToggleLoved: (Outfit) -> Unit = {},
+    onDelete: (Outfit) -> Unit,
+    onSuggestTags: (Outfit) -> Unit = {},
+    onEditTags: (Outfit) -> Unit = {},
+    onTryOn: (Outfit) -> Unit = {},
+    canTryOn: Boolean = false,
+    /** Power-user per-item actions gate (FeatureFlags.powerFeatures, read shell-side). */
+    powerFeatures: Boolean = false,
+    /** Open the item-viewer destination over this one (the outfit's items, tapped item). */
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
+) {
+    val isOffline = LocalIsOffline.current
+    val barInsets = LocalSystemBarsPadding.current
+    val parentView = LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(parentView) {
+        val raw = parentView.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, parentView)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
+    // No outfits to show (last one deleted / state still restoring) — the destination host
+    // pops via its empty-list effect; render nothing for the in-between frame.
+    if (outfits.isEmpty()) return
+    BackHandler(onBack = onDismiss)
+    val pagerState = rememberPagerState(
+        initialPage = initialIndex.coerceIn(0, (outfits.size - 1).coerceAtLeast(0)),
+        pageCount = { outfits.size },
+    )
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    // Actions live hidden under the bottom FAB (tap to reveal the shared action bar), like
+    // the create/selection FAB on the list screens.
+    var actionsOpen by remember { mutableStateOf(false) }
+    var hideTags by rememberSaveable { mutableStateOf(false) }
+
+    // The pager clamps its page asynchronously when the live outfit list shrinks —
+    // coerce so the in-between frame can't index out of bounds.
+    val current = outfits[pagerState.currentPage.coerceIn(0, outfits.lastIndex)]
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.outfits_delete_title)) },
+            text = { Text(stringResource(R.string.outfits_delete_text, current.name)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    Analytics.action("OutfitViewer", "confirm_delete")
+                    showDeleteDialog = false
+                    onDelete(current)
+                }) {
+                    Text(stringResource(DsR.string.action_delete), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(DsR.string.action_cancel)) }
+            },
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Header — collapsed to a minimal page indicator when this outfit has no
+            // name AND no tags (e.g. a fresh AI suggestion). Composer fullscreen view
+            // mirrors this minimalist treatment.
+            val hasAnyMetadata = outfits.any { it.name.isNotBlank() || it.tags.isNotEmpty() }
+            if (hasAnyMetadata) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = current.name.ifBlank { stringResource(DsR.string.outfits_unnamed) },
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = "${pagerState.currentPage + 1} / ${outfits.size}",
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                    if (current.description.isNotBlank()) {
+                        Text(
+                            text = current.description,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    if (!hideTags) {
+                        val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                        val tagsClickable = Modifier
+                            .widthIn(max = maxWidth)
+                            .then(if (!isOffline) Modifier.clickable {
+                                Analytics.action("OutfitViewer", "edit_tags")
+                                onEditTags(current)
+                            } else Modifier)
+                        if (current.tags.isNotEmpty()) {
+                            FlowRow(
+                                modifier = tagsClickable,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                current.tags.forEach { OutfitTagChip(it) }
+                            }
+                        } else if (!isOffline) {
+                            Text(
+                                text = stringResource(DsR.string.outfits_tag_add),
+                                modifier = Modifier.clickable {
+                                    Analytics.action("OutfitViewer", "edit_tags_empty")
+                                    onEditTags(current)
+                                },
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                    // Hide-tags chip sits inline below the tag row so it doesn't crowd
+                    // the close-X at top-left and reads as a clear "toggle tags" affordance.
+                    com.librelookai.wardrobe.HideTagsChip(
+                        hideTags = hideTags,
+                        onToggle = {
+                            Analytics.action("OutfitViewer", if (hideTags) "show_tags" else "hide_tags")
+                            hideTags = !hideTags
+                        },
+                    )
+                }
+            } else if (outfits.size > 1) {
+                // Pager indicator only — keep the close-X room (start padding) so the
+                // page count doesn't overlap the close button at top-left.
+                Text(
+                    text = "${pagerState.currentPage + 1} / ${outfits.size}",
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 4.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
+            }
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+            ) { page ->
+                val outfit = outfits[page]
+                OutfitPageBody(
+                    outfit = outfit,
+                    itemsById = itemsById,
+                    locations = locations,
+                    onItemClick = { onOpenItemViewer(current.itemIds, it.driveId) },
+                    bottomPadding = effectiveBottom,
+                )
+            }
+        }
+
+        // Close button — hide-tags chip lives inline under the tag row instead.
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+        ) {
+            Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close),
+                tint = MaterialTheme.colorScheme.onBackground)
+        }
+
+        // Favourite heart — top-right, mirrors the calendar/list heart. Write-path, so
+        // hidden offline.
+        if (!isOffline) {
+            IconButton(
+                onClick = {
+                    Analytics.action("OutfitViewer", if (current.loved) "unlove" else "love")
+                    onToggleLoved(current)
+                },
+                modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+            ) {
+                Icon(
+                    imageVector = if (current.loved) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = stringResource(R.string.outfits_favorite),
+                    tint = if (current.loved) MaterialTheme.colorScheme.primary
+                           else MaterialTheme.colorScheme.onBackground,
+                )
+            }
+        }
+
+        // Actions hidden under the bottom-end FAB — tapping it reveals the shared action
+        // bar (Wear primary · Try on · Edit · [Suggest tags] · Delete danger). Hidden
+        // offline (writes); the AI suggest-tags action gates behind FeatureFlags.powerFeatures,
+        // mirroring the Wardrobe item viewer's power-only maintenance ops.
+        if (!isOffline) {
+            // Back collapses the open menu before it closes the viewer.
+            if (actionsOpen) BackHandler { actionsOpen = false }
+            val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+            val barHeight = 67.dp + effectiveBottom // DetailActionBar chrome + its bottom inset
+            com.librelookai.ui.components.DetailActionBar(
+                actions = buildList {
+                    add(
+                        com.librelookai.ui.components.SelectionAction(
+                            label = stringResource(R.string.outfits_wear),
+                            icon = Icons.Default.CalendarMonth,
+                            kind = com.librelookai.ui.components.SelectionAction.Kind.Primary,
+                        ) {
+                            Analytics.action("OutfitViewer", "wear_via_calendar")
+                            actionsOpen = false
+                            onWear(current)
+                        },
+                    )
+                    if (canTryOn) {
+                        add(
+                            com.librelookai.ui.components.SelectionAction(
+                                label = stringResource(R.string.tryon_fab),
+                                icon = Icons.Default.AutoAwesome,
+                            ) {
+                                Analytics.action("OutfitViewer", "try_on")
+                                actionsOpen = false
+                                onTryOn(current)
+                            },
+                        )
+                    }
+                    add(
+                        com.librelookai.ui.components.SelectionAction(
+                            label = stringResource(DsR.string.action_edit),
+                            icon = Icons.Default.Edit,
+                        ) {
+                            Analytics.action("OutfitViewer", "edit")
+                            actionsOpen = false
+                            onEdit(current)
+                        },
+                    )
+                    if (powerFeatures) {
+                        add(
+                            com.librelookai.ui.components.SelectionAction(
+                                label = stringResource(R.string.outfits_suggest_tags),
+                                icon = Icons.Default.AutoAwesome,
+                            ) {
+                                Analytics.action("OutfitViewer", "suggest_tags")
+                                actionsOpen = false
+                                onSuggestTags(current)
+                            },
+                        )
+                    }
+                    add(
+                        com.librelookai.ui.components.SelectionAction(
+                            label = stringResource(DsR.string.action_delete),
+                            icon = Icons.Default.Delete,
+                            kind = com.librelookai.ui.components.SelectionAction.Kind.Danger,
+                        ) {
+                            Analytics.action("OutfitViewer", "open_delete_dialog")
+                            actionsOpen = false
+                            showDeleteDialog = true
+                        },
+                    )
+                },
+                visible = actionsOpen,
+                bottomInset = effectiveBottom,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+            ExtendedFloatingActionButton(
+                onClick = {
+                    Analytics.action("OutfitViewer", if (actionsOpen) "close_actions" else "open_actions")
+                    actionsOpen = !actionsOpen
+                },
+                expanded = true,
+                containerColor = palette.fabBg,
+                contentColor = palette.fabFg,
+                icon = {
+                    Icon(
+                        if (actionsOpen) Icons.Default.Close else Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(22.dp),
+                    )
+                },
+                text = { Text(stringResource(if (actionsOpen) DsR.string.action_close else DsR.string.action_edit)) },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = if (actionsOpen) barHeight + 8.dp else effectiveBottom + 16.dp),
+            )
+        }
+    }
+
+}
+
+/**
+ * Body of one outfit page in the fullscreen viewer. Items are grouped by
+ * tag category so the layout reads top → bottom → footwear → outerwear →
+ * accessories → other.
+ */

@@ -1,6 +1,7 @@
 package com.librelookai
 
 import androidx.compose.foundation.background
+import com.librelookai.core.designsystem.R as DsR
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -61,7 +62,7 @@ internal fun AppNavBar(
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     data class NavItem(val tab: Int, val labelRes: Int, val icon: ImageVector)
     val leftItems = listOf(
-        NavItem(0, R.string.nav_styles,   Icons.Default.Style),
+        NavItem(0, DsR.string.nav_styles,   Icons.Default.Style),
         NavItem(1, R.string.nav_wardrobe, Icons.Default.Checkroom),
     )
     val rightItems = listOf(

@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Uppladdningen misslyckades: %1$s</string>
     <string name="error_original_unavailable">Originalet är inte tillgängligt</string>
     <string name="action_deselect_all">Avmarkera alla</string>
+    <string name="action_save">Spara</string>
+    <string name="nav_styles">Outfits</string>
+    <string name="sel_move">Flytta</string>
+    <string name="tryon_outfit_picker_title">Välj en outfit</string>
+    <string name="tryon_outfit_picker_empty">Inga sparade outfits ännu. Skapa en i Outfits-fliken för att använda här.</string>
 </resources>

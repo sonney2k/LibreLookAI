@@ -225,4 +225,9 @@
     <string name="error_upload_failed">上傳失敗：%1$s</string>
     <string name="error_original_unavailable">原始檔無法使用</string>
     <string name="action_deselect_all">取消全選</string>
+    <string name="action_save">儲存</string>
+    <string name="nav_styles">穿搭</string>
+    <string name="sel_move">移動</string>
+    <string name="tryon_outfit_picker_title">選擇穿搭</string>
+    <string name="tryon_outfit_picker_empty">尚無已儲存的穿搭。請先在「穿搭」頁面建立。</string>
 </resources>

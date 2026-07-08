@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Falha no envio: %1$s</string>
     <string name="error_original_unavailable">Original não disponível</string>
     <string name="action_deselect_all">Desmarcar tudo</string>
+    <string name="action_save">Salvar</string>
+    <string name="nav_styles">Looks</string>
+    <string name="sel_move">Mover</string>
+    <string name="tryon_outfit_picker_title">Escolha um look</string>
+    <string name="tryon_outfit_picker_empty">Nenhum look salvo ainda. Crie um na aba Looks para usar aqui.</string>
 </resources>

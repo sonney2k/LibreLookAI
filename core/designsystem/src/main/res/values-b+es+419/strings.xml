@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Falló la subida: %1$s</string>
     <string name="error_original_unavailable">Original no disponible</string>
     <string name="action_deselect_all">Deseleccionar todo</string>
+    <string name="action_save">Guardar</string>
+    <string name="nav_styles">Outfits</string>
+    <string name="sel_move">Mover</string>
+    <string name="tryon_outfit_picker_title">Elige un outfit</string>
+    <string name="tryon_outfit_picker_empty">Aún no hay outfits guardados. Crea uno en la pestaña Outfits para usarlo aquí.</string>
 </resources>

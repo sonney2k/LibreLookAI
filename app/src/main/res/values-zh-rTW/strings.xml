@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">穿搭</string>
     <string name="nav_wardrobe">衣櫥</string>
     <string name="nav_shopping">購物</string>
     <string name="nav_travel">旅行</string>
     <string name="nav_settings">設定</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">日曆</string>
     <string name="insights_tab_wardrobe_stats">衣櫥統計</string>
-    <string name="insights_tab_calendar_stats">日曆統計</string>
     <string name="insights_tab_costs">成本</string>
     <string name="costs_count_items">單品</string>
     <string name="costs_count_outfits">穿搭</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">試穿</string>
 
     <!-- Common actions -->
-    <string name="action_save">儲存</string>
     <string name="action_saving">儲存中…</string>
     <string name="cd_ai_suggestion">AI 建議</string>
-    <string name="cd_refine">優化</string>
     <string name="filter_location">位置</string>
     <string name="wardrobe_processing_photos">正在處理 %1$d 張照片…</string>
     <string name="wardrobe_progress_uploading">正在上傳照片…</string>
@@ -160,38 +155,19 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">點擊 + 從衣櫥建立穿搭</string>
-    <string name="outfits_sort_most_worn">穿著次數最多</string>
     <string name="outfits_create_manual">手動建立穿搭</string>
-    <string name="outfits_suggest">建議現有穿搭</string>
-    <string name="prediction_setup_title">使用 AI 尋找</string>
-    <string name="prediction_setup_find">尋找</string>
-    <string name="prediction_setup_title_compose">使用 AI 建立</string>
-    <string name="prediction_setup_create">建立</string>
-    <string name="prediction_setup_suggestions">建議</string>
     <string name="prediction_setup_considerations">本次納入考量</string>
-    <string name="prediction_setup_weather_today">今天</string>
-    <string name="prediction_setup_weather_tomorrow">明天</string>
     <string name="outfits_compose">組合新穿搭</string>
     <string name="outfits_thinking">思考中…</string>
     <string name="outfits_suggesting">正在建議穿搭…</string>
     <string name="outfits_composing">正在組合穿搭…</string>
-    <string name="outfits_delete_title">刪除穿搭？</string>
-    <string name="outfits_delete_text">\"%s\" 將被永久移除。</string>
     <string name="outfits_suggested_title">今日建議</string>
     <string name="outfits_composed_title">為您組合</string>
     <string name="outfits_name_dialog_title">為此穿搭命名</string>
     <string name="outfits_name_placeholder">穿搭名稱</string>
     <string name="outfits_create_this">建立此穿搭</string>
-    <string name="outfits_refine_label">使用 AI 優化</string>
     <string name="outfits_add_item">添加單品</string>
-    <string name="outfits_tags_label">標籤</string>
-    <string name="composer_select_suggestion">使用此穿搭</string>
-    <string name="outfits_saved_wear_today">穿搭已儲存！今天穿這套嗎？</string>
     <string name="outfits_combine">使用 AI 結合</string>
-    <string name="outfit_generate_with_ai">使用 AI 生成</string>
-    <string name="outfit_save_dialog_title">儲存穿搭</string>
-    <string name="outfit_save_dialog_confirm">儲存</string>
 
     <!-- Travel -->
     <string name="travel_title">旅行打包清單</string>
@@ -208,17 +184,6 @@
     <string name="travel_saved_as_style">已儲存</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">一</string>
-    <string name="calendar_day_tu">二</string>
-    <string name="calendar_day_we">三</string>
-    <string name="calendar_day_th">四</string>
-    <string name="calendar_day_fr">五</string>
-    <string name="calendar_day_sa">六</string>
-    <string name="calendar_day_su">日</string>
-    <string name="calendar_stats_styles">最常穿著的穿搭</string>
-    <string name="calendar_stats_items">最常穿著的單品</string>
-    <string name="calendar_empty">目前沒有穿著紀錄</string>
-    <string name="calendar_wear_again">今天再穿一次</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_analyze">分析我的衣櫥</string>
@@ -226,14 +191,12 @@
 
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">正在分析您的衣櫥…</string>
-    <string name="ai_suggesting_style">正在建議穿搭…</string>
     <string name="ai_composing_outfit">正在組合穿搭…</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">您目前離線 — 僅供檢視模式</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">試穿在我身上</string>
     <string name="tryon_uploading">正在上傳…</string>
     <string name="tryon_save_to_gallery">儲存到相簿</string>
     <string name="tryon_saved">已儲存到 Pictures/LibreLookAI</string>
@@ -246,8 +209,6 @@
     <string name="about_open_source">此應用程式為開源且免費使用。</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">建立穿搭</string>
-    <string name="composer_save">儲存</string>
     <string name="composer_goal_generate">生成</string>
     <string name="composer_advanced">進階選項</string>
     <string name="composer_chip_work">工作</string>
@@ -256,15 +217,7 @@
     <string name="composer_chip_workout">運動</string>
     <string name="composer_chip_travel">旅行</string>
     <string name="composer_chip_date">約會</string>
-    <string name="composer_weather_auto">目前</string>
-    <string name="composer_weather_manual">手動</string>
-    <string name="composer_season_spring">春季</string>
-    <string name="composer_season_summer">夏季</string>
-    <string name="composer_season_fall">秋季</string>
-    <string name="composer_season_winter">冬季</string>
-    <string name="composer_temp_value">%1$d°C</string>
     <string name="composer_enhance">使用 AI 優化</string>
-    <string name="composer_enhancing">正在詢問 Gemini…</string>
 
     <!-- Monetization / cost badges -->
     <string name="cost_badge_tokens_estimate">~%1$s token</string>
@@ -295,55 +248,39 @@
 
 請關閉 LibreLookAI 的電池最佳化以繼續。</string>
     <string name="battery_exempt_title">需要背景處理權限</string>
-    <string name="calendar_empty_hint">從「穿搭」頁面選一套穿搭來開始記錄</string>
     <string name="composer_add_selected">新增已選</string>
     <string name="composer_desc_placeholder">簡短描述（選填）</string>
     <string name="composer_discard_confirm">捨棄</string>
     <string name="composer_discard_message">你的選擇將會遺失。</string>
     <string name="composer_discard_title">捨棄此穿搭？</string>
-    <string name="composer_empty_slot_ai_hint">AI 會填補空缺</string>
     <string name="composer_factor_closets">%1$d 個衣櫥</string>
     <string name="composer_factor_composition">自訂組合</string>
     <string name="composer_factor_items">%1$d 個單品</string>
     <string name="composer_factor_vibes">%1$d 種風格</string>
-    <string name="composer_factor_weather_auto">即時天氣</string>
     <string name="composer_factor_weather_manual">手動天氣</string>
     <string name="composer_factors_label">使用中</string>
     <string name="composer_feedback_history">已保留 %1$d 個先前的請求</string>
     <string name="composer_feedback_placeholder">告訴 AI 你想改變什麼或目標是什麼…</string>
     <string name="composer_fill_missing">填補空缺</string>
-    <string name="composer_goal_placeholder">例如：里斯本晚餐、溫暖夜晚</string>
-    <string name="composer_header_subtitle">%1$d 個共 5 層 · 點擊以替換</string>
     <string name="composer_layer_accessory">配件</string>
     <string name="composer_layer_bottom">下身</string>
     <string name="composer_layer_footwear">鞋款</string>
     <string name="composer_layer_outerwear">外套</string>
     <string name="composer_layer_picked_count">已選 %1$d 件</string>
     <string name="composer_layer_top">基礎上身</string>
-    <string name="composer_mode_fullscreen">全螢幕</string>
     <string name="composer_name_placeholder">穿搭名稱（選填）</string>
     <string name="composer_picked_count">已選 %1$d 件</string>
-    <string name="composer_precip_heavy">強</string>
-    <string name="composer_precip_light">弱</string>
-    <string name="composer_precip_none">無</string>
     <string name="composer_section_ai">用 AI 強化</string>
     <string name="composer_section_goal">什麼場合？</string>
     <string name="composer_section_items">單品</string>
     <string name="composer_section_name">名稱 &amp; 描述</string>
     <string name="composer_section_quick_start">快速開始</string>
     <string name="composer_section_targets">組合</string>
-    <string name="composer_section_vibe">風格氛圍</string>
-    <string name="composer_section_weather">天氣</string>
     <string name="composer_see_all_count">全部 %1$d 件</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">標籤（選填）</string>
     <string name="composer_targets_hint">設定每一層的件數。設為 0 則由 AI 決定。</string>
-    <string name="composer_weather_precip">降水</string>
-    <string name="composer_weather_season">季節</string>
-    <string name="composer_weather_temp">氣溫</string>
-    <string name="composer_weather_title">天氣</string>
-    <string name="composer_weather_unknown">無天氣資料</string>
     <string name="dedupe_dialog_cancel">取消</string>
     <string name="dedupe_dialog_desc">我們在你的衣櫥中找到 %1$d 件看起來與這張相片非常相似的單品。</string>
     <string name="dedupe_dialog_import_anyway">仍要匯入</string>
@@ -369,49 +306,14 @@
     <string name="local_bg_recomputing">重新計算剪裁中…</string>
     <string name="local_bg_skip">跳過（使用 Gemini）</string>
     <string name="local_bg_title">調整剪裁</string>
-    <string name="outfit_discard_changes_body">未儲存的變更將會遺失。</string>
-    <string name="outfit_discard_changes_confirm">捨棄</string>
-    <string name="outfit_discard_changes_title">捨棄變更？</string>
     <string name="outfit_mode_edit">編輯</string>
     <string name="outfit_mode_view">檢視</string>
-    <string name="outfit_pick_category">選擇類別</string>
-    <string name="outfit_save_dialog_description">描述</string>
-    <string name="outfit_save_dialog_name">名稱</string>
-    <string name="outfit_save_dialog_tag_suggestions">現有標籤</string>
-    <string name="outfit_save_dialog_tags">標籤</string>
-    <string name="outfit_slot_add">新增單品</string>
-    <string name="outfit_slot_lock">鎖定</string>
-    <string name="outfit_slot_remove">移除</string>
-    <string name="outfit_slot_unlock">解鎖</string>
-    <string name="outfits_delete_selected_text">%d 套穿搭將被永久移除。</string>
-    <string name="outfits_delete_selected_title">刪除穿搭？</string>
     <string name="outfits_description_placeholder">描述（選填）</string>
     <string name="outfits_items_away">%d 件單品在其他地點</string>
     <string name="outfits_items_label">穿搭單品</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="outfits_prediction_next">下一個建議</string>
-    <string name="outfits_prediction_prev">上一個建議</string>
-    <string name="outfits_refine_bold">更大膽</string>
-    <string name="outfits_refine_casual">更休閒</string>
-    <string name="outfits_refine_custom">自訂回饋…</string>
-    <string name="outfits_refine_diff_colors">不同顏色</string>
-    <string name="outfits_refine_formal">更正式</string>
-    <string name="outfits_refine_lighter">更輕薄的衣物</string>
-    <string name="outfits_refine_simpler">更簡約</string>
-    <string name="outfits_refine_trendy">更具時尚感</string>
-    <string name="outfits_refine_warmer">更保暖的衣物</string>
-    <string name="outfits_select_all_count">全選 %d 套</string>
     <string name="outfits_select_item">選取</string>
-    <string name="outfits_selected_count">已選 %d 套</string>
     <string name="outfits_suggest_alternatives">建議 10 種替代方案</string>
-    <string name="outfits_suggest_tags">用 AI 建議標籤</string>
-    <string name="outfits_suggest_tags_apply">新增已選</string>
-    <string name="outfits_suggest_tags_empty">沒有新的建議標籤。</string>
-    <string name="outfits_suggest_tags_hint">點擊標籤以切換。已選的標籤會加入此穿搭。</string>
-    <string name="outfits_suggest_tags_loading">正在建議標籤…</string>
-    <string name="outfits_suggest_tags_title">建議標籤</string>
     <string name="outfits_swap_item_for">替換：%s</string>
-    <string name="prediction_setup_weather_pick_day">選擇日期</string>
     <string name="repair_duplicate_of">類似 %1$s</string>
     <string name="repair_duplicates_hint">勾選要從 Drive 刪除的單品。點擊以查看樣式。</string>
     <string name="repair_section_duplicates">可能的重複項</string>
@@ -573,12 +475,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">同時刪除使用這些單品的 %d 套穿搭</string>
     <string name="wardrobe_delete_cascade_tryons">同時刪除含這些單品的 %d 次試穿</string>
-    <string name="outfits_broken_banner">%d 套穿搭使用了已不在你衣櫥中的單品。</string>
-    <string name="outfits_broken_review">檢視</string>
-    <string name="outfits_broken_delete_title">刪除不完整的穿搭？</string>
-    <string name="outfits_broken_delete_text">這 %d 套穿搭參照了已不在衣櫥中的單品，將被永久刪除：</string>
-    <string name="outfits_broken_more">其他 %d 個</string>
-    <string name="insights_items_removed">已不在衣櫥中的單品</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">你</string>
@@ -668,7 +564,6 @@
     <string name="ai_dismiss">關閉</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">很喜歡</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">從你實際穿過和喜歡的搭配中學習。</string>
@@ -734,24 +629,16 @@
     <string name="wardrobe_maintenance_menu">維護</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">更多選項</string>
-    <string name="calendar_move_to_day">移到其他日期</string>
-    <string name="calendar_copy_to_day">複製到其他日期</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">輕觸日期以移動穿搭</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">輕觸日期以複製穿搭</string>
     <string name="calendar_mode_move">移動</string>
     <string name="calendar_mode_copy">複製</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">從這一天移除</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">穿著</string>
-    <string name="outfits_favorite">最愛</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -763,7 +650,6 @@
     <string name="restore_finishing">正在完成…</string>
     <string name="wardrobe_sync_details">正在載入詳細資料: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">正在完成…</string>
-    <string name="outfit_saving">正在儲存穿搭…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -774,35 +660,19 @@
     <string name="error_trips_folder_not_ready">旅行資料夾尚未就緒。</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">將穿搭加入日曆</string>
-    <string name="calendar_add_pick">選擇穿搭</string>
-    <string name="calendar_add_empty">尚無可加入的穿搭</string>
     <string name="calendar_pick_source_prompt">點按有穿搭的日期以選取</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">從日曆移除穿搭</string>
     <string name="calendar_delete_prompt">點按某天以移除當天的穿搭</string>
-    <string name="calendar_delete_confirm_title">要移除穿搭嗎？</string>
-    <string name="calendar_delete_confirm_msg">要移除在 %1$s 穿著的所有穿搭嗎？</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">為 %1$s 加入穿搭</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">新穿搭</string>
     <string name="fab_wardrobe_add">新增單品</string>
-    <string name="fab_calendar_log">記錄穿搭</string>
     <string name="sel_swap">替換</string>
-    <string name="sel_move">移動</string>
-    <string name="sel_combine">合併</string>
-    <string name="sel_love">喜愛</string>
-    <string name="sel_copy_to_day">複製</string>
-    <string name="sel_remove">移除</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">輕觸日期以穿著「%1$s」</string>
-    <string name="calendar_done_wear">已記錄於 %1$s</string>
-    <string name="calendar_done_move">已移至 %1$s</string>
-    <string name="calendar_done_copy">已複製至 %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">網站</string>
@@ -823,9 +693,6 @@
     <string name="feedback_no_email_app">找不到電子郵件應用程式。請手動寄送電子郵件至 %1$s。</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">移除在所選 %1$d 天穿著的所有穿搭嗎？</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">新增穿搭</string>
-    <string name="calendar_today">今天</string>
 </resources>

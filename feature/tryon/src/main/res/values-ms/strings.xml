@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Item yang dipakai</string>
     <string name="tryon_history_title">Cuba pakai lalu</string>
     <string name="tryon_missing_photos_items">Foto atau item tiada</string>
-    <string name="tryon_outfit_picker_empty">Belum ada pakaian tersimpan. Cipta satu di tab Pakaian untuk digunakan di sini.</string>
-    <string name="tryon_outfit_picker_title">Pilih pakaian</string>
     <string name="tryon_save_to_drive">Simpan</string>
     <string name="tryon_saved_to_drive">Disimpan</string>
     <string name="tryon_saving">Menyimpan…</string>

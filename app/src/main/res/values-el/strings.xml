@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">Σύνολα</string>
     <string name="nav_wardrobe">Ντουλάπα</string>
     <string name="nav_shopping">Αγορές</string>
     <string name="nav_travel">Ταξίδι</string>
     <string name="nav_settings">Ρυθμίσεις</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">Ημερολόγιο</string>
     <string name="insights_tab_wardrobe_stats">Στατιστικά Ντουλάπας</string>
-    <string name="insights_tab_calendar_stats">Στατιστικά Ημερολογίου</string>
     <string name="insights_tab_costs">Κόστος</string>
     <string name="costs_count_items">Είδη</string>
     <string name="costs_count_outfits">Σύνολα</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Δοκιμές</string>
 
     <!-- Common actions -->
-    <string name="action_save">Αποθήκευση</string>
     <string name="action_saving">Αποθήκευση…</string>
     <string name="cd_ai_suggestion">Πρόταση AI</string>
-    <string name="cd_refine">Βελτίωση</string>
     <string name="filter_location">Τοποθεσία</string>
     <string name="wardrobe_processing_photos">Επεξεργασία %1$d φωτογραφιών…</string>
     <string name="wardrobe_progress_uploading">Μεταφόρτωση φωτογραφίας…</string>
@@ -250,28 +245,12 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">Πατήστε + για να δημιουργήσετε ένα σύνολο από τη ντουλάπα σας</string>
-    <string name="outfits_sort_most_worn">Πιο φορεμένα</string>
     <string name="outfits_create_manual">Χειροκίνητη δημιουργία συνόλου</string>
-    <string name="outfits_suggest">Πρόταση υπάρχοντος συνόλου</string>
-    <string name="prediction_setup_title">Εύρεση με AI</string>
-    <string name="prediction_setup_find">Εύρεση</string>
-    <string name="prediction_setup_title_compose">Δημιουργία με AI</string>
-    <string name="prediction_setup_create">Δημιουργία</string>
-    <string name="prediction_setup_suggestions">Προτάσεις</string>
     <string name="prediction_setup_considerations">Λάβε υπόψη σε αυτή την εκτέλεση</string>
-    <string name="prediction_setup_weather_pick_day">Επιλέξτε ημέρα</string>
-    <string name="prediction_setup_weather_today">Σήμερα</string>
-    <string name="prediction_setup_weather_tomorrow">Αύριο</string>
-    <string name="composer_mode_fullscreen">Πλήρης οθόνη</string>
-    <string name="composer_empty_slot_ai_hint">Η AI θα γεμίσει τα κενά</string>
-    <string name="outfit_save_dialog_tag_suggestions">Υπάρχουσες ετικέτες</string>
     <string name="outfits_compose">Σύνθεση νέου συνόλου</string>
     <string name="outfits_thinking">Σκέψη…</string>
     <string name="outfits_suggesting">Πρόταση συνόλου…</string>
     <string name="outfits_composing">Σύνθεση συνόλου…</string>
-    <string name="outfits_delete_title">Διαγραφή συνόλου;</string>
-    <string name="outfits_delete_text">Το \"%s\" θα αφαιρεθεί οριστικά.</string>
     <string name="outfits_items_away">%d είδη σε άλλη τοποθεσία</string>
     <string name="outfits_suggested_title">Πρόταση για σήμερα</string>
     <string name="outfits_composed_title">Σύνθεση για εσάς</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Όνομα συνόλου</string>
     <string name="outfits_description_placeholder">Περιγραφή (προαιρετικά)</string>
     <string name="outfits_create_this">Δημιουργία αυτού του συνόλου</string>
-    <string name="outfits_refine_label">Βελτίωση με AI</string>
-    <string name="outfits_refine_custom">Δικό σας σχόλιο…</string>
-    <string name="outfits_refine_casual">Πιο casual</string>
-    <string name="outfits_refine_formal">Πιο επίσημο</string>
-    <string name="outfits_refine_diff_colors">Διαφορετικά χρώματα</string>
-    <string name="outfits_refine_warmer">Πιο ζεστά ρούχα</string>
-    <string name="outfits_refine_lighter">Πιο ελαφριά ρούχα</string>
-    <string name="outfits_refine_trendy">Πιο trendy</string>
-    <string name="outfits_refine_simpler">Πιο απλό</string>
-    <string name="outfits_refine_bold">Πιο έντονο</string>
     <string name="outfits_items_label">Είδη συνόλου</string>
     <string name="outfits_add_item">Προσθήκη είδους</string>
-    <string name="outfits_tags_label">Ετικέτες</string>
-    <string name="outfits_prediction_prev">Προηγούμενη πρόταση</string>
-    <string name="outfits_prediction_next">Επόμενη πρόταση</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Χρήση αυτού του συνόλου</string>
-    <string name="outfits_suggest_tags">Πρόταση ετικετών με AI</string>
-    <string name="outfits_suggest_tags_title">Προτεινόμενες ετικέτες</string>
-    <string name="outfits_suggest_tags_loading">Πρόταση ετικετών…</string>
-    <string name="outfits_suggest_tags_empty">Δεν προτάθηκαν νέες ετικέτες.</string>
-    <string name="outfits_suggest_tags_apply">Προσθήκη επιλεγμένων</string>
-    <string name="outfits_suggest_tags_hint">Πατήστε για εναλλαγή. Οι επιλεγμένες θα προστεθούν στο σύνολο.</string>
     <string name="outfits_swap_item_for">Αλλαγή: %s</string>
     <string name="outfits_suggest_alternatives">Πρόταση 10 εναλλακτικών</string>
     <string name="outfits_select_item">Επιλογή</string>
-    <string name="outfits_saved_wear_today">Το σύνολο αποθηκεύτηκε! Θα το φορέσετε σήμερα;</string>
-    <string name="outfits_selected_count">%d επιλέχθηκαν</string>
-    <string name="outfits_select_all_count">Επιλογή όλων %d</string>
-    <string name="outfits_delete_selected_title">Διαγραφή συνόλων;</string>
-    <string name="outfits_delete_selected_text">%d σύνολα θα αφαιρεθούν οριστικά.</string>
     <string name="outfits_combine">Συνδυασμός με AI</string>
-    <string name="outfit_slot_lock">Κλείδωμα</string>
-    <string name="outfit_slot_unlock">Ξεκλείδωμα</string>
-    <string name="outfit_slot_remove">Αφαίρεση</string>
-    <string name="outfit_slot_add">Προσθήκη είδους</string>
-    <string name="outfit_generate_with_ai">Δημιουργία με AI</string>
-    <string name="outfit_discard_changes_title">Απόρριψη αλλαγών;</string>
-    <string name="outfit_discard_changes_body">Οι μη αποθηκευμένες αλλαγές θα χαθούν.</string>
-    <string name="outfit_discard_changes_confirm">Απόρριψη</string>
-    <string name="outfit_save_dialog_title">Αποθήκευση συνόλου</string>
-    <string name="outfit_save_dialog_name">Όνομα</string>
-    <string name="outfit_save_dialog_description">Περιγραφή</string>
-    <string name="outfit_save_dialog_tags">Ετικέτες</string>
-    <string name="outfit_save_dialog_confirm">Αποθήκευση</string>
     <string name="outfit_mode_view">Προβολή</string>
     <string name="outfit_mode_edit">Επεξεργασία</string>
-    <string name="outfit_pick_category">Επιλέξτε κατηγορία</string>
 
     <!-- Travel -->
     <string name="travel_title">Λίστα Ταξιδιού</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Αδυναμία μετακίνησης ειδών</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">Δε</string>
-    <string name="calendar_day_tu">Τρ</string>
-    <string name="calendar_day_we">Τε</string>
-    <string name="calendar_day_th">Πε</string>
-    <string name="calendar_day_fr">Πα</string>
-    <string name="calendar_day_sa">Σα</string>
-    <string name="calendar_day_su">Κυ</string>
-    <string name="calendar_stats_styles">Πιο Φορεμένα Σύνολα</string>
-    <string name="calendar_stats_items">Πιο Φορεμένα Είδη</string>
-    <string name="calendar_empty">Δεν υπάρχει ιστορικό ακόμα</string>
-    <string name="calendar_empty_hint">Φορέστε ένα σύνολο από την καρτέλα Σύνολα για να ξεκινήσει η καταγραφή</string>
-    <string name="calendar_wear_again">Φορέστε το ξανά σήμερα</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Ανακαλύψτε τα 3 κομμάτια που λείπουν και θα ξεκλείδωναν τους περισσότερους νέους συνδυασμούς από τη ντουλάπα σας.</string>
@@ -383,7 +310,6 @@
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">Ανάλυση ντουλάπας…</string>
-    <string name="ai_suggesting_style">Πρόταση συνόλου…</string>
     <string name="ai_composing_outfit">Σύνθεση συνόλου…</string>
 
     <!-- Foreground service notification -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Είστε εκτός σύνδεσης — λειτουργία προβολής μόνο</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">Δοκιμή πάνω μου</string>
     <string name="tryon_section_title">Φωτογραφίες δοκιμής</string>
     <string name="tryon_section_desc">Ανεβάστε φωτογραφίες ολόκληρου σώματος (εμπρός, πλάι, πίσω). Η εφαρμογή τις χρησιμοποιεί ως αναφορά για τη δημιουργία προεπισκόπησης δοκιμής.</string>
     <string name="tryon_add_photo">Προσθήκη %1$s φωτογραφίας</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Για χρήστες χωρίς δικό τους κλειδί, η εφαρμογή προσφέρει σύστημα μονάδων.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">Δημιουργία συνόλου</string>
     <string name="composer_discard_title">Απόρριψη συνόλου;</string>
     <string name="composer_discard_message">Οι επιλογές σας θα χαθούν.</string>
     <string name="composer_discard_confirm">Απόρριψη</string>
-    <string name="composer_header_subtitle">%1$d από 5 επίπεδα</string>
     <string name="composer_fill_missing">Συμπλήρωση κενών</string>
     <string name="composer_see_all_count">Όλα %1$d</string>
     <string name="composer_layer_picked_count">%1$d επιλέχθηκαν</string>
-    <string name="composer_weather_title">Καιρός</string>
-    <string name="composer_save">Αποθήκευση</string>
     <string name="composer_section_goal">Ποια είναι η περίσταση;</string>
-    <string name="composer_goal_placeholder">π.χ. Δείπνο στη Λισαβόνα, ζεστό βράδυ</string>
     <string name="composer_goal_generate">Δημιουργία</string>
     <string name="composer_advanced">Προχωρημένες επιλογές</string>
     <string name="composer_chip_work">Εργασία</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Ραντεβού</string>
     <string name="composer_section_quick_start">Γρήγορη εκκίνηση</string>
     <string name="composer_section_items">Είδη</string>
-    <string name="composer_section_weather">Καιρός</string>
-    <string name="composer_section_vibe">Στιλ</string>
     <string name="composer_section_targets">Σύνθεση</string>
     <string name="composer_targets_hint">Ορίστε πόσα είδη ανά επίπεδο. Αφήστε 0 για να αποφασίσει η AI.</string>
     <string name="composer_tags_optional">Ετικέτες (προαιρετικά)</string>
     <string name="composer_section_name">Όνομα &amp; περιγραφή</string>
     <string name="composer_section_ai">Βελτίωση με AI</string>
-    <string name="composer_weather_auto">Τρέχων</string>
-    <string name="composer_weather_manual">Χειροκίνητα</string>
-    <string name="composer_weather_unknown">Μη διαθέσιμος καιρός</string>
-    <string name="composer_weather_season">Εποχή</string>
-    <string name="composer_weather_temp">Θερμοκρασία</string>
-    <string name="composer_weather_precip">Βροχόπτωση</string>
-    <string name="composer_season_spring">Άνοιξη</string>
-    <string name="composer_season_summer">Καλοκαίρι</string>
-    <string name="composer_season_fall">Φθινόπωρο</string>
-    <string name="composer_season_winter">Χειμώνας</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Καμία</string>
-    <string name="composer_precip_light">Ελαφριά</string>
-    <string name="composer_precip_heavy">Έντονη</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Μπλούζα βάσης</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Πείτε στην AI τι να αλλάξει…</string>
     <string name="composer_feedback_history">%1$d προηγούμενα αιτήματα στο πλαίσιο</string>
     <string name="composer_enhance">Βελτίωση με AI</string>
-    <string name="composer_enhancing">Ερώτηση στο Gemini…</string>
     <string name="composer_picked_count">%1$d επιλέχθηκαν</string>
     <string name="composer_add_selected">Προσθήκη επιλεγμένων</string>
     <string name="composer_factors_label">Χρήση</string>
-    <string name="composer_factor_weather_auto">Ζωντανός καιρός</string>
     <string name="composer_factor_weather_manual">Χειροκίνητος καιρός</string>
     <string name="composer_factor_vibes">%1$d στιλ</string>
     <string name="composer_factor_items">%1$d είδη</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Διαγραφή επίσης %d συνόλου/-ων που χρησιμοποιούν αυτά τα αντικείμενα</string>
     <string name="wardrobe_delete_cascade_tryons">Διαγραφή επίσης %d δοκιμής/-ών με αυτά τα αντικείμενα</string>
-    <string name="outfits_broken_banner">%d σύνολα χρησιμοποιούν αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου.</string>
-    <string name="outfits_broken_review">Έλεγχος</string>
-    <string name="outfits_broken_delete_title">Διαγραφή ελλιπών συνόλων;</string>
-    <string name="outfits_broken_delete_text">Αυτά τα %d σύνολα αναφέρονται σε αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου και θα διαγραφούν οριστικά:</string>
-    <string name="outfits_broken_more">+%d ακόμη</string>
-    <string name="insights_items_removed">Αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Εσύ</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Κλείσιμο</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Μου άρεσε πολύ</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Μαθαίνει από αυτά που πραγματικά φοράς και έχεις αγαπήσει.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Συντήρηση</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Περισσότερες επιλογές</string>
-    <string name="calendar_move_to_day">Μετακίνηση σε άλλη ημέρα</string>
-    <string name="calendar_copy_to_day">Αντιγραφή σε άλλη ημέρα</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Πατήστε μια ημέρα για να μετακινήσετε το σύνολο</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Πατήστε μια ημέρα για να αντιγράψετε το σύνολο</string>
     <string name="calendar_mode_move">Μετακίνηση</string>
     <string name="calendar_mode_copy">Αντιγραφή</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Αφαίρεση από αυτήν την ημέρα</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Φόρεσε</string>
-    <string name="outfits_favorite">Αγαπημένο</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Ολοκλήρωση…</string>
     <string name="wardrobe_sync_details">Φόρτωση λεπτομερειών: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Ολοκλήρωση…</string>
-    <string name="outfit_saving">Αποθήκευση συνόλου…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Ο φάκελος ταξιδιών δεν είναι έτοιμος.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Προσθήκη συνόλου στο ημερολόγιο</string>
-    <string name="calendar_add_pick">Επίλεξε ένα σύνολο</string>
-    <string name="calendar_add_empty">Δεν υπάρχουν σύνολα για προσθήκη ακόμη</string>
     <string name="calendar_pick_source_prompt">Πάτησε μια μέρα με σύνολα για να την επιλέξεις</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Αφαίρεση συνόλου από το ημερολόγιο</string>
     <string name="calendar_delete_prompt">Πάτησε μια μέρα για να αφαιρέσεις τα σύνολά της</string>
-    <string name="calendar_delete_confirm_title">Αφαίρεση συνόλων;</string>
-    <string name="calendar_delete_confirm_msg">Αφαίρεση όλων των συνόλων που φορέθηκαν στις %1$s;</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Προσθήκη συνόλου στις %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Νέο σύνολο</string>
     <string name="fab_wardrobe_add">Προσθήκη</string>
-    <string name="fab_calendar_log">Καταγραφή συνόλου</string>
     <string name="sel_swap">Αλλαγή</string>
-    <string name="sel_move">Μετακίνηση</string>
-    <string name="sel_combine">Συνδυασμός</string>
-    <string name="sel_love">Αγαπημένο</string>
-    <string name="sel_copy_to_day">Αντιγραφή</string>
-    <string name="sel_remove">Αφαίρεση</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Πατήστε μια ημέρα για να φορέσετε «%1$s»</string>
-    <string name="calendar_done_wear">Καταχωρήθηκε στις %1$s</string>
-    <string name="calendar_done_move">Μετακινήθηκε στις %1$s</string>
-    <string name="calendar_done_copy">Αντιγράφηκε στις %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Ιστότοπος</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Δεν βρέθηκε εφαρμογή email. Στείλτε μας email χειροκίνητα στο %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Κατάργηση όλων των συνόλων που φορέθηκαν τις %1$d επιλεγμένες ημέρες;</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Προσθήκη συνόλου</string>
-    <string name="calendar_today">Σήμερα</string>
 </resources>

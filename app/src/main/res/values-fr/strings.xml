@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">Tenues</string>
     <string name="nav_wardrobe">Garde-robe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Voyage</string>
     <string name="nav_settings">Paramètres</string>
 
     <!-- Onglet Statistiques -->
-    <string name="insights_tab_calendar">Calendrier</string>
     <string name="insights_tab_wardrobe_stats">Statistiques garde-robe</string>
-    <string name="insights_tab_calendar_stats">Statistiques calendrier</string>
     <string name="insights_tab_costs">Coûts</string>
     <string name="costs_count_items">Articles</string>
     <string name="costs_count_outfits">Tenues</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Essayages</string>
 
     <!-- Actions communes -->
-    <string name="action_save">Enregistrer</string>
     <string name="action_saving">Enregistrement…</string>
     <string name="cd_ai_suggestion">Suggestion IA</string>
-    <string name="cd_refine">Affiner</string>
     <string name="filter_location">Lieu</string>
     <string name="wardrobe_processing_photos">Traitement de %1$d photo(s)…</string>
     <string name="wardrobe_progress_uploading">Envoi de la photo…</string>
@@ -250,28 +245,12 @@
     <!-- Traductions des valeurs d\'étiquettes (stockées en anglais ; affichées dans la langue de l\'UI) -->
     <!-- Couleurs -->
     <!-- Tenues -->
-    <string name="outfits_empty_hint">Touche + pour créer une tenue depuis ta garde-robe</string>
-    <string name="outfits_sort_most_worn">Plus portées</string>
     <string name="outfits_create_manual">Créer une tenue manuellement</string>
-    <string name="outfits_suggest">Suggérer une tenue existante</string>
-    <string name="prediction_setup_title">Trouver avec l\'IA</string>
-    <string name="prediction_setup_find">Trouver</string>
-    <string name="prediction_setup_title_compose">Créer avec l\'IA</string>
-    <string name="prediction_setup_create">Créer</string>
-    <string name="prediction_setup_suggestions">Suggestions</string>
     <string name="prediction_setup_considerations">Prendre en compte cette fois</string>
-    <string name="prediction_setup_weather_pick_day">Choisis un jour</string>
-    <string name="prediction_setup_weather_today">Aujourd\'hui</string>
-    <string name="prediction_setup_weather_tomorrow">Demain</string>
-    <string name="composer_mode_fullscreen">Plein écran</string>
-    <string name="composer_empty_slot_ai_hint">L\'IA remplira les emplacements vides</string>
-    <string name="outfit_save_dialog_tag_suggestions">Étiquettes existantes</string>
     <string name="outfits_compose">Composer une nouvelle tenue</string>
     <string name="outfits_thinking">Réflexion…</string>
     <string name="outfits_suggesting">Suggestion de tenue…</string>
     <string name="outfits_composing">Composition de la tenue…</string>
-    <string name="outfits_delete_title">Supprimer la tenue ?</string>
-    <string name="outfits_delete_text">« %s » sera définitivement supprimée.</string>
     <string name="outfits_items_away">%d article(s) dans un autre lieu</string>
     <string name="outfits_suggested_title">Suggérée pour aujourd\'hui</string>
     <string name="outfits_composed_title">Composée pour toi</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Nom de la tenue</string>
     <string name="outfits_description_placeholder">Description (optionnel)</string>
     <string name="outfits_create_this">Créer cette tenue</string>
-    <string name="outfits_refine_label">Affiner avec l\'IA</string>
-    <string name="outfits_refine_custom">Retour personnalisé…</string>
-    <string name="outfits_refine_casual">Plus décontracté</string>
-    <string name="outfits_refine_formal">Plus formel</string>
-    <string name="outfits_refine_diff_colors">Couleurs différentes</string>
-    <string name="outfits_refine_warmer">Vêtements plus chauds</string>
-    <string name="outfits_refine_lighter">Vêtements plus légers</string>
-    <string name="outfits_refine_trendy">Plus tendance</string>
-    <string name="outfits_refine_simpler">Plus simple</string>
-    <string name="outfits_refine_bold">Plus audacieux</string>
     <string name="outfits_items_label">Articles de la tenue</string>
     <string name="outfits_add_item">Ajouter un article</string>
-    <string name="outfits_tags_label">Étiquettes</string>
-    <string name="outfits_prediction_prev">Suggestion précédente</string>
-    <string name="outfits_prediction_next">Suggestion suivante</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Utiliser cette tenue</string>
-    <string name="outfits_suggest_tags">Suggérer des étiquettes avec l\'IA</string>
-    <string name="outfits_suggest_tags_title">Étiquettes suggérées</string>
-    <string name="outfits_suggest_tags_loading">Suggestion d\'étiquettes…</string>
-    <string name="outfits_suggest_tags_empty">Aucune nouvelle étiquette suggérée.</string>
-    <string name="outfits_suggest_tags_apply">Ajouter la sélection</string>
-    <string name="outfits_suggest_tags_hint">Touche les étiquettes pour activer/désactiver. Les étiquettes sélectionnées sont ajoutées à cette tenue.</string>
     <string name="outfits_swap_item_for">Remplacer : %s</string>
     <string name="outfits_suggest_alternatives">Suggérer 10 alternatives</string>
     <string name="outfits_select_item">Sélectionner</string>
-    <string name="outfits_saved_wear_today">Tenue enregistrée ! Porter aujourd\'hui ?</string>
-    <string name="outfits_selected_count">%d sélectionnées</string>
-    <string name="outfits_select_all_count">Tout sélectionner %d</string>
-    <string name="outfits_delete_selected_title">Supprimer les tenues ?</string>
-    <string name="outfits_delete_selected_text">%d tenues seront définitivement supprimées.</string>
     <string name="outfits_combine">Combiner avec l\'IA</string>
-    <string name="outfit_slot_lock">Verrouiller</string>
-    <string name="outfit_slot_unlock">Déverrouiller</string>
-    <string name="outfit_slot_remove">Retirer</string>
-    <string name="outfit_slot_add">Ajouter un article</string>
-    <string name="outfit_generate_with_ai">Générer avec l\'IA</string>
-    <string name="outfit_discard_changes_title">Abandonner les modifications ?</string>
-    <string name="outfit_discard_changes_body">Tes modifications non enregistrées seront perdues.</string>
-    <string name="outfit_discard_changes_confirm">Abandonner</string>
-    <string name="outfit_save_dialog_title">Enregistrer la tenue</string>
-    <string name="outfit_save_dialog_name">Nom</string>
-    <string name="outfit_save_dialog_description">Description</string>
-    <string name="outfit_save_dialog_tags">Étiquettes</string>
-    <string name="outfit_save_dialog_confirm">Enregistrer</string>
     <string name="outfit_mode_view">Voir</string>
     <string name="outfit_mode_edit">Modifier</string>
-    <string name="outfit_pick_category">Choisir une catégorie</string>
 
     <!-- Voyage -->
     <string name="travel_title">Liste de bagages voyage</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Impossible de déplacer les articles</string>
 
     <!-- Calendrier -->
-    <string name="calendar_day_mo">Lu</string>
-    <string name="calendar_day_tu">Ma</string>
-    <string name="calendar_day_we">Me</string>
-    <string name="calendar_day_th">Je</string>
-    <string name="calendar_day_fr">Ve</string>
-    <string name="calendar_day_sa">Sa</string>
-    <string name="calendar_day_su">Di</string>
-    <string name="calendar_stats_styles">Tenues les plus portées</string>
-    <string name="calendar_stats_items">Articles les plus portés</string>
-    <string name="calendar_empty">Aucun historique de tenue</string>
-    <string name="calendar_empty_hint">Porte une tenue depuis l\'onglet Tenues pour commencer le suivi</string>
-    <string name="calendar_wear_again">Porter à nouveau aujourd\'hui</string>
 
     <!-- Analyseur de manques -->
     <string name="gap_description">Découvre les 3 pièces manquantes qui débloqueraient le plus de nouvelles combinaisons de tenues depuis ta garde-robe existante.</string>
@@ -383,7 +310,6 @@
     <!-- Crédits / Mode géré -->
     <!-- Superposition IA -->
     <string name="ai_analyzing_wardrobe">Analyse de ta garde-robe…</string>
-    <string name="ai_suggesting_style">Suggestion de tenue…</string>
     <string name="ai_composing_outfit">Composition de la tenue…</string>
 
     <!-- Notification du service en premier plan -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Tu es hors ligne — mode lecture seule</string>
 
     <!-- Essayage -->
-    <string name="tryon_fab">Essayage sur moi</string>
     <string name="tryon_section_title">Photos d\'essayage</string>
     <string name="tryon_section_desc">Téléverse des photos en pied de face, de côté et de dos. L\'app les utilise comme référence pour générer un aperçu d\'essayage d\'une tenue ou d\'un article de garde-robe sur toi. Les photos restent dans ton propre Drive.</string>
     <string name="tryon_add_photo">Ajouter la photo %1$s</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Pour les utilisateurs qui préfèrent ne pas créer leur propre clé API, l\'app propose un système de crédits. Les crédits peuvent être achetés dans l\'onglet Crédits et sont consommés par action IA aux tarifs listés ci-dessus. Ce mode achemine les requêtes via un proxy côté serveur.</string>
 
     <!-- Compositeur de tenue unifié -->
-    <string name="composer_title">Créer une tenue</string>
     <string name="composer_discard_title">Abandonner la tenue ?</string>
     <string name="composer_discard_message">Tes sélections seront perdues.</string>
     <string name="composer_discard_confirm">Abandonner</string>
-    <string name="composer_header_subtitle">%1$d couches sur 5 · touche pour échanger</string>
     <string name="composer_fill_missing">Compléter</string>
     <string name="composer_see_all_count">Tout %1$d</string>
     <string name="composer_layer_picked_count">%1$d choisis</string>
-    <string name="composer_weather_title">Météo</string>
-    <string name="composer_save">Enregistrer</string>
     <string name="composer_section_goal">Quelle est l\'occasion ?</string>
-    <string name="composer_goal_placeholder">ex. Dîner à Lisbonne, soirée chaude</string>
     <string name="composer_goal_generate">Générer</string>
     <string name="composer_advanced">Options avancées</string>
     <string name="composer_chip_work">Travail</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Rendez-vous</string>
     <string name="composer_section_quick_start">Démarrage rapide</string>
     <string name="composer_section_items">Articles</string>
-    <string name="composer_section_weather">Météo</string>
-    <string name="composer_section_vibe">Ambiance</string>
     <string name="composer_section_targets">Composition</string>
     <string name="composer_targets_hint">Définis combien d\'articles de chaque couche inclure. Laisse à 0 pour laisser l\'IA décider.</string>
     <string name="composer_tags_optional">Étiquettes (optionnel)</string>
     <string name="composer_section_name">Nom et description</string>
     <string name="composer_section_ai">Améliorer avec l\'IA</string>
-    <string name="composer_weather_auto">Actuelle</string>
-    <string name="composer_weather_manual">Manuelle</string>
-    <string name="composer_weather_unknown">Météo non disponible</string>
-    <string name="composer_weather_season">Saison</string>
-    <string name="composer_weather_temp">Température</string>
-    <string name="composer_weather_precip">Précipitations</string>
-    <string name="composer_season_spring">Printemps</string>
-    <string name="composer_season_summer">Été</string>
-    <string name="composer_season_fall">Automne</string>
-    <string name="composer_season_winter">Hiver</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Aucune</string>
-    <string name="composer_precip_light">Légères</string>
-    <string name="composer_precip_heavy">Fortes</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Haut de base</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Dis à l\'IA quoi changer ou viser…</string>
     <string name="composer_feedback_history">%1$d demande(s) précédente(s) gardée(s) en contexte</string>
     <string name="composer_enhance">Améliorer avec l\'IA</string>
-    <string name="composer_enhancing">Demande à Gemini…</string>
     <string name="composer_picked_count">%1$d choisis</string>
     <string name="composer_add_selected">Ajouter la sélection</string>
     <string name="composer_factors_label">Utilisation</string>
-    <string name="composer_factor_weather_auto">Météo en direct</string>
     <string name="composer_factor_weather_manual">Météo manuelle</string>
     <string name="composer_factor_vibes">%1$d ambiances</string>
     <string name="composer_factor_items">%1$d articles</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Supprimer aussi %d tenue(s) qui utilisent ces articles</string>
     <string name="wardrobe_delete_cascade_tryons">Supprimer aussi %d essayage(s) avec ces articles</string>
-    <string name="outfits_broken_banner">%d tenues utilisent des articles qui ne sont plus dans ta garde-robe.</string>
-    <string name="outfits_broken_review">Vérifier</string>
-    <string name="outfits_broken_delete_title">Supprimer les tenues incomplètes ?</string>
-    <string name="outfits_broken_delete_text">Ces %d tenues font référence à des articles qui ne sont plus dans ta garde-robe et seront définitivement supprimées :</string>
-    <string name="outfits_broken_more">+%d de plus</string>
-    <string name="insights_items_removed">Articles absents de la garde-robe</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Vous</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Fermer</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Adoré</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Apprend de ce que vous portez vraiment et avez adoré.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Maintenance</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Plus d\'options</string>
-    <string name="calendar_move_to_day">Déplacer vers un autre jour</string>
-    <string name="calendar_copy_to_day">Copier vers un autre jour</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Touchez un jour pour déplacer la tenue</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Touchez un jour pour copier la tenue</string>
     <string name="calendar_mode_move">Déplacer</string>
     <string name="calendar_mode_copy">Copier</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Retirer de ce jour</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Porter</string>
-    <string name="outfits_favorite">Favori</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Finalisation…</string>
     <string name="wardrobe_sync_details">Chargement des détails: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Finalisation…</string>
-    <string name="outfit_saving">Enregistrement de la tenue…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Le dossier des voyages n\'est pas prêt.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Ajouter la tenue au calendrier</string>
-    <string name="calendar_add_pick">Choisir une tenue</string>
-    <string name="calendar_add_empty">Aucune tenue à ajouter pour l\'instant</string>
     <string name="calendar_pick_source_prompt">Appuyez sur un jour avec des tenues pour le sélectionner</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Retirer la tenue du calendrier</string>
     <string name="calendar_delete_prompt">Appuyez sur un jour pour retirer ses tenues</string>
-    <string name="calendar_delete_confirm_title">Retirer les tenues ?</string>
-    <string name="calendar_delete_confirm_msg">Retirer toutes les tenues portées le %1$s ?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Ajouter une tenue au %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Nouvelle tenue</string>
     <string name="fab_wardrobe_add">Ajouter un article</string>
-    <string name="fab_calendar_log">Noter la tenue</string>
     <string name="sel_swap">Remplacer</string>
-    <string name="sel_move">Déplacer</string>
-    <string name="sel_combine">Combiner</string>
-    <string name="sel_love">J\'aime</string>
-    <string name="sel_copy_to_day">Copier</string>
-    <string name="sel_remove">Retirer</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Touchez un jour pour porter « %1$s »</string>
-    <string name="calendar_done_wear">Enregistré le %1$s</string>
-    <string name="calendar_done_move">Déplacé au %1$s</string>
-    <string name="calendar_done_copy">Copié au %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Site web</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Aucune application e-mail trouvée. Veuillez nous écrire manuellement à %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Supprimer toutes les tenues portées les %1$d jours sélectionnés ?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Ajouter une tenue</string>
-    <string name="calendar_today">Aujourd\'hui</string>
 </resources>

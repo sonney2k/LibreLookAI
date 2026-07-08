@@ -194,6 +194,7 @@ internal fun OutfitViewerDestination(
             }
         },
         canTryOn = if (trip != null) canTryOn && !isOffline else canTryOn,
+        powerFeatures = com.librelookai.util.FeatureFlags.powerFeatures,
         onOpenItemViewer = onOpenItemViewer,
     )
     }

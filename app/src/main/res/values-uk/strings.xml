@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">Образи</string>
     <string name="nav_wardrobe">Гардероб</string>
     <string name="nav_shopping">Шопінг</string>
     <string name="nav_travel">Подорожі</string>
     <string name="nav_settings">Налаштування</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">Календар</string>
     <string name="insights_tab_wardrobe_stats">Статистика гардероба</string>
-    <string name="insights_tab_calendar_stats">Статистика календаря</string>
     <string name="insights_tab_costs">Витрати</string>
     <string name="costs_count_items">Речі</string>
     <string name="costs_count_outfits">Образи</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Примірки</string>
 
     <!-- Common actions -->
-    <string name="action_save">Зберегти</string>
     <string name="action_saving">Збереження…</string>
     <string name="cd_ai_suggestion">Пропозиція ШІ</string>
-    <string name="cd_refine">Уточнити</string>
     <string name="filter_location">Місце</string>
     <string name="wardrobe_processing_photos">Обробка %1$d фото…</string>
     <string name="wardrobe_progress_uploading">Завантаження фото…</string>
@@ -160,38 +155,19 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">Натисніть +, щоб скласти образ із речей гардероба</string>
-    <string name="outfits_sort_most_worn">Найчастіше ношені</string>
     <string name="outfits_create_manual">Створити образ вручну</string>
-    <string name="outfits_suggest">Запропонувати образ із наявних</string>
-    <string name="prediction_setup_title">Знайти через ШІ</string>
-    <string name="prediction_setup_find">Знайти</string>
-    <string name="prediction_setup_title_compose">Створити через ШІ</string>
-    <string name="prediction_setup_create">Створити</string>
-    <string name="prediction_setup_suggestions">Пропозиції</string>
     <string name="prediction_setup_considerations">Урахувати цього разу</string>
-    <string name="prediction_setup_weather_today">Сьогодні</string>
-    <string name="prediction_setup_weather_tomorrow">Завтра</string>
     <string name="outfits_compose">Скласти новий образ</string>
     <string name="outfits_thinking">Думаю…</string>
     <string name="outfits_suggesting">Підбираю образ…</string>
     <string name="outfits_composing">Складаю образ…</string>
-    <string name="outfits_delete_title">Видалити образ?</string>
-    <string name="outfits_delete_text">\"%s\" буде видалено назавжди.</string>
     <string name="outfits_suggested_title">Радимо на сьогодні</string>
     <string name="outfits_composed_title">Складено для вас</string>
     <string name="outfits_name_dialog_title">Назвіть цей образ</string>
     <string name="outfits_name_placeholder">Назва образу</string>
     <string name="outfits_create_this">Створити цей образ</string>
-    <string name="outfits_refine_label">Уточнити через ШІ</string>
     <string name="outfits_add_item">Додати річ</string>
-    <string name="outfits_tags_label">Теги</string>
-    <string name="composer_select_suggestion">Використати цей образ</string>
-    <string name="outfits_saved_wear_today">Образ збережено! Одягнете сьогодні?</string>
     <string name="outfits_combine">Об’єднати за допомогою ШІ</string>
-    <string name="outfit_generate_with_ai">Згенерувати через ШІ</string>
-    <string name="outfit_save_dialog_title">Зберегти образ</string>
-    <string name="outfit_save_dialog_confirm">Зберегти</string>
 
     <!-- Travel -->
     <string name="travel_title">Список речей у дорогу</string>
@@ -208,17 +184,6 @@
     <string name="travel_saved_as_style">Збережено</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">Пн</string>
-    <string name="calendar_day_tu">Вт</string>
-    <string name="calendar_day_we">Ср</string>
-    <string name="calendar_day_th">Чт</string>
-    <string name="calendar_day_fr">Пт</string>
-    <string name="calendar_day_sa">Сб</string>
-    <string name="calendar_day_su">Нд</string>
-    <string name="calendar_stats_styles">Найпопулярніші образи</string>
-    <string name="calendar_stats_items">Найпопулярніші речі</string>
-    <string name="calendar_empty">Історія ще порожня</string>
-    <string name="calendar_wear_again">Одягнути знову сьогодні</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_analyze">Аналіз мого гардероба</string>
@@ -226,14 +191,12 @@
 
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">Аналіз вашого гардероба…</string>
-    <string name="ai_suggesting_style">Підбір образу…</string>
     <string name="ai_composing_outfit">Складання образу…</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">Ви офлайн — режим перегляду</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">Приміряти на мені</string>
     <string name="tryon_uploading">Завантаження…</string>
     <string name="tryon_save_to_gallery">Зберегти в галерею</string>
     <string name="tryon_saved">Збережено в Pictures/LibreLookAI</string>
@@ -246,8 +209,6 @@
     <string name="about_open_source">Це безкоштовний додаток із відкритим кодом.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">Створити образ</string>
-    <string name="composer_save">Зберегти</string>
     <string name="composer_goal_generate">Згенерувати</string>
     <string name="composer_advanced">Додатково</string>
     <string name="composer_chip_work">Робота</string>
@@ -256,15 +217,7 @@
     <string name="composer_chip_workout">Спорт</string>
     <string name="composer_chip_travel">Подорож</string>
     <string name="composer_chip_date">Побачення</string>
-    <string name="composer_weather_auto">Поточна</string>
-    <string name="composer_weather_manual">Вручну</string>
-    <string name="composer_season_spring">Весна</string>
-    <string name="composer_season_summer">Літо</string>
-    <string name="composer_season_fall">Осінь</string>
-    <string name="composer_season_winter">Зима</string>
-    <string name="composer_temp_value">%1$d°C</string>
     <string name="composer_enhance">Уточнити через ШІ</string>
-    <string name="composer_enhancing">Запитую Gemini…</string>
 
     <!-- Monetization / cost badges -->
     <string name="cost_badge_tokens_estimate">~%1$s токенів</string>
@@ -295,55 +248,39 @@
 
 Вимкніть оптимізацію батареї для LibreLookAI, щоб продовжити.</string>
     <string name="battery_exempt_title">Потрібна фонова обробка</string>
-    <string name="calendar_empty_hint">Одягніть образ із вкладки Образи, щоб почати відстеження</string>
     <string name="composer_add_selected">Додати вибране</string>
     <string name="composer_desc_placeholder">Короткий опис (необов’язково)</string>
     <string name="composer_discard_confirm">Відкинути</string>
     <string name="composer_discard_message">Ваш вибір буде втрачено.</string>
     <string name="composer_discard_title">Відкинути образ?</string>
-    <string name="composer_empty_slot_ai_hint">ШІ заповнить порожні слоти</string>
     <string name="composer_factor_closets">%1$d гардеробів</string>
     <string name="composer_factor_composition">Власна композиція</string>
     <string name="composer_factor_items">%1$d речей</string>
     <string name="composer_factor_vibes">%1$d настроїв</string>
-    <string name="composer_factor_weather_auto">Жива погода</string>
     <string name="composer_factor_weather_manual">Ручна погода</string>
     <string name="composer_factors_label">Використовуючи</string>
     <string name="composer_feedback_history">%1$d попередніх запитів збережено в контексті</string>
     <string name="composer_feedback_placeholder">Скажіть ШІ, що змінити або до чого прагнути…</string>
     <string name="composer_fill_missing">Заповнити пусті</string>
-    <string name="composer_goal_placeholder">напр. Вечеря в Лісабоні, теплий вечір</string>
-    <string name="composer_header_subtitle">%1$d з 5 шарів · торкніться, щоб поміняти</string>
     <string name="composer_layer_accessory">Аксесуар</string>
     <string name="composer_layer_bottom">Низ</string>
     <string name="composer_layer_footwear">Взуття</string>
     <string name="composer_layer_outerwear">Верхній одяг</string>
     <string name="composer_layer_picked_count">%1$d вибрано</string>
     <string name="composer_layer_top">Базовий верх</string>
-    <string name="composer_mode_fullscreen">На весь екран</string>
     <string name="composer_name_placeholder">Назва образу (необов’язково)</string>
     <string name="composer_picked_count">%1$d вибрано</string>
-    <string name="composer_precip_heavy">Сильні</string>
-    <string name="composer_precip_light">Легкі</string>
-    <string name="composer_precip_none">Немає</string>
     <string name="composer_section_ai">Покращити за допомогою ШІ</string>
     <string name="composer_section_goal">Який привід?</string>
     <string name="composer_section_items">Речі</string>
     <string name="composer_section_name">Назва &amp; опис</string>
     <string name="composer_section_quick_start">Швидкий старт</string>
     <string name="composer_section_targets">Композиція</string>
-    <string name="composer_section_vibe">Стиль &amp; настрій</string>
-    <string name="composer_section_weather">Погода</string>
     <string name="composer_see_all_count">Усі %1$d</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Теги (необов’язково)</string>
     <string name="composer_targets_hint">Налаштуйте, скільки речей із кожного шару включити. Залиште 0, щоб ШІ вирішив сам.</string>
-    <string name="composer_weather_precip">Опади</string>
-    <string name="composer_weather_season">Сезон</string>
-    <string name="composer_weather_temp">Температура</string>
-    <string name="composer_weather_title">Погода</string>
-    <string name="composer_weather_unknown">Дані про погоду недоступні</string>
     <string name="dedupe_dialog_cancel">Скасувати</string>
     <string name="dedupe_dialog_desc">Ми знайшли %1$d річ(ей) у вашому гардеробі, які виглядають дуже схоже на це фото.</string>
     <string name="dedupe_dialog_import_anyway">Імпортувати все одно</string>
@@ -369,49 +306,14 @@
     <string name="local_bg_recomputing">Перерахунок вирізання…</string>
     <string name="local_bg_skip">Пропустити (через Gemini)</string>
     <string name="local_bg_title">Уточнити вирізання</string>
-    <string name="outfit_discard_changes_body">Незбережені зміни буде втрачено.</string>
-    <string name="outfit_discard_changes_confirm">Відкинути</string>
-    <string name="outfit_discard_changes_title">Відкинути зміни?</string>
     <string name="outfit_mode_edit">Редагувати</string>
     <string name="outfit_mode_view">Перегляд</string>
-    <string name="outfit_pick_category">Оберіть категорію</string>
-    <string name="outfit_save_dialog_description">Опис</string>
-    <string name="outfit_save_dialog_name">Назва</string>
-    <string name="outfit_save_dialog_tag_suggestions">Наявні теги</string>
-    <string name="outfit_save_dialog_tags">Теги</string>
-    <string name="outfit_slot_add">Додати річ</string>
-    <string name="outfit_slot_lock">Зафіксувати</string>
-    <string name="outfit_slot_remove">Прибрати</string>
-    <string name="outfit_slot_unlock">Розблокувати</string>
-    <string name="outfits_delete_selected_text">%d образів буде остаточно видалено.</string>
-    <string name="outfits_delete_selected_title">Видалити образи?</string>
     <string name="outfits_description_placeholder">Опис (необов’язково)</string>
     <string name="outfits_items_away">%d річ(ей) в іншій локації</string>
     <string name="outfits_items_label">Речі образу</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="outfits_prediction_next">Наступна порада</string>
-    <string name="outfits_prediction_prev">Попередня порада</string>
-    <string name="outfits_refine_bold">Сміливіше</string>
-    <string name="outfits_refine_casual">Більш кежуально</string>
-    <string name="outfits_refine_custom">Власний відгук…</string>
-    <string name="outfits_refine_diff_colors">Інші кольори</string>
-    <string name="outfits_refine_formal">Більш формально</string>
-    <string name="outfits_refine_lighter">Легший одяг</string>
-    <string name="outfits_refine_simpler">Простіше</string>
-    <string name="outfits_refine_trendy">Більш трендово</string>
-    <string name="outfits_refine_warmer">Тепліший одяг</string>
-    <string name="outfits_select_all_count">Вибрати всі %d</string>
     <string name="outfits_select_item">Вибрати</string>
-    <string name="outfits_selected_count">%d вибрано</string>
     <string name="outfits_suggest_alternatives">Запропонувати 10 альтернатив</string>
-    <string name="outfits_suggest_tags">Запропонувати теги через ШІ</string>
-    <string name="outfits_suggest_tags_apply">Додати вибрані</string>
-    <string name="outfits_suggest_tags_empty">Нових тегів не запропоновано.</string>
-    <string name="outfits_suggest_tags_hint">Натискайте теги, щоб перемкнути. Вибрані теги додаються до цього образу.</string>
-    <string name="outfits_suggest_tags_loading">Підбір тегів…</string>
-    <string name="outfits_suggest_tags_title">Запропоновані теги</string>
     <string name="outfits_swap_item_for">Замінити: %s</string>
-    <string name="prediction_setup_weather_pick_day">Оберіть день</string>
     <string name="repair_duplicate_of">Схоже на %1$s</string>
     <string name="repair_duplicates_hint">Позначте речі для видалення з Drive. Натисніть, щоб побачити, як вони виглядають.</string>
     <string name="repair_section_duplicates">Можливі дублікати</string>
@@ -573,12 +475,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Також видалити %d образ(ів), що використовують ці речі</string>
     <string name="wardrobe_delete_cascade_tryons">Також видалити %d примірку(и) з цими речами</string>
-    <string name="outfits_broken_banner">%d образів використовують речі, яких більше немає у вашому гардеробі.</string>
-    <string name="outfits_broken_review">Переглянути</string>
-    <string name="outfits_broken_delete_title">Видалити неповні образи?</string>
-    <string name="outfits_broken_delete_text">Ці %d образів посилаються на речі, яких більше немає у вашому гардеробі, і будуть видалені назавжди:</string>
-    <string name="outfits_broken_more">+%d ще</string>
-    <string name="insights_items_removed">Речей більше немає в гардеробі</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Ви</string>
@@ -668,7 +564,6 @@
     <string name="ai_dismiss">Закрити</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Сподобалось</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Навчається на тому, що ви справді носите й уподобали.</string>
@@ -734,24 +629,16 @@
     <string name="wardrobe_maintenance_menu">Обслуговування</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Інші параметри</string>
-    <string name="calendar_move_to_day">Перемістити на інший день</string>
-    <string name="calendar_copy_to_day">Копіювати на інший день</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Торкніться дня, щоб перемістити образ</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Торкніться дня, щоб скопіювати образ</string>
     <string name="calendar_mode_move">Перемістити</string>
     <string name="calendar_mode_copy">Копіювати</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Видалити з цього дня</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Вдягнути</string>
-    <string name="outfits_favorite">Вибране</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -763,7 +650,6 @@
     <string name="restore_finishing">Завершення…</string>
     <string name="wardrobe_sync_details">Завантаження деталей: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Завершення…</string>
-    <string name="outfit_saving">Збереження образу…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -774,35 +660,19 @@
     <string name="error_trips_folder_not_ready">Папка подорожей не готова.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Додати образ до календаря</string>
-    <string name="calendar_add_pick">Виберіть образ</string>
-    <string name="calendar_add_empty">Поки немає образів для додавання</string>
     <string name="calendar_pick_source_prompt">Торкніться дня з образами, щоб вибрати його</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Видалити образ із календаря</string>
     <string name="calendar_delete_prompt">Торкніться дня, щоб видалити його образи</string>
-    <string name="calendar_delete_confirm_title">Видалити образи?</string>
-    <string name="calendar_delete_confirm_msg">Видалити всі образи, вдягнені %1$s?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Додати образ на %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Новий образ</string>
     <string name="fab_wardrobe_add">Додати річ</string>
-    <string name="fab_calendar_log">Записати образ</string>
     <string name="sel_swap">Замінити</string>
-    <string name="sel_move">Перемістити</string>
-    <string name="sel_combine">Поєднати</string>
-    <string name="sel_love">Вподобати</string>
-    <string name="sel_copy_to_day">Копіювати</string>
-    <string name="sel_remove">Видалити</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Торкніться дня, щоб одягнути «%1$s»</string>
-    <string name="calendar_done_wear">Записано на %1$s</string>
-    <string name="calendar_done_move">Переміщено на %1$s</string>
-    <string name="calendar_done_copy">Скопійовано на %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Веб-сайт</string>
@@ -823,9 +693,6 @@
     <string name="feedback_no_email_app">Поштовий застосунок не знайдено. Напишіть нам вручну на %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Видалити всі образи, вдягнені у вибрані дні (%1$d)?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Додати образ</string>
-    <string name="calendar_today">Сьогодні</string>
 </resources>

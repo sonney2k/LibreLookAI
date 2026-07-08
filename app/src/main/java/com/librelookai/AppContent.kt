@@ -1,6 +1,7 @@
 package com.librelookai
 
 import android.Manifest
+import com.librelookai.core.designsystem.R as DsR
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -403,6 +404,15 @@ internal fun AppContent(
                         com.librelookai.travel.LocalTravelCostBadge provides { tokens ->
                             com.librelookai.billing.CostBadge(
                                 com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
+                                tokens = tokens,
+                            )
+                        },
+                        // Outfit composer / prediction generate-cost badge — same feature/billing
+                        // bridge (feature→feature is forbidden).
+                        com.librelookai.outfit.LocalOutfitCostBadge provides { action, bulkCount, tokens ->
+                            com.librelookai.billing.CostBadge(
+                                action,
+                                bulkCount = bulkCount,
                                 tokens = tokens,
                             )
                         },
@@ -1518,7 +1528,7 @@ internal fun AppContent(
                                         },
                                     ),
                                     RestoreCategory(
-                                        label = stringResource(R.string.nav_styles),
+                                        label = stringResource(DsR.string.nav_styles),
                                         loading = restoreOutfits.isLoading,
                                     ),
                                     RestoreCategory(

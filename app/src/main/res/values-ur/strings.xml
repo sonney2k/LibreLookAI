@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">ملبوسات</string>
     <string name="nav_wardrobe">وارڈروب</string>
     <string name="nav_shopping">شاپنگ</string>
     <string name="nav_travel">سفر</string>
     <string name="nav_settings">ترتیبات</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">کیلنڈر</string>
     <string name="insights_tab_wardrobe_stats">وارڈروب اعداد و شمار</string>
-    <string name="insights_tab_calendar_stats">کیلنڈر اعداد و شمار</string>
     <string name="insights_tab_costs">اخراجات</string>
     <string name="costs_count_items">اشیاء</string>
     <string name="costs_count_outfits">ملبوسات</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">آزمائشیں</string>
 
     <!-- Common actions -->
-    <string name="action_save">محفوظ کریں</string>
     <string name="action_saving">محفوظ ہو رہا ہے…</string>
     <string name="cd_ai_suggestion">AI مشورہ</string>
-    <string name="cd_refine">بہتر بنائیں</string>
     <string name="filter_location">مقام</string>
     <string name="wardrobe_processing_photos">%1$d تصاویر پر کام ہو رہا ہے…</string>
     <string name="wardrobe_progress_uploading">تصویر اپ لوڈ ہو رہی ہے…</string>
@@ -160,38 +155,19 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">اپنے وارڈروب سے لباس تیار کرنے کے لیے + پر ٹیپ کریں</string>
-    <string name="outfits_sort_most_worn">زیادہ پہنا جانے والا</string>
     <string name="outfits_create_manual">خود سے لباس تیار کریں</string>
-    <string name="outfits_suggest">موجودہ لباس کا مشورہ دیں</string>
-    <string name="prediction_setup_title">AI کے ساتھ تلاش کریں</string>
-    <string name="prediction_setup_find">تلاش کریں</string>
-    <string name="prediction_setup_title_compose">AI کے ساتھ تیار کریں</string>
-    <string name="prediction_setup_create">تیار کریں</string>
-    <string name="prediction_setup_suggestions">مشورے</string>
     <string name="prediction_setup_considerations">اس بار میں شامل کریں</string>
-    <string name="prediction_setup_weather_today">آج</string>
-    <string name="prediction_setup_weather_tomorrow">کل</string>
     <string name="outfits_compose">نیا لباس تیار کریں</string>
     <string name="outfits_thinking">سوچ رہا ہوں…</string>
     <string name="outfits_suggesting">لباس کا مشورہ دیا جا رہا ہے…</string>
     <string name="outfits_composing">لباس تیار ہو رہا ہے…</string>
-    <string name="outfits_delete_title">لباس حذف کریں؟</string>
-    <string name="outfits_delete_text">\"%s\" مستقل طور پر حذف کر دیا جائے گا۔</string>
     <string name="outfits_suggested_title">آج کے لیے مشورہ</string>
     <string name="outfits_composed_title">آپ کے لیے تیار کردہ</string>
     <string name="outfits_name_dialog_title">اس لباس کا نام رکھیں</string>
     <string name="outfits_name_placeholder">لباس کا نام</string>
     <string name="outfits_create_this">یہ لباس تیار کریں</string>
-    <string name="outfits_refine_label">AI کے ساتھ بہتر بنائیں</string>
     <string name="outfits_add_item">شے شامل کریں</string>
-    <string name="outfits_tags_label">ٹیگز</string>
-    <string name="composer_select_suggestion">یہ لباس استعمال کریں</string>
-    <string name="outfits_saved_wear_today">لباس محفوظ ہو گیا! آج پہنیں؟</string>
     <string name="outfits_combine">AI کے ساتھ ملائیں</string>
-    <string name="outfit_generate_with_ai">AI کے ساتھ بنائیں</string>
-    <string name="outfit_save_dialog_title">لباس محفوظ کریں</string>
-    <string name="outfit_save_dialog_confirm">محفوظ کریں</string>
 
     <!-- Travel -->
     <string name="travel_title">سفر کے سامان کی فہرست</string>
@@ -208,17 +184,6 @@
     <string name="travel_saved_as_style">محفوظ ہو گیا</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">پیر</string>
-    <string name="calendar_day_tu">منگل</string>
-    <string name="calendar_day_we">بدھ</string>
-    <string name="calendar_day_th">جمعرات</string>
-    <string name="calendar_day_fr">جمعہ</string>
-    <string name="calendar_day_sa">ہفتہ</string>
-    <string name="calendar_day_su">اتوار</string>
-    <string name="calendar_stats_styles">زیادہ پہنے گئے ملبوسات</string>
-    <string name="calendar_stats_items">زیادہ پہنی گئی اشیاء</string>
-    <string name="calendar_empty">ابھی تک کوئی ریکارڈ نہیں ہے</string>
-    <string name="calendar_wear_again">آج دوبارہ پہنیں</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_analyze">میرے وارڈروب کا تجزیہ کریں</string>
@@ -226,14 +191,12 @@
 
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">آپ کے وارڈروب کا تجزیہ ہو رہا ہے…</string>
-    <string name="ai_suggesting_style">لباس کا مشورہ دیا جا رہا ہے…</string>
     <string name="ai_composing_outfit">لباس تیار ہو رہا ہے…</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">آپ آف لائن ہیں — صرف دیکھنے کی سہولت</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">مجھ پر آزمائیں</string>
     <string name="tryon_uploading">اپ لوڈ ہو رہا ہے…</string>
     <string name="tryon_save_to_gallery">گیلری میں محفوظ کریں</string>
     <string name="tryon_saved">محفوظ ہو گیا</string>
@@ -246,8 +209,6 @@
     <string name="about_open_source">یہ ایپ اوپن سورس اور مفت ہے۔</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">لباس تیار کریں</string>
-    <string name="composer_save">محفوظ کریں</string>
     <string name="composer_goal_generate">تیار کریں</string>
     <string name="composer_advanced">اعلیٰ اختیارات</string>
     <string name="composer_chip_work">کام</string>
@@ -256,15 +217,7 @@
     <string name="composer_chip_workout">کھیل</string>
     <string name="composer_chip_travel">سفر</string>
     <string name="composer_chip_date">ڈیٹ</string>
-    <string name="composer_weather_auto">موجودہ</string>
-    <string name="composer_weather_manual">دستی</string>
-    <string name="composer_season_spring">بہار</string>
-    <string name="composer_season_summer">گرمی</string>
-    <string name="composer_season_fall">خزاں</string>
-    <string name="composer_season_winter">سردی</string>
-    <string name="composer_temp_value">%1$d°C</string>
     <string name="composer_enhance">AI کے ساتھ بہتر بنائیں</string>
-    <string name="composer_enhancing">Gemini سے پوچھا جا رہا ہے…</string>
 
     <!-- Monetization / cost badges -->
     <string name="cost_badge_tokens_estimate">~%1$s ٹوکن</string>
@@ -295,55 +248,39 @@
 
 جاری رکھنے کے لیے براہ کرم LibreLookAI کے لیے بیٹری آپٹیمائزیشن غیر فعال کریں۔</string>
     <string name="battery_exempt_title">پس منظر پروسیسنگ درکار</string>
-    <string name="calendar_empty_hint">ٹریکنگ شروع کرنے کے لیے ملبوسات ٹیب سے ایک ملبوسات پہنیں</string>
     <string name="composer_add_selected">منتخب شدہ شامل کریں</string>
     <string name="composer_desc_placeholder">مختصر تفصیل (اختیاری)</string>
     <string name="composer_discard_confirm">ترک کریں</string>
     <string name="composer_discard_message">آپ کے انتخاب ضائع ہو جائیں گے۔</string>
     <string name="composer_discard_title">ملبوسات ترک کریں؟</string>
-    <string name="composer_empty_slot_ai_hint">AI خالی سلاٹس پُر کرے گا</string>
     <string name="composer_factor_closets">%1$d الماریاں</string>
     <string name="composer_factor_composition">اپنی مرضی کی ترکیب</string>
     <string name="composer_factor_items">%1$d آئٹمز</string>
     <string name="composer_factor_vibes">%1$d موڈز</string>
-    <string name="composer_factor_weather_auto">براہ راست موسم</string>
     <string name="composer_factor_weather_manual">دستی موسم</string>
     <string name="composer_factors_label">استعمال میں</string>
     <string name="composer_feedback_history">%1$d پچھلی درخواستیں سیاق میں محفوظ</string>
     <string name="composer_feedback_placeholder">AI کو بتائیں کہ کیا بدلنا یا حاصل کرنا ہے…</string>
     <string name="composer_fill_missing">گمشدہ پُر کریں</string>
-    <string name="composer_goal_placeholder">مثلاً لزبن میں عشائیہ، گرم شام</string>
-    <string name="composer_header_subtitle">5 میں سے %1$d پرتیں · تبدیل کرنے کے لیے ٹیپ کریں</string>
     <string name="composer_layer_accessory">لوازم</string>
     <string name="composer_layer_bottom">نچلا حصہ</string>
     <string name="composer_layer_footwear">جوتے</string>
     <string name="composer_layer_outerwear">اوپری لباس</string>
     <string name="composer_layer_picked_count">%1$d منتخب</string>
     <string name="composer_layer_top">بنیادی اوپر</string>
-    <string name="composer_mode_fullscreen">پوری اسکرین</string>
     <string name="composer_name_placeholder">ملبوسات کا نام (اختیاری)</string>
     <string name="composer_picked_count">%1$d منتخب</string>
-    <string name="composer_precip_heavy">زیادہ</string>
-    <string name="composer_precip_light">ہلکی</string>
-    <string name="composer_precip_none">نہیں</string>
     <string name="composer_section_ai">AI سے بہتر بنائیں</string>
     <string name="composer_section_goal">کون سا موقع ہے؟</string>
     <string name="composer_section_items">آئٹمز</string>
     <string name="composer_section_name">نام &amp; تفصیل</string>
     <string name="composer_section_quick_start">فوری آغاز</string>
     <string name="composer_section_targets">ترکیب</string>
-    <string name="composer_section_vibe">اسٹائل موڈ</string>
-    <string name="composer_section_weather">موسم</string>
     <string name="composer_see_all_count">تمام %1$d</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">ٹیگز (اختیاری)</string>
     <string name="composer_targets_hint">ہر پرت میں کتنی شامل کرنی ہیں طے کریں۔ AI کو فیصلہ کرنے دینے کے لیے 0 پر چھوڑیں۔</string>
-    <string name="composer_weather_precip">بارش/برف</string>
-    <string name="composer_weather_season">موسم</string>
-    <string name="composer_weather_temp">درجہ حرارت</string>
-    <string name="composer_weather_title">موسم</string>
-    <string name="composer_weather_unknown">موسم کی معلومات دستیاب نہیں</string>
     <string name="dedupe_dialog_cancel">منسوخ کریں</string>
     <string name="dedupe_dialog_desc">ہمیں آپ کے وارڈروب میں %1$d آئٹم ملے جو اس تصویر سے بہت ملتے جلتے ہیں۔</string>
     <string name="dedupe_dialog_import_anyway">پھر بھی درآمد کریں</string>
@@ -369,49 +306,14 @@
     <string name="local_bg_recomputing">کٹ آؤٹ کا نیا حساب…</string>
     <string name="local_bg_skip">چھوڑیں (Gemini استعمال کریں)</string>
     <string name="local_bg_title">کٹ آؤٹ بہتر کریں</string>
-    <string name="outfit_discard_changes_body">غیر محفوظ شدہ تبدیلیاں ضائع ہو جائیں گی۔</string>
-    <string name="outfit_discard_changes_confirm">ترک کریں</string>
-    <string name="outfit_discard_changes_title">تبدیلیاں ترک کریں؟</string>
     <string name="outfit_mode_edit">ترمیم</string>
     <string name="outfit_mode_view">دیکھیں</string>
-    <string name="outfit_pick_category">زمرہ منتخب کریں</string>
-    <string name="outfit_save_dialog_description">تفصیل</string>
-    <string name="outfit_save_dialog_name">نام</string>
-    <string name="outfit_save_dialog_tag_suggestions">موجودہ ٹیگز</string>
-    <string name="outfit_save_dialog_tags">ٹیگز</string>
-    <string name="outfit_slot_add">آئٹم شامل کریں</string>
-    <string name="outfit_slot_lock">لاک</string>
-    <string name="outfit_slot_remove">ہٹائیں</string>
-    <string name="outfit_slot_unlock">ان لاک</string>
-    <string name="outfits_delete_selected_text">%d ملبوسات مستقل طور پر ہٹا دیے جائیں گے۔</string>
-    <string name="outfits_delete_selected_title">ملبوسات حذف کریں؟</string>
     <string name="outfits_description_placeholder">تفصیل (اختیاری)</string>
     <string name="outfits_items_away">%d آئٹم دوسرے مقام پر</string>
     <string name="outfits_items_label">ملبوسات کے آئٹمز</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="outfits_prediction_next">اگلی تجویز</string>
-    <string name="outfits_prediction_prev">پچھلی تجویز</string>
-    <string name="outfits_refine_bold">زیادہ بولڈ</string>
-    <string name="outfits_refine_casual">زیادہ کیژوئل</string>
-    <string name="outfits_refine_custom">اپنی رائے…</string>
-    <string name="outfits_refine_diff_colors">مختلف رنگ</string>
-    <string name="outfits_refine_formal">زیادہ رسمی</string>
-    <string name="outfits_refine_lighter">ہلکا لباس</string>
-    <string name="outfits_refine_simpler">سادہ</string>
-    <string name="outfits_refine_trendy">زیادہ ٹرینڈی</string>
-    <string name="outfits_refine_warmer">گرم لباس</string>
-    <string name="outfits_select_all_count">تمام %d منتخب کریں</string>
     <string name="outfits_select_item">منتخب کریں</string>
-    <string name="outfits_selected_count">%d منتخب</string>
     <string name="outfits_suggest_alternatives">10 متبادل تجویز کریں</string>
-    <string name="outfits_suggest_tags">AI سے ٹیگ تجویز</string>
-    <string name="outfits_suggest_tags_apply">منتخب شدہ شامل کریں</string>
-    <string name="outfits_suggest_tags_empty">کوئی نئی ٹیگ تجویز نہیں۔</string>
-    <string name="outfits_suggest_tags_hint">ٹیگز پر ٹیپ کر کے ٹوگل کریں۔ منتخب ٹیگز اس ملبوسات میں شامل ہوں گے۔</string>
-    <string name="outfits_suggest_tags_loading">ٹیگز تجویز کیے جا رہے ہیں…</string>
-    <string name="outfits_suggest_tags_title">تجویز کردہ ٹیگز</string>
     <string name="outfits_swap_item_for">تبدیل کریں: %s</string>
-    <string name="prediction_setup_weather_pick_day">دن منتخب کریں</string>
     <string name="repair_duplicate_of">%1$s سے ملتا جلتا</string>
     <string name="repair_duplicates_hint">Drive سے حذف کرنے کے لیے آئٹمز پر نشان لگائیں۔ دیکھنے کے لیے ٹیپ کریں۔</string>
     <string name="repair_section_duplicates">ممکنہ نقول</string>
@@ -573,12 +475,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">ان آئٹمز کو استعمال کرنے والے %d آؤٹ فٹ بھی حذف کریں</string>
     <string name="wardrobe_delete_cascade_tryons">ان آئٹمز والی %d ٹرائی آن بھی حذف کریں</string>
-    <string name="outfits_broken_banner">%d آؤٹ فٹ ایسے آئٹمز استعمال کرتے ہیں جو اب آپ کی الماری میں نہیں ہیں۔</string>
-    <string name="outfits_broken_review">جائزہ لیں</string>
-    <string name="outfits_broken_delete_title">نامکمل آؤٹ فٹ حذف کریں؟</string>
-    <string name="outfits_broken_delete_text">یہ %d آؤٹ فٹ ایسے آئٹمز کا حوالہ دیتے ہیں جو اب آپ کی الماری میں نہیں ہیں اور مستقل طور پر حذف کر دیے جائیں گے:</string>
-    <string name="outfits_broken_more">+%d مزید</string>
-    <string name="insights_items_removed">آئٹمز اب الماری میں نہیں ہیں</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">آپ</string>
@@ -668,7 +564,6 @@
     <string name="ai_dismiss">بند کریں</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">پسند آیا</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">آپ جو واقعی پہنتے اور پسند کرتے ہیں اس سے سیکھیں۔</string>
@@ -734,24 +629,16 @@
     <string name="wardrobe_maintenance_menu">دیکھ بھال</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">مزید اختیارات</string>
-    <string name="calendar_move_to_day">دوسرے دن منتقل کریں</string>
-    <string name="calendar_copy_to_day">دوسرے دن کاپی کریں</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">آؤٹ فٹ منتقل کرنے کے لیے کسی دن پر تھپتھپائیں</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">آؤٹ فٹ کاپی کرنے کے لیے کسی دن پر تھپتھپائیں</string>
     <string name="calendar_mode_move">منتقل کریں</string>
     <string name="calendar_mode_copy">کاپی کریں</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">اس دن سے ہٹائیں</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">پہنیں</string>
-    <string name="outfits_favorite">پسندیدہ</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -763,7 +650,6 @@
     <string name="restore_finishing">مکمل ہو رہا ہے…</string>
     <string name="wardrobe_sync_details">تفصیلات لوڈ ہو رہی ہیں: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">مکمل ہو رہا ہے…</string>
-    <string name="outfit_saving">آؤٹ فٹ محفوظ ہو رہا ہے…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -774,35 +660,19 @@
     <string name="error_trips_folder_not_ready">سفر کا فولڈر تیار نہیں ہے۔</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">آؤٹ فٹ کو کیلنڈر میں شامل کریں</string>
-    <string name="calendar_add_pick">ایک آؤٹ فٹ منتخب کریں</string>
-    <string name="calendar_add_empty">ابھی شامل کرنے کے لیے کوئی آؤٹ فٹ نہیں</string>
     <string name="calendar_pick_source_prompt">منتخب کرنے کے لیے آؤٹ فٹ والے دن پر ٹیپ کریں</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">آؤٹ فٹ کو کیلنڈر سے ہٹائیں</string>
     <string name="calendar_delete_prompt">کسی دن کے آؤٹ فٹ ہٹانے کے لیے اس پر ٹیپ کریں</string>
-    <string name="calendar_delete_confirm_title">آؤٹ فٹ ہٹائیں؟</string>
-    <string name="calendar_delete_confirm_msg">%1$s کو پہنے گئے تمام آؤٹ فٹ ہٹائیں؟</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">%1$s کو ایک آؤٹ فٹ شامل کریں</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">نیا آؤٹ فٹ</string>
     <string name="fab_wardrobe_add">آئٹم شامل کریں</string>
-    <string name="fab_calendar_log">آؤٹ فٹ لاگ کریں</string>
     <string name="sel_swap">تبدیل کریں</string>
-    <string name="sel_move">منتقل کریں</string>
-    <string name="sel_combine">ملا دیں</string>
-    <string name="sel_love">پسند</string>
-    <string name="sel_copy_to_day">کاپی</string>
-    <string name="sel_remove">ہٹا دیں</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">“%1$s” پہننے کے لیے کسی دن پر تھپتھپائیں</string>
-    <string name="calendar_done_wear">%1$s کو لاگ کیا گیا</string>
-    <string name="calendar_done_move">%1$s پر منتقل کر دیا گیا</string>
-    <string name="calendar_done_copy">%1$s پر کاپی کر دیا گیا</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">ویب سائٹ</string>
@@ -823,9 +693,6 @@
     <string name="feedback_no_email_app">کوئی ای میل ایپ نہیں ملی۔ براہ کرم %1$s پر دستی طور پر ای میل کریں۔</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">منتخب کردہ %1$d دنوں میں پہنے گئے تمام آؤٹ فٹس ہٹا دیں؟</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">آؤٹ فٹ شامل کریں</string>
-    <string name="calendar_today">آج</string>
 </resources>

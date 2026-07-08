@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- ナビゲーション -->
-    <string name="nav_styles">コーデ</string>
     <string name="nav_wardrobe">クローゼット</string>
     <string name="nav_shopping">ショッピング</string>
     <string name="nav_travel">旅行</string>
     <string name="nav_settings">設定</string>
 
     <!-- インサイトタブ -->
-    <string name="insights_tab_calendar">カレンダー</string>
     <string name="insights_tab_wardrobe_stats">クローゼット統計</string>
-    <string name="insights_tab_calendar_stats">カレンダー統計</string>
     <string name="insights_tab_costs">コスト</string>
     <string name="costs_count_items">アイテム</string>
     <string name="costs_count_outfits">コーデ</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">試着</string>
 
     <!-- 共通アクション -->
-    <string name="action_save">保存</string>
     <string name="action_saving">保存中…</string>
     <string name="cd_ai_suggestion">AIの提案</string>
-    <string name="cd_refine">調整</string>
     <string name="filter_location">場所</string>
     <string name="wardrobe_processing_photos">%1$d 枚の写真を処理中…</string>
     <string name="wardrobe_progress_uploading">写真をアップロード中…</string>
@@ -250,28 +245,12 @@
     <!-- タグ値の翻訳(英語で保存; UI言語で表示) -->
     <!-- 色 -->
     <!-- コーデ -->
-    <string name="outfits_empty_hint">+ をタップしてクローゼットからコーデを作成</string>
-    <string name="outfits_sort_most_worn">着用回数順</string>
     <string name="outfits_create_manual">コーデを手動で作成</string>
-    <string name="outfits_suggest">既存コーデを提案</string>
-    <string name="prediction_setup_title">AIで探す</string>
-    <string name="prediction_setup_find">探す</string>
-    <string name="prediction_setup_title_compose">AIで作る</string>
-    <string name="prediction_setup_create">作る</string>
-    <string name="prediction_setup_suggestions">提案</string>
     <string name="prediction_setup_considerations">今回の生成で考慮</string>
-    <string name="prediction_setup_weather_pick_day">日を選択</string>
-    <string name="prediction_setup_weather_today">今日</string>
-    <string name="prediction_setup_weather_tomorrow">明日</string>
-    <string name="composer_mode_fullscreen">フルスクリーン</string>
-    <string name="composer_empty_slot_ai_hint">AIが空きスロットを埋めます</string>
-    <string name="outfit_save_dialog_tag_suggestions">既存のタグ</string>
     <string name="outfits_compose">新しいコーデを作成</string>
     <string name="outfits_thinking">考え中…</string>
     <string name="outfits_suggesting">コーデを提案中…</string>
     <string name="outfits_composing">コーデを作成中…</string>
-    <string name="outfits_delete_title">コーデを削除しますか?</string>
-    <string name="outfits_delete_text">「%s」は完全に削除されます。</string>
     <string name="outfits_items_away">%d 件のアイテムが別の場所にあります</string>
     <string name="outfits_suggested_title">今日のおすすめ</string>
     <string name="outfits_composed_title">あなたのために作成</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">コーデ名</string>
     <string name="outfits_description_placeholder">説明(任意)</string>
     <string name="outfits_create_this">このコーデを作成</string>
-    <string name="outfits_refine_label">AIで調整</string>
-    <string name="outfits_refine_custom">カスタムフィードバック…</string>
-    <string name="outfits_refine_casual">もっとカジュアル</string>
-    <string name="outfits_refine_formal">もっとフォーマル</string>
-    <string name="outfits_refine_diff_colors">違う色で</string>
-    <string name="outfits_refine_warmer">もっと暖かい服</string>
-    <string name="outfits_refine_lighter">もっと軽い服</string>
-    <string name="outfits_refine_trendy">もっとトレンディに</string>
-    <string name="outfits_refine_simpler">もっとシンプルに</string>
-    <string name="outfits_refine_bold">もっと大胆に</string>
     <string name="outfits_items_label">コーデのアイテム</string>
     <string name="outfits_add_item">アイテムを追加</string>
-    <string name="outfits_tags_label">タグ</string>
-    <string name="outfits_prediction_prev">前の提案</string>
-    <string name="outfits_prediction_next">次の提案</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">このコーデを使用</string>
-    <string name="outfits_suggest_tags">AIでタグを提案</string>
-    <string name="outfits_suggest_tags_title">提案されたタグ</string>
-    <string name="outfits_suggest_tags_loading">タグを提案中…</string>
-    <string name="outfits_suggest_tags_empty">新しいタグの提案はありません。</string>
-    <string name="outfits_suggest_tags_apply">選択を追加</string>
-    <string name="outfits_suggest_tags_hint">タグをタップで切替。選択したタグがこのコーデに追加されます。</string>
     <string name="outfits_swap_item_for">入れ替え: %s</string>
     <string name="outfits_suggest_alternatives">10件の代替案を提案</string>
     <string name="outfits_select_item">選択</string>
-    <string name="outfits_saved_wear_today">コーデを保存しました!今日着ますか?</string>
-    <string name="outfits_selected_count">%d 件選択中</string>
-    <string name="outfits_select_all_count">%d 件すべて選択</string>
-    <string name="outfits_delete_selected_title">コーデを削除しますか?</string>
-    <string name="outfits_delete_selected_text">%d 件のコーデが完全に削除されます。</string>
     <string name="outfits_combine">AIで組み合わせる</string>
-    <string name="outfit_slot_lock">ロック</string>
-    <string name="outfit_slot_unlock">ロック解除</string>
-    <string name="outfit_slot_remove">削除</string>
-    <string name="outfit_slot_add">アイテムを追加</string>
-    <string name="outfit_generate_with_ai">AIで生成</string>
-    <string name="outfit_discard_changes_title">変更を破棄しますか?</string>
-    <string name="outfit_discard_changes_body">保存されていない変更は失われます。</string>
-    <string name="outfit_discard_changes_confirm">破棄</string>
-    <string name="outfit_save_dialog_title">コーデを保存</string>
-    <string name="outfit_save_dialog_name">名前</string>
-    <string name="outfit_save_dialog_description">説明</string>
-    <string name="outfit_save_dialog_tags">タグ</string>
-    <string name="outfit_save_dialog_confirm">保存</string>
     <string name="outfit_mode_view">表示</string>
     <string name="outfit_mode_edit">編集</string>
-    <string name="outfit_pick_category">カテゴリーを選択</string>
 
     <!-- 旅行 -->
     <string name="travel_title">旅行用パッキングリスト</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">アイテムを移動できませんでした</string>
 
     <!-- カレンダー -->
-    <string name="calendar_day_mo">月</string>
-    <string name="calendar_day_tu">火</string>
-    <string name="calendar_day_we">水</string>
-    <string name="calendar_day_th">木</string>
-    <string name="calendar_day_fr">金</string>
-    <string name="calendar_day_sa">土</string>
-    <string name="calendar_day_su">日</string>
-    <string name="calendar_stats_styles">最も着たコーデ</string>
-    <string name="calendar_stats_items">最も着たアイテム</string>
-    <string name="calendar_empty">まだ着用履歴がありません</string>
-    <string name="calendar_empty_hint">コーデタブからコーデを着用して記録を開始しましょう</string>
-    <string name="calendar_wear_again">今日もう一度着る</string>
 
     <!-- ギャップアナライザー -->
     <string name="gap_description">既存のクローゼットから最も多くの新しいコーデの組み合わせを生み出す3つの不足アイテムを見つけます。</string>
@@ -383,7 +310,6 @@
     <!-- クレジット / マネージドモード -->
     <!-- AI オーバーレイ -->
     <string name="ai_analyzing_wardrobe">クローゼットを分析中…</string>
-    <string name="ai_suggesting_style">コーデを提案中…</string>
     <string name="ai_composing_outfit">コーデを作成中…</string>
 
     <!-- フォアグラウンドサービスの通知 -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">オフライン中 — 閲覧専用モード</string>
 
     <!-- 試着 -->
-    <string name="tryon_fab">私に試着</string>
     <string name="tryon_section_title">試着用写真</string>
     <string name="tryon_section_desc">正面、横、背面の全身写真をアップロードしてください。アプリはこれらをコーデやアイテムを試着した際のプレビュー生成に参照します。写真はあなた自身の Drive に保存されます。</string>
     <string name="tryon_add_photo">%1$s の写真を追加</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">独自の API キーを作成したくないユーザー向けに、コインベースのクレジットシステムを提供しています。クレジットはクレジットタブで購入でき、上記のレートでAIアクションごとに消費されます。このモードはサーバー側のプロキシ経由でリクエストを送ります。</string>
 
     <!-- 統合コーデコンポーザー -->
-    <string name="composer_title">コーデを作成</string>
     <string name="composer_discard_title">コーデを破棄しますか?</string>
     <string name="composer_discard_message">選択内容は失われます。</string>
     <string name="composer_discard_confirm">破棄</string>
-    <string name="composer_header_subtitle">5レイヤー中 %1$d · タップで入れ替え</string>
     <string name="composer_fill_missing">不足を埋める</string>
     <string name="composer_see_all_count">すべて %1$d</string>
     <string name="composer_layer_picked_count">%1$d 件選択中</string>
-    <string name="composer_weather_title">天気</string>
-    <string name="composer_save">保存</string>
     <string name="composer_section_goal">どんな場面ですか?</string>
-    <string name="composer_goal_placeholder">例: リスボンでのディナー、暖かい夜</string>
     <string name="composer_goal_generate">生成</string>
     <string name="composer_advanced">詳細オプション</string>
     <string name="composer_chip_work">仕事</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">デート</string>
     <string name="composer_section_quick_start">クイックスタート</string>
     <string name="composer_section_items">アイテム</string>
-    <string name="composer_section_weather">天気</string>
-    <string name="composer_section_vibe">スタイルの雰囲気</string>
     <string name="composer_section_targets">構成</string>
     <string name="composer_targets_hint">各レイヤーに含める数を設定してください。0 にすると AI が決定します。</string>
     <string name="composer_tags_optional">タグ(任意)</string>
     <string name="composer_section_name">名前と説明</string>
     <string name="composer_section_ai">AI で強化</string>
-    <string name="composer_weather_auto">現在</string>
-    <string name="composer_weather_manual">手動</string>
-    <string name="composer_weather_unknown">天気情報なし</string>
-    <string name="composer_weather_season">季節</string>
-    <string name="composer_weather_temp">気温</string>
-    <string name="composer_weather_precip">降水</string>
-    <string name="composer_season_spring">春</string>
-    <string name="composer_season_summer">夏</string>
-    <string name="composer_season_fall">秋</string>
-    <string name="composer_season_winter">冬</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">なし</string>
-    <string name="composer_precip_light">小雨</string>
-    <string name="composer_precip_heavy">大雨</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">ベーストップ</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">AI に何を変更したいか、何を目指すか伝えてください…</string>
     <string name="composer_feedback_history">%1$d 件の以前のリクエストをコンテキストに保持</string>
     <string name="composer_enhance">AI で強化</string>
-    <string name="composer_enhancing">Gemini に問い合わせ中…</string>
     <string name="composer_picked_count">%1$d 件選択中</string>
     <string name="composer_add_selected">選択を追加</string>
     <string name="composer_factors_label">使用中</string>
-    <string name="composer_factor_weather_auto">リアルタイム天気</string>
     <string name="composer_factor_weather_manual">手動天気</string>
     <string name="composer_factor_vibes">%1$d 雰囲気</string>
     <string name="composer_factor_items">%1$d アイテム</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">これらのアイテムを使う %d 件のコーデも削除</string>
     <string name="wardrobe_delete_cascade_tryons">これらのアイテムを使った %d 件の試着も削除</string>
-    <string name="outfits_broken_banner">%d 件のコーデが、ワードローブにないアイテムを使っています。</string>
-    <string name="outfits_broken_review">確認</string>
-    <string name="outfits_broken_delete_title">不完全なコーデを削除しますか？</string>
-    <string name="outfits_broken_delete_text">これらの %d 件のコーデは、ワードローブにないアイテムを参照しており、完全に削除されます:</string>
-    <string name="outfits_broken_more">他 %d 件</string>
-    <string name="insights_items_removed">ワードローブにないアイテム</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">あなた</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">閉じる</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">お気に入り</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">実際に着た服やお気に入りから学びます。</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">メンテナンス</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">その他のオプション</string>
-    <string name="calendar_move_to_day">別の日に移動</string>
-    <string name="calendar_copy_to_day">別の日にコピー</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">コーディネートを移動する日をタップ</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">コーディネートをコピーする日をタップ</string>
     <string name="calendar_mode_move">移動</string>
     <string name="calendar_mode_copy">コピー</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">この日から削除</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">着用</string>
-    <string name="outfits_favorite">お気に入り</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">仕上げ中…</string>
     <string name="wardrobe_sync_details">詳細を読み込み中: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">仕上げ中…</string>
-    <string name="outfit_saving">コーディネートを保存中…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">旅行フォルダの準備ができていません。</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">コーディネートをカレンダーに追加</string>
-    <string name="calendar_add_pick">コーディネートを選択</string>
-    <string name="calendar_add_empty">追加できるコーディネートがありません</string>
     <string name="calendar_pick_source_prompt">コーディネートのある日をタップして選択</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">カレンダーからコーディネートを削除</string>
     <string name="calendar_delete_prompt">その日のコーディネートを削除するには日付をタップ</string>
-    <string name="calendar_delete_confirm_title">コーディネートを削除しますか？</string>
-    <string name="calendar_delete_confirm_msg">%1$sに着用したコーディネートをすべて削除しますか？</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">%1$sにコーディネートを追加</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">新しいコーデ</string>
     <string name="fab_wardrobe_add">アイテム追加</string>
-    <string name="fab_calendar_log">コーデを記録</string>
     <string name="sel_swap">入れ替え</string>
-    <string name="sel_move">移動</string>
-    <string name="sel_combine">組み合わせ</string>
-    <string name="sel_love">お気に入り</string>
-    <string name="sel_copy_to_day">コピー</string>
-    <string name="sel_remove">削除</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">「%1$s」を着る日をタップ</string>
-    <string name="calendar_done_wear">%1$s に記録しました</string>
-    <string name="calendar_done_move">%1$s に移動しました</string>
-    <string name="calendar_done_copy">%1$s にコピーしました</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">ウェブサイト</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">メールアプリが見つかりません。%1$s まで手動でメールしてください。</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">選択した %1$d 日間に着用したすべてのコーディネートを削除しますか？</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">コーデを追加</string>
-    <string name="calendar_today">今日</string>
 </resources>

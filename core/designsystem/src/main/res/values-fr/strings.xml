@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Échec de l\'envoi : %1$s</string>
     <string name="error_original_unavailable">Original non disponible</string>
     <string name="action_deselect_all">Tout désélectionner</string>
+    <string name="action_save">Enregistrer</string>
+    <string name="nav_styles">Tenues</string>
+    <string name="sel_move">Déplacer</string>
+    <string name="tryon_outfit_picker_title">Choisir une tenue</string>
+    <string name="tryon_outfit_picker_empty">Aucune tenue enregistrée. Crées-en une dans l\'onglet Tenues pour l\'utiliser ici.</string>
 </resources>

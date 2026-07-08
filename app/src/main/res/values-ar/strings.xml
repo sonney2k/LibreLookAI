@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">الأزياء</string>
     <string name="nav_wardrobe">خزانة الملابس</string>
     <string name="nav_shopping">التسوق</string>
     <string name="nav_travel">السفر</string>
     <string name="nav_settings">الإعدادات</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">التقويم</string>
     <string name="insights_tab_wardrobe_stats">إحصائيات الخزانة</string>
-    <string name="insights_tab_calendar_stats">إحصائيات التقويم</string>
     <string name="insights_tab_costs">التكاليف</string>
     <string name="costs_count_items">الأصناف</string>
     <string name="costs_count_outfits">الأطقم</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">التجارب</string>
 
     <!-- Common actions -->
-    <string name="action_save">حفظ</string>
     <string name="action_saving">جاري الحفظ…</string>
     <string name="cd_ai_suggestion">اقتراح ذكاء اصطناعي</string>
-    <string name="cd_refine">تحسين</string>
     <string name="filter_location">الموقع</string>
     <string name="wardrobe_processing_photos">جاري معالجة %1$d صورة…</string>
     <string name="wardrobe_progress_uploading">جاري رفع الصورة…</string>
@@ -250,28 +245,12 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">اضغط على + لإنشاء طقم من خزانة ملابسك</string>
-    <string name="outfits_sort_most_worn">الأكثر ارتداءً</string>
     <string name="outfits_create_manual">إنشاء طقم يدويًا</string>
-    <string name="outfits_suggest">اقتراح طقم موجود</string>
-    <string name="prediction_setup_title">البحث بالذكاء الاصطناعي</string>
-    <string name="prediction_setup_find">بحث</string>
-    <string name="prediction_setup_title_compose">إنشاء بالذكاء الاصطناعي</string>
-    <string name="prediction_setup_create">إنشاء</string>
-    <string name="prediction_setup_suggestions">اقتراحات</string>
     <string name="prediction_setup_considerations">اعتبر في هذه الجلسة</string>
-    <string name="prediction_setup_weather_pick_day">اختر يومًا</string>
-    <string name="prediction_setup_weather_today">اليوم</string>
-    <string name="prediction_setup_weather_tomorrow">غدًا</string>
-    <string name="composer_mode_fullscreen">شاشة كاملة</string>
-    <string name="composer_empty_slot_ai_hint">سيملأ الذكاء الاصطناعي الخانات الفارغة</string>
-    <string name="outfit_save_dialog_tag_suggestions">الوسوم الموجودة</string>
     <string name="outfits_compose">تكوين طقم جديد</string>
     <string name="outfits_thinking">جاري التفكير…</string>
     <string name="outfits_suggesting">جاري اقتراح طقم…</string>
     <string name="outfits_composing">جاري تكوين طقم…</string>
-    <string name="outfits_delete_title">حذف الطقم؟</string>
-    <string name="outfits_delete_text">سيتم حذف \"%s\" نهائيًا.</string>
     <string name="outfits_items_away">%d صنف(أصناف) في موقع آخر</string>
     <string name="outfits_suggested_title">مقترح لليوم</string>
     <string name="outfits_composed_title">تم تكوينه لك</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">اسم الطقم</string>
     <string name="outfits_description_placeholder">الوصف (اختياري)</string>
     <string name="outfits_create_this">إنشاء هذا الطقم</string>
-    <string name="outfits_refine_label">تحسين بالذكاء الاصطناعي</string>
-    <string name="outfits_refine_custom">تعليق مخصص…</string>
-    <string name="outfits_refine_casual">أكثر كاجوال</string>
-    <string name="outfits_refine_formal">أكثر رسمية</string>
-    <string name="outfits_refine_diff_colors">ألوان مختلفة</string>
-    <string name="outfits_refine_warmer">ملابس أدفأ</string>
-    <string name="outfits_refine_lighter">ملابس أخف</string>
-    <string name="outfits_refine_trendy">أكثر عصرية (تريندي)</string>
-    <string name="outfits_refine_simpler">أبسط</string>
-    <string name="outfits_refine_bold">أكثر جرأة</string>
     <string name="outfits_items_label">أصناف الطقم</string>
     <string name="outfits_add_item">إضافة صنف</string>
-    <string name="outfits_tags_label">الوسوم</string>
-    <string name="outfits_prediction_prev">الاقتراح السابق</string>
-    <string name="outfits_prediction_next">الاقتراح التالي</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">استخدام هذا الطقم</string>
-    <string name="outfits_suggest_tags">اقتراح وسوم بالذكاء الاصطناعي</string>
-    <string name="outfits_suggest_tags_title">وسوم مقترحة</string>
-    <string name="outfits_suggest_tags_loading">جاري اقتراح الوسوم…</string>
-    <string name="outfits_suggest_tags_empty">لا توجد وسوم جديدة مقترحة.</string>
-    <string name="outfits_suggest_tags_apply">إضافة المختار</string>
-    <string name="outfits_suggest_tags_hint">اضغط على الوسوم للتبديل. سيتم إضافة الوسوم المختارة لهذا الطقم.</string>
     <string name="outfits_swap_item_for">تبديل: %s</string>
     <string name="outfits_suggest_alternatives">اقتراح 10 بدائل</string>
     <string name="outfits_select_item">اختيار</string>
-    <string name="outfits_saved_wear_today">تم حفظ الطقم! هل ترتديه اليوم؟</string>
-    <string name="outfits_selected_count">تم اختيار %d</string>
-    <string name="outfits_select_all_count">تحديد الكل %d</string>
-    <string name="outfits_delete_selected_title">حذف الأطقم؟</string>
-    <string name="outfits_delete_selected_text">سيتم حذف %d طقم نهائيًا.</string>
     <string name="outfits_combine">دمج بالذكاء الاصطناعي</string>
-    <string name="outfit_slot_lock">قفل</string>
-    <string name="outfit_slot_unlock">إلغاء القفل</string>
-    <string name="outfit_slot_remove">إزالة</string>
-    <string name="outfit_slot_add">إضافة صنف</string>
-    <string name="outfit_generate_with_ai">توليد بالذكاء الاصطناعي</string>
-    <string name="outfit_discard_changes_title">تجاهل التغييرات؟</string>
-    <string name="outfit_discard_changes_body">ستفقد تغييراتك غير المحفوظة.</string>
-    <string name="outfit_discard_changes_confirm">تجاهل</string>
-    <string name="outfit_save_dialog_title">حفظ الطقم</string>
-    <string name="outfit_save_dialog_name">الاسم</string>
-    <string name="outfit_save_dialog_description">الوصف</string>
-    <string name="outfit_save_dialog_tags">الوسوم</string>
-    <string name="outfit_save_dialog_confirm">حفظ</string>
     <string name="outfit_mode_view">عرض</string>
     <string name="outfit_mode_edit">تعديل</string>
-    <string name="outfit_pick_category">اختر فئة</string>
 
     <!-- Travel -->
     <string name="travel_title">قائمة توضيب السفر</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">تعذر نقل الأصناف</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">اث</string>
-    <string name="calendar_day_tu">ثلا</string>
-    <string name="calendar_day_we">أر</string>
-    <string name="calendar_day_th">خمي</string>
-    <string name="calendar_day_fr">جم</string>
-    <string name="calendar_day_sa">سب</string>
-    <string name="calendar_day_su">أح</string>
-    <string name="calendar_stats_styles">الأطقم الأكثر ارتداءً</string>
-    <string name="calendar_stats_items">الأصناف الأكثر ارتداءً</string>
-    <string name="calendar_empty">لا يوجد سجل للأطقم بعد</string>
-    <string name="calendar_empty_hint">ارتدِ طقمًا من تبويب الأطقم لبدء التتبع</string>
-    <string name="calendar_wear_again">ارتداء مرة أخرى اليوم</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">اكتشف القطع الثلاث المفقودة التي ستفتح أكبر عدد من تنسيقات الأطقم الجديدة من خزانة ملابسك الحالية.</string>
@@ -383,7 +310,6 @@
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">جاري تحليل خزانة ملابسك…</string>
-    <string name="ai_suggesting_style">جاري اقتراح طقم…</string>
     <string name="ai_composing_outfit">جاري تكوين طقم…</string>
 
     <!-- Foreground service notification -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">أنت غير متصل بالإنترنت — وضع العرض فقط</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">تجربة عليّ</string>
     <string name="tryon_section_title">صور التجربة</string>
     <string name="tryon_section_desc">ارفع صورًا لكامل الجسم من الأمام والجانب والخلف. يستخدم التطبيق هذه الصور كمرجع عند توليد معاينة تجربة لطقم أو صنف من الخزانة عليك. تبقى الصور في Drive الخاص بك.</string>
     <string name="tryon_add_photo">إضافة صورة %1$s</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">بالنسبة للمستخدمين الذين يفضلون عدم إنشاء مفتاح API خاص بهم، يقدم التطبيق نظام رصيد قائم على العملات. يمكن شراء الرصيد من تبويب الرصيد ويتم استهلاكه لكل إجراء ذكاء اصطناعي بالمعدلات المذكورة أعلاه. يوجه هذا الوضع الطلبات عبر بروكسي من جانب الخادم.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">إنشاء طقم</string>
     <string name="composer_discard_title">تجاهل الطقم؟</string>
     <string name="composer_discard_message">ستفقد اختياراتك.</string>
     <string name="composer_discard_confirm">تجاهل</string>
-    <string name="composer_header_subtitle">%1$d من 5 طبقات · اضغط للتبديل</string>
     <string name="composer_fill_missing">ملء المفقود</string>
     <string name="composer_see_all_count">الكل %1$d</string>
     <string name="composer_layer_picked_count">تم اختيار %1$d</string>
-    <string name="composer_weather_title">الطقس</string>
-    <string name="composer_save">حفظ</string>
     <string name="composer_section_goal">ما هي المناسبة؟</string>
-    <string name="composer_goal_placeholder">مثلاً: عشاء في لشبونة، أمسية دافئة</string>
     <string name="composer_goal_generate">توليد</string>
     <string name="composer_advanced">خيارات متقدمة</string>
     <string name="composer_chip_work">عمل</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">موعد</string>
     <string name="composer_section_quick_start">بداية سريعة</string>
     <string name="composer_section_items">الأصناف</string>
-    <string name="composer_section_weather">الطقس</string>
-    <string name="composer_section_vibe">جو الستايل</string>
     <string name="composer_section_targets">التكوين</string>
     <string name="composer_targets_hint">حدد عدد كل طبقة لتضمينها. اترك القيمة 0 ليدع الذكاء الاصطناعي يقرر.</string>
     <string name="composer_tags_optional">الوسوم (اختياري)</string>
     <string name="composer_section_name">الاسم والوصف</string>
     <string name="composer_section_ai">تحسين بالذكاء الاصطناعي</string>
-    <string name="composer_weather_auto">الحالي</string>
-    <string name="composer_weather_manual">يدوي</string>
-    <string name="composer_weather_unknown">الطقس غير متوفر</string>
-    <string name="composer_weather_season">الموسم</string>
-    <string name="composer_weather_temp">درجة الحرارة</string>
-    <string name="composer_weather_precip">الهطول</string>
-    <string name="composer_season_spring">الربيع</string>
-    <string name="composer_season_summer">الصيف</string>
-    <string name="composer_season_fall">الخريف</string>
-    <string name="composer_season_winter">الشتاء</string>
-    <string name="composer_temp_value">%1$d°م</string>
-    <string name="composer_precip_none">لا يوجد</string>
-    <string name="composer_precip_light">خفيف</string>
-    <string name="composer_precip_heavy">غزير</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">الطبقة العلوية الأساسية</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">أخبر الذكاء الاصطناعي بما يجب تغييره أو استهدافه…</string>
     <string name="composer_feedback_history">تم الاحتفاظ بـ %1$d طلب سابق في السياق</string>
     <string name="composer_enhance">تحسين بالذكاء الاصطناعي</string>
-    <string name="composer_enhancing">جاري سؤال Gemini…</string>
     <string name="composer_picked_count">تم اختيار %1$d</string>
     <string name="composer_add_selected">إضافة المختار</string>
     <string name="composer_factors_label">استخدام</string>
-    <string name="composer_factor_weather_auto">الطقس المباشر</string>
     <string name="composer_factor_weather_manual">الطقس اليدوي</string>
     <string name="composer_factor_vibes">%1$d أجواء</string>
     <string name="composer_factor_items">%1$d أصناف</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">احذف أيضًا %d إطلالة تستخدم هذه العناصر</string>
     <string name="wardrobe_delete_cascade_tryons">احذف أيضًا %d تجربة تحتوي على هذه العناصر</string>
-    <string name="outfits_broken_banner">%d إطلالة تستخدم عناصر لم تعد موجودة في خزانتك.</string>
-    <string name="outfits_broken_review">مراجعة</string>
-    <string name="outfits_broken_delete_title">حذف الإطلالات غير المكتملة؟</string>
-    <string name="outfits_broken_delete_text">تشير هذه الإطلالات الـ %d إلى عناصر لم تعد موجودة في خزانتك وسيتم حذفها نهائيًا:</string>
-    <string name="outfits_broken_more">+%d أخرى</string>
-    <string name="insights_items_removed">عناصر لم تعد في الخزانة</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">أنت</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">إغلاق</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">أعجبني</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">تعلّم مما ترتديه فعلاً وما أعجبك.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">الصيانة</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">خيارات أخرى</string>
-    <string name="calendar_move_to_day">النقل إلى يوم آخر</string>
-    <string name="calendar_copy_to_day">النسخ إلى يوم آخر</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">انقر على يوم لنقل الزي</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">انقر على يوم لنسخ الزي</string>
     <string name="calendar_mode_move">نقل</string>
     <string name="calendar_mode_copy">نسخ</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">إزالة من هذا اليوم</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">ارتداء</string>
-    <string name="outfits_favorite">المفضلة</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">جارٍ الإنهاء…</string>
     <string name="wardrobe_sync_details">تحميل التفاصيل: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">جارٍ الإنهاء…</string>
-    <string name="outfit_saving">جارٍ حفظ الإطلالة…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">مجلد الرحلات غير جاهز.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">أضف الزي إلى التقويم</string>
-    <string name="calendar_add_pick">اختر زيًا</string>
-    <string name="calendar_add_empty">لا توجد أزياء لإضافتها بعد</string>
     <string name="calendar_pick_source_prompt">اضغط على يوم يحتوي على أزياء لتحديده</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">إزالة الزي من التقويم</string>
     <string name="calendar_delete_prompt">اضغط على يوم لإزالة أزيائه</string>
-    <string name="calendar_delete_confirm_title">إزالة الأزياء؟</string>
-    <string name="calendar_delete_confirm_msg">هل تريد إزالة جميع الأزياء المرتداة في %1$s؟</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">أضف زيًا إلى %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">إطلالة جديدة</string>
     <string name="fab_wardrobe_add">إضافة قطعة</string>
-    <string name="fab_calendar_log">تسجيل إطلالة</string>
     <string name="sel_swap">استبدال</string>
-    <string name="sel_move">نقل</string>
-    <string name="sel_combine">دمج</string>
-    <string name="sel_love">إعجاب</string>
-    <string name="sel_copy_to_day">نسخ</string>
-    <string name="sel_remove">إزالة</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">انقر على يوم لارتداء ”%1$s“</string>
-    <string name="calendar_done_wear">تم التسجيل في %1$s</string>
-    <string name="calendar_done_move">تم النقل إلى %1$s</string>
-    <string name="calendar_done_copy">تم النسخ إلى %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">الموقع الإلكتروني</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">لم يتم العثور على تطبيق بريد إلكتروني. يرجى مراسلتنا يدويًا على %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">هل تريد إزالة جميع الإطلالات التي تم ارتداؤها في الأيام المحددة (%1$d)؟</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">إضافة إطلالة</string>
-    <string name="calendar_today">اليوم</string>
 </resources>

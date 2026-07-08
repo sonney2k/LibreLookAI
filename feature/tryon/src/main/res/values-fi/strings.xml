@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Käytetyt vaatteet</string>
     <string name="tryon_history_title">Aiemmat sovitukset</string>
     <string name="tryon_missing_photos_items">Kuvia tai vaatteita puuttuu</string>
-    <string name="tryon_outfit_picker_empty">Ei vielä tallennettuja asuja. Luo sellainen Asut-välilehdellä käyttääksesi sitä täällä.</string>
-    <string name="tryon_outfit_picker_title">Valitse asu</string>
     <string name="tryon_save_to_drive">Tallenna</string>
     <string name="tryon_saved_to_drive">Tallennettu</string>
     <string name="tryon_saving">Tallennetaan…</string>

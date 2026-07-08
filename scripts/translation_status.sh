@@ -25,6 +25,7 @@ RES_DIRS=(
     "$REPO_ROOT/feature/tryon/src/main/res"
     "$REPO_ROOT/feature/travel/src/main/res"
     "$REPO_ROOT/feature/shopping/src/main/res"
+    "$REPO_ROOT/feature/outfit/src/main/res"
 )
 
 for d in "${RES_DIRS[@]}"; do

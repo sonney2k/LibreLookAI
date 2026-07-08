@@ -96,7 +96,7 @@ fun ClosetEditDialog(
                             TextButton(
                                 enabled = name.isNotBlank(),
                                 onClick = { onSave(name.trim(), city.trim()); onDismiss() },
-                            ) { Text(stringResource(R.string.action_save)) }
+                            ) { Text(stringResource(DsR.string.action_save)) }
                         }
                     }
                 }

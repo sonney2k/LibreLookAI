@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Η μεταφόρτωση απέτυχε: %1$s</string>
     <string name="error_original_unavailable">Το πρωτότυπο δεν είναι διαθέσιμο</string>
     <string name="action_deselect_all">Αποεπιλογή όλων</string>
+    <string name="action_save">Αποθήκευση</string>
+    <string name="nav_styles">Σύνολα</string>
+    <string name="sel_move">Μετακίνηση</string>
+    <string name="tryon_outfit_picker_title">Επιλέξτε σύνολο</string>
+    <string name="tryon_outfit_picker_empty">Δεν υπάρχουν σύνολα ακόμα.</string>
 </resources>

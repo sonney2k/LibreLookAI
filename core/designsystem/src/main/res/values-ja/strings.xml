@@ -225,4 +225,9 @@
     <string name="error_upload_failed">アップロードに失敗しました: %1$s</string>
     <string name="error_original_unavailable">オリジナルを利用できません</string>
     <string name="action_deselect_all">選択解除</string>
+    <string name="action_save">保存</string>
+    <string name="nav_styles">コーデ</string>
+    <string name="sel_move">移動</string>
+    <string name="tryon_outfit_picker_title">コーデを選択</string>
+    <string name="tryon_outfit_picker_empty">保存されたコーデはまだありません。コーデタブで作成してここで使用しましょう。</string>
 </resources>

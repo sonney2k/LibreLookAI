@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Încărcarea a eșuat: %1$s</string>
     <string name="error_original_unavailable">Originalul nu este disponibil</string>
     <string name="action_deselect_all">Deselectează tot</string>
+    <string name="action_save">Salvează</string>
+    <string name="nav_styles">Ținute</string>
+    <string name="sel_move">Mută</string>
+    <string name="tryon_outfit_picker_title">Alege o ținută</string>
+    <string name="tryon_outfit_picker_empty">Nicio ținută salvată încă. Creează una în tabul Ținute pentru a o folosi aici.</string>
 </resources>

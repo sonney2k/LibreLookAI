@@ -164,6 +164,7 @@ dependencies {
     implementation(project(":feature:tryon"))
     implementation(project(":feature:travel"))
     implementation(project(":feature:shopping"))
+    implementation(project(":feature:outfit"))
     implementation(project(":core:database"))
     implementation(project(":core:ml"))
     implementation(project(":core:sync"))

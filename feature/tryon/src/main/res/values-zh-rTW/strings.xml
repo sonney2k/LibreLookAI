@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">穿著的單品</string>
     <string name="tryon_history_title">過往試穿</string>
     <string name="tryon_missing_photos_items">缺少照片或單品</string>
-    <string name="tryon_outfit_picker_empty">尚無已儲存的穿搭。請先在「穿搭」頁面建立。</string>
-    <string name="tryon_outfit_picker_title">選擇穿搭</string>
     <string name="tryon_save_to_drive">儲存</string>
     <string name="tryon_saved_to_drive">已儲存</string>
     <string name="tryon_saving">儲存中…</string>

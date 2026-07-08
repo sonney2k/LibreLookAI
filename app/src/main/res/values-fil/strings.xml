@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Wardrobe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Biyahe</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">Kalendaryo</string>
     <string name="insights_tab_wardrobe_stats">Stats ng Wardrobe</string>
-    <string name="insights_tab_calendar_stats">Stats ng Kalendaryo</string>
     <string name="insights_tab_costs">Gastos</string>
     <string name="costs_count_items">Mga item</string>
     <string name="costs_count_outfits">Mga outfit</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Try-Ons</string>
 
     <!-- Common actions -->
-    <string name="action_save">I-save</string>
     <string name="action_saving">Sina-save…</string>
     <string name="cd_ai_suggestion">Mungkahi ng AI</string>
-    <string name="cd_refine">Pinuhin</string>
     <string name="filter_location">Lokasyon</string>
     <string name="wardrobe_processing_photos">Pinoproseso ang %1$d na larawan…</string>
     <string name="wardrobe_progress_uploading">Ina-upload ang larawan…</string>
@@ -250,28 +245,12 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">I-tap ang + para bumuo ng outfit mula sa iyong wardrobe</string>
-    <string name="outfits_sort_most_worn">Pinakamadalas isuot</string>
     <string name="outfits_create_manual">Gumawa ng outfit manually</string>
-    <string name="outfits_suggest">Magmungkahi ng umiiral na outfit</string>
-    <string name="prediction_setup_title">Hanapin gamit ang AI</string>
-    <string name="prediction_setup_find">Hanapin</string>
-    <string name="prediction_setup_title_compose">Gumawa gamit ang AI</string>
-    <string name="prediction_setup_create">Gumawa</string>
-    <string name="prediction_setup_suggestions">Mga mungkahi</string>
     <string name="prediction_setup_considerations">Isaalang-alang sa run na ito</string>
-    <string name="prediction_setup_weather_pick_day">Pumili ng araw</string>
-    <string name="prediction_setup_weather_today">Ngayon</string>
-    <string name="prediction_setup_weather_tomorrow">Bukas</string>
-    <string name="composer_mode_fullscreen">Fullscreen</string>
-    <string name="composer_empty_slot_ai_hint">Pupunan ng AI ang mga walang lamang slot</string>
-    <string name="outfit_save_dialog_tag_suggestions">Mga umiiral na tag</string>
     <string name="outfits_compose">Bumuo ng bagong outfit</string>
     <string name="outfits_thinking">Nag-iisip…</string>
     <string name="outfits_suggesting">Nagmumungkahi ng outfit…</string>
     <string name="outfits_composing">Bumubuo ng outfit…</string>
-    <string name="outfits_delete_title">Tanggalin ang outfit?</string>
-    <string name="outfits_delete_text">\"%s\" ay permanenteng aalisin.</string>
     <string name="outfits_items_away">%d item sa ibang lokasyon</string>
     <string name="outfits_suggested_title">Iminumungkahi para ngayong araw</string>
     <string name="outfits_composed_title">Binuo para sa iyo</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Pangalan ng outfit</string>
     <string name="outfits_description_placeholder">Paglalarawan (opsyonal)</string>
     <string name="outfits_create_this">Gawin ang outfit na ito</string>
-    <string name="outfits_refine_label">Pinuhin gamit ang AI</string>
-    <string name="outfits_refine_custom">Custom na feedback…</string>
-    <string name="outfits_refine_casual">Mas casual</string>
-    <string name="outfits_refine_formal">Mas pormal</string>
-    <string name="outfits_refine_diff_colors">Ibang kulay</string>
-    <string name="outfits_refine_warmer">Mas mainit na damit</string>
-    <string name="outfits_refine_lighter">Mas magaan na damit</string>
-    <string name="outfits_refine_trendy">Mas trendy</string>
-    <string name="outfits_refine_simpler">Mas simple</string>
-    <string name="outfits_refine_bold">Mas bold</string>
     <string name="outfits_items_label">Mga item ng outfit</string>
     <string name="outfits_add_item">Magdagdag ng item</string>
-    <string name="outfits_tags_label">Mga tag</string>
-    <string name="outfits_prediction_prev">Nakaraang mungkahi</string>
-    <string name="outfits_prediction_next">Susunod na mungkahi</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Gamitin ang outfit na ito</string>
-    <string name="outfits_suggest_tags">Magmungkahi ng mga tag gamit ang AI</string>
-    <string name="outfits_suggest_tags_title">Mga iminumungkahing tag</string>
-    <string name="outfits_suggest_tags_loading">Nagmumungkahi ng mga tag…</string>
-    <string name="outfits_suggest_tags_empty">Walang bagong tag na iminumungkahi.</string>
-    <string name="outfits_suggest_tags_apply">Idagdag ang napili</string>
-    <string name="outfits_suggest_tags_hint">I-tap ang mga tag para i-toggle. Ang mga napiling tag ay idaragdag sa outfit na ito.</string>
     <string name="outfits_swap_item_for">Palitan: %s</string>
     <string name="outfits_suggest_alternatives">Magmungkahi ng 10 alternatibo</string>
     <string name="outfits_select_item">Piliin</string>
-    <string name="outfits_saved_wear_today">Na-save ang outfit! Isuot ngayon?</string>
-    <string name="outfits_selected_count">%d napili</string>
-    <string name="outfits_select_all_count">Piliin lahat %d</string>
-    <string name="outfits_delete_selected_title">Tanggalin ang mga outfit?</string>
-    <string name="outfits_delete_selected_text">%d outfit ang permanenteng aalisin.</string>
     <string name="outfits_combine">Pagsamahin gamit ang AI</string>
-    <string name="outfit_slot_lock">I-lock</string>
-    <string name="outfit_slot_unlock">I-unlock</string>
-    <string name="outfit_slot_remove">Alisin</string>
-    <string name="outfit_slot_add">Magdagdag ng item</string>
-    <string name="outfit_generate_with_ai">Bumuo gamit ang AI</string>
-    <string name="outfit_discard_changes_title">Itapon ang mga pagbabago?</string>
-    <string name="outfit_discard_changes_body">Mawawala ang iyong hindi na-save na mga pagbabago.</string>
-    <string name="outfit_discard_changes_confirm">Itapon</string>
-    <string name="outfit_save_dialog_title">I-save ang outfit</string>
-    <string name="outfit_save_dialog_name">Pangalan</string>
-    <string name="outfit_save_dialog_description">Paglalarawan</string>
-    <string name="outfit_save_dialog_tags">Mga tag</string>
-    <string name="outfit_save_dialog_confirm">I-save</string>
     <string name="outfit_mode_view">Tingnan</string>
     <string name="outfit_mode_edit">I-edit</string>
-    <string name="outfit_pick_category">Pumili ng kategorya</string>
 
     <!-- Travel -->
     <string name="travel_title">Travel Packing List</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Hindi mailipat ang mga item</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">Lu</string>
-    <string name="calendar_day_tu">Ma</string>
-    <string name="calendar_day_we">Mi</string>
-    <string name="calendar_day_th">Hu</string>
-    <string name="calendar_day_fr">Bi</string>
-    <string name="calendar_day_sa">Sa</string>
-    <string name="calendar_day_su">Li</string>
-    <string name="calendar_stats_styles">Pinakamadalas Isuot na Outfit</string>
-    <string name="calendar_stats_items">Pinakamadalas Isuot na Item</string>
-    <string name="calendar_empty">Wala pang outfit history</string>
-    <string name="calendar_empty_hint">Magsuot ng outfit mula sa Outfits tab para magsimula ng tracking</string>
-    <string name="calendar_wear_again">Isuot muli ngayon</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Tuklasin ang 3 nawawalang piraso na magbubukas ng pinakamaraming bagong kombinasyon ng outfit mula sa iyong umiiral na wardrobe.</string>
@@ -383,7 +310,6 @@
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">Sinusuri ang iyong wardrobe…</string>
-    <string name="ai_suggesting_style">Nagmumungkahi ng outfit…</string>
     <string name="ai_composing_outfit">Bumubuo ng outfit…</string>
 
     <!-- Foreground service notification -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Offline ka — view-only mode</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">Subukan sa akin</string>
     <string name="tryon_section_title">Mga try-on photo</string>
     <string name="tryon_section_desc">Mag-upload ng full-body photos mula sa harap, gilid, at likod. Gagamitin ng app ang mga ito bilang reference kapag bumubuo ng Try-on preview ng outfit o wardrobe item sa iyo. Mananatili ang mga larawan sa iyong sariling Drive.</string>
     <string name="tryon_add_photo">Magdagdag ng %1$s na larawan</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Para sa mga user na mas gustong huwag gumawa ng sarili nilang API key, nag-aalok ang app ng coin-based credit system. Maaaring bilhin ang credits sa Credits tab at gagamitin bawat AI action sa rate na nakalista sa itaas. Ang mode na ito ay nagri-route ng request sa pamamagitan ng server-side proxy.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">Gumawa ng outfit</string>
     <string name="composer_discard_title">Itapon ang outfit?</string>
     <string name="composer_discard_message">Mawawala ang iyong mga napili.</string>
     <string name="composer_discard_confirm">Itapon</string>
-    <string name="composer_header_subtitle">%1$d ng 5 layer · i-tap para palitan</string>
     <string name="composer_fill_missing">Punan ang nawawala</string>
     <string name="composer_see_all_count">Lahat %1$d</string>
     <string name="composer_layer_picked_count">%1$d napili</string>
-    <string name="composer_weather_title">Weather</string>
-    <string name="composer_save">I-save</string>
     <string name="composer_section_goal">Anong okasyon?</string>
-    <string name="composer_goal_placeholder">hal. Hapunan sa Lisbon, mainit na gabi</string>
     <string name="composer_goal_generate">Bumuo</string>
     <string name="composer_advanced">Advanced na mga opsyon</string>
     <string name="composer_chip_work">Trabaho</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Date</string>
     <string name="composer_section_quick_start">Mabilis na simula</string>
     <string name="composer_section_items">Mga item</string>
-    <string name="composer_section_weather">Weather</string>
-    <string name="composer_section_vibe">Style vibe</string>
     <string name="composer_section_targets">Komposisyon</string>
     <string name="composer_targets_hint">Itakda kung ilan ang isasama sa bawat layer. Iwanang 0 para hayaan ang AI na magpasya.</string>
     <string name="composer_tags_optional">Mga tag (opsyonal)</string>
     <string name="composer_section_name">Pangalan at paglalarawan</string>
     <string name="composer_section_ai">Pagandahin gamit ang AI</string>
-    <string name="composer_weather_auto">Kasalukuyan</string>
-    <string name="composer_weather_manual">Manu-mano</string>
-    <string name="composer_weather_unknown">Walang available na weather</string>
-    <string name="composer_weather_season">Panahon</string>
-    <string name="composer_weather_temp">Temperatura</string>
-    <string name="composer_weather_precip">Pag-ulan</string>
-    <string name="composer_season_spring">Tagsibol</string>
-    <string name="composer_season_summer">Tag-init</string>
-    <string name="composer_season_fall">Taglagas</string>
-    <string name="composer_season_winter">Taglamig</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Wala</string>
-    <string name="composer_precip_light">Magaan</string>
-    <string name="composer_precip_heavy">Malakas</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Base top</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Sabihin sa AI kung ano ang baguhin o layunin…</string>
     <string name="composer_feedback_history">%1$d nakaraang request ang nasa context</string>
     <string name="composer_enhance">Pagandahin gamit ang AI</string>
-    <string name="composer_enhancing">Itinatanong kay Gemini…</string>
     <string name="composer_picked_count">%1$d napili</string>
     <string name="composer_add_selected">Idagdag ang napili</string>
     <string name="composer_factors_label">Gumagamit ng</string>
-    <string name="composer_factor_weather_auto">Live weather</string>
     <string name="composer_factor_weather_manual">Manu-manong weather</string>
     <string name="composer_factor_vibes">%1$d vibe</string>
     <string name="composer_factor_items">%1$d item</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Tanggalin din ang %d (na) outfit na gumagamit ng mga item na ito</string>
     <string name="wardrobe_delete_cascade_tryons">Tanggalin din ang %d (na) try-on na may mga item na ito</string>
-    <string name="outfits_broken_banner">May %d outfit na gumagamit ng mga item na wala na sa iyong wardrobe.</string>
-    <string name="outfits_broken_review">Suriin</string>
-    <string name="outfits_broken_delete_title">Tanggalin ang mga kulang na outfit?</string>
-    <string name="outfits_broken_delete_text">Ang %d outfit na ito ay tumutukoy sa mga item na wala na sa iyong wardrobe at permanenteng buburahin:</string>
-    <string name="outfits_broken_more">+%d pa</string>
-    <string name="insights_items_removed">Wala na sa wardrobe ang mga item</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Ikaw</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Isara</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Gustong-gusto</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Matututo mula sa aktwal mong sinusuot at nagustuhan.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Pagpapanatili</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Higit pang mga opsyon</string>
-    <string name="calendar_move_to_day">Ilipat sa ibang araw</string>
-    <string name="calendar_copy_to_day">Kopyahin sa ibang araw</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Mag-tap ng araw para ilipat ang outfit</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Mag-tap ng araw para kopyahin ang outfit</string>
     <string name="calendar_mode_move">Ilipat</string>
     <string name="calendar_mode_copy">Kopyahin</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Alisin sa araw na ito</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Isuot</string>
-    <string name="outfits_favorite">Paborito</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Tinatapos…</string>
     <string name="wardrobe_sync_details">Naglo-load ng mga detalye: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Tinatapos…</string>
-    <string name="outfit_saving">Sine-save ang outfit…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Hindi pa handa ang folder ng mga biyahe.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Idagdag ang outfit sa kalendaryo</string>
-    <string name="calendar_add_pick">Pumili ng outfit</string>
-    <string name="calendar_add_empty">Wala pang outfit na maidaragdag</string>
     <string name="calendar_pick_source_prompt">I-tap ang araw na may mga outfit para piliin ito</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Alisin ang outfit sa kalendaryo</string>
     <string name="calendar_delete_prompt">I-tap ang araw para alisin ang mga outfit nito</string>
-    <string name="calendar_delete_confirm_title">Alisin ang mga outfit?</string>
-    <string name="calendar_delete_confirm_msg">Alisin ang lahat ng outfit na isinuot noong %1$s?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Magdagdag ng outfit sa %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Bagong outfit</string>
     <string name="fab_wardrobe_add">Magdagdag</string>
-    <string name="fab_calendar_log">I-log ang outfit</string>
     <string name="sel_swap">Palitan</string>
-    <string name="sel_move">Ilipat</string>
-    <string name="sel_combine">Pagsamahin</string>
-    <string name="sel_love">I-love</string>
-    <string name="sel_copy_to_day">Kopyahin</string>
-    <string name="sel_remove">Alisin</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Mag-tap ng araw para isuot ang “%1$s”</string>
-    <string name="calendar_done_wear">Na-log sa %1$s</string>
-    <string name="calendar_done_move">Inilipat sa %1$s</string>
-    <string name="calendar_done_copy">Kinopya sa %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Website</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Walang nakitang email app. Mag-email sa amin nang manu-mano sa %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Alisin ang lahat ng outfit na isinuot sa %1$d napiling araw?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Magdagdag ng outfit</string>
-    <string name="calendar_today">Ngayon</string>
 </resources>

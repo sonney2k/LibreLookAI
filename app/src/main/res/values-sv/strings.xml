@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigering -->
-    <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Garderob</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Resa</string>
     <string name="nav_settings">Inställningar</string>
 
     <!-- Insikter-flik -->
-    <string name="insights_tab_calendar">Kalender</string>
     <string name="insights_tab_wardrobe_stats">Garderobsstatistik</string>
-    <string name="insights_tab_calendar_stats">Kalenderstatistik</string>
     <string name="insights_tab_costs">Kostnader</string>
     <string name="costs_count_items">Plagg</string>
     <string name="costs_count_outfits">Outfits</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Provningar</string>
 
     <!-- Vanliga åtgärder -->
-    <string name="action_save">Spara</string>
     <string name="action_saving">Sparar…</string>
     <string name="cd_ai_suggestion">AI-förslag</string>
-    <string name="cd_refine">Förfina</string>
     <string name="filter_location">Plats</string>
     <string name="wardrobe_processing_photos">Bearbetar %1$d foto(n)…</string>
     <string name="wardrobe_progress_uploading">Laddar upp foto…</string>
@@ -250,28 +245,12 @@
     <!-- Taggvärdesöversättningar (lagras på engelska; visas på UI-språk) -->
     <!-- Färger -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">Tryck på + för att bygga en outfit från din garderob</string>
-    <string name="outfits_sort_most_worn">Mest burna</string>
     <string name="outfits_create_manual">Skapa outfit manuellt</string>
-    <string name="outfits_suggest">Föreslå befintlig outfit</string>
-    <string name="prediction_setup_title">Hitta med AI</string>
-    <string name="prediction_setup_find">Hitta</string>
-    <string name="prediction_setup_title_compose">Skapa med AI</string>
-    <string name="prediction_setup_create">Skapa</string>
-    <string name="prediction_setup_suggestions">Förslag</string>
     <string name="prediction_setup_considerations">Ta hänsyn till denna gång</string>
-    <string name="prediction_setup_weather_pick_day">Välj en dag</string>
-    <string name="prediction_setup_weather_today">Idag</string>
-    <string name="prediction_setup_weather_tomorrow">Imorgon</string>
-    <string name="composer_mode_fullscreen">Helskärm</string>
-    <string name="composer_empty_slot_ai_hint">AI fyller tomma platser</string>
-    <string name="outfit_save_dialog_tag_suggestions">Befintliga taggar</string>
     <string name="outfits_compose">Komponera ny outfit</string>
     <string name="outfits_thinking">Tänker…</string>
     <string name="outfits_suggesting">Föreslår outfit…</string>
     <string name="outfits_composing">Komponerar outfit…</string>
-    <string name="outfits_delete_title">Ta bort outfit?</string>
-    <string name="outfits_delete_text">\"%s\" tas bort permanent.</string>
     <string name="outfits_items_away">%d plagg på en annan plats</string>
     <string name="outfits_suggested_title">Föreslagen för idag</string>
     <string name="outfits_composed_title">Komponerad åt dig</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Outfitnamn</string>
     <string name="outfits_description_placeholder">Beskrivning (valfritt)</string>
     <string name="outfits_create_this">Skapa denna outfit</string>
-    <string name="outfits_refine_label">Förfina med AI</string>
-    <string name="outfits_refine_custom">Egen feedback…</string>
-    <string name="outfits_refine_casual">Mer avslappnad</string>
-    <string name="outfits_refine_formal">Mer formell</string>
-    <string name="outfits_refine_diff_colors">Andra färger</string>
-    <string name="outfits_refine_warmer">Varmare kläder</string>
-    <string name="outfits_refine_lighter">Lättare kläder</string>
-    <string name="outfits_refine_trendy">Trendigare</string>
-    <string name="outfits_refine_simpler">Enklare</string>
-    <string name="outfits_refine_bold">Djärvare</string>
     <string name="outfits_items_label">Outfit-plagg</string>
     <string name="outfits_add_item">Lägg till plagg</string>
-    <string name="outfits_tags_label">Taggar</string>
-    <string name="outfits_prediction_prev">Föregående förslag</string>
-    <string name="outfits_prediction_next">Nästa förslag</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Använd denna outfit</string>
-    <string name="outfits_suggest_tags">Föreslå taggar med AI</string>
-    <string name="outfits_suggest_tags_title">Föreslagna taggar</string>
-    <string name="outfits_suggest_tags_loading">Föreslår taggar…</string>
-    <string name="outfits_suggest_tags_empty">Inga nya taggar föreslagna.</string>
-    <string name="outfits_suggest_tags_apply">Lägg till markerade</string>
-    <string name="outfits_suggest_tags_hint">Tryck på taggar för att växla. Markerade taggar läggs till i denna outfit.</string>
     <string name="outfits_swap_item_for">Byt: %s</string>
     <string name="outfits_suggest_alternatives">Föreslå 10 alternativ</string>
     <string name="outfits_select_item">Välj</string>
-    <string name="outfits_saved_wear_today">Outfit sparad! Bära idag?</string>
-    <string name="outfits_selected_count">%d valda</string>
-    <string name="outfits_select_all_count">Markera alla %d</string>
-    <string name="outfits_delete_selected_title">Ta bort outfits?</string>
-    <string name="outfits_delete_selected_text">%d outfits tas bort permanent.</string>
     <string name="outfits_combine">Kombinera med AI</string>
-    <string name="outfit_slot_lock">Lås</string>
-    <string name="outfit_slot_unlock">Lås upp</string>
-    <string name="outfit_slot_remove">Ta bort</string>
-    <string name="outfit_slot_add">Lägg till plagg</string>
-    <string name="outfit_generate_with_ai">Generera med AI</string>
-    <string name="outfit_discard_changes_title">Kasta ändringar?</string>
-    <string name="outfit_discard_changes_body">Dina osparade ändringar går förlorade.</string>
-    <string name="outfit_discard_changes_confirm">Kasta</string>
-    <string name="outfit_save_dialog_title">Spara outfit</string>
-    <string name="outfit_save_dialog_name">Namn</string>
-    <string name="outfit_save_dialog_description">Beskrivning</string>
-    <string name="outfit_save_dialog_tags">Taggar</string>
-    <string name="outfit_save_dialog_confirm">Spara</string>
     <string name="outfit_mode_view">Visa</string>
     <string name="outfit_mode_edit">Redigera</string>
-    <string name="outfit_pick_category">Välj en kategori</string>
 
     <!-- Resa -->
     <string name="travel_title">Packlista för resa</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Kunde inte flytta plagg</string>
 
     <!-- Kalender -->
-    <string name="calendar_day_mo">Må</string>
-    <string name="calendar_day_tu">Ti</string>
-    <string name="calendar_day_we">On</string>
-    <string name="calendar_day_th">To</string>
-    <string name="calendar_day_fr">Fr</string>
-    <string name="calendar_day_sa">Lö</string>
-    <string name="calendar_day_su">Sö</string>
-    <string name="calendar_stats_styles">Mest burna outfits</string>
-    <string name="calendar_stats_items">Mest burna plagg</string>
-    <string name="calendar_empty">Ingen outfit-historik ännu</string>
-    <string name="calendar_empty_hint">Bär en outfit från Outfits-fliken för att börja spåra</string>
-    <string name="calendar_wear_again">Bär igen idag</string>
 
     <!-- Luckanalys -->
     <string name="gap_description">Upptäck de 3 saknade plaggen som skulle frigöra flest nya outfitkombinationer från din befintliga garderob.</string>
@@ -383,7 +310,6 @@
     <!-- Krediter / Hanterat läge -->
     <!-- AI-overlay -->
     <string name="ai_analyzing_wardrobe">Analyserar din garderob…</string>
-    <string name="ai_suggesting_style">Föreslår outfit…</string>
     <string name="ai_composing_outfit">Komponerar outfit…</string>
 
     <!-- Förgrundstjänstnotis -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Du är offline — endast visningsläge</string>
 
     <!-- Prova på mig -->
-    <string name="tryon_fab">Prova på mig</string>
     <string name="tryon_section_title">Provningsfoton</string>
     <string name="tryon_section_desc">Ladda upp helkroppsfoton framifrån, från sidan och bakifrån. Appen använder dem som referens när en provningsförhandsvisning av en outfit eller ett garderobsplagg genereras på dig. Foton stannar på din egen Drive.</string>
     <string name="tryon_add_photo">Lägg till %1$s-foto</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">För användare som föredrar att inte skapa en egen API-nyckel erbjuder appen ett myntbaserat kreditsystem. Krediter kan köpas i Krediter-fliken och förbrukas per AI-åtgärd enligt taxorna ovan. Detta läge dirigerar förfrågningar genom en serverproxy.</string>
 
     <!-- Enhetlig outfit-kompositör -->
-    <string name="composer_title">Skapa outfit</string>
     <string name="composer_discard_title">Kasta outfit?</string>
     <string name="composer_discard_message">Dina val går förlorade.</string>
     <string name="composer_discard_confirm">Kasta</string>
-    <string name="composer_header_subtitle">%1$d av 5 lager · tryck för att byta</string>
     <string name="composer_fill_missing">Fyll saknade</string>
     <string name="composer_see_all_count">Alla %1$d</string>
     <string name="composer_layer_picked_count">%1$d valda</string>
-    <string name="composer_weather_title">Väder</string>
-    <string name="composer_save">Spara</string>
     <string name="composer_section_goal">Vad är tillfället?</string>
-    <string name="composer_goal_placeholder">t.ex. Middag i Lissabon, varm kväll</string>
     <string name="composer_goal_generate">Generera</string>
     <string name="composer_advanced">Avancerade alternativ</string>
     <string name="composer_chip_work">Jobb</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Dejt</string>
     <string name="composer_section_quick_start">Snabbstart</string>
     <string name="composer_section_items">Plagg</string>
-    <string name="composer_section_weather">Väder</string>
-    <string name="composer_section_vibe">Stilkänsla</string>
     <string name="composer_section_targets">Komposition</string>
     <string name="composer_targets_hint">Ange hur många av varje lager som ska ingå. Lämna på 0 för att låta AI bestämma.</string>
     <string name="composer_tags_optional">Taggar (valfritt)</string>
     <string name="composer_section_name">Namn &amp; beskrivning</string>
     <string name="composer_section_ai">Förbättra med AI</string>
-    <string name="composer_weather_auto">Aktuellt</string>
-    <string name="composer_weather_manual">Manuellt</string>
-    <string name="composer_weather_unknown">Inget väder tillgängligt</string>
-    <string name="composer_weather_season">Säsong</string>
-    <string name="composer_weather_temp">Temperatur</string>
-    <string name="composer_weather_precip">Nederbörd</string>
-    <string name="composer_season_spring">Vår</string>
-    <string name="composer_season_summer">Sommar</string>
-    <string name="composer_season_fall">Höst</string>
-    <string name="composer_season_winter">Vinter</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Ingen</string>
-    <string name="composer_precip_light">Lätt</string>
-    <string name="composer_precip_heavy">Kraftig</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Basöverdel</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Berätta för AI vad som ska ändras eller siktas på…</string>
     <string name="composer_feedback_history">%1$d tidigare förfrågningar behållna i kontext</string>
     <string name="composer_enhance">Förbättra med AI</string>
-    <string name="composer_enhancing">Frågar Gemini…</string>
     <string name="composer_picked_count">%1$d valda</string>
     <string name="composer_add_selected">Lägg till markerade</string>
     <string name="composer_factors_label">Använder</string>
-    <string name="composer_factor_weather_auto">Liveväder</string>
     <string name="composer_factor_weather_manual">Manuellt väder</string>
     <string name="composer_factor_vibes">%1$d stämningar</string>
     <string name="composer_factor_items">%1$d plagg</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Ta även bort %d outfit(s) som använder dessa plagg</string>
     <string name="wardrobe_delete_cascade_tryons">Ta även bort %d provning(ar) med dessa plagg</string>
-    <string name="outfits_broken_banner">%d outfits använder plagg som inte längre finns i din garderob.</string>
-    <string name="outfits_broken_review">Granska</string>
-    <string name="outfits_broken_delete_title">Ta bort ofullständiga outfits?</string>
-    <string name="outfits_broken_delete_text">Dessa %d outfits hänvisar till plagg som inte längre finns i din garderob och tas bort permanent:</string>
-    <string name="outfits_broken_more">+%d till</string>
-    <string name="insights_items_removed">Plagg finns inte längre i garderoben</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Du</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Stäng</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Älskade det</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Lär av det du faktiskt bär och har älskat.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Underhåll</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Fler alternativ</string>
-    <string name="calendar_move_to_day">Flytta till en annan dag</string>
-    <string name="calendar_copy_to_day">Kopiera till en annan dag</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Tryck på en dag för att flytta outfiten</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Tryck på en dag för att kopiera outfiten</string>
     <string name="calendar_mode_move">Flytta</string>
     <string name="calendar_mode_copy">Kopiera</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Ta bort från denna dag</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Bär</string>
-    <string name="outfits_favorite">Favorit</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Slutför…</string>
     <string name="wardrobe_sync_details">Läser in detaljer: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Slutför…</string>
-    <string name="outfit_saving">Sparar outfit…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Resmappen är inte klar.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Lägg till outfit i kalendern</string>
-    <string name="calendar_add_pick">Välj en outfit</string>
-    <string name="calendar_add_empty">Inga outfits att lägga till ännu</string>
     <string name="calendar_pick_source_prompt">Tryck på en dag med outfits för att välja den</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Ta bort outfit från kalendern</string>
     <string name="calendar_delete_prompt">Tryck på en dag för att ta bort dess outfits</string>
-    <string name="calendar_delete_confirm_title">Ta bort outfits?</string>
-    <string name="calendar_delete_confirm_msg">Ta bort alla outfits som bars den %1$s?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Lägg till en outfit den %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Ny outfit</string>
     <string name="fab_wardrobe_add">Lägg till plagg</string>
-    <string name="fab_calendar_log">Logga outfit</string>
     <string name="sel_swap">Byt</string>
-    <string name="sel_move">Flytta</string>
-    <string name="sel_combine">Kombinera</string>
-    <string name="sel_love">Gilla</string>
-    <string name="sel_copy_to_day">Kopiera</string>
-    <string name="sel_remove">Ta bort</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Tryck på en dag för att bära “%1$s”</string>
-    <string name="calendar_done_wear">Loggat den %1$s</string>
-    <string name="calendar_done_move">Flyttad till %1$s</string>
-    <string name="calendar_done_copy">Kopierad till %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Webbplats</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Ingen e-postapp hittades. Mejla oss manuellt på %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Ta bort alla outfits som burits under de %1$d valda dagarna?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Lägg till outfit</string>
-    <string name="calendar_today">Idag</string>
 </resources>

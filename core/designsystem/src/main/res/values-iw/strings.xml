@@ -225,4 +225,9 @@
     <string name="error_upload_failed">ההעלאה נכשלה: %1$s</string>
     <string name="error_original_unavailable">המקור אינו זמין</string>
     <string name="action_deselect_all">בטל בחירה הכל</string>
+    <string name="action_save">שמור</string>
+    <string name="nav_styles">אאוטפיטים</string>
+    <string name="sel_move">העברה</string>
+    <string name="tryon_outfit_picker_title">בחר אאוטפיט</string>
+    <string name="tryon_outfit_picker_empty">אין אאוטפיטים.</string>
 </resources>

@@ -225,4 +225,9 @@
     <string name="error_upload_failed">อัปโหลดไม่สำเร็จ: %1$s</string>
     <string name="error_original_unavailable">ไม่มีต้นฉบับ</string>
     <string name="action_deselect_all">ยกเลิกการเลือกทั้งหมด</string>
+    <string name="action_save">บันทึก</string>
+    <string name="nav_styles">ชุดแต่งกาย</string>
+    <string name="sel_move">ย้าย</string>
+    <string name="tryon_outfit_picker_title">เลือกชุด</string>
+    <string name="tryon_outfit_picker_empty">ยังไม่มีชุดที่บันทึก สร้างหนึ่งในแท็บชุดเพื่อใช้ที่นี่</string>
 </resources>

@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">着用アイテム</string>
     <string name="tryon_history_title">過去の試着</string>
     <string name="tryon_missing_photos_items">写真またはアイテムがありません</string>
-    <string name="tryon_outfit_picker_empty">保存されたコーデはまだありません。コーデタブで作成してここで使用しましょう。</string>
-    <string name="tryon_outfit_picker_title">コーデを選択</string>
     <string name="tryon_save_to_drive">保存</string>
     <string name="tryon_saved_to_drive">保存しました</string>
     <string name="tryon_saving">保存中…</string>

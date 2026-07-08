@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Lataus epäonnistui: %1$s</string>
     <string name="error_original_unavailable">Alkuperäistä ei saatavilla</string>
     <string name="action_deselect_all">Poista valinnat</string>
+    <string name="action_save">Tallenna</string>
+    <string name="nav_styles">Asut</string>
+    <string name="sel_move">Siirrä</string>
+    <string name="tryon_outfit_picker_title">Valitse asu</string>
+    <string name="tryon_outfit_picker_empty">Ei vielä tallennettuja asuja. Luo sellainen Asut-välilehdellä käyttääksesi sitä täällä.</string>
 </resources>

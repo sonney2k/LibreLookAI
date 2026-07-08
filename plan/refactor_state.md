@@ -7,10 +7,10 @@ detail lives in `plan/refactor.md`; this is the short "where we left off" note.
 
 **§§ 2–8 are all done. The only open architecture section is § 1 (multi-module).** Within § 1,
 slices 1–5 landed and slice 6 is extracting features leaf-first: `feature:onboarding`,
-`feature:tryon`, `feature:travel` (+ the `core:outfit`/`SharedChrome` enablers) and now
-**`feature:shopping`** (2026-07-08) have all landed. **Remaining feature extractions:
-`feature:outfit` → `feature:wardrobe` → `feature:settings`** (settings last — it hosts the
-cross-feature reporting surfaces + the VMs everything narrows against). Each repeats the
+`feature:tryon`, `feature:travel` (+ the `core:outfit`/`SharedChrome` enablers),
+**`feature:shopping`** and **`feature:outfit`** (both 2026-07-08) have all landed.
+**Remaining feature extractions: `feature:wardrobe` → `feature:settings`** (settings last —
+it hosts the cross-feature reporting surfaces + the VMs everything narrows against). Each repeats the
 template: measure edges → narrow VM params to data+callbacks → sink shared composables/strings
 to designsystem → move the package + Hilt modules → res split → visibility bumps → verify+docs.
 `./gradlew :app:assembleDebug testDebugUnitTest` is green on `refactor-phase5-rest`.

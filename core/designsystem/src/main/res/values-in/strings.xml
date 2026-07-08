@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Gagal mengunggah: %1$s</string>
     <string name="error_original_unavailable">Asli tidak tersedia</string>
     <string name="action_deselect_all">Batalkan semua</string>
+    <string name="action_save">Simpan</string>
+    <string name="nav_styles">Setelan</string>
+    <string name="sel_move">Pindah</string>
+    <string name="tryon_outfit_picker_title">Pilih setelan</string>
+    <string name="tryon_outfit_picker_empty">Belum ada setelan tersimpan. Buat satu di tab Setelan untuk dipakai di sini.</string>
 </resources>

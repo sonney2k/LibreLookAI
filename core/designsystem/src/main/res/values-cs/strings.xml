@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Nahrání selhalo: %1$s</string>
     <string name="error_original_unavailable">Originál není k dispozici</string>
     <string name="action_deselect_all">Zrušit výběr</string>
+    <string name="action_save">Uložit</string>
+    <string name="nav_styles">Outfity</string>
+    <string name="sel_move">Přesunout</string>
+    <string name="tryon_outfit_picker_title">Vybrat outfit</string>
+    <string name="tryon_outfit_picker_empty">Zatím žádné uložené outfity. Vytvořte si jeden na kartě Outfity, abyste jej mohli použít zde.</string>
 </resources>

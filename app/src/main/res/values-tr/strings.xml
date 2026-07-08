@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_styles">Kıyafetler</string>
     <string name="nav_wardrobe">Gardırop</string>
     <string name="nav_shopping">Alışveriş</string>
     <string name="nav_travel">Seyahat</string>
     <string name="nav_settings">Ayarlar</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_calendar">Takvim</string>
     <string name="insights_tab_wardrobe_stats">Gardırop İstatistikleri</string>
-    <string name="insights_tab_calendar_stats">Takvim İstatistikleri</string>
     <string name="insights_tab_costs">Maliyetler</string>
     <string name="costs_count_items">Eşyalar</string>
     <string name="costs_count_outfits">Kombinler</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Denemeler</string>
 
     <!-- Common actions -->
-    <string name="action_save">Kaydet</string>
     <string name="action_saving">Kaydediliyor…</string>
     <string name="cd_ai_suggestion">Yapay zeka önerisi</string>
-    <string name="cd_refine">İyileştir</string>
     <string name="filter_location">Konum</string>
     <string name="wardrobe_processing_photos">%1$d fotoğraf işleniyor…</string>
     <string name="wardrobe_progress_uploading">Fotoğraf yükleniyor…</string>
@@ -250,28 +245,12 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">Gardırobunuzdan bir kombin oluşturmak için +\'ya dokunun</string>
-    <string name="outfits_sort_most_worn">En çok giyilen</string>
     <string name="outfits_create_manual">Manuel kombin oluştur</string>
-    <string name="outfits_suggest">Mevcut kombin öner</string>
-    <string name="prediction_setup_title">Yapay zeka ile bul</string>
-    <string name="prediction_setup_find">Bul</string>
-    <string name="prediction_setup_title_compose">Yapay zeka ile oluştur</string>
-    <string name="prediction_setup_create">Oluştur</string>
-    <string name="prediction_setup_suggestions">Öneriler</string>
     <string name="prediction_setup_considerations">Bu çalıştırma için dikkate al</string>
-    <string name="prediction_setup_weather_pick_day">Bir gün seçin</string>
-    <string name="prediction_setup_weather_today">Bugün</string>
-    <string name="prediction_setup_weather_tomorrow">Yarın</string>
-    <string name="composer_mode_fullscreen">Tam ekran</string>
-    <string name="composer_empty_slot_ai_hint">Yapay zeka boş alanları dolduracaktır</string>
-    <string name="outfit_save_dialog_tag_suggestions">Mevcut etiketler</string>
     <string name="outfits_compose">Yeni kombin oluştur</string>
     <string name="outfits_thinking">Düşünülüyor…</string>
     <string name="outfits_suggesting">Kombin öneriliyor…</string>
     <string name="outfits_composing">Kombin oluşturuluyor…</string>
-    <string name="outfits_delete_title">Kombin silinsin mi?</string>
-    <string name="outfits_delete_text">\"%s\" kalıcı olarak kaldırılacaktır.</string>
     <string name="outfits_items_away">%d öge başka bir konumda</string>
     <string name="outfits_suggested_title">Bugün için önerilen</string>
     <string name="outfits_composed_title">Sizin için oluşturulan</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Kombin adı</string>
     <string name="outfits_description_placeholder">Açıklama (isteğe bağlı)</string>
     <string name="outfits_create_this">Bu kombini oluştur</string>
-    <string name="outfits_refine_label">Yapay zeka ile iyileştir</string>
-    <string name="outfits_refine_custom">Özel geri bildirim…</string>
-    <string name="outfits_refine_casual">Daha günlük</string>
-    <string name="outfits_refine_formal">Daha resmi</string>
-    <string name="outfits_refine_diff_colors">Farklı renkler</string>
-    <string name="outfits_refine_warmer">Daha sıcak kıyafetler</string>
-    <string name="outfits_refine_lighter">Daha ince kıyafetler</string>
-    <string name="outfits_refine_trendy">Daha trend</string>
-    <string name="outfits_refine_simpler">Daha sade</string>
-    <string name="outfits_refine_bold">Daha iddialı</string>
     <string name="outfits_items_label">Kombin ögeleri</string>
     <string name="outfits_add_item">Öge ekle</string>
-    <string name="outfits_tags_label">Etiketler</string>
-    <string name="outfits_prediction_prev">Önceki öneri</string>
-    <string name="outfits_prediction_next">Sonraki öneri</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Bu kombini kullan</string>
-    <string name="outfits_suggest_tags">Yapay zeka ile etiket öner</string>
-    <string name="outfits_suggest_tags_title">Önerilen etiketler</string>
-    <string name="outfits_suggest_tags_loading">Etiketler öneriliyor…</string>
-    <string name="outfits_suggest_tags_empty">Yeni etiket önerilmedi.</string>
-    <string name="outfits_suggest_tags_apply">Seçilenleri ekle</string>
-    <string name="outfits_suggest_tags_hint">Etiketleri değiştirmek için dokunun. Seçilen etiketler bu kombine eklenir.</string>
     <string name="outfits_swap_item_for">Değiştir: %s</string>
     <string name="outfits_suggest_alternatives">10 alternatif öner</string>
     <string name="outfits_select_item">Seç</string>
-    <string name="outfits_saved_wear_today">Kombin kaydedildi! Bugün giyilsin mi?</string>
-    <string name="outfits_selected_count">%d seçildi</string>
-    <string name="outfits_select_all_count">Tüm %d tanesini seç</string>
-    <string name="outfits_delete_selected_title">Kombinler silinsin mi?</string>
-    <string name="outfits_delete_selected_text">%d kombin kalıcı olarak kaldırılacaktır.</string>
     <string name="outfits_combine">Yapay zeka ile birleştir</string>
-    <string name="outfit_slot_lock">Kilitle</string>
-    <string name="outfit_slot_unlock">Kilidi aç</string>
-    <string name="outfit_slot_remove">Kaldır</string>
-    <string name="outfit_slot_add">Öge ekle</string>
-    <string name="outfit_generate_with_ai">Yapay zeka ile oluştur</string>
-    <string name="outfit_discard_changes_title">Değişiklikler atılsın mı?</string>
-    <string name="outfit_discard_changes_body">Kaydedilmemiş değişiklikleriniz kaybolacaktır.</string>
-    <string name="outfit_discard_changes_confirm">At</string>
-    <string name="outfit_save_dialog_title">Kombini kaydet</string>
-    <string name="outfit_save_dialog_name">İsim</string>
-    <string name="outfit_save_dialog_description">Açıklama</string>
-    <string name="outfit_save_dialog_tags">Etiketler</string>
-    <string name="outfit_save_dialog_confirm">Kaydet</string>
     <string name="outfit_mode_view">Görüntüle</string>
     <string name="outfit_mode_edit">Düzenle</string>
-    <string name="outfit_pick_category">Bir kategori seçin</string>
 
     <!-- Travel -->
     <string name="travel_title">Seyahat Hazırlık Listesi</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Ögeler taşınamadı</string>
 
     <!-- Calendar -->
-    <string name="calendar_day_mo">Pt</string>
-    <string name="calendar_day_tu">Sa</string>
-    <string name="calendar_day_we">Ça</string>
-    <string name="calendar_day_th">Pe</string>
-    <string name="calendar_day_fr">Cu</string>
-    <string name="calendar_day_sa">Ct</string>
-    <string name="calendar_day_su">Pz</string>
-    <string name="calendar_stats_styles">En Çok Giyilen Kombinler</string>
-    <string name="calendar_stats_items">En Çok Giyilen Ögeler</string>
-    <string name="calendar_empty">Henüz kombin geçmişi yok</string>
-    <string name="calendar_empty_hint">Takip etmeye başlamak için Kombinler sekmesinden bir kombin giyin</string>
-    <string name="calendar_wear_again">Bugün tekrar giy</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Mevcut gardırobunuzdan en fazla yeni kombin kombinasyonu oluşturacak 3 eksik parçayı keşfedin.</string>
@@ -383,7 +310,6 @@
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
     <string name="ai_analyzing_wardrobe">Gardırobunuz analiz ediliyor…</string>
-    <string name="ai_suggesting_style">Kombin öneriliyor…</string>
     <string name="ai_composing_outfit">Kombin oluşturuluyor…</string>
 
     <!-- Foreground service notification -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Çevrimdışısınız — yalnızca görüntüleme modu</string>
 
     <!-- Try on me -->
-    <string name="tryon_fab">Üzerimde dene</string>
     <string name="tryon_section_title">Deneme fotoğrafları</string>
     <string name="tryon_section_desc">Önden, yandan ve arkadan tam vücut fotoğrafları yükleyin. Uygulama, bir kombinin veya gardırop ögesinin üzerinizdeki deneme önizlemesini oluştururken bunları referans olarak kullanır. Fotoğraflar kendi Drive\'ınızda kalır.</string>
     <string name="tryon_add_photo">%1$s fotoğrafı ekle</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Kendi API anahtarını oluşturmayı tercih etmeyen kullanıcılar için uygulama, jeton tabanlı bir kredi sistemi sunar. Krediler, Krediler sekmesinden satın alınabilir ve yukarıda listelenen oranlarda yapay zeka eylemi başına tüketilir. Bu mod, istekleri bir sunucu tarafı ara sunucusu üzerinden yönlendirir.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">Kombin oluştur</string>
     <string name="composer_discard_title">Kombin atılsın mı?</string>
     <string name="composer_discard_message">Seçimleriniz kaybolacaktır.</string>
     <string name="composer_discard_confirm">At</string>
-    <string name="composer_header_subtitle">5 katmandan %1$d tanesi · değiştirmek için dokunun</string>
     <string name="composer_fill_missing">Eksikleri doldur</string>
     <string name="composer_see_all_count">Hepsi %1$d</string>
     <string name="composer_layer_picked_count">%1$d seçildi</string>
-    <string name="composer_weather_title">Hava Durumu</string>
-    <string name="composer_save">Kaydet</string>
     <string name="composer_section_goal">Durum nedir?</string>
-    <string name="composer_goal_placeholder">örn. Lizbon\'da akşam yemeği, sıcak akşam</string>
     <string name="composer_goal_generate">Oluştur</string>
     <string name="composer_advanced">Gelişmiş seçenekler</string>
     <string name="composer_chip_work">İş</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Randevu</string>
     <string name="composer_section_quick_start">Hızlı başlangıç</string>
     <string name="composer_section_items">Ögeler</string>
-    <string name="composer_section_weather">Hava Durumu</string>
-    <string name="composer_section_vibe">Stil havası</string>
     <string name="composer_section_targets">Kompozisyon</string>
     <string name="composer_targets_hint">Her katmandan kaç tane ekleneceğini ayarlayın. Yapay zekanın karar vermesi için 0\'da bırakın.</string>
     <string name="composer_tags_optional">Etiketler (isteğe bağlı)</string>
     <string name="composer_section_name">İsim ve açıklama</string>
     <string name="composer_section_ai">Yapay zeka ile geliştir</string>
-    <string name="composer_weather_auto">Mevcut</string>
-    <string name="composer_weather_manual">Manuel</string>
-    <string name="composer_weather_unknown">Hava durumu mevcut değil</string>
-    <string name="composer_weather_season">Mevsim</string>
-    <string name="composer_weather_temp">Sıcaklık</string>
-    <string name="composer_weather_precip">Yağış</string>
-    <string name="composer_season_spring">İlkbahar</string>
-    <string name="composer_season_summer">Yaz</string>
-    <string name="composer_season_fall">Sonbahar</string>
-    <string name="composer_season_winter">Kış</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Yok</string>
-    <string name="composer_precip_light">Hafif</string>
-    <string name="composer_precip_heavy">Şiddetli</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Temel üst</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Yapay zekaya neyi değiştireceğini veya neyi hedefleyeceğini söyleyin…</string>
     <string name="composer_feedback_history">%1$d önceki istek bağlamda tutuluyor</string>
     <string name="composer_enhance">Yapay zeka ile geliştir</string>
-    <string name="composer_enhancing">Gemini\'ye soruluyor…</string>
     <string name="composer_picked_count">%1$d seçildi</string>
     <string name="composer_add_selected">Seçilenleri ekle</string>
     <string name="composer_factors_label">Kullanılanlar</string>
-    <string name="composer_factor_weather_auto">Canlı hava durumu</string>
     <string name="composer_factor_weather_manual">Manuel hava durumu</string>
     <string name="composer_factor_vibes">%1$d stil</string>
     <string name="composer_factor_items">%1$d öge</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Bu parçaları kullanan %d kombini de sil</string>
     <string name="wardrobe_delete_cascade_tryons">Bu parçaların olduğu %d provayı da sil</string>
-    <string name="outfits_broken_banner">%d kombin, gardırobunda artık bulunmayan parçaları kullanıyor.</string>
-    <string name="outfits_broken_review">İncele</string>
-    <string name="outfits_broken_delete_title">Eksik kombinler silinsin mi?</string>
-    <string name="outfits_broken_delete_text">Bu %d kombin, gardırobunda artık bulunmayan parçalara atıfta bulunuyor ve kalıcı olarak silinecek:</string>
-    <string name="outfits_broken_more">+%d daha</string>
-    <string name="insights_items_removed">Parçalar artık gardıropta yok</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Sen</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Kapat</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Bayıldım</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Gerçekten giydiklerinden ve beğendiklerinden öğrenir.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Bakım</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Diğer seçenekler</string>
-    <string name="calendar_move_to_day">Başka bir güne taşı</string>
-    <string name="calendar_copy_to_day">Başka bir güne kopyala</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Kombini taşımak için bir güne dokunun</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Kombini kopyalamak için bir güne dokunun</string>
     <string name="calendar_mode_move">Taşı</string>
     <string name="calendar_mode_copy">Kopyala</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Bu günden kaldır</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Giy</string>
-    <string name="outfits_favorite">Favori</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Tamamlanıyor…</string>
     <string name="wardrobe_sync_details">Ayrıntılar yükleniyor: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Tamamlanıyor…</string>
-    <string name="outfit_saving">Kıyafet kaydediliyor…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Geziler klasörü hazır değil.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Kombini takvime ekle</string>
-    <string name="calendar_add_pick">Bir kombin seç</string>
-    <string name="calendar_add_empty">Henüz eklenecek kombin yok</string>
     <string name="calendar_pick_source_prompt">Seçmek için kombinlerin olduğu bir güne dokun</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Kombini takvimden kaldır</string>
     <string name="calendar_delete_prompt">Bir günün kombinlerini kaldırmak için o güne dokun</string>
-    <string name="calendar_delete_confirm_title">Kombinler kaldırılsın mı?</string>
-    <string name="calendar_delete_confirm_msg">%1$s tarihinde giyilen tüm kombinler kaldırılsın mı?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">%1$s tarihine kombin ekle</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Yeni kombin</string>
     <string name="fab_wardrobe_add">Parça ekle</string>
-    <string name="fab_calendar_log">Kombini kaydet</string>
     <string name="sel_swap">Değiştir</string>
-    <string name="sel_move">Taşı</string>
-    <string name="sel_combine">Birleştir</string>
-    <string name="sel_love">Beğen</string>
-    <string name="sel_copy_to_day">Kopyala</string>
-    <string name="sel_remove">Kaldır</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">“%1$s” kombinini giymek için bir güne dokunun</string>
-    <string name="calendar_done_wear">%1$s tarihine kaydedildi</string>
-    <string name="calendar_done_move">%1$s tarihine taşındı</string>
-    <string name="calendar_done_copy">%1$s tarihine kopyalandı</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Web sitesi</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">E-posta uygulaması bulunamadı. Lütfen bize %1$s adresinden manuel olarak e-posta gönderin.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Seçili %1$d günde giyilen tüm kombinler kaldırılsın mı?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Kıyafet ekle</string>
-    <string name="calendar_today">Bugün</string>
 </resources>

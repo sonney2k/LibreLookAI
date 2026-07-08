@@ -16,8 +16,6 @@
     <string name="tryon_history_items_title">Item yang dipakai</string>
     <string name="tryon_history_title">Coba-pakai sebelumnya</string>
     <string name="tryon_missing_photos_items">Foto atau item tidak ada</string>
-    <string name="tryon_outfit_picker_empty">Belum ada setelan tersimpan. Buat satu di tab Setelan untuk dipakai di sini.</string>
-    <string name="tryon_outfit_picker_title">Pilih setelan</string>
     <string name="tryon_save_to_drive">Simpan</string>
     <string name="tryon_saved_to_drive">Tersimpan</string>
     <string name="tryon_saving">Menyimpan…</string>

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigointi -->
-    <string name="nav_styles">Asut</string>
     <string name="nav_wardrobe">Vaatekaappi</string>
     <string name="nav_shopping">Ostokset</string>
     <string name="nav_travel">Matka</string>
     <string name="nav_settings">Asetukset</string>
 
     <!-- Näkemykset-välilehti -->
-    <string name="insights_tab_calendar">Kalenteri</string>
     <string name="insights_tab_wardrobe_stats">Vaatekaappitilastot</string>
-    <string name="insights_tab_calendar_stats">Kalenteritilastot</string>
     <string name="insights_tab_costs">Kustannukset</string>
     <string name="costs_count_items">Vaatteita</string>
     <string name="costs_count_outfits">Asuja</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Sovitukset</string>
 
     <!-- Yleiset toiminnot -->
-    <string name="action_save">Tallenna</string>
     <string name="action_saving">Tallennetaan…</string>
     <string name="cd_ai_suggestion">Tekoälyehdotus</string>
-    <string name="cd_refine">Tarkenna</string>
     <string name="filter_location">Sijainti</string>
     <string name="wardrobe_processing_photos">Käsitellään %1$d kuva(a)…</string>
     <string name="wardrobe_progress_uploading">Ladataan kuvaa…</string>
@@ -250,28 +245,12 @@
     <!-- Tunnistearvojen käännökset (tallennetaan englanniksi; näytetään käyttöliittymän kielellä) -->
     <!-- Värit -->
     <!-- Asut -->
-    <string name="outfits_empty_hint">Napauta +-painiketta rakentaaksesi asun vaatekaapistasi</string>
-    <string name="outfits_sort_most_worn">Eniten käytetyt</string>
     <string name="outfits_create_manual">Luo asu manuaalisesti</string>
-    <string name="outfits_suggest">Ehdota olemassa olevaa asua</string>
-    <string name="prediction_setup_title">Etsi tekoälyllä</string>
-    <string name="prediction_setup_find">Etsi</string>
-    <string name="prediction_setup_title_compose">Luo tekoälyllä</string>
-    <string name="prediction_setup_create">Luo</string>
-    <string name="prediction_setup_suggestions">Ehdotukset</string>
     <string name="prediction_setup_considerations">Huomioi tällä kerralla</string>
-    <string name="prediction_setup_weather_pick_day">Valitse päivä</string>
-    <string name="prediction_setup_weather_today">Tänään</string>
-    <string name="prediction_setup_weather_tomorrow">Huomenna</string>
-    <string name="composer_mode_fullscreen">Koko näyttö</string>
-    <string name="composer_empty_slot_ai_hint">Tekoäly täyttää tyhjät paikat</string>
-    <string name="outfit_save_dialog_tag_suggestions">Olemassa olevat tunnisteet</string>
     <string name="outfits_compose">Kokoa uusi asu</string>
     <string name="outfits_thinking">Ajattelee…</string>
     <string name="outfits_suggesting">Ehdotetaan asua…</string>
     <string name="outfits_composing">Kootaan asua…</string>
-    <string name="outfits_delete_title">Poistetaanko asu?</string>
-    <string name="outfits_delete_text">\"%s\" poistetaan pysyvästi.</string>
     <string name="outfits_items_away">%d vaate(tta) toisessa sijainnissa</string>
     <string name="outfits_suggested_title">Ehdotettu tänään</string>
     <string name="outfits_composed_title">Sinulle koottu</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Asun nimi</string>
     <string name="outfits_description_placeholder">Kuvaus (valinnainen)</string>
     <string name="outfits_create_this">Luo tämä asu</string>
-    <string name="outfits_refine_label">Tarkenna tekoälyllä</string>
-    <string name="outfits_refine_custom">Mukautettu palaute…</string>
-    <string name="outfits_refine_casual">Rennompi</string>
-    <string name="outfits_refine_formal">Muodollisempi</string>
-    <string name="outfits_refine_diff_colors">Eri värit</string>
-    <string name="outfits_refine_warmer">Lämpimämpiä vaatteita</string>
-    <string name="outfits_refine_lighter">Kevyempiä vaatteita</string>
-    <string name="outfits_refine_trendy">Trendikkäämpi</string>
-    <string name="outfits_refine_simpler">Yksinkertaisempi</string>
-    <string name="outfits_refine_bold">Rohkeampi</string>
     <string name="outfits_items_label">Asun vaatteet</string>
     <string name="outfits_add_item">Lisää vaate</string>
-    <string name="outfits_tags_label">Tunnisteet</string>
-    <string name="outfits_prediction_prev">Edellinen ehdotus</string>
-    <string name="outfits_prediction_next">Seuraava ehdotus</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Käytä tätä asua</string>
-    <string name="outfits_suggest_tags">Ehdota tunnisteita tekoälyllä</string>
-    <string name="outfits_suggest_tags_title">Ehdotetut tunnisteet</string>
-    <string name="outfits_suggest_tags_loading">Ehdotetaan tunnisteita…</string>
-    <string name="outfits_suggest_tags_empty">Uusia tunnisteita ei ehdoteta.</string>
-    <string name="outfits_suggest_tags_apply">Lisää valitut</string>
-    <string name="outfits_suggest_tags_hint">Napauta tunnisteita vaihtaaksesi. Valitut tunnisteet lisätään tähän asuun.</string>
     <string name="outfits_swap_item_for">Vaihda: %s</string>
     <string name="outfits_suggest_alternatives">Ehdota 10 vaihtoehtoa</string>
     <string name="outfits_select_item">Valitse</string>
-    <string name="outfits_saved_wear_today">Asu tallennettu! Käytä tänään?</string>
-    <string name="outfits_selected_count">%d valittu</string>
-    <string name="outfits_select_all_count">Valitse kaikki %d</string>
-    <string name="outfits_delete_selected_title">Poistetaanko asut?</string>
-    <string name="outfits_delete_selected_text">%d asua poistetaan pysyvästi.</string>
     <string name="outfits_combine">Yhdistä tekoälyllä</string>
-    <string name="outfit_slot_lock">Lukitse</string>
-    <string name="outfit_slot_unlock">Avaa lukitus</string>
-    <string name="outfit_slot_remove">Poista</string>
-    <string name="outfit_slot_add">Lisää vaate</string>
-    <string name="outfit_generate_with_ai">Luo tekoälyllä</string>
-    <string name="outfit_discard_changes_title">Hylätäänkö muutokset?</string>
-    <string name="outfit_discard_changes_body">Tallentamattomat muutoksesi menetetään.</string>
-    <string name="outfit_discard_changes_confirm">Hylkää</string>
-    <string name="outfit_save_dialog_title">Tallenna asu</string>
-    <string name="outfit_save_dialog_name">Nimi</string>
-    <string name="outfit_save_dialog_description">Kuvaus</string>
-    <string name="outfit_save_dialog_tags">Tunnisteet</string>
-    <string name="outfit_save_dialog_confirm">Tallenna</string>
     <string name="outfit_mode_view">Näytä</string>
     <string name="outfit_mode_edit">Muokkaa</string>
-    <string name="outfit_pick_category">Valitse kategoria</string>
 
     <!-- Matka -->
     <string name="travel_title">Matkan pakkauslista</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Vaatteita ei voitu siirtää</string>
 
     <!-- Kalenteri -->
-    <string name="calendar_day_mo">Ma</string>
-    <string name="calendar_day_tu">Ti</string>
-    <string name="calendar_day_we">Ke</string>
-    <string name="calendar_day_th">To</string>
-    <string name="calendar_day_fr">Pe</string>
-    <string name="calendar_day_sa">La</string>
-    <string name="calendar_day_su">Su</string>
-    <string name="calendar_stats_styles">Eniten käytetyt asut</string>
-    <string name="calendar_stats_items">Eniten käytetyt vaatteet</string>
-    <string name="calendar_empty">Ei vielä asuhistoriaa</string>
-    <string name="calendar_empty_hint">Käytä asua Asut-välilehdeltä aloittaaksesi seurannan</string>
-    <string name="calendar_wear_again">Käytä uudelleen tänään</string>
 
     <!-- Aukko-analyysi -->
     <string name="gap_description">Löydä 3 puuttuvaa vaatetta, jotka avaisivat eniten uusia asuyhdistelmiä olemassa olevasta vaatekaapistasi.</string>
@@ -383,7 +310,6 @@
     <!-- Krediitit / Hallittu tila -->
     <!-- Tekoälyn peittokuva -->
     <string name="ai_analyzing_wardrobe">Analysoidaan vaatekaappiasi…</string>
-    <string name="ai_suggesting_style">Ehdotetaan asua…</string>
     <string name="ai_composing_outfit">Kootaan asua…</string>
 
     <!-- Etualapalvelun ilmoitus -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Olet offline-tilassa — vain katselutila</string>
 
     <!-- Sovita minulle -->
-    <string name="tryon_fab">Sovita minulle</string>
     <string name="tryon_section_title">Sovituskuvat</string>
     <string name="tryon_section_desc">Lataa kokovartalokuvat edestä, sivulta ja takaa. Sovellus käyttää näitä viitteenä luodessaan sovitusesikatselun asusta tai vaatekaapin vaatteesta sinulle. Kuvat pysyvät omassa Drivessasi.</string>
     <string name="tryon_add_photo">Lisää %1$s-kuva</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Käyttäjille, jotka eivät halua luoda omaa API-avainta, sovellus tarjoaa kolikkopohjaisen krediittijärjestelmän. Krediittejä voi ostaa Krediitit-välilehdellä ja ne kulutetaan per tekoälytoiminto yllä lueteltujen tariffien mukaan. Tämä tila reitittää pyynnöt palvelinpuolen välityspalvelimen kautta.</string>
 
     <!-- Yhtenäinen asukokoaja -->
-    <string name="composer_title">Luo asu</string>
     <string name="composer_discard_title">Hylätäänkö asu?</string>
     <string name="composer_discard_message">Valintasi menetetään.</string>
     <string name="composer_discard_confirm">Hylkää</string>
-    <string name="composer_header_subtitle">%1$d / 5 kerroksesta · napauta vaihtaaksesi</string>
     <string name="composer_fill_missing">Täytä puuttuvat</string>
     <string name="composer_see_all_count">Kaikki %1$d</string>
     <string name="composer_layer_picked_count">%1$d valittu</string>
-    <string name="composer_weather_title">Sää</string>
-    <string name="composer_save">Tallenna</string>
     <string name="composer_section_goal">Mikä on tilaisuus?</string>
-    <string name="composer_goal_placeholder">esim. Illallinen Lissabonissa, lämmin ilta</string>
     <string name="composer_goal_generate">Luo</string>
     <string name="composer_advanced">Lisäasetukset</string>
     <string name="composer_chip_work">Työ</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Treffit</string>
     <string name="composer_section_quick_start">Pika-aloitus</string>
     <string name="composer_section_items">Vaatteet</string>
-    <string name="composer_section_weather">Sää</string>
-    <string name="composer_section_vibe">Tyylitunnelma</string>
     <string name="composer_section_targets">Koostumus</string>
     <string name="composer_targets_hint">Aseta kuinka monta kustakin kerroksesta sisällytetään. Jätä arvoksi 0, niin tekoäly päättää.</string>
     <string name="composer_tags_optional">Tunnisteet (valinnainen)</string>
     <string name="composer_section_name">Nimi &amp; kuvaus</string>
     <string name="composer_section_ai">Paranna tekoälyllä</string>
-    <string name="composer_weather_auto">Nykyinen</string>
-    <string name="composer_weather_manual">Manuaalinen</string>
-    <string name="composer_weather_unknown">Säätä ei ole saatavilla</string>
-    <string name="composer_weather_season">Sesonki</string>
-    <string name="composer_weather_temp">Lämpötila</string>
-    <string name="composer_weather_precip">Sademäärä</string>
-    <string name="composer_season_spring">Kevät</string>
-    <string name="composer_season_summer">Kesä</string>
-    <string name="composer_season_fall">Syksy</string>
-    <string name="composer_season_winter">Talvi</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Ei</string>
-    <string name="composer_precip_light">Kevyt</string>
-    <string name="composer_precip_heavy">Voimakas</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Perusyläosa</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Kerro tekoälylle, mitä muuttaa tai mihin pyrkiä…</string>
     <string name="composer_feedback_history">%1$d aikaisempi pyyntöä säilytetty kontekstissa</string>
     <string name="composer_enhance">Paranna tekoälyllä</string>
-    <string name="composer_enhancing">Kysytään Geminiltä…</string>
     <string name="composer_picked_count">%1$d valittu</string>
     <string name="composer_add_selected">Lisää valitut</string>
     <string name="composer_factors_label">Käytetään</string>
-    <string name="composer_factor_weather_auto">Live-sää</string>
     <string name="composer_factor_weather_manual">Manuaalinen sää</string>
     <string name="composer_factor_vibes">%1$d tunnelmaa</string>
     <string name="composer_factor_items">%1$d vaatetta</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Poista myös %d asu(a), jotka käyttävät näitä vaatteita</string>
     <string name="wardrobe_delete_cascade_tryons">Poista myös %d sovitus(ta), joissa on näitä vaatteita</string>
-    <string name="outfits_broken_banner">%d asua käyttää vaatteita, joita ei ole enää vaatekaapissasi.</string>
-    <string name="outfits_broken_review">Tarkista</string>
-    <string name="outfits_broken_delete_title">Poistetaanko puutteelliset asut?</string>
-    <string name="outfits_broken_delete_text">Nämä %d asua viittaavat vaatteisiin, joita ei ole enää vaatekaapissasi, ja ne poistetaan pysyvästi:</string>
-    <string name="outfits_broken_more">+%d lisää</string>
-    <string name="insights_items_removed">Vaatteita ei ole enää vaatekaapissa</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Sinä</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Sulje</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Ihastuin</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Oppii siitä, mitä todella käytät ja olet ihastunut.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Ylläpito</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Lisää vaihtoehtoja</string>
-    <string name="calendar_move_to_day">Siirrä toiseen päivään</string>
-    <string name="calendar_copy_to_day">Kopioi toiseen päivään</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Siirrä asu napauttamalla päivää</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Kopioi asu napauttamalla päivää</string>
     <string name="calendar_mode_move">Siirrä</string>
     <string name="calendar_mode_copy">Kopioi</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Poista tästä päivästä</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Käytä</string>
-    <string name="outfits_favorite">Suosikki</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Viimeistellään…</string>
     <string name="wardrobe_sync_details">Ladataan tietoja: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Viimeistellään…</string>
-    <string name="outfit_saving">Tallennetaan asua…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Matkakansio ei ole valmis.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Lisää asu kalenteriin</string>
-    <string name="calendar_add_pick">Valitse asu</string>
-    <string name="calendar_add_empty">Ei vielä lisättäviä asuja</string>
     <string name="calendar_pick_source_prompt">Valitse päivä napauttamalla päivää, jossa on asuja</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Poista asu kalenterista</string>
     <string name="calendar_delete_prompt">Poista päivän asut napauttamalla päivää</string>
-    <string name="calendar_delete_confirm_title">Poistetaanko asut?</string>
-    <string name="calendar_delete_confirm_msg">Poistetaanko kaikki %1$s käytetyt asut?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Lisää asu päivälle %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Uusi asu</string>
     <string name="fab_wardrobe_add">Lisää vaate</string>
-    <string name="fab_calendar_log">Kirjaa asu</string>
     <string name="sel_swap">Vaihda</string>
-    <string name="sel_move">Siirrä</string>
-    <string name="sel_combine">Yhdistä</string>
-    <string name="sel_love">Tykkää</string>
-    <string name="sel_copy_to_day">Kopioi</string>
-    <string name="sel_remove">Poista</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Napauta päivää käyttääksesi asua “%1$s”</string>
-    <string name="calendar_done_wear">Kirjattu päivälle %1$s</string>
-    <string name="calendar_done_move">Siirretty päivälle %1$s</string>
-    <string name="calendar_done_copy">Kopioitu päivälle %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Verkkosivusto</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Sähköpostisovellusta ei löytynyt. Lähetä meille sähköpostia manuaalisesti osoitteeseen %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Poistetaanko kaikki asut, jotka on käytetty %1$d valittuna päivänä?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Lisää asu</string>
-    <string name="calendar_today">Tänään</string>
 </resources>

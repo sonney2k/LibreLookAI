@@ -225,4 +225,9 @@
     <string name="error_upload_failed">اپ لوڈ ناکام: %1$s</string>
     <string name="error_original_unavailable">اصل دستیاب نہیں</string>
     <string name="action_deselect_all">انتخاب ختم کریں</string>
+    <string name="action_save">محفوظ کریں</string>
+    <string name="nav_styles">ملبوسات</string>
+    <string name="sel_move">منتقل کریں</string>
+    <string name="tryon_outfit_picker_title">ملبوسات منتخب کریں</string>
+    <string name="tryon_outfit_picker_empty">ابھی کوئی محفوظ ملبوسات نہیں۔ یہاں استعمال کے لیے ملبوسات ٹیب میں ایک بنائیں۔</string>
 </resources>

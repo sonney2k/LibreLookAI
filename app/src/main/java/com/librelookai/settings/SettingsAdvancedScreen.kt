@@ -188,7 +188,7 @@ private fun ByokBlock(
                         }
                     }
                     TextButton(onClick = { onSaveApiKey(draft.trim()); editing = false }) {
-                        Text(stringResource(R.string.action_save))
+                        Text(stringResource(DsR.string.action_save))
                     }
                 }
             }

@@ -225,4 +225,9 @@
     <string name="error_upload_failed">A feltöltés sikertelen: %1$s</string>
     <string name="error_original_unavailable">Az eredeti nem érhető el</string>
     <string name="action_deselect_all">Kijelölés törlése</string>
+    <string name="action_save">Mentés</string>
+    <string name="nav_styles">Szettek</string>
+    <string name="sel_move">Áthelyezés</string>
+    <string name="tryon_outfit_picker_title">Válassz szettet</string>
+    <string name="tryon_outfit_picker_empty">Még nincs mentett szett. Hozz létre egyet a Szettek lapon, hogy itt használhasd.</string>
 </resources>

@@ -225,4 +225,9 @@
     <string name="error_upload_failed">فشل الرفع: %1$s</string>
     <string name="error_original_unavailable">الصورة الأصلية غير متوفرة</string>
     <string name="action_deselect_all">إلغاء تحديد الكل</string>
+    <string name="action_save">حفظ</string>
+    <string name="nav_styles">الأزياء</string>
+    <string name="sel_move">نقل</string>
+    <string name="tryon_outfit_picker_title">اختر طقمًا</string>
+    <string name="tryon_outfit_picker_empty">لا توجد أطقم محفوظة بعد. أنشئ واحدًا في تبويب الأطقم لاستخدامه هنا.</string>
 </resources>

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigasjon -->
-    <string name="nav_styles">Antrekk</string>
     <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Reise</string>
     <string name="nav_settings">Innstillinger</string>
 
     <!-- Innsikter-fane -->
-    <string name="insights_tab_calendar">Kalender</string>
     <string name="insights_tab_wardrobe_stats">Garderobestatistikk</string>
-    <string name="insights_tab_calendar_stats">Kalenderstatistikk</string>
     <string name="insights_tab_costs">Kostnader</string>
     <string name="costs_count_items">Plagg</string>
     <string name="costs_count_outfits">Antrekk</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Prøvinger</string>
 
     <!-- Vanlige handlinger -->
-    <string name="action_save">Lagre</string>
     <string name="action_saving">Lagrer…</string>
     <string name="cd_ai_suggestion">AI-forslag</string>
-    <string name="cd_refine">Finjuster</string>
     <string name="filter_location">Sted</string>
     <string name="wardrobe_processing_photos">Behandler %1$d bilde(r)…</string>
     <string name="wardrobe_progress_uploading">Laster opp bilde…</string>
@@ -250,28 +245,12 @@
     <!-- Taggverdi-oversettelser (lagret på engelsk; vises på UI-språk) -->
     <!-- Farger -->
     <!-- Antrekk -->
-    <string name="outfits_empty_hint">Trykk på + for å bygge et antrekk fra garderoben din</string>
-    <string name="outfits_sort_most_worn">Mest brukt</string>
     <string name="outfits_create_manual">Opprett antrekk manuelt</string>
-    <string name="outfits_suggest">Foreslå eksisterende antrekk</string>
-    <string name="prediction_setup_title">Finn med AI</string>
-    <string name="prediction_setup_find">Finn</string>
-    <string name="prediction_setup_title_compose">Opprett med AI</string>
-    <string name="prediction_setup_create">Opprett</string>
-    <string name="prediction_setup_suggestions">Forslag</string>
     <string name="prediction_setup_considerations">Ta med i denne kjøringen</string>
-    <string name="prediction_setup_weather_pick_day">Velg en dag</string>
-    <string name="prediction_setup_weather_today">I dag</string>
-    <string name="prediction_setup_weather_tomorrow">I morgen</string>
-    <string name="composer_mode_fullscreen">Fullskjerm</string>
-    <string name="composer_empty_slot_ai_hint">AI fyller tomme plasser</string>
-    <string name="outfit_save_dialog_tag_suggestions">Eksisterende tagger</string>
     <string name="outfits_compose">Komponer nytt antrekk</string>
     <string name="outfits_thinking">Tenker…</string>
     <string name="outfits_suggesting">Foreslår antrekk…</string>
     <string name="outfits_composing">Komponerer antrekk…</string>
-    <string name="outfits_delete_title">Slette antrekk?</string>
-    <string name="outfits_delete_text">\"%s\" blir fjernet permanent.</string>
     <string name="outfits_items_away">%d plagg på et annet sted</string>
     <string name="outfits_suggested_title">Foreslått for i dag</string>
     <string name="outfits_composed_title">Komponert for deg</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Antrekknavn</string>
     <string name="outfits_description_placeholder">Beskrivelse (valgfri)</string>
     <string name="outfits_create_this">Opprett dette antrekket</string>
-    <string name="outfits_refine_label">Finjuster med AI</string>
-    <string name="outfits_refine_custom">Egen tilbakemelding…</string>
-    <string name="outfits_refine_casual">Mer avslappet</string>
-    <string name="outfits_refine_formal">Mer formelt</string>
-    <string name="outfits_refine_diff_colors">Andre farger</string>
-    <string name="outfits_refine_warmer">Varmere klær</string>
-    <string name="outfits_refine_lighter">Lettere klær</string>
-    <string name="outfits_refine_trendy">Mer trendy</string>
-    <string name="outfits_refine_simpler">Enklere</string>
-    <string name="outfits_refine_bold">Mer dristig</string>
     <string name="outfits_items_label">Antrekkplagg</string>
     <string name="outfits_add_item">Legg til plagg</string>
-    <string name="outfits_tags_label">Tagger</string>
-    <string name="outfits_prediction_prev">Forrige forslag</string>
-    <string name="outfits_prediction_next">Neste forslag</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Bruk dette antrekket</string>
-    <string name="outfits_suggest_tags">Foreslå tagger med AI</string>
-    <string name="outfits_suggest_tags_title">Foreslåtte tagger</string>
-    <string name="outfits_suggest_tags_loading">Foreslår tagger…</string>
-    <string name="outfits_suggest_tags_empty">Ingen nye tagger foreslått.</string>
-    <string name="outfits_suggest_tags_apply">Legg til valgte</string>
-    <string name="outfits_suggest_tags_hint">Trykk på tagger for å veksle. Valgte tagger legges til dette antrekket.</string>
     <string name="outfits_swap_item_for">Bytt: %s</string>
     <string name="outfits_suggest_alternatives">Foreslå 10 alternativer</string>
     <string name="outfits_select_item">Velg</string>
-    <string name="outfits_saved_wear_today">Antrekk lagret! Bruke i dag?</string>
-    <string name="outfits_selected_count">%d valgt</string>
-    <string name="outfits_select_all_count">Velg alle %d</string>
-    <string name="outfits_delete_selected_title">Slette antrekk?</string>
-    <string name="outfits_delete_selected_text">%d antrekk fjernes permanent.</string>
     <string name="outfits_combine">Kombiner med AI</string>
-    <string name="outfit_slot_lock">Lås</string>
-    <string name="outfit_slot_unlock">Lås opp</string>
-    <string name="outfit_slot_remove">Fjern</string>
-    <string name="outfit_slot_add">Legg til plagg</string>
-    <string name="outfit_generate_with_ai">Generer med AI</string>
-    <string name="outfit_discard_changes_title">Forkaste endringer?</string>
-    <string name="outfit_discard_changes_body">De ulagrede endringene dine går tapt.</string>
-    <string name="outfit_discard_changes_confirm">Forkast</string>
-    <string name="outfit_save_dialog_title">Lagre antrekk</string>
-    <string name="outfit_save_dialog_name">Navn</string>
-    <string name="outfit_save_dialog_description">Beskrivelse</string>
-    <string name="outfit_save_dialog_tags">Tagger</string>
-    <string name="outfit_save_dialog_confirm">Lagre</string>
     <string name="outfit_mode_view">Vis</string>
     <string name="outfit_mode_edit">Rediger</string>
-    <string name="outfit_pick_category">Velg en kategori</string>
 
     <!-- Reise -->
     <string name="travel_title">Pakkeliste for reise</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Kunne ikke flytte plagg</string>
 
     <!-- Kalender -->
-    <string name="calendar_day_mo">Ma</string>
-    <string name="calendar_day_tu">Ti</string>
-    <string name="calendar_day_we">On</string>
-    <string name="calendar_day_th">To</string>
-    <string name="calendar_day_fr">Fr</string>
-    <string name="calendar_day_sa">Lø</string>
-    <string name="calendar_day_su">Sø</string>
-    <string name="calendar_stats_styles">Mest brukte antrekk</string>
-    <string name="calendar_stats_items">Mest brukte plagg</string>
-    <string name="calendar_empty">Ingen antrekkhistorikk ennå</string>
-    <string name="calendar_empty_hint">Bruk et antrekk fra Antrekk-fanen for å begynne å spore</string>
-    <string name="calendar_wear_again">Bruk igjen i dag</string>
 
     <!-- Hull-analyse -->
     <string name="gap_description">Oppdag de 3 manglende plaggene som ville åpne flest nye antrekkombinasjoner fra den eksisterende garderoben din.</string>
@@ -383,7 +310,6 @@
     <!-- Kreditter / Administrert modus -->
     <!-- AI-overlegg -->
     <string name="ai_analyzing_wardrobe">Analyserer garderoben din…</string>
-    <string name="ai_suggesting_style">Foreslår antrekk…</string>
     <string name="ai_composing_outfit">Komponerer antrekk…</string>
 
     <!-- Forgrunnstjeneste-varsling -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Du er frakoblet — kun visningsmodus</string>
 
     <!-- Prøv på meg -->
-    <string name="tryon_fab">Prøv på meg</string>
     <string name="tryon_section_title">Prøvebilder</string>
     <string name="tryon_section_desc">Last opp helkroppsbilder forfra, fra siden og bakfra. Appen bruker disse som referanse når den genererer en prøveforhåndsvisning av et antrekk eller garderobeplagg på deg. Bildene forblir på din egen Drive.</string>
     <string name="tryon_add_photo">Legg til %1$s-bilde</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">For brukere som foretrekker å ikke opprette sin egen API-nøkkel, tilbyr appen et myntbasert kredittsystem. Kreditter kan kjøpes i Kreditter-fanen og forbrukes per AI-handling til satsene ovenfor. Denne modusen ruter forespørsler gjennom en server-side proxy.</string>
 
     <!-- Forent antrekk-composer -->
-    <string name="composer_title">Opprett antrekk</string>
     <string name="composer_discard_title">Forkaste antrekk?</string>
     <string name="composer_discard_message">Valgene dine går tapt.</string>
     <string name="composer_discard_confirm">Forkast</string>
-    <string name="composer_header_subtitle">%1$d av 5 lag · trykk for å bytte</string>
     <string name="composer_fill_missing">Fyll manglende</string>
     <string name="composer_see_all_count">Alle %1$d</string>
     <string name="composer_layer_picked_count">%1$d valgt</string>
-    <string name="composer_weather_title">Vær</string>
-    <string name="composer_save">Lagre</string>
     <string name="composer_section_goal">Hva er anledningen?</string>
-    <string name="composer_goal_placeholder">f.eks. Middag i Lisboa, varm kveld</string>
     <string name="composer_goal_generate">Generer</string>
     <string name="composer_advanced">Avanserte alternativer</string>
     <string name="composer_chip_work">Jobb</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Date</string>
     <string name="composer_section_quick_start">Hurtigstart</string>
     <string name="composer_section_items">Plagg</string>
-    <string name="composer_section_weather">Vær</string>
-    <string name="composer_section_vibe">Stilfølelse</string>
     <string name="composer_section_targets">Komposisjon</string>
     <string name="composer_targets_hint">Angi hvor mange av hvert lag som skal inkluderes. La stå på 0 for å la AI bestemme.</string>
     <string name="composer_tags_optional">Tagger (valgfritt)</string>
     <string name="composer_section_name">Navn &amp; beskrivelse</string>
     <string name="composer_section_ai">Forbedre med AI</string>
-    <string name="composer_weather_auto">Nåværende</string>
-    <string name="composer_weather_manual">Manuelt</string>
-    <string name="composer_weather_unknown">Ingen vær tilgjengelig</string>
-    <string name="composer_weather_season">Sesong</string>
-    <string name="composer_weather_temp">Temperatur</string>
-    <string name="composer_weather_precip">Nedbør</string>
-    <string name="composer_season_spring">Vår</string>
-    <string name="composer_season_summer">Sommer</string>
-    <string name="composer_season_fall">Høst</string>
-    <string name="composer_season_winter">Vinter</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Ingen</string>
-    <string name="composer_precip_light">Lett</string>
-    <string name="composer_precip_heavy">Kraftig</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Basisoverdel</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Fortell AI hva som skal endres eller siktes mot…</string>
     <string name="composer_feedback_history">%1$d tidligere forespørsler beholdt i konteksten</string>
     <string name="composer_enhance">Forbedre med AI</string>
-    <string name="composer_enhancing">Spør Gemini…</string>
     <string name="composer_picked_count">%1$d valgt</string>
     <string name="composer_add_selected">Legg til valgte</string>
     <string name="composer_factors_label">Bruker</string>
-    <string name="composer_factor_weather_auto">Sanntidsvær</string>
     <string name="composer_factor_weather_manual">Manuelt vær</string>
     <string name="composer_factor_vibes">%1$d stemninger</string>
     <string name="composer_factor_items">%1$d plagg</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Slett også %d antrekk som bruker disse plaggene</string>
     <string name="wardrobe_delete_cascade_tryons">Slett også %d prøving(er) med disse plaggene</string>
-    <string name="outfits_broken_banner">%d antrekk bruker plagg som ikke lenger er i garderoben din.</string>
-    <string name="outfits_broken_review">Se gjennom</string>
-    <string name="outfits_broken_delete_title">Slette ufullstendige antrekk?</string>
-    <string name="outfits_broken_delete_text">Disse %d antrekkene viser til plagg som ikke lenger er i garderoben din, og slettes permanent:</string>
-    <string name="outfits_broken_more">+%d til</string>
-    <string name="insights_items_removed">Plagg ikke lenger i garderoben</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Deg</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Lukk</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Elsket det</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Lærer av det du faktisk bruker og har elsket.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Vedlikehold</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Flere alternativer</string>
-    <string name="calendar_move_to_day">Flytt til en annen dag</string>
-    <string name="calendar_copy_to_day">Kopier til en annen dag</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Trykk på en dag for å flytte antrekket</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Trykk på en dag for å kopiere antrekket</string>
     <string name="calendar_mode_move">Flytt</string>
     <string name="calendar_mode_copy">Kopier</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Fjern fra denne dagen</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Bruk</string>
-    <string name="outfits_favorite">Favoritt</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Fullfører…</string>
     <string name="wardrobe_sync_details">Laster inn detaljer: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Fullfører…</string>
-    <string name="outfit_saving">Lagrer antrekk…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Reisemappen er ikke klar.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Legg antrekk til i kalenderen</string>
-    <string name="calendar_add_pick">Velg et antrekk</string>
-    <string name="calendar_add_empty">Ingen antrekk å legge til ennå</string>
     <string name="calendar_pick_source_prompt">Trykk på en dag med antrekk for å velge den</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Fjern antrekk fra kalenderen</string>
     <string name="calendar_delete_prompt">Trykk på en dag for å fjerne antrekkene</string>
-    <string name="calendar_delete_confirm_title">Fjerne antrekk?</string>
-    <string name="calendar_delete_confirm_msg">Fjerne alle antrekk brukt den %1$s?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Legg et antrekk til %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Nytt antrekk</string>
     <string name="fab_wardrobe_add">Legg til plagg</string>
-    <string name="fab_calendar_log">Logg antrekk</string>
     <string name="sel_swap">Bytt</string>
-    <string name="sel_move">Flytt</string>
-    <string name="sel_combine">Kombiner</string>
-    <string name="sel_love">Lik</string>
-    <string name="sel_copy_to_day">Kopier</string>
-    <string name="sel_remove">Fjern</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Trykk på en dag for å bruke «%1$s»</string>
-    <string name="calendar_done_wear">Registrert %1$s</string>
-    <string name="calendar_done_move">Flyttet til %1$s</string>
-    <string name="calendar_done_copy">Kopiert til %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Nettsted</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Fant ingen e-postapp. Send oss e-post manuelt til %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Fjerne alle antrekk som er brukt på de %1$d valgte dagene?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Legg til antrekk</string>
-    <string name="calendar_today">I dag</string>
 </resources>

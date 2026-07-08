@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navegação -->
-    <string name="nav_styles">Looks</string>
     <string name="nav_wardrobe">Guarda-roupa</string>
     <string name="nav_shopping">Compras</string>
     <string name="nav_travel">Viagem</string>
     <string name="nav_settings">Configurações</string>
 
     <!-- Aba Insights -->
-    <string name="insights_tab_calendar">Calendário</string>
     <string name="insights_tab_wardrobe_stats">Estatísticas do guarda-roupa</string>
-    <string name="insights_tab_calendar_stats">Estatísticas do calendário</string>
     <string name="insights_tab_costs">Custos</string>
     <string name="costs_count_items">Peças</string>
     <string name="costs_count_outfits">Looks</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Experimentações</string>
 
     <!-- Ações comuns -->
-    <string name="action_save">Salvar</string>
     <string name="action_saving">Salvando…</string>
     <string name="cd_ai_suggestion">Sugestão IA</string>
-    <string name="cd_refine">Refinar</string>
     <string name="filter_location">Local</string>
     <string name="wardrobe_processing_photos">Processando %1$d foto(s)…</string>
     <string name="wardrobe_progress_uploading">Enviando foto…</string>
@@ -250,28 +245,12 @@
     <!-- Traduções dos valores de tags (armazenadas em inglês; exibidas no idioma da UI) -->
     <!-- Cores -->
     <!-- Looks -->
-    <string name="outfits_empty_hint">Toque em + para montar um look com seu guarda-roupa</string>
-    <string name="outfits_sort_most_worn">Mais usados</string>
     <string name="outfits_create_manual">Criar look manualmente</string>
-    <string name="outfits_suggest">Sugerir look existente</string>
-    <string name="prediction_setup_title">Buscar com IA</string>
-    <string name="prediction_setup_find">Buscar</string>
-    <string name="prediction_setup_title_compose">Criar com IA</string>
-    <string name="prediction_setup_create">Criar</string>
-    <string name="prediction_setup_suggestions">Sugestões</string>
     <string name="prediction_setup_considerations">Considerar nesta execução</string>
-    <string name="prediction_setup_weather_pick_day">Escolha um dia</string>
-    <string name="prediction_setup_weather_today">Hoje</string>
-    <string name="prediction_setup_weather_tomorrow">Amanhã</string>
-    <string name="composer_mode_fullscreen">Tela cheia</string>
-    <string name="composer_empty_slot_ai_hint">A IA preencherá os espaços vazios</string>
-    <string name="outfit_save_dialog_tag_suggestions">Tags existentes</string>
     <string name="outfits_compose">Compor novo look</string>
     <string name="outfits_thinking">Pensando…</string>
     <string name="outfits_suggesting">Sugerindo look…</string>
     <string name="outfits_composing">Compondo look…</string>
-    <string name="outfits_delete_title">Excluir look?</string>
-    <string name="outfits_delete_text">\"%s\" será removido permanentemente.</string>
     <string name="outfits_items_away">%d peça(s) em outro local</string>
     <string name="outfits_suggested_title">Sugerido para hoje</string>
     <string name="outfits_composed_title">Composto para você</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Nome do look</string>
     <string name="outfits_description_placeholder">Descrição (opcional)</string>
     <string name="outfits_create_this">Criar este look</string>
-    <string name="outfits_refine_label">Refinar com IA</string>
-    <string name="outfits_refine_custom">Feedback personalizado…</string>
-    <string name="outfits_refine_casual">Mais casual</string>
-    <string name="outfits_refine_formal">Mais formal</string>
-    <string name="outfits_refine_diff_colors">Cores diferentes</string>
-    <string name="outfits_refine_warmer">Roupas mais quentes</string>
-    <string name="outfits_refine_lighter">Roupas mais leves</string>
-    <string name="outfits_refine_trendy">Mais antenado</string>
-    <string name="outfits_refine_simpler">Mais simples</string>
-    <string name="outfits_refine_bold">Mais ousado</string>
     <string name="outfits_items_label">Peças do look</string>
     <string name="outfits_add_item">Adicionar peça</string>
-    <string name="outfits_tags_label">Tags</string>
-    <string name="outfits_prediction_prev">Sugestão anterior</string>
-    <string name="outfits_prediction_next">Próxima sugestão</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Usar este look</string>
-    <string name="outfits_suggest_tags">Sugerir tags com IA</string>
-    <string name="outfits_suggest_tags_title">Tags sugeridas</string>
-    <string name="outfits_suggest_tags_loading">Sugerindo tags…</string>
-    <string name="outfits_suggest_tags_empty">Nenhuma nova tag sugerida.</string>
-    <string name="outfits_suggest_tags_apply">Adicionar selecionadas</string>
-    <string name="outfits_suggest_tags_hint">Toque nas tags para alternar. As tags selecionadas são adicionadas a este look.</string>
     <string name="outfits_swap_item_for">Trocar: %s</string>
     <string name="outfits_suggest_alternatives">Sugerir 10 alternativas</string>
     <string name="outfits_select_item">Selecionar</string>
-    <string name="outfits_saved_wear_today">Look salvo! Usar hoje?</string>
-    <string name="outfits_selected_count">%d selecionados</string>
-    <string name="outfits_select_all_count">Selecionar todos %d</string>
-    <string name="outfits_delete_selected_title">Excluir looks?</string>
-    <string name="outfits_delete_selected_text">%d looks serão removidos permanentemente.</string>
     <string name="outfits_combine">Combinar com IA</string>
-    <string name="outfit_slot_lock">Travar</string>
-    <string name="outfit_slot_unlock">Destravar</string>
-    <string name="outfit_slot_remove">Remover</string>
-    <string name="outfit_slot_add">Adicionar peça</string>
-    <string name="outfit_generate_with_ai">Gerar com IA</string>
-    <string name="outfit_discard_changes_title">Descartar mudanças?</string>
-    <string name="outfit_discard_changes_body">Suas alterações não salvas serão perdidas.</string>
-    <string name="outfit_discard_changes_confirm">Descartar</string>
-    <string name="outfit_save_dialog_title">Salvar look</string>
-    <string name="outfit_save_dialog_name">Nome</string>
-    <string name="outfit_save_dialog_description">Descrição</string>
-    <string name="outfit_save_dialog_tags">Tags</string>
-    <string name="outfit_save_dialog_confirm">Salvar</string>
     <string name="outfit_mode_view">Ver</string>
     <string name="outfit_mode_edit">Editar</string>
-    <string name="outfit_pick_category">Escolha uma categoria</string>
 
     <!-- Viagem -->
     <string name="travel_title">Lista de mala de viagem</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Não foi possível mover os itens</string>
 
     <!-- Calendário -->
-    <string name="calendar_day_mo">Se</string>
-    <string name="calendar_day_tu">Te</string>
-    <string name="calendar_day_we">Qu</string>
-    <string name="calendar_day_th">Qu</string>
-    <string name="calendar_day_fr">Se</string>
-    <string name="calendar_day_sa">Sa</string>
-    <string name="calendar_day_su">Do</string>
-    <string name="calendar_stats_styles">Looks mais usados</string>
-    <string name="calendar_stats_items">Peças mais usadas</string>
-    <string name="calendar_empty">Nenhum histórico de looks ainda</string>
-    <string name="calendar_empty_hint">Use um look da aba Looks para começar a rastrear</string>
-    <string name="calendar_wear_again">Usar de novo hoje</string>
 
     <!-- Analisador de lacunas -->
     <string name="gap_description">Descubra as 3 peças que faltam para desbloquear o maior número de novas combinações de looks com o seu guarda-roupa atual.</string>
@@ -383,7 +310,6 @@
     <!-- Créditos / Modo gerenciado -->
     <!-- Sobreposição IA -->
     <string name="ai_analyzing_wardrobe">Analisando seu guarda-roupa…</string>
-    <string name="ai_suggesting_style">Sugerindo look…</string>
     <string name="ai_composing_outfit">Compondo look…</string>
 
     <!-- Notificação do serviço em primeiro plano -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Você está offline — modo somente visualização</string>
 
     <!-- Provar em mim -->
-    <string name="tryon_fab">Provar em mim</string>
     <string name="tryon_section_title">Fotos para experimentação</string>
     <string name="tryon_section_desc">Envie fotos de corpo inteiro de frente, lado e costas. O app usa essas fotos como referência ao gerar uma prévia de experimentação de um look ou peça em você. As fotos ficam no seu próprio Drive.</string>
     <string name="tryon_add_photo">Adicionar foto %1$s</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Para usuários que preferem não criar a própria chave API, o app oferece um sistema de créditos por moedas. Os créditos podem ser comprados na aba Créditos e são consumidos por ação IA nas taxas listadas acima. Esse modo encaminha as requisições por um proxy no servidor.</string>
 
     <!-- Compositor unificado de looks -->
-    <string name="composer_title">Criar look</string>
     <string name="composer_discard_title">Descartar look?</string>
     <string name="composer_discard_message">Suas seleções serão perdidas.</string>
     <string name="composer_discard_confirm">Descartar</string>
-    <string name="composer_header_subtitle">%1$d de 5 camadas · toque para trocar</string>
     <string name="composer_fill_missing">Completar</string>
     <string name="composer_see_all_count">Todos %1$d</string>
     <string name="composer_layer_picked_count">%1$d escolhidos</string>
-    <string name="composer_weather_title">Clima</string>
-    <string name="composer_save">Salvar</string>
     <string name="composer_section_goal">Qual é a ocasião?</string>
-    <string name="composer_goal_placeholder">ex. Jantar em Lisboa, noite quente</string>
     <string name="composer_goal_generate">Gerar</string>
     <string name="composer_advanced">Opções avançadas</string>
     <string name="composer_chip_work">Trabalho</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Encontro</string>
     <string name="composer_section_quick_start">Início rápido</string>
     <string name="composer_section_items">Peças</string>
-    <string name="composer_section_weather">Clima</string>
-    <string name="composer_section_vibe">Vibe</string>
     <string name="composer_section_targets">Composição</string>
     <string name="composer_targets_hint">Defina quantos itens de cada camada incluir. Deixe em 0 para a IA decidir.</string>
     <string name="composer_tags_optional">Tags (opcional)</string>
     <string name="composer_section_name">Nome e descrição</string>
     <string name="composer_section_ai">Melhorar com IA</string>
-    <string name="composer_weather_auto">Atual</string>
-    <string name="composer_weather_manual">Manual</string>
-    <string name="composer_weather_unknown">Clima indisponível</string>
-    <string name="composer_weather_season">Estação</string>
-    <string name="composer_weather_temp">Temperatura</string>
-    <string name="composer_weather_precip">Precipitação</string>
-    <string name="composer_season_spring">Primavera</string>
-    <string name="composer_season_summer">Verão</string>
-    <string name="composer_season_fall">Outono</string>
-    <string name="composer_season_winter">Inverno</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Nenhuma</string>
-    <string name="composer_precip_light">Leve</string>
-    <string name="composer_precip_heavy">Forte</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Top base</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Diga à IA o que mudar ou no que focar…</string>
     <string name="composer_feedback_history">%1$d pedido(s) anterior(es) mantido(s) em contexto</string>
     <string name="composer_enhance">Melhorar com IA</string>
-    <string name="composer_enhancing">Perguntando ao Gemini…</string>
     <string name="composer_picked_count">%1$d escolhidos</string>
     <string name="composer_add_selected">Adicionar selecionados</string>
     <string name="composer_factors_label">Usando</string>
-    <string name="composer_factor_weather_auto">Clima ao vivo</string>
     <string name="composer_factor_weather_manual">Clima manual</string>
     <string name="composer_factor_vibes">%1$d vibes</string>
     <string name="composer_factor_items">%1$d peças</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Também excluir %d look(s) que usam estas peças</string>
     <string name="wardrobe_delete_cascade_tryons">Também excluir %d prova(s) com estas peças</string>
-    <string name="outfits_broken_banner">%d looks usam peças que não estão mais no seu guarda-roupa.</string>
-    <string name="outfits_broken_review">Revisar</string>
-    <string name="outfits_broken_delete_title">Excluir looks com itens ausentes?</string>
-    <string name="outfits_broken_delete_text">Estes %d looks fazem referência a peças que não estão mais no seu guarda-roupa e serão excluídos permanentemente:</string>
-    <string name="outfits_broken_more">+%d mais</string>
-    <string name="insights_items_removed">Peças que não estão mais no guarda-roupa</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Você</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Dispensar</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Amei</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Aprende com o que você realmente usa e amou.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Manutenção</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Mais opções</string>
-    <string name="calendar_move_to_day">Mover para outro dia</string>
-    <string name="calendar_copy_to_day">Copiar para outro dia</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Toque em um dia para mover o look</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Toque em um dia para copiar o look</string>
     <string name="calendar_mode_move">Mover</string>
     <string name="calendar_mode_copy">Copiar</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Remover deste dia</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Usar</string>
-    <string name="outfits_favorite">Favorito</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Concluindo…</string>
     <string name="wardrobe_sync_details">Carregando detalhes: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Concluindo…</string>
-    <string name="outfit_saving">Salvando look…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">A pasta de viagens não está pronta.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Adicionar look ao calendário</string>
-    <string name="calendar_add_pick">Escolha um look</string>
-    <string name="calendar_add_empty">Nenhum look para adicionar ainda</string>
     <string name="calendar_pick_source_prompt">Toque em um dia com looks para selecioná-lo</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Remover look do calendário</string>
     <string name="calendar_delete_prompt">Toque em um dia para remover seus looks</string>
-    <string name="calendar_delete_confirm_title">Remover looks?</string>
-    <string name="calendar_delete_confirm_msg">Remover todos os looks usados em %1$s?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Adicionar um look em %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Novo look</string>
     <string name="fab_wardrobe_add">Adicionar peça</string>
-    <string name="fab_calendar_log">Registrar look</string>
     <string name="sel_swap">Trocar</string>
-    <string name="sel_move">Mover</string>
-    <string name="sel_combine">Combinar</string>
-    <string name="sel_love">Curtir</string>
-    <string name="sel_copy_to_day">Copiar</string>
-    <string name="sel_remove">Remover</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Toque em um dia para usar “%1$s”</string>
-    <string name="calendar_done_wear">Registrado em %1$s</string>
-    <string name="calendar_done_move">Movido para %1$s</string>
-    <string name="calendar_done_copy">Copiado para %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Site</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Nenhum app de e-mail encontrado. Escreva para nós manualmente em %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Remover todos os looks usados nos %1$d dias selecionados?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Adicionar look</string>
-    <string name="calendar_today">Hoje</string>
 </resources>

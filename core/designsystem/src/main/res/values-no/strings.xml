@@ -225,4 +225,9 @@
     <string name="error_upload_failed">Opplasting mislyktes: %1$s</string>
     <string name="error_original_unavailable">Original ikke tilgjengelig</string>
     <string name="action_deselect_all">Fjern markering</string>
+    <string name="action_save">Lagre</string>
+    <string name="nav_styles">Antrekk</string>
+    <string name="sel_move">Flytt</string>
+    <string name="tryon_outfit_picker_title">Velg et antrekk</string>
+    <string name="tryon_outfit_picker_empty">Ingen lagrede antrekk ennå. Opprett ett i Antrekk-fanen for å bruke det her.</string>
 </resources>

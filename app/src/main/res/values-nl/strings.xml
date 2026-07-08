@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigatie -->
-    <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_shopping">Winkelen</string>
     <string name="nav_travel">Reis</string>
     <string name="nav_settings">Instellingen</string>
 
     <!-- Inzichten-tab -->
-    <string name="insights_tab_calendar">Kalender</string>
     <string name="insights_tab_wardrobe_stats">Garderobestatistieken</string>
-    <string name="insights_tab_calendar_stats">Kalenderstatistieken</string>
     <string name="insights_tab_costs">Kosten</string>
     <string name="costs_count_items">Stuks</string>
     <string name="costs_count_outfits">Outfits</string>
@@ -48,10 +45,8 @@
     <string name="outfits_tab_tryons">Pasbeurten</string>
 
     <!-- Algemene acties -->
-    <string name="action_save">Opslaan</string>
     <string name="action_saving">Opslaan…</string>
     <string name="cd_ai_suggestion">AI-suggestie</string>
-    <string name="cd_refine">Verfijnen</string>
     <string name="filter_location">Locatie</string>
     <string name="wardrobe_processing_photos">%1$d foto(\'s) verwerken…</string>
     <string name="wardrobe_progress_uploading">Foto uploaden…</string>
@@ -250,28 +245,12 @@
     <!-- Tag-waarde vertalingen (opgeslagen in het Engels; weergegeven in UI-taal) -->
     <!-- Kleuren -->
     <!-- Outfits -->
-    <string name="outfits_empty_hint">Tik op + om een outfit uit je garderobe te maken</string>
-    <string name="outfits_sort_most_worn">Meest gedragen</string>
     <string name="outfits_create_manual">Outfit handmatig maken</string>
-    <string name="outfits_suggest">Bestaande outfit voorstellen</string>
-    <string name="prediction_setup_title">Zoek met AI</string>
-    <string name="prediction_setup_find">Zoeken</string>
-    <string name="prediction_setup_title_compose">Maken met AI</string>
-    <string name="prediction_setup_create">Maken</string>
-    <string name="prediction_setup_suggestions">Suggesties</string>
     <string name="prediction_setup_considerations">Meenemen voor deze run</string>
-    <string name="prediction_setup_weather_pick_day">Kies een dag</string>
-    <string name="prediction_setup_weather_today">Vandaag</string>
-    <string name="prediction_setup_weather_tomorrow">Morgen</string>
-    <string name="composer_mode_fullscreen">Volledig scherm</string>
-    <string name="composer_empty_slot_ai_hint">AI vult lege plekken</string>
-    <string name="outfit_save_dialog_tag_suggestions">Bestaande tags</string>
     <string name="outfits_compose">Nieuwe outfit samenstellen</string>
     <string name="outfits_thinking">Bezig met denken…</string>
     <string name="outfits_suggesting">Outfit voorstellen…</string>
     <string name="outfits_composing">Outfit samenstellen…</string>
-    <string name="outfits_delete_title">Outfit verwijderen?</string>
-    <string name="outfits_delete_text">\"%s\" wordt definitief verwijderd.</string>
     <string name="outfits_items_away">%d item(s) op een andere locatie</string>
     <string name="outfits_suggested_title">Voorgesteld voor vandaag</string>
     <string name="outfits_composed_title">Voor jou samengesteld</string>
@@ -279,54 +258,14 @@
     <string name="outfits_name_placeholder">Outfitnaam</string>
     <string name="outfits_description_placeholder">Beschrijving (optioneel)</string>
     <string name="outfits_create_this">Deze outfit maken</string>
-    <string name="outfits_refine_label">Verfijnen met AI</string>
-    <string name="outfits_refine_custom">Eigen feedback…</string>
-    <string name="outfits_refine_casual">Casualer</string>
-    <string name="outfits_refine_formal">Formeler</string>
-    <string name="outfits_refine_diff_colors">Andere kleuren</string>
-    <string name="outfits_refine_warmer">Warmere kleding</string>
-    <string name="outfits_refine_lighter">Lichtere kleding</string>
-    <string name="outfits_refine_trendy">Trendier</string>
-    <string name="outfits_refine_simpler">Eenvoudiger</string>
-    <string name="outfits_refine_bold">Gewaagder</string>
     <string name="outfits_items_label">Outfit-items</string>
     <string name="outfits_add_item">Item toevoegen</string>
-    <string name="outfits_tags_label">Tags</string>
-    <string name="outfits_prediction_prev">Vorige suggestie</string>
-    <string name="outfits_prediction_next">Volgende suggestie</string>
-    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
-    <string name="composer_select_suggestion">Deze outfit gebruiken</string>
-    <string name="outfits_suggest_tags">Tags voorstellen met AI</string>
-    <string name="outfits_suggest_tags_title">Voorgestelde tags</string>
-    <string name="outfits_suggest_tags_loading">Tags voorstellen…</string>
-    <string name="outfits_suggest_tags_empty">Geen nieuwe tags voorgesteld.</string>
-    <string name="outfits_suggest_tags_apply">Selectie toevoegen</string>
-    <string name="outfits_suggest_tags_hint">Tik op tags om aan/uit te zetten. Geselecteerde tags worden aan deze outfit toegevoegd.</string>
     <string name="outfits_swap_item_for">Wissel: %s</string>
     <string name="outfits_suggest_alternatives">10 alternatieven voorstellen</string>
     <string name="outfits_select_item">Selecteren</string>
-    <string name="outfits_saved_wear_today">Outfit opgeslagen! Vandaag dragen?</string>
-    <string name="outfits_selected_count">%d geselecteerd</string>
-    <string name="outfits_select_all_count">Alle %d selecteren</string>
-    <string name="outfits_delete_selected_title">Outfits verwijderen?</string>
-    <string name="outfits_delete_selected_text">%d outfits worden definitief verwijderd.</string>
     <string name="outfits_combine">Combineren met AI</string>
-    <string name="outfit_slot_lock">Vergrendelen</string>
-    <string name="outfit_slot_unlock">Ontgrendelen</string>
-    <string name="outfit_slot_remove">Verwijderen</string>
-    <string name="outfit_slot_add">Item toevoegen</string>
-    <string name="outfit_generate_with_ai">Genereren met AI</string>
-    <string name="outfit_discard_changes_title">Wijzigingen verwerpen?</string>
-    <string name="outfit_discard_changes_body">Niet-opgeslagen wijzigingen gaan verloren.</string>
-    <string name="outfit_discard_changes_confirm">Verwerpen</string>
-    <string name="outfit_save_dialog_title">Outfit opslaan</string>
-    <string name="outfit_save_dialog_name">Naam</string>
-    <string name="outfit_save_dialog_description">Beschrijving</string>
-    <string name="outfit_save_dialog_tags">Tags</string>
-    <string name="outfit_save_dialog_confirm">Opslaan</string>
     <string name="outfit_mode_view">Bekijken</string>
     <string name="outfit_mode_edit">Bewerken</string>
-    <string name="outfit_pick_category">Kies een categorie</string>
 
     <!-- Reis -->
     <string name="travel_title">Reispaklijst</string>
@@ -352,18 +291,6 @@
     <string name="travel_move_error">Items konden niet verplaatst worden</string>
 
     <!-- Kalender -->
-    <string name="calendar_day_mo">Ma</string>
-    <string name="calendar_day_tu">Di</string>
-    <string name="calendar_day_we">Wo</string>
-    <string name="calendar_day_th">Do</string>
-    <string name="calendar_day_fr">Vr</string>
-    <string name="calendar_day_sa">Za</string>
-    <string name="calendar_day_su">Zo</string>
-    <string name="calendar_stats_styles">Meest gedragen outfits</string>
-    <string name="calendar_stats_items">Meest gedragen items</string>
-    <string name="calendar_empty">Nog geen outfithistorie</string>
-    <string name="calendar_empty_hint">Draag een outfit vanaf de Outfits-tab om het bijhouden te starten</string>
-    <string name="calendar_wear_again">Vandaag opnieuw dragen</string>
 
     <!-- Gat-analyse -->
     <string name="gap_description">Ontdek de 3 ontbrekende stuks die de meeste nieuwe outfitcombinaties uit je bestaande garderobe vrijspelen.</string>
@@ -383,7 +310,6 @@
     <!-- Credits / Managed Mode -->
     <!-- AI-overlay -->
     <string name="ai_analyzing_wardrobe">Je garderobe analyseren…</string>
-    <string name="ai_suggesting_style">Outfit voorstellen…</string>
     <string name="ai_composing_outfit">Outfit samenstellen…</string>
 
     <!-- Foreground service notification -->
@@ -396,7 +322,6 @@
     <string name="offline_banner">Je bent offline — alleen-lezenmodus</string>
 
     <!-- Probeer aan me -->
-    <string name="tryon_fab">Pas op mij</string>
     <string name="tryon_section_title">Pasfoto\'s</string>
     <string name="tryon_section_desc">Upload volledige lichaamsfoto\'s van voren, opzij en achter. De app gebruikt deze als referentie bij het genereren van een pasvoorbeeld van een outfit of garderobe-item op jou. Foto\'s blijven op je eigen Drive.</string>
     <string name="tryon_add_photo">%1$s-foto toevoegen</string>
@@ -439,18 +364,13 @@
     <string name="about_credits_desc">Voor gebruikers die liever geen eigen API-sleutel aanmaken, biedt de app een muntgebaseerd creditsysteem. Credits kunnen worden gekocht in de Credits-tab en worden per AI-actie verbruikt tegen de hierboven vermelde tarieven. Deze modus stuurt verzoeken via een serverzijde-proxy.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">Outfit maken</string>
     <string name="composer_discard_title">Outfit verwerpen?</string>
     <string name="composer_discard_message">Je selecties gaan verloren.</string>
     <string name="composer_discard_confirm">Verwerpen</string>
-    <string name="composer_header_subtitle">%1$d van 5 lagen · tik om te wisselen</string>
     <string name="composer_fill_missing">Ontbrekende vullen</string>
     <string name="composer_see_all_count">Alle %1$d</string>
     <string name="composer_layer_picked_count">%1$d gekozen</string>
-    <string name="composer_weather_title">Weer</string>
-    <string name="composer_save">Opslaan</string>
     <string name="composer_section_goal">Wat is de gelegenheid?</string>
-    <string name="composer_goal_placeholder">bv. Diner in Lissabon, warme avond</string>
     <string name="composer_goal_generate">Genereren</string>
     <string name="composer_advanced">Geavanceerde opties</string>
     <string name="composer_chip_work">Werk</string>
@@ -461,27 +381,11 @@
     <string name="composer_chip_date">Date</string>
     <string name="composer_section_quick_start">Snelle start</string>
     <string name="composer_section_items">Items</string>
-    <string name="composer_section_weather">Weer</string>
-    <string name="composer_section_vibe">Stijlsfeer</string>
     <string name="composer_section_targets">Compositie</string>
     <string name="composer_targets_hint">Stel in hoeveel items per laag je wilt opnemen. Laat op 0 om de AI te laten beslissen.</string>
     <string name="composer_tags_optional">Tags (optioneel)</string>
     <string name="composer_section_name">Naam &amp; beschrijving</string>
     <string name="composer_section_ai">Verbeteren met AI</string>
-    <string name="composer_weather_auto">Actueel</string>
-    <string name="composer_weather_manual">Handmatig</string>
-    <string name="composer_weather_unknown">Geen weer beschikbaar</string>
-    <string name="composer_weather_season">Seizoen</string>
-    <string name="composer_weather_temp">Temperatuur</string>
-    <string name="composer_weather_precip">Neerslag</string>
-    <string name="composer_season_spring">Lente</string>
-    <string name="composer_season_summer">Zomer</string>
-    <string name="composer_season_fall">Herfst</string>
-    <string name="composer_season_winter">Winter</string>
-    <string name="composer_temp_value">%1$d°C</string>
-    <string name="composer_precip_none">Geen</string>
-    <string name="composer_precip_light">Licht</string>
-    <string name="composer_precip_heavy">Zwaar</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Basistop</string>
@@ -494,11 +398,9 @@
     <string name="composer_feedback_placeholder">Vertel de AI wat aangepast moet worden…</string>
     <string name="composer_feedback_history">%1$d eerdere verzoek(en) in context bewaard</string>
     <string name="composer_enhance">Verbeteren met AI</string>
-    <string name="composer_enhancing">Gemini vragen…</string>
     <string name="composer_picked_count">%1$d gekozen</string>
     <string name="composer_add_selected">Selectie toevoegen</string>
     <string name="composer_factors_label">Gebruikt</string>
-    <string name="composer_factor_weather_auto">Live weer</string>
     <string name="composer_factor_weather_manual">Handmatig weer</string>
     <string name="composer_factor_vibes">%1$d sferen</string>
     <string name="composer_factor_items">%1$d items</string>
@@ -597,12 +499,6 @@
     <!-- Trips -->
     <string name="wardrobe_delete_cascade_outfits">Verwijder ook %d outfit(s) die deze items gebruiken</string>
     <string name="wardrobe_delete_cascade_tryons">Verwijder ook %d try-on(s) met deze items</string>
-    <string name="outfits_broken_banner">%d outfits gebruiken items die niet meer in je garderobe staan.</string>
-    <string name="outfits_broken_review">Bekijken</string>
-    <string name="outfits_broken_delete_title">Onvolledige outfits verwijderen?</string>
-    <string name="outfits_broken_delete_text">Deze %d outfits verwijzen naar items die niet meer in je garderobe staan en worden permanent verwijderd:</string>
-    <string name="outfits_broken_more">+%d meer</string>
-    <string name="insights_items_removed">Items niet meer in garderobe</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Jij</string>
@@ -692,7 +588,6 @@
     <string name="ai_dismiss">Sluiten</string>
 
     <!-- Calendar wear history (loved toggle) -->
-    <string name="calendar_loved">Geweldig</string>
 
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history_desc">Leert van wat je echt draagt en geweldig vond.</string>
@@ -758,24 +653,16 @@
     <string name="wardrobe_maintenance_menu">Onderhoud</string>
 
     <!-- Calendar move/copy outfit between days -->
-    <string name="calendar_more_options">Meer opties</string>
-    <string name="calendar_move_to_day">Naar een andere dag verplaatsen</string>
-    <string name="calendar_copy_to_day">Naar een andere dag kopiëren</string>
 
     <!-- Calendar long-press move prompt -->
-    <string name="calendar_move_prompt">Tik op een dag om de outfit te verplaatsen</string>
 
     <!-- Calendar long-press copy mode -->
-    <string name="calendar_copy_prompt">Tik op een dag om de outfit te kopiëren</string>
     <string name="calendar_mode_move">Verplaatsen</string>
     <string name="calendar_mode_copy">Kopiëren</string>
 
     <!-- Calendar remove outfit from day -->
-    <string name="calendar_remove">Van deze dag verwijderen</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Dragen</string>
-    <string name="outfits_favorite">Favoriet</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
 
@@ -787,7 +674,6 @@
     <string name="restore_finishing">Afronden…</string>
     <string name="wardrobe_sync_details">Details laden: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Afronden…</string>
-    <string name="outfit_saving">Outfit opslaan…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -798,35 +684,19 @@
     <string name="error_trips_folder_not_ready">Reizenmap is niet gereed.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Outfit aan agenda toevoegen</string>
-    <string name="calendar_add_pick">Kies een outfit</string>
-    <string name="calendar_add_empty">Nog geen outfits om toe te voegen</string>
     <string name="calendar_pick_source_prompt">Tik op een dag met outfits om die te selecteren</string>
 
     <!-- Calendar FAB delete option -->
     <string name="calendar_delete_from_calendar">Outfit uit agenda verwijderen</string>
     <string name="calendar_delete_prompt">Tik op een dag om de outfits ervan te verwijderen</string>
-    <string name="calendar_delete_confirm_title">Outfits verwijderen?</string>
-    <string name="calendar_delete_confirm_msg">Alle outfits gedragen op %1$s verwijderen?</string>
 
     <!-- Calendar add-to-day title -->
-    <string name="calendar_add_pick_for">Outfit toevoegen aan %1$s</string>
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_outfits_new">Nieuwe outfit</string>
     <string name="fab_wardrobe_add">Item toevoegen</string>
-    <string name="fab_calendar_log">Outfit loggen</string>
     <string name="sel_swap">Wisselen</string>
-    <string name="sel_move">Verplaatsen</string>
-    <string name="sel_combine">Combineren</string>
-    <string name="sel_love">Liken</string>
-    <string name="sel_copy_to_day">Kopiëren</string>
-    <string name="sel_remove">Verwijderen</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
-    <string name="calendar_wear_prompt">Tik op een dag om “%1$s” te dragen</string>
-    <string name="calendar_done_wear">Geregistreerd op %1$s</string>
-    <string name="calendar_done_move">Verplaatst naar %1$s</string>
-    <string name="calendar_done_copy">Gekopieerd naar %1$s</string>
 
     <!-- About: website + source links -->
     <string name="about_website_label">Website</string>
@@ -847,9 +717,6 @@
     <string name="feedback_no_email_app">Geen e-mailapp gevonden. Mail ons handmatig op %1$s.</string>
 
     <!-- Calendar multi-day selection -->
-    <string name="calendar_delete_confirm_msg_multi">Alle outfits verwijderen die op de %1$d geselecteerde dagen zijn gedragen?</string>
 
     <!-- Calendar: add-outfit day sheet + Today button -->
-    <string name="calendar_add_to_day">Outfit toevoegen</string>
-    <string name="calendar_today">Vandaag</string>
 </resources>
