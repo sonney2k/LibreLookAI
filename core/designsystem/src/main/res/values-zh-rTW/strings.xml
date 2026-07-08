@@ -230,4 +230,15 @@
     <string name="sel_move">移動</string>
     <string name="tryon_outfit_picker_title">選擇穿搭</string>
     <string name="tryon_outfit_picker_empty">尚無已儲存的穿搭。請先在「穿搭」頁面建立。</string>
+    <string name="battery_exempt_action">開啟設定</string>
+    <string name="battery_exempt_text">LibreLookAI 需要不受限制的背景處理權限，以便安全地匯入相片、去背並用 AI 標籤你的衣物。
+
+沒有此權限，Android 可能在處理中途終止 App，導致資料遺失——部分匯入的單品、缺失的標籤或檔案損毀。
+
+請關閉 LibreLookAI 的電池最佳化以繼續。</string>
+    <string name="battery_exempt_title">需要背景處理權限</string>
+    <string name="nav_wardrobe">衣櫥</string>
+    <string name="shop_your_photo">你的相片</string>
+    <string name="wardrobe_fix_cutout_bg">修復剪裁背景</string>
+    <string name="wardrobe_move_to_title">將 %d 件單品移至</string>
 </resources>

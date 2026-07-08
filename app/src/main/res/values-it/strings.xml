@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigazione -->
-    <string name="nav_wardrobe">Guardaroba</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Viaggio</string>
     <string name="nav_settings">Impostazioni</string>
 
     <!-- Scheda Statistiche -->
-    <string name="insights_tab_wardrobe_stats">Statistiche guardaroba</string>
     <string name="insights_tab_costs">Costi</string>
     <string name="costs_count_items">Capi</string>
     <string name="costs_count_outfits">Outfit</string>
@@ -30,15 +28,6 @@
 
     <!-- Import URL (Guardaroba + Lista shopping) -->
     <string name="wardrobe_add_url">Aggiungi da URL</string>
-    <string name="wardrobe_url_import_title">Importa da URL shopping</string>
-    <string name="wardrobe_url_import_hint">Incolla l\'URL di una pagina shopping. Recupereremo l\'immagine del prodotto automaticamente.</string>
-    <string name="url_import_pick_title">Scegli l\'immagine del prodotto</string>
-    <string name="url_import_pick_hint">Tocca l\'immagine che vuoi importare. Se nessuna va bene, apri la pagina nel browser.</string>
-    <string name="url_import_browser_title">Apri pagina</string>
-    <string name="url_import_browser_hint">Tocca qualsiasi immagine nella pagina per importarla.</string>
-    <string name="url_import_open_browser">Apri pagina</string>
-    <string name="url_import_show_candidates">Candidati</string>
-    <string name="url_import_no_candidates">Nessuna immagine trovata. Apri la pagina nel browser per sceglierne una.</string>
 
     <!-- Sotto-schede Outfit -->
     <string name="outfits_tab_outfits">Outfit</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Salvataggio…</string>
     <string name="cd_ai_suggestion">Suggerimento IA</string>
     <string name="filter_location">Posizione</string>
-    <string name="wardrobe_processing_photos">Elaborazione di %1$d foto…</string>
-    <string name="wardrobe_progress_uploading">Caricamento foto…</string>
-    <string name="wardrobe_progress_uploading_batch">Caricamento foto %1$d di %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Rimozione sfondo…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Rimozione sfondo %1$d di %2$d…</string>
-    <string name="wardrobe_progress_moving">Spostamento nella nuova posizione…</string>
     <string name="action_select_all">Seleziona tutto</string>
 
     <!-- Accesso -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Etichette guardaroba</string>
     <string name="settings_data_tags_desc">Riclassifica ogni capo del tuo guardaroba con Gemini. Sovrascrive ogni modifica manuale alle etichette.</string>
     <string name="settings_rescan_button">Ri-scansiona tutte le etichette</string>
-    <string name="settings_rescanning">Ri-scansione %1$d di %2$d…</string>
     <string name="settings_rescan_dialog_title">Ri-scansionare tutte le etichette?</string>
     <string name="settings_rescan_dialog_text">Gemini riclassificherà ogni capo del tuo guardaroba. Questo sovrascriverà le modifiche manuali alle etichette e potrebbe richiedere tempo.</string>
     <string name="settings_rescan_confirm">Ri-scansiona</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Necessitano solo etichette</string>
     <string name="settings_repair_preview_section_count">%1$d di %2$d selezionati</string>
     <string name="settings_repair_preview_selected">%1$d di %2$d selezionati</string>
-    <string name="settings_repair_preview_select_all">Seleziona tutto</string>
-    <string name="settings_repair_preview_deselect_all">Deseleziona tutto</string>
     <string name="settings_repair_preview_process_n">Elabora %1$d</string>
     <string name="settings_cutoutfix_title">Correggi sfondi dei ritagli</string>
     <string name="settings_cutoutfix_desc">Scansiona i ritagli esistenti per sfondi neri residui o aloni verdi e riapplica la maschera localmente. Nessuna chiamata IA — i ritagli corretti vengono ricaricati mantenendo il loro ID Drive.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Scansione ritaglio %1$d di %2$d…</string>
     <string name="settings_cutoutfix_processing">Correzione ritaglio %1$d di %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d ritaglio/i corretti.</string>
-    <string name="settings_cutoutfix_dialog_title">Correggi sfondi dei ritagli — Anteprima</string>
-    <string name="settings_cutoutfix_dialog_subtitle">I ritagli selezionati verranno rielaborati localmente e ricaricati. Tocca per attivare/disattivare.</string>
-    <string name="settings_cutoutfix_show_all">Mostra tutti i ritagli (non solo quelli segnalati)</string>
     <string name="settings_cutoutfix_no_issues">Nessun ritaglio con sfondo residuo trovato.</string>
-    <string name="settings_cutoutfix_badge_blackbg">sfondo nero</string>
-    <string name="settings_cutoutfix_badge_greenhalo">alone verde</string>
-    <string name="settings_cutoutfix_action_clearalpha">Cancella alpha (rendi opaco)</string>
-    <string name="settings_cutoutfix_action_blackbg">Sfondo nero → trasparente</string>
-    <string name="settings_cutoutfix_action_greenhalo">Rimuovi alone verde</string>
-    <string name="settings_cutoutfix_action_feather">Sfuma bordi alpha</string>
-    <string name="settings_cutoutfix_action_tightcrop">Ritaglio stretto e limite dimensione</string>
-    <string name="settings_cutoutfix_fix_n">Correggi %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d di %2$d selezionati</string>
     <string name="settings_repair_preview_cost_total">Costo stimato: %1$d crediti</string>
     <string name="settings_repair_clear_cache">Svuota cache locale</string>
     <string name="settings_repair_clear_cache_desc">Riscarica tutte le immagini da Drive dopo l\'operazione. Più lento; serve solo se i file locali sembrano obsoleti.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Attivo</string>
 
     <!-- Guardaroba -->
-    <string name="wardrobe_sync_progress">Ripristino guardaroba: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d capi</string>
     <string name="wardrobe_filtered_count">Mostrati %1$d di %2$d capi</string>
-    <string name="wardrobe_stats_total">%1$d capi in totale</string>
-    <string name="wardrobe_stats_untagged">Senza etichetta</string>
-    <string name="wardrobe_empty">Nessun capo ancora</string>
-    <string name="wardrobe_empty_hint">Scatta una foto o scegli dalla galleria</string>
     <string name="wardrobe_create_outfit">Crea outfit manualmente</string>
     <string name="wardrobe_compose_ai">Componi con IA</string>
-    <string name="wardrobe_select_all_count">Seleziona tutti (%1$d)</string>
-    <string name="wardrobe_delete_title">Eliminare i capi?</string>
-    <string name="wardrobe_delete_text">Sei sicuro di voler eliminare %d capi selezionati? Questa azione non può essere annullata.</string>
-    <string name="wardrobe_move_to">Sposta in</string>
-    <string name="wardrobe_move_to_title">Sposta %d capo/i in</string>
-    <string name="wardrobe_tag_detect">Rileva etichette</string>
-    <string name="wardrobe_tag_remove_bg">Rimuovi sfondo</string>
-    <string name="wardrobe_tag_re_remove_bg">Rimuovi di nuovo sfondo</string>
-    <string name="wardrobe_fix_cutout_bg">Correggi sfondo ritaglio</string>
     <string name="wardrobe_fix_cutout_bg_done">Sfondo del ritaglio corretto.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Nessuno sfondo residuo rilevato — niente da correggere.</string>
-    <string name="wardrobe_tag_rotate">Ruota</string>
-    <string name="wardrobe_tag_edit">Modifica etichette</string>
-    <string name="wardrobe_tag_sheet_title">Modifica etichette</string>
-    <string name="wardrobe_tag_saved">Salvato</string>
-    <string name="wardrobe_tag_saving">Salvataggio…</string>
-    <string name="wardrobe_tag_unsaved">Non salvato</string>
-    <string name="wardrobe_tag_redetect_ai">Rileva di nuovo i tag con l’IA</string>
-    <string name="wardrobe_tag_not_set">Non impostato</string>
     <string name="wardrobe_add_gallery">Galleria</string>
     <string name="wardrobe_add_camera">Fotocamera</string>
     <string name="wardrobe_add_to_closet">Aggiungi a %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Aggiungi al guardaroba</string>
-    <string name="tag_label">Nome</string>
     <string name="tag_label_placeholder">es. Chinos blu navy, camicia Oxford bianca</string>
-    <string name="tag_add_custom">Aggiungi personalizzato…</string>
     <string name="tag_type_placeholder">es. T-shirt, Chinos, Piumino</string>
     <string name="tag_category_placeholder">tops, bottoms, capispalla, scarpe, accessori, abito, completo</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Notifica servizio in primo piano -->
     <!-- Dialogo esenzione ottimizzazione batteria -->
-    <string name="battery_exempt_title">Elaborazione in background richiesta</string>
-    <string name="battery_exempt_text">LibreLookAI necessita di elaborazione in background non limitata per importare foto, rimuovere sfondi ed etichettare i tuoi vestiti con l\'IA in sicurezza.\n\nSenza questa autorizzazione, Android può chiudere l\'app durante il processo, causando perdita di dati — capi importati parzialmente, etichette mancanti o file corrotti.\n\nDisattiva l\'ottimizzazione della batteria per LibreLookAI per continuare.</string>
-    <string name="battery_exempt_action">Apri impostazioni</string>
 
     <!-- Modalità offline -->
     <string name="offline_banner">Sei offline — modalità solo visualizzazione</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d capi</string>
     <string name="composer_factor_closets">%1$d guardaroba</string>
     <string name="composer_factor_composition">Composizione personalizzata</string>
-    <string name="wardrobe_create_style">Crea outfit</string>
-    <string name="wardrobe_imported_on">Importato %1$s</string>
-    <string name="wardrobe_view_original">Vedi originale</string>
-    <string name="wardrobe_view_cutout">Vedi ritaglio</string>
     <!-- Scheda IA -->
     <string name="settings_tab_ai">IA</string>
     <string name="ai_considerations_title">Considerazioni predefinite</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Scatta foto</string>
     <string name="shop_take_another">Scatta un\'altra foto</string>
     <string name="shop_clear">Cancella</string>
-    <string name="shop_your_photo">La tua foto</string>
     <string name="shop_matching">Confronto con il tuo guardaroba…</string>
     <string name="shop_matches_title">Migliori risultati (%1$d)</string>
     <string name="shop_no_matches">Nessuna corrispondenza. Prova una foto più ravvicinata e con luce migliore.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Se attivato, gli import da fotocamera e galleria eseguono il segmentatore Magic Touch locale e ti permettono di confermare o affinare il seme di primo piano prima di salvare — nessuna chiamata Gemini, nessun credito. Gli import URL usano sempre questa revisione.</string>
 
     <!-- Schermata revisione rimozione sfondo locale -->
-    <string name="local_bg_title">Affina ritaglio</string>
-    <string name="local_bg_hint">Trascina il mirino sul capo da mantenere.</string>
-    <string name="local_bg_recomputing">Ricalcolo ritaglio…</string>
-    <string name="local_bg_apply">Usa questo ritaglio</string>
-    <string name="local_bg_skip">Salta (usa Gemini)</string>
-    <string name="local_bg_failed">Impossibile calcolare un ritaglio — prova a spostare il mirino.</string>
     <string name="settings_debug_similarity_toggle">Mostra anteprima debug similarità</string>
     <string name="settings_debug_similarity_desc">Quando apri un risultato della ricerca per similarità, mostra la suddivisione per canale (miniature segmentate, coseno embedding/istogramma, istogrammi tonalità) invece dell\'immagine zoomabile predefinita.</string>
 
     <!-- Dialogo anteprima corrispondenza -->
-    <string name="dedupe_dialog_title">Possibile duplicato</string>
-    <string name="dedupe_dialog_desc">Abbiamo trovato %1$d capo/i nel tuo guardaroba che sembrano molto simili a questa foto.</string>
-    <string name="dedupe_dialog_import_anyway">Importa comunque</string>
-    <string name="dedupe_dialog_cancel">Annulla</string>
     <string name="dedupe_no_matches">Nessuna corrispondenza</string>
     <string name="dedupe_score">%1$d%% corrispondenza</string>
 
     <!-- Trova capo da foto (Guardaroba) -->
-    <string name="wardrobe_find_by_photo">Trova capo da foto</string>
-    <string name="wardrobe_find_by_photo_empty">Nessun capo simile trovato.</string>
-    <string name="wardrobe_find_by_photo_searching">Ricerca corrispondenze…</string>
 
     <!-- Ricerca guardaroba (testo o foto) -->
     <string name="wardrobe_search_title">Cerca nel guardaroba</string>
     <string name="wardrobe_search_hint">Scrivi cosa stai cercando, o cerca con una foto.</string>
     <string name="wardrobe_search_use_photo">Cerca con foto invece</string>
-    <string name="wardrobe_search_text_results">Risultati di ricerca</string>
     <string name="action_search">Cerca</string>
 
     <!-- Ripara e sincronizza — sezione possibili duplicati -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Stai usando la tua chiave Gemini — non vengono spesi crediti.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Elimina anche %d outfit che usano questi capi</string>
-    <string name="wardrobe_delete_cascade_tryons">Elimina anche %d prova/e con questi capi</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Tu</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Opzioni avanzate</string>
     <string name="settings_retag_row">Rietichetta tutti i miei capi</string>
     <string name="settings_retag_row_sub">Chiedi all’IA di rinominare e ricategorizzare tutto. Costa ~2 crediti per capo.</string>
-    <string name="settings_rebg_row">Rimuovi di nuovo gli sfondi</string>
     <string name="settings_rebg_row_sub">Ritaglia di nuovo ogni capo dalla sua foto. Costa ~6 crediti per capo.</string>
-    <string name="settings_cutout_row">Correggi i pixel di sfondo residui</string>
     <string name="settings_cutout_row_sub">Cerca i capi in cui il ritaglio ha mancato un angolo.</string>
     <string name="settings_advanced_byok_title">La tua chiave API Gemini</string>
     <string name="settings_advanced_byok_body">Tutta l’IA funziona con la tua chiave Gemini. Una chiave gratuita copre l’etichettatura e i suggerimenti di outfit; la prova virtuale e la rimozione dello sfondo richiedono una chiave a pagamento con fatturazione attiva. Ottienine una su aistudio.google.com e incollala qui sotto — la salviamo solo su questo telefono.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Converti le immagini in WebP</string>
     <string name="settings_convert_webp_row_sub">Riduci le vecchie foto JPG/PNG per risparmiare spazio su Drive.</string>
-    <string name="settings_converting">Conversione %1$d di %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Manutenzione</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Caricamento dettagli %1$d / %2$d</string>
     <string name="restore_finishing">Completamento…</string>
-    <string name="wardrobe_sync_details">Caricamento dettagli: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Completamento…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Aggiungi capo</string>
-    <string name="sel_swap">Sostituisci</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

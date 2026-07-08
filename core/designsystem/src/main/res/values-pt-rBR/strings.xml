@@ -230,4 +230,11 @@
     <string name="sel_move">Mover</string>
     <string name="tryon_outfit_picker_title">Escolha um look</string>
     <string name="tryon_outfit_picker_empty">Nenhum look salvo ainda. Crie um na aba Looks para usar aqui.</string>
+    <string name="battery_exempt_action">Abrir configurações</string>
+    <string name="battery_exempt_text">O LibreLookAI precisa de processamento em segundo plano sem restrição para importar fotos, remover fundos e etiquetar suas roupas com IA com segurança.\n\nSem essa permissão, o Android pode encerrar o app no meio do processo, o que pode causar perda de dados — itens importados parcialmente, tags faltando ou arquivos corrompidos.\n\nDesative a otimização de bateria para o LibreLookAI para continuar.</string>
+    <string name="battery_exempt_title">Processamento em segundo plano necessário</string>
+    <string name="nav_wardrobe">Guarda-roupa</string>
+    <string name="shop_your_photo">Sua foto</string>
+    <string name="wardrobe_fix_cutout_bg">Corrigir fundo do recorte</string>
+    <string name="wardrobe_move_to_title">Mover %d item(s) para</string>
 </resources>

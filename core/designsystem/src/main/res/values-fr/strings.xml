@@ -230,4 +230,11 @@
     <string name="sel_move">Déplacer</string>
     <string name="tryon_outfit_picker_title">Choisir une tenue</string>
     <string name="tryon_outfit_picker_empty">Aucune tenue enregistrée. Crées-en une dans l\'onglet Tenues pour l\'utiliser ici.</string>
+    <string name="battery_exempt_action">Ouvrir les paramètres</string>
+    <string name="battery_exempt_text">LibreLookAI nécessite un traitement en arrière-plan illimité pour importer des photos en toute sécurité, supprimer les fonds et étiqueter tes vêtements avec l\'IA.\n\nSans cette autorisation, Android peut tuer l\'app en cours de traitement, ce qui peut entraîner une perte de données — articles partiellement importés, étiquettes manquantes ou fichiers corrompus.\n\nDésactive l\'optimisation de batterie pour LibreLookAI pour continuer.</string>
+    <string name="battery_exempt_title">Traitement en arrière-plan requis</string>
+    <string name="nav_wardrobe">Garde-robe</string>
+    <string name="shop_your_photo">Ta photo</string>
+    <string name="wardrobe_fix_cutout_bg">Corriger le fond du détourage</string>
+    <string name="wardrobe_move_to_title">Déplacer %d article(s) vers</string>
 </resources>

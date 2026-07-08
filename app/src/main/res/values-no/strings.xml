@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigasjon -->
-    <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Reise</string>
     <string name="nav_settings">Innstillinger</string>
 
     <!-- Innsikter-fane -->
-    <string name="insights_tab_wardrobe_stats">Garderobestatistikk</string>
     <string name="insights_tab_costs">Kostnader</string>
     <string name="costs_count_items">Plagg</string>
     <string name="costs_count_outfits">Antrekk</string>
@@ -30,15 +28,6 @@
 
     <!-- URL-import (Garderobe + Handleliste) -->
     <string name="wardrobe_add_url">Legg til via URL</string>
-    <string name="wardrobe_url_import_title">Importer fra shopping-URL</string>
-    <string name="wardrobe_url_import_hint">Lim inn URL-en til en handleside. Vi henter produktbildet automatisk.</string>
-    <string name="url_import_pick_title">Velg produktbilde</string>
-    <string name="url_import_pick_hint">Trykk på bildet du vil importere. Hvis ingen passer, åpne siden i nettleseren.</string>
-    <string name="url_import_browser_title">Åpne side</string>
-    <string name="url_import_browser_hint">Trykk på et bilde på siden for å importere det.</string>
-    <string name="url_import_open_browser">Åpne side</string>
-    <string name="url_import_show_candidates">Kandidater</string>
-    <string name="url_import_no_candidates">Ingen bilder funnet. Åpne siden i nettleseren for å velge ett.</string>
 
     <!-- Antrekk underfaner -->
     <string name="outfits_tab_outfits">Antrekk</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Lagrer…</string>
     <string name="cd_ai_suggestion">AI-forslag</string>
     <string name="filter_location">Sted</string>
-    <string name="wardrobe_processing_photos">Behandler %1$d bilde(r)…</string>
-    <string name="wardrobe_progress_uploading">Laster opp bilde…</string>
-    <string name="wardrobe_progress_uploading_batch">Laster opp bilde %1$d av %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Fjerner bakgrunn…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Fjerner bakgrunn %1$d av %2$d…</string>
-    <string name="wardrobe_progress_moving">Flytter til nytt sted…</string>
     <string name="action_select_all">Velg alle</string>
 
     <!-- Logg inn -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Garderobetagger</string>
     <string name="settings_data_tags_desc">Klassifiser hvert plagg i garderoben på nytt med Gemini. Dette overskriver alle manuelle taggendringer.</string>
     <string name="settings_rescan_button">Skann alle tagger på nytt</string>
-    <string name="settings_rescanning">Skanner %1$d av %2$d…</string>
     <string name="settings_rescan_dialog_title">Skanne alle tagger på nytt?</string>
     <string name="settings_rescan_dialog_text">Gemini klassifiserer alle plagg i garderoben på nytt. Dette overskriver manuelle taggendringer og kan ta litt tid.</string>
     <string name="settings_rescan_confirm">Skann på nytt</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Trenger bare tagger</string>
     <string name="settings_repair_preview_section_count">%1$d av %2$d valgt</string>
     <string name="settings_repair_preview_selected">%1$d av %2$d valgt</string>
-    <string name="settings_repair_preview_select_all">Velg alle</string>
-    <string name="settings_repair_preview_deselect_all">Fjern markering</string>
     <string name="settings_repair_preview_process_n">Behandle %1$d</string>
     <string name="settings_cutoutfix_title">Reparer utklippsbakgrunner</string>
     <string name="settings_cutoutfix_desc">Skann eksisterende utklipp for gjenværende svart bakgrunn eller grønn glorie og påfør masken lokalt på nytt. Ingen AI-kall — reparerte utklipp lastes opp igjen med beholdt Drive-ID.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Skanner utklipp %1$d av %2$d…</string>
     <string name="settings_cutoutfix_processing">Reparerer utklipp %1$d av %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d utklipp reparert.</string>
-    <string name="settings_cutoutfix_dialog_title">Reparer utklippsbakgrunner — forhåndsvisning</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Valgte utklipp behandles lokalt og lastes opp igjen. Trykk for å veksle.</string>
-    <string name="settings_cutoutfix_show_all">Vis alle utklipp (ikke bare markerte)</string>
     <string name="settings_cutoutfix_no_issues">Ingen utklipp med gjenværende bakgrunn ble funnet.</string>
-    <string name="settings_cutoutfix_badge_blackbg">svart bg</string>
-    <string name="settings_cutoutfix_badge_greenhalo">grønn glorie</string>
-    <string name="settings_cutoutfix_action_clearalpha">Tøm alfa (gjør ugjennomsiktig)</string>
-    <string name="settings_cutoutfix_action_blackbg">Svart bakgrunn → transparent</string>
-    <string name="settings_cutoutfix_action_greenhalo">Fjern grønn glorie</string>
-    <string name="settings_cutoutfix_action_feather">Mykgjør alfa-kanter</string>
-    <string name="settings_cutoutfix_action_tightcrop">Beskjær tett &amp; begrens størrelse</string>
-    <string name="settings_cutoutfix_fix_n">Reparer %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d av %2$d valgt</string>
     <string name="settings_repair_preview_cost_total">Estimert kostnad: %1$d kreditter</string>
     <string name="settings_repair_clear_cache">Tøm lokal hurtigbuffer</string>
     <string name="settings_repair_clear_cache_desc">Last ned alle bilder fra Drive igjen etter kjøringen. Tregere; bare nødvendig hvis lokale filer ser utdaterte ut.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Aktiv</string>
 
     <!-- Garderobe -->
-    <string name="wardrobe_sync_progress">Gjenoppretter garderobe: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d plagg</string>
     <string name="wardrobe_filtered_count">Viser %1$d av %2$d plagg</string>
-    <string name="wardrobe_stats_total">%1$d plagg totalt</string>
-    <string name="wardrobe_stats_untagged">Uten tagger</string>
-    <string name="wardrobe_empty">Ingen plagg ennå</string>
-    <string name="wardrobe_empty_hint">Ta et bilde eller velg fra galleriet ditt</string>
     <string name="wardrobe_create_outfit">Opprett antrekk manuelt</string>
     <string name="wardrobe_compose_ai">Komponer med AI</string>
-    <string name="wardrobe_select_all_count">Velg alle (%1$d)</string>
-    <string name="wardrobe_delete_title">Slette plagg?</string>
-    <string name="wardrobe_delete_text">Er du sikker på at du vil slette %d valgte plagg? Dette kan ikke angres.</string>
-    <string name="wardrobe_move_to">Flytt til</string>
-    <string name="wardrobe_move_to_title">Flytt %d plagg til</string>
-    <string name="wardrobe_tag_detect">Oppdag tagger</string>
-    <string name="wardrobe_tag_remove_bg">Fjern bg</string>
-    <string name="wardrobe_tag_re_remove_bg">Fjern bg på nytt</string>
-    <string name="wardrobe_fix_cutout_bg">Reparer utklippsbg</string>
     <string name="wardrobe_fix_cutout_bg_done">Utklippsbakgrunn reparert.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Ingen gjenværende bakgrunn oppdaget — ingenting å reparere.</string>
-    <string name="wardrobe_tag_rotate">Roter</string>
-    <string name="wardrobe_tag_edit">Rediger tagger</string>
-    <string name="wardrobe_tag_sheet_title">Rediger tagger</string>
-    <string name="wardrobe_tag_saved">Lagret</string>
-    <string name="wardrobe_tag_saving">Lagrer…</string>
-    <string name="wardrobe_tag_unsaved">Ikke lagret</string>
-    <string name="wardrobe_tag_redetect_ai">Oppdag tagger på nytt med AI</string>
-    <string name="wardrobe_tag_not_set">Ikke angitt</string>
     <string name="wardrobe_add_gallery">Galleri</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Legg til i %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Legg til i garderobe</string>
-    <string name="tag_label">Navn</string>
     <string name="tag_label_placeholder">f.eks. Marineblå chinos, Hvit Oxford-skjorte</string>
-    <string name="tag_add_custom">Legg til egendefinert…</string>
     <string name="tag_type_placeholder">f.eks. T-skjorte, chinos, dunjakke</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Forgrunnstjeneste-varsling -->
     <!-- Batterioptimaliserings-unntaksdialog -->
-    <string name="battery_exempt_title">Bakgrunnsbehandling kreves</string>
-    <string name="battery_exempt_text">LibreLookAI trenger ubegrenset bakgrunnsbehandling for å trygt importere bilder, fjerne bakgrunner og tagge klærne dine med AI.\n\nUten denne tillatelsen kan Android avslutte appen midt i behandlingen, noe som kan føre til tap av data — delvis importerte plagg, manglende tagger eller ødelagte filer.\n\nDeaktiver batterioptimalisering for LibreLookAI for å fortsette.</string>
-    <string name="battery_exempt_action">Åpne innstillinger</string>
 
     <!-- Offline-modus -->
     <string name="offline_banner">Du er frakoblet — kun visningsmodus</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d plagg</string>
     <string name="composer_factor_closets">%1$d garderober</string>
     <string name="composer_factor_composition">Egendefinert komposisjon</string>
-    <string name="wardrobe_create_style">Opprett antrekk</string>
-    <string name="wardrobe_imported_on">Importert %1$s</string>
-    <string name="wardrobe_view_original">Vis original</string>
-    <string name="wardrobe_view_cutout">Vis utklipp</string>
     <!-- AI-fane -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Standardhensyn</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Ta bilde</string>
     <string name="shop_take_another">Ta et til bilde</string>
     <string name="shop_clear">Tøm</string>
-    <string name="shop_your_photo">Bildet ditt</string>
     <string name="shop_matching">Matcher mot garderoben din…</string>
     <string name="shop_matches_title">Beste treff (%1$d)</string>
     <string name="shop_no_matches">Ingen treff ennå. Prøv med et nærmere, bedre belyst bilde.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Når aktivert kjører kamera- og galleri-import den lokale Magic Touch-segmenteren og lar deg bekrefte eller finjustere forgrunnsfrøet før lagring — ingen Gemini-kall, ingen kreditter. URL-import bruker alltid denne gjennomgangen.</string>
 
     <!-- Lokal bakgrunnsfjernings-gjennomgangsskjerm -->
-    <string name="local_bg_title">Finjuster utklipp</string>
-    <string name="local_bg_hint">Dra trådkorset over på plagget du vil beholde.</string>
-    <string name="local_bg_recomputing">Beregner utklipp på nytt…</string>
-    <string name="local_bg_apply">Bruk dette utklippet</string>
-    <string name="local_bg_skip">Hopp over (bruk Gemini)</string>
-    <string name="local_bg_failed">Kunne ikke beregne et utklipp — prøv å flytte trådkorset.</string>
     <string name="settings_debug_similarity_toggle">Vis likhets-debugforhåndsvisning</string>
     <string name="settings_debug_similarity_desc">Når et Likhetssøk-treff åpnes, vis per-kanal oppdeling (segmenterte miniatyrer, embedding/histogram cosinus, fargetone-histogrammer) i stedet for det standard zoombare bildet.</string>
 
     <!-- Treff-forhåndsvisningsdialog -->
-    <string name="dedupe_dialog_title">Mulig duplikat</string>
-    <string name="dedupe_dialog_desc">Vi fant %1$d plagg i garderoben din som ligner veldig mye på dette bildet.</string>
-    <string name="dedupe_dialog_import_anyway">Importer likevel</string>
-    <string name="dedupe_dialog_cancel">Avbryt</string>
     <string name="dedupe_no_matches">Ingen treff</string>
     <string name="dedupe_score">%1$d%% treff</string>
 
     <!-- Finn plagg via bilde (Garderobe) -->
-    <string name="wardrobe_find_by_photo">Finn plagg via bilde</string>
-    <string name="wardrobe_find_by_photo_empty">Ingen lignende plagg funnet.</string>
-    <string name="wardrobe_find_by_photo_searching">Søker etter treff…</string>
 
     <!-- Garderobesøk (tekst eller bilde) -->
     <string name="wardrobe_search_title">Søk i garderobe</string>
     <string name="wardrobe_search_hint">Skriv det du leter etter, eller søk via bilde.</string>
     <string name="wardrobe_search_use_photo">Søk via bilde i stedet</string>
-    <string name="wardrobe_search_text_results">Søkeresultater</string>
     <string name="action_search">Søk</string>
 
     <!-- Reparer &amp; synkroniser — seksjon mulige duplikater -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Bruker din egen Gemini-nøkkel — ingen kreditter brukes.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Slett også %d antrekk som bruker disse plaggene</string>
-    <string name="wardrobe_delete_cascade_tryons">Slett også %d prøving(er) med disse plaggene</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Deg</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Avanserte valg</string>
     <string name="settings_retag_row">Merk alle klærne mine på nytt</string>
     <string name="settings_retag_row_sub">Be AI om å gi nye navn og kategorier til alt. Koster ~2 kreditter per plagg.</string>
-    <string name="settings_rebg_row">Fjern bakgrunner på nytt</string>
     <string name="settings_rebg_row_sub">Klipp ut hvert plagg fra bildet på nytt. Koster ~6 kreditter per plagg.</string>
-    <string name="settings_cutout_row">Rett gjenværende bakgrunnspiksler</string>
     <string name="settings_cutout_row_sub">Søker etter plagg der utklippet bommet på et hjørne.</string>
     <string name="settings_advanced_byok_title">Din Gemini API-nøkkel</string>
     <string name="settings_advanced_byok_body">All AI kjører på din egen Gemini-nøkkel. En gratis nøkkel dekker tagging og antrekksforslag; virtuell prøving og bakgrunnsfjerning krever en betalt nøkkel med fakturering aktivert. Hent en på aistudio.google.com og lim den inn nedenfor — vi lagrer den bare på denne telefonen.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Konverter bilder til WebP</string>
     <string name="settings_convert_webp_row_sub">Krymp eldre JPG/PNG-bilder for å spare Disk-plass.</string>
-    <string name="settings_converting">Konverterer %1$d av %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Vedlikehold</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Laster inn detaljer %1$d / %2$d</string>
     <string name="restore_finishing">Fullfører…</string>
-    <string name="wardrobe_sync_details">Laster inn detaljer: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Fullfører…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Legg til plagg</string>
-    <string name="sel_swap">Bytt</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

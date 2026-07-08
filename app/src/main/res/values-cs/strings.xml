@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Šatník</string>
     <string name="nav_shopping">Nákupy</string>
     <string name="nav_travel">Cestování</string>
     <string name="nav_settings">Nastavení</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Statistiky šatníku</string>
     <string name="insights_tab_costs">Náklady</string>
     <string name="costs_count_items">Položky</string>
     <string name="costs_count_outfits">Outfity</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Přidat z URL</string>
-    <string name="wardrobe_url_import_title">Importovat z nákupní URL</string>
-    <string name="wardrobe_url_import_hint">Vložte URL nákupní stránky. Obrázek produktu stáhneme automaticky.</string>
-    <string name="url_import_pick_title">Vyberte obrázek produktu</string>
-    <string name="url_import_pick_hint">Klepněte na obrázek, který chcete importovat. Pokud žádný nevypadá správně, otevřete stránku v prohlížeči.</string>
-    <string name="url_import_browser_title">Otevřít stránku</string>
-    <string name="url_import_browser_hint">Klepnutím na libovolný obrázek na stránce jej importujete.</string>
-    <string name="url_import_open_browser">Otevřít stránku</string>
-    <string name="url_import_show_candidates">Kandidáti</string>
-    <string name="url_import_no_candidates">Nebyly nalezeny žádné obrázky. Otevřete stránku v prohlížeči a vyberte si.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfity</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Ukládání…</string>
     <string name="cd_ai_suggestion">Návrh AI</string>
     <string name="filter_location">Umístění</string>
-    <string name="wardrobe_processing_photos">Zpracování %1$d fotografií…</string>
-    <string name="wardrobe_progress_uploading">Nahrávání fotografie…</string>
-    <string name="wardrobe_progress_uploading_batch">Nahrávání fotografie %1$d z %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Odstraňování pozadí…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Odstraňování pozadí %1$d z %2$d…</string>
-    <string name="wardrobe_progress_moving">Přesouvání na nové místo…</string>
     <string name="action_select_all">Vybrat vše</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Štítky šatníku</string>
     <string name="settings_data_tags_desc">Znovu klasifikujte každou položku ve svém šatníku pomocí Gemini. Tím se přepíší všechny ruční úpravy štítků.</string>
     <string name="settings_rescan_button">Znovu naskenovat všechny štítky</string>
-    <string name="settings_rescanning">Znovunaskenování %1$d z %2$d…</string>
     <string name="settings_rescan_dialog_title">Znovu naskenovat všechny štítky?</string>
     <string name="settings_rescan_dialog_text">Gemini znovu klasifikuje každou položku ve vašem šatníku. Tím se přepíší všechny ruční úpravy štítků a může to chvíli trvat.</string>
     <string name="settings_rescan_confirm">Znovu naskenovat</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Vyžaduje pouze štítky</string>
     <string name="settings_repair_preview_section_count">%1$d z %2$d vybráno</string>
     <string name="settings_repair_preview_selected">%1$d z %2$d vybráno</string>
-    <string name="settings_repair_preview_select_all">Vybrat vše</string>
-    <string name="settings_repair_preview_deselect_all">Zrušit výběr</string>
     <string name="settings_repair_preview_process_n">Zpracovat %1$d</string>
     <string name="settings_cutoutfix_title">Opravit pozadí výřezů</string>
     <string name="settings_cutoutfix_desc">Proskenujte stávající výřezy na zbytky černého pozadí nebo zelené halo efekty a znovu aplikujte masku lokálně. Žádná volání AI — opravené výřezy jsou znovu nahrány se zachováním jejich Drive ID.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Skenování výřezu %1$d z %2$d…</string>
     <string name="settings_cutoutfix_processing">Oprava výřezu %1$d z %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d výřezů opraveno.</string>
-    <string name="settings_cutoutfix_dialog_title">Opravit pozadí výřezů — Náhled</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Vybrané výřezy budou lokálně znovu zpracovány a nahrány. Klepnutím přepnete.</string>
-    <string name="settings_cutoutfix_show_all">Zobrazit všechny výřezy (nejen ty označené)</string>
     <string name="settings_cutoutfix_no_issues">Nebyly nalezeny žádné výřezy se zbytky pozadí.</string>
-    <string name="settings_cutoutfix_badge_blackbg">černé pozadí</string>
-    <string name="settings_cutoutfix_badge_greenhalo">zelené halo</string>
-    <string name="settings_cutoutfix_action_clearalpha">Vymazat alfu (udělat neprůhledné)</string>
-    <string name="settings_cutoutfix_action_blackbg">Černé pozadí → průhledné</string>
-    <string name="settings_cutoutfix_action_greenhalo">Odstranit zelené halo</string>
-    <string name="settings_cutoutfix_action_feather">Změkčit okraje alfy</string>
-    <string name="settings_cutoutfix_action_tightcrop">Těsný ořez a omezení velikosti</string>
-    <string name="settings_cutoutfix_fix_n">Opravit %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d z %2$d vybráno</string>
     <string name="settings_repair_preview_cost_total">Odhadovaná cena: %1$d kreditů</string>
     <string name="settings_repair_clear_cache">Vymazat lokální mezipaměť</string>
     <string name="settings_repair_clear_cache_desc">Po dokončení znovu stáhnout všechny obrázky z Drive. Pomalejší; vyžadováno pouze pokud lokální soubory vypadají neaktuálně.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Aktivní</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Obnovování šatníku: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d položek</string>
     <string name="wardrobe_filtered_count">Zobrazeno %1$d z %2$d položek</string>
-    <string name="wardrobe_stats_total">Celkem %1$d položek</string>
-    <string name="wardrobe_stats_untagged">Bez štítků</string>
-    <string name="wardrobe_empty">Zatím žádné položky</string>
-    <string name="wardrobe_empty_hint">Vyfoťte něco nebo vyberte z galerie</string>
     <string name="wardrobe_create_outfit">Vytvořit outfit ručně</string>
     <string name="wardrobe_compose_ai">Sestavit pomocí AI</string>
-    <string name="wardrobe_select_all_count">Vybrat vše (%1$d)</string>
-    <string name="wardrobe_delete_title">Smazat položky?</string>
-    <string name="wardrobe_delete_text">Opravdu chcete smazat %d vybraných položek? Tuto akci nelze vrátit zpět.</string>
-    <string name="wardrobe_move_to">Přesunout do</string>
-    <string name="wardrobe_move_to_title">Přesunout %d položek do</string>
-    <string name="wardrobe_tag_detect">Detekovat štítky</string>
-    <string name="wardrobe_tag_remove_bg">Odstranit pozadí</string>
-    <string name="wardrobe_tag_re_remove_bg">Znovu odstranit pozadí</string>
-    <string name="wardrobe_fix_cutout_bg">Opravit pozadí výřezu</string>
     <string name="wardrobe_fix_cutout_bg_done">Pozadí výřezu opraveno.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Nebylo detekováno žádné zbývající pozadí — není co opravovat.</string>
-    <string name="wardrobe_tag_rotate">Otočit</string>
-    <string name="wardrobe_tag_edit">Upravit štítky</string>
-    <string name="wardrobe_tag_sheet_title">Upravit štítky</string>
-    <string name="wardrobe_tag_saved">Uloženo</string>
-    <string name="wardrobe_tag_saving">Ukládání…</string>
-    <string name="wardrobe_tag_unsaved">Neuloženo</string>
-    <string name="wardrobe_tag_redetect_ai">Znovu detekovat štítky pomocí AI</string>
-    <string name="wardrobe_tag_not_set">Nenastaveno</string>
     <string name="wardrobe_add_gallery">Galerie</string>
     <string name="wardrobe_add_camera">Fotoaparát</string>
     <string name="wardrobe_add_to_closet">Přidat do %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Přidat do šatníku</string>
-    <string name="tag_label">Název</string>
     <string name="tag_label_placeholder">např. Tmavě modré chinos, Bílá Oxford košile</string>
-    <string name="tag_add_custom">Přidat vlastní…</string>
     <string name="tag_type_placeholder">např. Tričko, Chinos, Péřová bunda</string>
     <string name="tag_category_placeholder">vršky, spodky, svrchní oblečení, obuv, doplňky, šaty, obleky</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Foreground service notification -->
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">Vyžadováno zpracování na pozadí</string>
-    <string name="battery_exempt_text">LibreLookAI potřebuje neomezené zpracování na pozadí, aby mohl bezpečně importovat fotografie, odstraňovat pozadí a označovat vaše oblečení pomocí AI.\n\nBez tohoto povolení může Android aplikaci uprostřed procesu ukončit, což může vést ke ztrátě dat — částečně importovaným položkám, chybějícím štítkům nebo poškozeným souborům.\n\nZakažte prosím optimalizaci baterie pro LibreLookAI, abyste mohli pokračovat.</string>
-    <string name="battery_exempt_action">Otevřít Nastavení</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">Jste offline — režim pouze pro čtení</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d položek</string>
     <string name="composer_factor_closets">%1$d šatníků</string>
     <string name="composer_factor_composition">Vlastní složení</string>
-    <string name="wardrobe_create_style">Vytvořit outfit</string>
-    <string name="wardrobe_imported_on">Importováno %1$s</string>
-    <string name="wardrobe_view_original">Zobrazit originál</string>
-    <string name="wardrobe_view_cutout">Zobrazit výřez</string>
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Výchozí aspekty</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Vyfotit</string>
     <string name="shop_take_another">Vyfotit znovu</string>
     <string name="shop_clear">Vymazat</string>
-    <string name="shop_your_photo">Vaše fotografie</string>
     <string name="shop_matching">Porovnávání s vaším šatníkem…</string>
     <string name="shop_matches_title">Nejlepší shody (%1$d)</string>
     <string name="shop_no_matches">Zatím žádné shody. Zkuste bližší a lépe osvětlenou fotografii.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Když je tato možnost povolena, importy z fotoaparátu a galerie spustí lokální segmentátor Magic Touch a umožní vám potvrdit nebo vylepšit popředí před uložením — žádné volání Gemini, žádné kredity. Importy z URL tuto revizi používají vždy.</string>
 
     <!-- Local background-removal review screen -->
-    <string name="local_bg_title">Vylepšit výřez</string>
-    <string name="local_bg_hint">Přetáhněte zaměřovač na položku, kterou chcete ponechat.</string>
-    <string name="local_bg_recomputing">Přepočítávání výřezu…</string>
-    <string name="local_bg_apply">Použít tento výřez</string>
-    <string name="local_bg_skip">Přeskočit (použít Gemini)</string>
-    <string name="local_bg_failed">Výřez se nepodařilo vypočítat — zkuste pohnout zaměřovačem.</string>
     <string name="settings_debug_similarity_toggle">Zobrazit ladicí náhled podobnosti</string>
     <string name="settings_debug_similarity_desc">Při otevření shody v Hledání podobných se místo výchozího zoomovatelného obrázku zobrazí rozpis podle kanálů (segmentované miniatury, histogramy atd.).</string>
 
     <!-- Match preview dialog -->
-    <string name="dedupe_dialog_title">Možný duplikát</string>
-    <string name="dedupe_dialog_desc">V šatníku jsme našli %1$d položek, které vypadají velmi podobně jako tato fotografie.</string>
-    <string name="dedupe_dialog_import_anyway">Přesto importovat</string>
-    <string name="dedupe_dialog_cancel">Zrušit</string>
     <string name="dedupe_no_matches">Žádné shody</string>
     <string name="dedupe_score">%1$d %% shoda</string>
 
     <!-- Find item by photo (Wardrobe) -->
-    <string name="wardrobe_find_by_photo">Najít položku podle fotky</string>
-    <string name="wardrobe_find_by_photo_empty">Nebyly nalezeny žádné podobné položky.</string>
-    <string name="wardrobe_find_by_photo_searching">Hledání shod…</string>
 
     <!-- Wardrobe search (text or photo) -->
     <string name="wardrobe_search_title">Hledat v šatníku</string>
     <string name="wardrobe_search_hint">Napište, co hledáte, nebo hledejte podle fotky.</string>
     <string name="wardrobe_search_use_photo">Místo toho hledat podle fotky</string>
-    <string name="wardrobe_search_text_results">Výsledky hledání</string>
     <string name="action_search">Hledat</string>
 
     <!-- Repair &amp; Sync — possible duplicates section -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Zůstatek: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Používáte vlastní klíč Gemini — žádné kredity se neutrácí.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Smazat také %d outfit(ů), které používají tyto kousky</string>
-    <string name="wardrobe_delete_cascade_tryons">Smazat také %d zkoušku/zkoušek s těmito kousky</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Ty</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Pokročilé možnosti</string>
     <string name="settings_retag_row">Znovu označit veškeré mé oblečení</string>
     <string name="settings_retag_row_sub">Nech AI vše znovu pojmenovat a zařadit. Stojí ~2 kredity za kus.</string>
-    <string name="settings_rebg_row">Znovu odstranit pozadí</string>
     <string name="settings_rebg_row_sub">Znovu vyřízne každý kus z jeho fotky. Stojí ~6 kreditů za kus.</string>
-    <string name="settings_cutout_row">Opravit zbylé pixely pozadí</string>
     <string name="settings_cutout_row_sub">Hledá kusy, u kterých výřez vynechal roh.</string>
     <string name="settings_advanced_byok_title">Váš klíč Gemini API</string>
     <string name="settings_advanced_byok_body">Veškerá AI běží na vašem vlastním klíči Gemini. Bezplatný klíč pokryje označování a návrhy outfitů; virtuální zkoušení a odstranění pozadí vyžadují placený klíč s aktivovanou fakturací. Získejte jej na aistudio.google.com a vložte níže — ukládáme jej jen v tomto telefonu.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Převést obrázky do WebP</string>
     <string name="settings_convert_webp_row_sub">Zmenší starší fotky JPG/PNG a ušetří místo na Disku.</string>
-    <string name="settings_converting">Převádím %1$d z %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Údržba</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Načítání podrobností %1$d / %2$d</string>
     <string name="restore_finishing">Dokončování…</string>
-    <string name="wardrobe_sync_details">Načítání podrobností: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Dokončování…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Přidat kus</string>
-    <string name="sel_swap">Vyměnit</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

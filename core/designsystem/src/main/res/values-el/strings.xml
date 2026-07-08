@@ -230,4 +230,11 @@
     <string name="sel_move">Μετακίνηση</string>
     <string name="tryon_outfit_picker_title">Επιλέξτε σύνολο</string>
     <string name="tryon_outfit_picker_empty">Δεν υπάρχουν σύνολα ακόμα.</string>
+    <string name="battery_exempt_action">Άνοιγμα Ρυθμίσεων</string>
+    <string name="battery_exempt_text">Το LibreLookAI χρειάζεται απεριόριστη επεξεργασία στο παρασκήνιο για την ασφαλή εισαγωγή φωτογραφιών και την επεξεργασία με AI.\n\nΠαρακαλούμε απενεργοποιήστε τη βελτιστοποίηση μπαταρίας για το LibreLookAI.</string>
+    <string name="battery_exempt_title">Απαιτείται επεξεργασία στο παρασκήνιο</string>
+    <string name="nav_wardrobe">Ντουλάπα</string>
+    <string name="shop_your_photo">Η φωτογραφία σας</string>
+    <string name="wardrobe_fix_cutout_bg">Διόρθωση φόντου αποκόμματος</string>
+    <string name="wardrobe_move_to_title">Μετακίνηση %d ειδών σε</string>
 </resources>

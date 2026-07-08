@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">ตู้เสื้อผ้า</string>
     <string name="nav_shopping">ช้อปปิ้ง</string>
     <string name="nav_travel">ท่องเที่ยว</string>
     <string name="nav_settings">ตั้งค่า</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">สถิติตู้เสื้อผ้า</string>
     <string name="insights_tab_costs">ค่าใช้จ่าย</string>
     <string name="costs_count_items">รายการ</string>
     <string name="costs_count_outfits">ชุด</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">เพิ่มจาก URL</string>
-    <string name="wardrobe_url_import_title">นำเข้าจาก URL ของร้านค้า</string>
-    <string name="wardrobe_url_import_hint">วาง URL ของหน้าช้อปปิ้ง เราจะดึงรูปภาพสินค้าให้โดยอัตโนมัติ</string>
-    <string name="url_import_pick_title">เลือกรูปภาพสินค้า</string>
-    <string name="url_import_pick_hint">แตะรูปภาพที่คุณต้องการนำเข้า หากไม่มีรูปใดถูกต้อง ให้เปิดหน้าเว็บในเบราว์เซอร์</string>
-    <string name="url_import_browser_title">เปิดหน้าเว็บ</string>
-    <string name="url_import_browser_hint">แตะรูปภาพใดก็ได้บนหน้าเพื่อนำเข้า</string>
-    <string name="url_import_open_browser">เปิดหน้าเว็บ</string>
-    <string name="url_import_show_candidates">ตัวเลือก</string>
-    <string name="url_import_no_candidates">ไม่พบรูปภาพ เปิดในเบราว์เซอร์เพื่อเลือก</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">ชุดแต่งกาย</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">กำลังบันทึก…</string>
     <string name="cd_ai_suggestion">คำแนะนำจาก AI</string>
     <string name="filter_location">สถานที่</string>
-    <string name="wardrobe_processing_photos">กำลังประมวลผล %1$d รูป…</string>
-    <string name="wardrobe_progress_uploading">กำลังอัปโหลดรูปภาพ…</string>
-    <string name="wardrobe_progress_uploading_batch">กำลังอัปโหลดรูปภาพ %1$d จาก %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">กำลังลบพื้นหลัง…</string>
-    <string name="wardrobe_progress_removing_bg_batch">กำลังลบพื้นหลัง %1$d จาก %2$d…</string>
-    <string name="wardrobe_progress_moving">กำลังย้ายไปที่สถานที่ใหม่…</string>
     <string name="action_select_all">เลือกทั้งหมด</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">แท็กตู้เสื้อผ้า</string>
     <string name="settings_data_tags_desc">จัดหมวดหมู่เสื้อผ้าทุกชิ้นใหม่ด้วย Gemini ซึ่งจะทับการแก้ไขแท็กด้วยตนเอง</string>
     <string name="settings_rescan_button">สแกนแท็กใหม่ทั้งหมด</string>
-    <string name="settings_rescanning">กำลังสแกนใหม่ %1$d จาก %2$d…</string>
     <string name="settings_rescan_dialog_title">สแกนแท็กใหม่ทั้งหมด?</string>
     <string name="settings_rescan_dialog_text">Gemini จะจัดหมวดหมู่เสื้อผ้าทุกชิ้นใหม่ ซึ่งอาจใช้เวลาสักครู่</string>
     <string name="settings_rescan_confirm">สแกนใหม่</string>
@@ -120,38 +102,14 @@
     <string name="settings_repair_done">ซ่อมแซมเสร็จสิ้น รีเฟรชตู้เสื้อผ้าแล้ว</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">กำลังกู้คืนตู้เสื้อผ้า: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d รายการ</string>
     <string name="wardrobe_filtered_count">แสดง %1$d จาก %2$d รายการ</string>
-    <string name="wardrobe_stats_total">ทั้งหมด %1$d รายการ</string>
-    <string name="wardrobe_stats_untagged">ยังไม่ได้ติดแท็ก</string>
-    <string name="wardrobe_empty">ยังไม่มีรายการ</string>
-    <string name="wardrobe_empty_hint">ถ่ายรูปหรือเลือกจากแกลเลอรี</string>
     <string name="wardrobe_create_outfit">สร้างชุดด้วยตนเอง</string>
     <string name="wardrobe_compose_ai">สร้างด้วย AI</string>
-    <string name="wardrobe_select_all_count">เลือกทั้งหมด (%1$d)</string>
-    <string name="wardrobe_delete_title">ลบรายการ?</string>
-    <string name="wardrobe_delete_text">คุณแน่ใจหรือไม่ว่าต้องการลบ %d รายการที่เลือก? การดำเนินการนี้ไม่สามารถย้อนกลับได้</string>
-    <string name="wardrobe_move_to">ย้ายไปที่</string>
-    <string name="wardrobe_move_to_title">ย้าย %d รายการไปที่</string>
-    <string name="wardrobe_tag_detect">ตรวจหาแท็ก</string>
-    <string name="wardrobe_tag_remove_bg">ลบพื้นหลัง</string>
-    <string name="wardrobe_tag_re_remove_bg">ลบพื้นหลังใหม่อีกครั้ง</string>
-    <string name="wardrobe_tag_rotate">หมุน</string>
-    <string name="wardrobe_tag_edit">แก้ไขแท็ก</string>
-    <string name="wardrobe_tag_sheet_title">แก้ไขแท็ก</string>
-    <string name="wardrobe_tag_saved">บันทึกแล้ว</string>
-    <string name="wardrobe_tag_saving">กำลังบันทึก…</string>
-    <string name="wardrobe_tag_unsaved">ยังไม่ได้บันทึก</string>
-    <string name="wardrobe_tag_redetect_ai">ตรวจหาแท็กใหม่ด้วย AI</string>
-    <string name="wardrobe_tag_not_set">ไม่ได้กำหนด</string>
     <string name="wardrobe_add_gallery">แกลเลอรี</string>
     <string name="wardrobe_add_camera">กล้อง</string>
     <string name="wardrobe_add_to_closet">เพิ่มใน %1$s</string>
-    <string name="wardrobe_add_to_closet_title">เพิ่มในตู้เสื้อผ้า</string>
-    <string name="tag_label">ชื่อ</string>
     <string name="tag_label_placeholder">เช่น กางเกงชิโนสีกรมท่า, เสื้อเชิ้ตอ็อกซ์ฟอร์ดสีขาว</string>
-    <string name="tag_add_custom">เพิ่มแบบกำหนดเอง…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -241,13 +199,6 @@
     <string name="ai_consider_weather_desc">รวมอุณหภูมิและสภาพวันนี้</string>
     <string name="ai_considerations_desc">สิ่งที่ AI ควรคำนึงถึงเมื่อแนะนำหรือจัดชุด การเปลี่ยนแปลงจะใช้กับการทำนาย การจัดชุด การแพ็ค และพรอมต์ช่องว่างในตู้เสื้อผ้า</string>
     <string name="ai_considerations_title">เกณฑ์เริ่มต้น</string>
-    <string name="battery_exempt_action">เปิดการตั้งค่า</string>
-    <string name="battery_exempt_text">LibreLookAI ต้องการการประมวลผลพื้นหลังแบบไม่จำกัดเพื่อนำเข้ารูปอย่างปลอดภัย ลบพื้นหลัง และแท็กเสื้อผ้าด้วย AI
-
-หากไม่มีสิทธิ์นี้ Android อาจปิดแอปกลางคัน ซึ่งอาจทำให้ข้อมูลสูญหาย — รายการที่นำเข้าบางส่วน แท็กที่ขาด หรือไฟล์เสีย
-
-กรุณาปิดการปรับให้แบตเตอรี่เหมาะสมสำหรับ LibreLookAI เพื่อดำเนินการต่อ</string>
-    <string name="battery_exempt_title">ต้องการการประมวลผลพื้นหลัง</string>
     <string name="composer_add_selected">เพิ่มที่เลือก</string>
     <string name="composer_desc_placeholder">คำอธิบายสั้น (ไม่บังคับ)</string>
     <string name="composer_discard_confirm">ยกเลิก</string>
@@ -281,10 +232,6 @@
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">แท็ก (ไม่บังคับ)</string>
     <string name="composer_targets_hint">กำหนดจำนวนของแต่ละชั้นที่จะรวม ปล่อย 0 เพื่อให้ AI ตัดสิน</string>
-    <string name="dedupe_dialog_cancel">ยกเลิก</string>
-    <string name="dedupe_dialog_desc">เราพบ %1$d รายการในตู้เสื้อผ้าของคุณที่ดูคล้ายกับรูปนี้มาก</string>
-    <string name="dedupe_dialog_import_anyway">นำเข้าต่อไป</string>
-    <string name="dedupe_dialog_title">อาจซ้ำ</string>
     <string name="dedupe_no_matches">ไม่พบรายการที่ตรงกัน</string>
     <string name="dedupe_score">ตรงกัน %1$d%%</string>
     <string name="gap_description">ค้นหาชิ้นส่วนที่หายไป 3 ชิ้นซึ่งจะเปิดชุดผสมใหม่ได้มากที่สุดจากตู้เสื้อผ้าที่มีอยู่</string>
@@ -300,12 +247,6 @@
     <string name="import_preview_select_all">เลือกทั้งหมด</string>
     <string name="import_preview_similar_badge">คล้าย</string>
     <string name="import_preview_title">ตรวจสอบ %1$d รายการ</string>
-    <string name="local_bg_apply">ใช้การตัดนี้</string>
-    <string name="local_bg_failed">ไม่สามารถคำนวณการตัด — ลองเลื่อนกากบาท</string>
-    <string name="local_bg_hint">ลากกากบาทไปที่รายการที่คุณต้องการเก็บ</string>
-    <string name="local_bg_recomputing">กำลังคำนวณการตัดใหม่…</string>
-    <string name="local_bg_skip">ข้าม (ใช้ Gemini)</string>
-    <string name="local_bg_title">ปรับการตัด</string>
     <string name="outfit_mode_edit">แก้ไข</string>
     <string name="outfit_mode_view">ดู</string>
     <string name="outfits_description_placeholder">คำอธิบาย (ไม่บังคับ)</string>
@@ -322,24 +263,12 @@
     <string name="settings_bg_removal_desc">ปรับตัวแบ่งภาพการตัดบนอุปกรณ์ที่ใช้ระหว่างจับภาพ นำเข้า และผู้ช่วยช้อปปิ้ง ค่าน้อยจะเก็บพิกเซลมากขึ้น (ตัดหลวม อาจมีพื้นหลัง); ค่ามากปฏิเสธพิกเซลแบบเส้นขอบ (ตัดแน่น อาจเฉือนของ)</string>
     <string name="settings_bg_removal_threshold">เกณฑ์พื้นหน้า: %1$d%%</string>
     <string name="settings_bg_removal_title">ลบพื้นหลัง</string>
-    <string name="settings_cutoutfix_action_blackbg">พื้นหลังดำ → โปร่งใส</string>
-    <string name="settings_cutoutfix_action_clearalpha">ล้างอัลฟา (ทำให้ทึบ)</string>
-    <string name="settings_cutoutfix_action_feather">เกลี่ยขอบอัลฟา</string>
-    <string name="settings_cutoutfix_action_greenhalo">กำจัดรัศมีเขียว</string>
-    <string name="settings_cutoutfix_action_tightcrop">ครอบแน่น &amp; จำกัดขนาด</string>
-    <string name="settings_cutoutfix_badge_blackbg">พื้นหลังดำ</string>
-    <string name="settings_cutoutfix_badge_greenhalo">รัศมีเขียว</string>
     <string name="settings_cutoutfix_button">สแกนการตัด</string>
     <string name="settings_cutoutfix_desc">สแกนการตัดที่มีอยู่หาพื้นหลังดำหรือรัศมีเขียวที่เหลือ และทาแมตท์ใหม่ในเครื่อง ไม่มีการเรียก AI — การตัดที่แก้แล้วถูกอัปโหลดใหม่โดยคง Drive ID</string>
-    <string name="settings_cutoutfix_dialog_subtitle">การตัดที่เลือกจะถูกประมวลผลใหม่ในเครื่องและอัปโหลดใหม่ แตะเพื่อสลับ</string>
-    <string name="settings_cutoutfix_dialog_title">แก้พื้นหลังการตัด — ดูตัวอย่าง</string>
     <string name="settings_cutoutfix_done">แก้การตัด %1$d รายการ</string>
-    <string name="settings_cutoutfix_fix_n">แก้ %1$d</string>
     <string name="settings_cutoutfix_no_issues">ไม่พบการตัดที่มีพื้นหลังเหลือ</string>
     <string name="settings_cutoutfix_processing">กำลังแก้การตัด %1$d จาก %2$d…</string>
     <string name="settings_cutoutfix_scanning">กำลังสแกนการตัด %1$d จาก %2$d…</string>
-    <string name="settings_cutoutfix_selected">เลือก %1$d จาก %2$d</string>
-    <string name="settings_cutoutfix_show_all">แสดงการตัดทั้งหมด (ไม่เฉพาะที่ติดธง)</string>
     <string name="settings_cutoutfix_title">แก้พื้นหลังการตัด</string>
     <string name="settings_debug_similarity_desc">เมื่อเปิดผลการค้นหาความคล้าย ให้แสดงการแยกตามช่อง (ภาพย่อที่แบ่ง คอไซน์ embedding/ฮิสโตแกรม ฮิสโตแกรมโทนสี) แทนภาพซูมเริ่มต้น</string>
     <string name="settings_debug_similarity_toggle">แสดงตัวอย่างดีบักความคล้าย</string>
@@ -409,13 +338,11 @@
     <string name="settings_repair_clear_cache">ล้างแคชในเครื่อง</string>
     <string name="settings_repair_clear_cache_desc">ดาวน์โหลดภาพทั้งหมดจาก Drive ใหม่หลังรัน ช้ากว่า; จำเป็นเฉพาะเมื่อไฟล์ในเครื่องดูล้าสมัย</string>
     <string name="settings_repair_preview_cost_total">ค่าใช้จ่ายประมาณ: %1$d เครดิต</string>
-    <string name="settings_repair_preview_deselect_all">ยกเลิกทั้งหมด</string>
     <string name="settings_repair_preview_process_n">ประมวลผล %1$d</string>
     <string name="settings_repair_preview_section_count">เลือก %1$d จาก %2$d</string>
     <string name="settings_repair_preview_section_orphaned">ต้องลบพื้นหลัง + แท็ก</string>
     <string name="settings_repair_preview_section_raw">ภาพที่ไม่รู้จัก — ต้องลบพื้นหลัง + แท็ก</string>
     <string name="settings_repair_preview_section_sidecar">ต้องการแท็กเท่านั้น</string>
-    <string name="settings_repair_preview_select_all">เลือกทั้งหมด</string>
     <string name="settings_repair_preview_selected">เลือก %1$d จาก %2$d</string>
     <string name="settings_repair_preview_subtitle">รายการที่เลือกจะถูกประมวลผล แตะภาพย่อเพื่อข้าม</string>
     <string name="settings_repair_preview_title">ซ่อม &amp; ซิงค์ — ดูตัวอย่าง</string>
@@ -431,7 +358,6 @@
     <string name="shop_no_matches">ยังไม่มีผลตรงกัน ลองภาพที่ใกล้และมีแสงดีกว่า</string>
     <string name="shop_take_another">ถ่ายภาพอื่น</string>
     <string name="shop_take_photo">ถ่ายภาพ</string>
-    <string name="shop_your_photo">ภาพของคุณ</string>
     <string name="tag_category_placeholder">เสื้อบน, กางเกง/กระโปรง, เสื้อคลุม, รองเท้า, แอ็คเซสซอรี่, เดรส, สูท</string>
     <string name="tag_type_placeholder">เช่น เสื้อยืด, ชิโน่, แจ็คเก็ตหนา</string>
     <string name="travel_move_done">ย้ายรายการไปยังสถานที่เดินทางแล้ว</string>
@@ -456,25 +382,14 @@
     <string name="tryon_section_desc">อัปโหลดภาพเต็มตัวด้านหน้า ด้านข้าง และด้านหลัง แอปใช้สิ่งเหล่านี้เป็นการอ้างอิงเมื่อสร้างภาพลองชุดหรือรายการในตู้กับตัวคุณ ภาพจะยังคงอยู่ใน Drive ของคุณเอง</string>
     <string name="tryon_section_title">ภาพสำหรับการลอง</string>
     <string name="tryon_use_outfit">ใช้ชุด</string>
-    <string name="wardrobe_create_style">สร้างชุด</string>
-    <string name="wardrobe_find_by_photo">ค้นหารายการด้วยภาพ</string>
-    <string name="wardrobe_find_by_photo_empty">ไม่พบรายการที่คล้าย</string>
-    <string name="wardrobe_find_by_photo_searching">กำลังค้นหารายการที่ตรง…</string>
-    <string name="wardrobe_fix_cutout_bg">แก้พื้นหลังการตัด</string>
     <string name="wardrobe_fix_cutout_bg_clean">ไม่พบพื้นหลังเหลือ — ไม่มีอะไรต้องแก้</string>
     <string name="wardrobe_fix_cutout_bg_done">แก้พื้นหลังการตัดแล้ว</string>
-    <string name="wardrobe_imported_on">นำเข้า %1$s</string>
     <string name="wardrobe_search_hint">พิมพ์สิ่งที่คุณค้นหา หรือค้นหาด้วยภาพ</string>
-    <string name="wardrobe_search_text_results">ผลการค้นหา</string>
     <string name="wardrobe_search_title">ค้นหาในตู้</string>
     <string name="wardrobe_search_use_photo">ค้นหาด้วยภาพแทน</string>
     <string name="wardrobe_suggest_replacements">แนะนำทางเลือก</string>
-    <string name="wardrobe_view_cutout">ดูการตัด</string>
-    <string name="wardrobe_view_original">ดูต้นฉบับ</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">ลบชุด %d ชุดที่ใช้ไอเท็มเหล่านี้ด้วย</string>
-    <string name="wardrobe_delete_cascade_tryons">ลบการลองสวม %d ครั้งที่มีไอเท็มเหล่านี้ด้วย</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">คุณ</string>
@@ -515,9 +430,7 @@
     <string name="settings_section_advanced_power">ตัวเลือกขั้นสูง</string>
     <string name="settings_retag_row">ติดแท็กเสื้อผ้าทั้งหมดใหม่</string>
     <string name="settings_retag_row_sub">ให้ AI ตั้งชื่อและจัดหมวดหมู่ใหม่ทั้งหมด คิด ~2 เครดิตต่อชิ้น</string>
-    <string name="settings_rebg_row">ลบพื้นหลังใหม่</string>
     <string name="settings_rebg_row_sub">ตัดแต่ละชิ้นออกจากรูปใหม่ คิด ~6 เครดิตต่อชิ้น</string>
-    <string name="settings_cutout_row">แก้พิกเซลพื้นหลังที่เหลือ</string>
     <string name="settings_cutout_row_sub">ค้นหาชิ้นที่การตัดพลาดมุมไป</string>
     <string name="settings_advanced_byok_title">คีย์ Gemini API ของคุณ</string>
     <string name="settings_advanced_byok_body">AI ทั้งหมดทำงานด้วยคีย์ Gemini ของคุณเอง คีย์ฟรีครอบคลุมการติดแท็กและคำแนะนำการแต่งตัว ส่วนการลองสวมเสมือนจริงและการลบพื้นหลังต้องใช้คีย์แบบเสียเงินที่เปิดการเรียกเก็บเงิน รับได้ที่ aistudio.google.com แล้ววางด้านล่าง — เราเก็บไว้บนโทรศัพท์เครื่องนี้เท่านั้น</string>
@@ -623,10 +536,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">แปลงรูปภาพเป็น WebP</string>
     <string name="settings_convert_webp_row_sub">ลดขนาดรูป JPG/PNG เก่าเพื่อประหยัดพื้นที่ใน Drive</string>
-    <string name="settings_converting">กำลังแปลง %1$d จาก %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">การบำรุงรักษา</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">กำลังโหลดรายละเอียด %1$d / %2$d</string>
     <string name="restore_finishing">กำลังเสร็จสิ้น…</string>
-    <string name="wardrobe_sync_details">กำลังโหลดรายละเอียด: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">กำลังเสร็จสิ้น…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">เพิ่มไอเทม</string>
-    <string name="sel_swap">สลับ</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Ντουλάπα</string>
     <string name="nav_shopping">Αγορές</string>
     <string name="nav_travel">Ταξίδι</string>
     <string name="nav_settings">Ρυθμίσεις</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Στατιστικά Ντουλάπας</string>
     <string name="insights_tab_costs">Κόστος</string>
     <string name="costs_count_items">Είδη</string>
     <string name="costs_count_outfits">Σύνολα</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Προσθήκη από URL</string>
-    <string name="wardrobe_url_import_title">Εισαγωγή από URL αγορών</string>
-    <string name="wardrobe_url_import_hint">Επικολλήστε το URL μιας σελίδας αγορών. Θα τραβήξουμε αυτόματα την εικόνα του προϊόντος.</string>
-    <string name="url_import_pick_title">Επιλέξτε την εικόνα του προϊόντος</string>
-    <string name="url_import_pick_hint">Πατήστε στην εικόνα που θέλετε να εισαγάγετε. Αν καμία δεν φαίνεται σωστή, ανοίξτε τη σελίδα στο πρόγραμμα περιήγησης.</string>
-    <string name="url_import_browser_title">Άνοιγμα σελίδας</string>
-    <string name="url_import_browser_hint">Πατήστε οποιαδήποτε εικόνα στη σελίδα για να την εισαγάγετε.</string>
-    <string name="url_import_open_browser">Άνοιγμα σελίδας</string>
-    <string name="url_import_show_candidates">Υποψήφια</string>
-    <string name="url_import_no_candidates">Δεν βρέθηκαν εικόνες. Ανοίξτε τη σελίδα στο πρόγραμμα περιήγησης για να επιλέξετε μία.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Σύνολα</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Αποθήκευση…</string>
     <string name="cd_ai_suggestion">Πρόταση AI</string>
     <string name="filter_location">Τοποθεσία</string>
-    <string name="wardrobe_processing_photos">Επεξεργασία %1$d φωτογραφιών…</string>
-    <string name="wardrobe_progress_uploading">Μεταφόρτωση φωτογραφίας…</string>
-    <string name="wardrobe_progress_uploading_batch">Μεταφόρτωση φωτογραφίας %1$d από %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Αφαίρεση φόντου…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Αφαίρεση φόντου %1$d από %2$d…</string>
-    <string name="wardrobe_progress_moving">Μετακίνηση σε νέα τοποθεσία…</string>
     <string name="action_select_all">Επιλογή όλων</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Ετικέτες Ντουλάπας</string>
     <string name="settings_data_tags_desc">Επαναταξινόμηση κάθε είδους στη ντουλάπα σας με το Gemini. Αυτό θα αντικαταστήσει τυχόν χειροκίνητες αλλαγές ετικετών.</string>
     <string name="settings_rescan_button">Επανασάρωση Όλων των Ετικετών</string>
-    <string name="settings_rescanning">Επανασάρωση %1$d από %2$d…</string>
     <string name="settings_rescan_dialog_title">Επανασάρωση όλων των ετικετών;</string>
     <string name="settings_rescan_dialog_text">Το Gemini θα επαναταξινομήσει κάθε είδος στη ντουλάπα σας. Αυτό θα αντικαταστήσει τις χειροκίνητες αλλαγές και μπορεί να πάρει χρόνο.</string>
     <string name="settings_rescan_confirm">Επανασάρωση</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Χρειάζονται μόνο ετικέτες</string>
     <string name="settings_repair_preview_section_count">%1$d από %2$d επιλέχθηκαν</string>
     <string name="settings_repair_preview_selected">%1$d από %2$d επιλέχθηκαν</string>
-    <string name="settings_repair_preview_select_all">Επιλογή όλων</string>
-    <string name="settings_repair_preview_deselect_all">Αποεπιλογή όλων</string>
     <string name="settings_repair_preview_process_n">Επεξεργασία %1$d</string>
     <string name="settings_cutoutfix_title">Διόρθωση φόντου αποκομμάτων</string>
     <string name="settings_cutoutfix_desc">Σάρωση αποκομμάτων για υπολείμματα μαύρου φόντου ή πράσινου φωτοστέφανου και τοπική διόρθωση. Χωρίς χρήση AI — τα διορθωμένα αποκόμματα μεταφορτώνονται ξανά στο Drive.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Σάρωση αποκόμματος %1$d από %2$d…</string>
     <string name="settings_cutoutfix_processing">Διόρθωση αποκόμματος %1$d από %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d αποκόμματα διορθώθηκαν.</string>
-    <string name="settings_cutoutfix_dialog_title">Διόρθωση φόντου αποκομμάτων — Προεπισκόπηση</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Τα επιλεγμένα αποκόμματα θα διορθωθούν τοπικά και θα μεταφορτωθούν ξανά. Πατήστε για εναλλαγή.</string>
-    <string name="settings_cutoutfix_show_all">Εμφάνιση όλων των αποκομμάτων (όχι μόνο των προβληματικών)</string>
     <string name="settings_cutoutfix_no_issues">Δεν βρέθηκαν αποκόμματα με υπολείμματα φόντου.</string>
-    <string name="settings_cutoutfix_badge_blackbg">μαύρο φόντο</string>
-    <string name="settings_cutoutfix_badge_greenhalo">πράσινο φωτοστέφανο</string>
-    <string name="settings_cutoutfix_action_clearalpha">Καθαρισμός alpha (αδιαφανές)</string>
-    <string name="settings_cutoutfix_action_blackbg">Μαύρο φόντο → διαφανές</string>
-    <string name="settings_cutoutfix_action_greenhalo">Αφαίρεση πράσινου φωτοστέφανου</string>
-    <string name="settings_cutoutfix_action_feather">Εξομάλυνση άκρων alpha</string>
-    <string name="settings_cutoutfix_action_tightcrop">Περιορισμός μεγέθους &amp; σφιχτή περικοπή</string>
-    <string name="settings_cutoutfix_fix_n">Διόρθωση %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d από %2$d επιλέχθηκαν</string>
     <string name="settings_repair_preview_cost_total">Εκτιμώμενο κόστος: %1$d μονάδες</string>
     <string name="settings_repair_clear_cache">Καθαρισμός τοπικής cache</string>
     <string name="settings_repair_clear_cache_desc">Επαναμεταφόρτωση εικόνων από το Drive μετά την εκτέλεση. Πιο αργό, αλλά χρήσιμο αν τα τοπικά αρχεία φαίνονται παλιά.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Ενεργή</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Επαναφορά ντουλάπας: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d είδη</string>
     <string name="wardrobe_filtered_count">Εμφάνιση %1$d από %2$d ειδών</string>
-    <string name="wardrobe_stats_total">%1$d είδη συνολικά</string>
-    <string name="wardrobe_stats_untagged">Χωρίς ετικέτες</string>
-    <string name="wardrobe_empty">Δεν υπάρχουν είδη ακόμα</string>
-    <string name="wardrobe_empty_hint">Τραβήξτε μια φωτογραφία ή επιλέξτε από τη συλλογή</string>
     <string name="wardrobe_create_outfit">Χειροκίνητη δημιουργία συνόλου</string>
     <string name="wardrobe_compose_ai">Σύνθεση με AI</string>
-    <string name="wardrobe_select_all_count">Επιλογή όλων (%1$d)</string>
-    <string name="wardrobe_delete_title">Διαγραφή ειδών;</string>
-    <string name="wardrobe_delete_text">Είστε σίγουροι ότι θέλετε να διαγράψετε τα %d επιλεγμένα είδη; Αυτή η ενέργεια δεν αναιρείται.</string>
-    <string name="wardrobe_move_to">Μετακίνηση σε</string>
-    <string name="wardrobe_move_to_title">Μετακίνηση %d ειδών σε</string>
-    <string name="wardrobe_tag_detect">Εντοπισμός ετικετών</string>
-    <string name="wardrobe_tag_remove_bg">Αφαίρεση φόντου</string>
-    <string name="wardrobe_tag_re_remove_bg">Επαναφορά αφαίρεσης φόντου</string>
-    <string name="wardrobe_fix_cutout_bg">Διόρθωση φόντου αποκόμματος</string>
     <string name="wardrobe_fix_cutout_bg_done">Το φόντο του αποκόμματος διορθώθηκε.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Δεν εντοπίστηκε υπόλειμμα φόντου.</string>
-    <string name="wardrobe_tag_rotate">Περιστροφή</string>
-    <string name="wardrobe_tag_edit">Επεξεργασία ετικετών</string>
-    <string name="wardrobe_tag_sheet_title">Επεξεργασία Ετικετών</string>
-    <string name="wardrobe_tag_saved">Αποθηκεύτηκε</string>
-    <string name="wardrobe_tag_saving">Αποθήκευση…</string>
-    <string name="wardrobe_tag_unsaved">Μη αποθηκευμένο</string>
-    <string name="wardrobe_tag_redetect_ai">Εντοπισμός ετικετών με AI</string>
-    <string name="wardrobe_tag_not_set">Δεν ορίστηκε</string>
     <string name="wardrobe_add_gallery">Συλλογή</string>
     <string name="wardrobe_add_camera">Κάμερα</string>
     <string name="wardrobe_add_to_closet">Προσθήκη στη %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Προσθήκη στη ντουλάπα</string>
-    <string name="tag_label">Όνομα</string>
     <string name="tag_label_placeholder">π.χ. Μπλε Chino Παντελόνι, Λευκό Πουκάμισο</string>
-    <string name="tag_add_custom">Προσθήκη δικού σας…</string>
     <string name="tag_type_placeholder">π.χ. T-shirt, Chinos, Μπουφάν</string>
     <string name="tag_category_placeholder">μπλούζες, παντελόνια, πανωφόρια, παπούτσια, αξεσουάρ, φορέματα, κοστούμια</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Foreground service notification -->
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">Απαιτείται επεξεργασία στο παρασκήνιο</string>
-    <string name="battery_exempt_text">Το LibreLookAI χρειάζεται απεριόριστη επεξεργασία στο παρασκήνιο για την ασφαλή εισαγωγή φωτογραφιών και την επεξεργασία με AI.\n\nΠαρακαλούμε απενεργοποιήστε τη βελτιστοποίηση μπαταρίας για το LibreLookAI.</string>
-    <string name="battery_exempt_action">Άνοιγμα Ρυθμίσεων</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">Είστε εκτός σύνδεσης — λειτουργία προβολής μόνο</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d είδη</string>
     <string name="composer_factor_closets">%1$d ντουλάπες</string>
     <string name="composer_factor_composition">Προσαρμοσμένη σύνθεση</string>
-    <string name="wardrobe_create_style">Δημιουργία συνόλου</string>
-    <string name="wardrobe_imported_on">Εισήχθη στις %1$s</string>
-    <string name="wardrobe_view_original">Προβολή πρωτοτύπου</string>
-    <string name="wardrobe_view_cutout">Προβολή αποκόμματος</string>
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Προεπιλεγμένες παράμετροι</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Λήψη φωτογραφίας</string>
     <string name="shop_take_another">Λήψη άλλης φωτογραφίας</string>
     <string name="shop_clear">Καθαρισμός</string>
-    <string name="shop_your_photo">Η φωτογραφία σας</string>
     <string name="shop_matching">Αναζήτηση στη ντουλάπα…</string>
     <string name="shop_matches_title">Καλύτερα αποτελέσματα (%1$d)</string>
     <string name="shop_no_matches">Δεν βρέθηκαν αποτελέσματα. Δοκιμάστε καλύτερο φωτισμό.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Επεξεργασία στη συσκευή χωρίς χρήση μονάδων.</string>
 
     <!-- Local background-removal review screen -->
-    <string name="local_bg_title">Βελτίωση αποκόμματος</string>
-    <string name="local_bg_hint">Σύρετε το στόχαστρο πάνω στο είδος που θέλετε.</string>
-    <string name="local_bg_recomputing">Επανυπολογισμός…</string>
-    <string name="local_bg_apply">Χρήση αυτού του αποκόμματος</string>
-    <string name="local_bg_skip">Παράβλεψη (χρήση Gemini)</string>
-    <string name="local_bg_failed">Αποτυχία υπολογισμού — μετακινήστε το στόχαστρο.</string>
     <string name="settings_debug_similarity_toggle">Εμφάνιση debug ομοιότητας</string>
     <string name="settings_debug_similarity_desc">Εμφάνιση τεχνικών λεπτομερειών στην ομοιότητα.</string>
 
     <!-- Match preview dialog -->
-    <string name="dedupe_dialog_title">Πιθανό διπλότυπο</string>
-    <string name="dedupe_dialog_desc">Βρέθηκαν %1$d είδη που μοιάζουν πολύ.</string>
-    <string name="dedupe_dialog_import_anyway">Εισαγωγή παρ\' όλα αυτά</string>
-    <string name="dedupe_dialog_cancel">Ακύρωση</string>
     <string name="dedupe_no_matches">Δεν βρέθηκαν αποτελέσματα</string>
     <string name="dedupe_score">%1$d%% ομοιότητα</string>
 
     <!-- Find item by photo (Wardrobe) -->
-    <string name="wardrobe_find_by_photo">Εύρεση είδους με φωτογραφία</string>
-    <string name="wardrobe_find_by_photo_empty">Δεν βρέθηκαν παρόμοια είδη.</string>
-    <string name="wardrobe_find_by_photo_searching">Αναζήτηση…</string>
 
     <!-- Wardrobe search (text or photo) -->
     <string name="wardrobe_search_title">Αναζήτηση στη ντουλάπα</string>
     <string name="wardrobe_search_hint">Πληκτρολογήστε ή αναζητήστε με φωτό.</string>
     <string name="wardrobe_search_use_photo">Αναζήτηση με φωτογραφία</string>
-    <string name="wardrobe_search_text_results">Αποτελέσματα αναζήτησης</string>
     <string name="action_search">Αναζήτηση</string>
 
     <!-- Repair &amp; Sync — possible duplicates section -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Υπόλοιπο: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Χρησιμοποιείτε το δικό σας κλειδί Gemini — δεν δαπανώνται πιστώσεις.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Διαγραφή επίσης %d συνόλου/-ων που χρησιμοποιούν αυτά τα αντικείμενα</string>
-    <string name="wardrobe_delete_cascade_tryons">Διαγραφή επίσης %d δοκιμής/-ών με αυτά τα αντικείμενα</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Εσύ</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Επιλογές για προχωρημένους</string>
     <string name="settings_retag_row">Επανα-ετικετοποίηση όλων των ρούχων μου</string>
     <string name="settings_retag_row_sub">Ζήτα από το AI να μετονομάσει και να κατηγοριοποιήσει ξανά τα πάντα. Κοστίζει ~2 πιστώσεις ανά είδος.</string>
-    <string name="settings_rebg_row">Επανααφαίρεση φόντων</string>
     <string name="settings_rebg_row_sub">Επανακόβει κάθε είδος από τη φωτογραφία του. Κοστίζει ~6 πιστώσεις ανά είδος.</string>
-    <string name="settings_cutout_row">Διόρθωση υπολειπόμενων pixel φόντου</string>
     <string name="settings_cutout_row_sub">Ψάχνει για είδη όπου η αποκοπή έχασε μια γωνία.</string>
     <string name="settings_advanced_byok_title">Το κλειδί σας Gemini API</string>
     <string name="settings_advanced_byok_body">Όλη η τεχνητή νοημοσύνη λειτουργεί με το δικό σας κλειδί Gemini. Ένα δωρεάν κλειδί καλύπτει τις ετικέτες και τις προτάσεις συνόλων· η εικονική δοκιμή και η αφαίρεση φόντου απαιτούν πληρωμένο κλειδί με ενεργοποιημένη χρέωση. Αποκτήστε ένα στο aistudio.google.com και επικολλήστε το παρακάτω — το αποθηκεύουμε μόνο σε αυτό το τηλέφωνο.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Μετατροπή εικόνων σε WebP</string>
     <string name="settings_convert_webp_row_sub">Σμίκρυνση παλιότερων φωτογραφιών JPG/PNG για εξοικονόμηση χώρου στο Drive.</string>
-    <string name="settings_converting">Μετατροπή %1$d από %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Συντήρηση</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Φόρτωση λεπτομερειών %1$d / %2$d</string>
     <string name="restore_finishing">Ολοκλήρωση…</string>
-    <string name="wardrobe_sync_details">Φόρτωση λεπτομερειών: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Ολοκλήρωση…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Προσθήκη</string>
-    <string name="sel_swap">Αλλαγή</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

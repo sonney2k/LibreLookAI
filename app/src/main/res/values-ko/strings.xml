@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- 내비게이션 -->
-    <string name="nav_wardrobe">옷장</string>
     <string name="nav_shopping">쇼핑</string>
     <string name="nav_travel">여행</string>
     <string name="nav_settings">설정</string>
 
     <!-- 인사이트 탭 -->
-    <string name="insights_tab_wardrobe_stats">옷장 통계</string>
     <string name="insights_tab_costs">비용</string>
     <string name="costs_count_items">아이템</string>
     <string name="costs_count_outfits">코디</string>
@@ -30,15 +28,6 @@
 
     <!-- URL 가져오기 (옷장 + 쇼핑 목록) -->
     <string name="wardrobe_add_url">URL로 추가</string>
-    <string name="wardrobe_url_import_title">쇼핑 URL로 가져오기</string>
-    <string name="wardrobe_url_import_hint">쇼핑 페이지의 URL을 붙여넣으세요. 상품 이미지를 자동으로 가져옵니다.</string>
-    <string name="url_import_pick_title">상품 이미지 선택</string>
-    <string name="url_import_pick_hint">가져올 이미지를 탭하세요. 적절한 것이 없으면 브라우저에서 페이지를 여세요.</string>
-    <string name="url_import_browser_title">페이지 열기</string>
-    <string name="url_import_browser_hint">페이지의 아무 이미지를 탭하여 가져올 수 있습니다.</string>
-    <string name="url_import_open_browser">페이지 열기</string>
-    <string name="url_import_show_candidates">후보</string>
-    <string name="url_import_no_candidates">이미지를 찾을 수 없습니다. 브라우저에서 페이지를 열어 선택하세요.</string>
 
     <!-- 코디 서브탭 -->
     <string name="outfits_tab_outfits">코디</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">저장 중…</string>
     <string name="cd_ai_suggestion">AI 제안</string>
     <string name="filter_location">위치</string>
-    <string name="wardrobe_processing_photos">%1$d장 사진 처리 중…</string>
-    <string name="wardrobe_progress_uploading">사진 업로드 중…</string>
-    <string name="wardrobe_progress_uploading_batch">사진 %1$d / %2$d 업로드 중…</string>
-    <string name="wardrobe_progress_removing_bg">배경 제거 중…</string>
-    <string name="wardrobe_progress_removing_bg_batch">배경 제거 %1$d / %2$d…</string>
-    <string name="wardrobe_progress_moving">새 위치로 이동 중…</string>
     <string name="action_select_all">모두 선택</string>
 
     <!-- 로그인 -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">옷장 태그</string>
     <string name="settings_data_tags_desc">Gemini로 옷장의 모든 아이템을 다시 분류합니다. 수동으로 편집한 태그는 덮어쓰여집니다.</string>
     <string name="settings_rescan_button">모든 태그 다시 스캔</string>
-    <string name="settings_rescanning">다시 스캔 중 %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">모든 태그를 다시 스캔하시겠습니까?</string>
     <string name="settings_rescan_dialog_text">Gemini가 옷장의 모든 아이템을 다시 분류합니다. 수동으로 편집한 태그가 덮어쓰여지며 시간이 걸릴 수 있습니다.</string>
     <string name="settings_rescan_confirm">다시 스캔</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">태그만 필요</string>
     <string name="settings_repair_preview_section_count">%1$d / %2$d 선택됨</string>
     <string name="settings_repair_preview_selected">%1$d / %2$d 선택됨</string>
-    <string name="settings_repair_preview_select_all">모두 선택</string>
-    <string name="settings_repair_preview_deselect_all">선택 해제</string>
     <string name="settings_repair_preview_process_n">%1$d개 처리</string>
     <string name="settings_cutoutfix_title">컷아웃 배경 수정</string>
     <string name="settings_cutoutfix_desc">기존 컷아웃에서 남은 검정 배경이나 녹색 후광을 스캔하고 로컬에서 매트를 다시 적용합니다. AI 호출 없음 — 수정된 컷아웃은 Drive ID를 유지한 채 다시 업로드됩니다.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">컷아웃 스캔 중 %1$d / %2$d…</string>
     <string name="settings_cutoutfix_processing">컷아웃 수정 중 %1$d / %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d개 컷아웃 수정됨.</string>
-    <string name="settings_cutoutfix_dialog_title">컷아웃 배경 수정 — 미리보기</string>
-    <string name="settings_cutoutfix_dialog_subtitle">선택된 컷아웃이 로컬에서 다시 처리되고 다시 업로드됩니다. 탭하여 전환하세요.</string>
-    <string name="settings_cutoutfix_show_all">모든 컷아웃 표시 (플래그된 것만 아님)</string>
     <string name="settings_cutoutfix_no_issues">잔여 배경이 있는 컷아웃을 찾지 못했습니다.</string>
-    <string name="settings_cutoutfix_badge_blackbg">검정 배경</string>
-    <string name="settings_cutoutfix_badge_greenhalo">녹색 후광</string>
-    <string name="settings_cutoutfix_action_clearalpha">알파 지우기 (불투명화)</string>
-    <string name="settings_cutoutfix_action_blackbg">검정 배경 → 투명</string>
-    <string name="settings_cutoutfix_action_greenhalo">녹색 후광 제거</string>
-    <string name="settings_cutoutfix_action_feather">알파 가장자리 부드럽게</string>
-    <string name="settings_cutoutfix_action_tightcrop">타이트 크롭 및 크기 제한</string>
-    <string name="settings_cutoutfix_fix_n">%1$d개 수정</string>
-    <string name="settings_cutoutfix_selected">%1$d / %2$d 선택됨</string>
     <string name="settings_repair_preview_cost_total">예상 비용: %1$d 크레딧</string>
     <string name="settings_repair_clear_cache">로컬 캐시 지우기</string>
     <string name="settings_repair_clear_cache_desc">실행 후 모든 이미지를 Drive에서 다시 다운로드합니다. 느리며, 로컬 파일이 오래된 경우에만 필요합니다.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">활성</string>
 
     <!-- 옷장 -->
-    <string name="wardrobe_sync_progress">옷장 복원 중: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d개 아이템</string>
     <string name="wardrobe_filtered_count">%2$d개 중 %1$d개 아이템 표시</string>
-    <string name="wardrobe_stats_total">총 %1$d개 아이템</string>
-    <string name="wardrobe_stats_untagged">태그 없음</string>
-    <string name="wardrobe_empty">아직 아이템이 없습니다</string>
-    <string name="wardrobe_empty_hint">사진을 찍거나 갤러리에서 선택하세요</string>
     <string name="wardrobe_create_outfit">수동으로 코디 만들기</string>
     <string name="wardrobe_compose_ai">AI로 구성</string>
-    <string name="wardrobe_select_all_count">모두 선택 (%1$d)</string>
-    <string name="wardrobe_delete_title">아이템을 삭제하시겠습니까?</string>
-    <string name="wardrobe_delete_text">선택한 %d개 아이템을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.</string>
-    <string name="wardrobe_move_to">이동</string>
-    <string name="wardrobe_move_to_title">%d개 아이템 이동</string>
-    <string name="wardrobe_tag_detect">태그 감지</string>
-    <string name="wardrobe_tag_remove_bg">배경 제거</string>
-    <string name="wardrobe_tag_re_remove_bg">배경 재제거</string>
-    <string name="wardrobe_fix_cutout_bg">컷아웃 배경 수정</string>
     <string name="wardrobe_fix_cutout_bg_done">컷아웃 배경이 수정되었습니다.</string>
     <string name="wardrobe_fix_cutout_bg_clean">잔여 배경이 감지되지 않음 — 수정할 것이 없습니다.</string>
-    <string name="wardrobe_tag_rotate">회전</string>
-    <string name="wardrobe_tag_edit">태그 편집</string>
-    <string name="wardrobe_tag_sheet_title">태그 편집</string>
-    <string name="wardrobe_tag_saved">저장됨</string>
-    <string name="wardrobe_tag_saving">저장 중…</string>
-    <string name="wardrobe_tag_unsaved">저장 안 됨</string>
-    <string name="wardrobe_tag_redetect_ai">AI로 태그 다시 감지</string>
-    <string name="wardrobe_tag_not_set">설정되지 않음</string>
     <string name="wardrobe_add_gallery">갤러리</string>
     <string name="wardrobe_add_camera">카메라</string>
     <string name="wardrobe_add_to_closet">%1$s에 추가</string>
-    <string name="wardrobe_add_to_closet_title">옷장에 추가</string>
-    <string name="tag_label">이름</string>
     <string name="tag_label_placeholder">예: 네이비 치노, 화이트 옥스퍼드 셔츠</string>
-    <string name="tag_add_custom">사용자 정의 추가…</string>
     <string name="tag_type_placeholder">예: 티셔츠, 치노, 패딩 재킷</string>
     <string name="tag_category_placeholder">상의, 하의, 아우터, 신발, 액세서리, 드레스, 슈트</string>
 
@@ -314,9 +257,6 @@
 
     <!-- 포그라운드 서비스 알림 -->
     <!-- 배터리 최적화 면제 대화상자 -->
-    <string name="battery_exempt_title">백그라운드 처리 필요</string>
-    <string name="battery_exempt_text">LibreLookAI는 사진을 안전하게 가져오고, 배경을 제거하고, AI로 옷에 태그를 지정하기 위해 제한 없는 백그라운드 처리가 필요합니다.\n\n이 권한이 없으면 Android가 처리 중에 앱을 종료할 수 있어 데이터 손실이 발생할 수 있습니다 — 부분적으로 가져온 아이템, 누락된 태그 또는 손상된 파일.\n\n계속하려면 LibreLookAI의 배터리 최적화를 비활성화하세요.</string>
-    <string name="battery_exempt_action">설정 열기</string>
 
     <!-- 오프라인 모드 -->
     <string name="offline_banner">오프라인 — 보기 전용 모드</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d개 아이템</string>
     <string name="composer_factor_closets">%1$d개 옷장</string>
     <string name="composer_factor_composition">사용자 정의 구성</string>
-    <string name="wardrobe_create_style">코디 만들기</string>
-    <string name="wardrobe_imported_on">%1$s에 가져옴</string>
-    <string name="wardrobe_view_original">원본 보기</string>
-    <string name="wardrobe_view_cutout">컷아웃 보기</string>
     <!-- AI 탭 -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">기본 고려 사항</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">사진 찍기</string>
     <string name="shop_take_another">다른 사진 찍기</string>
     <string name="shop_clear">지우기</string>
-    <string name="shop_your_photo">내 사진</string>
     <string name="shop_matching">옷장과 매칭 중…</string>
     <string name="shop_matches_title">상위 매치 (%1$d)</string>
     <string name="shop_no_matches">매치가 없습니다. 더 가깝고 밝은 사진을 시도해 보세요.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">활성화하면 카메라와 갤러리 가져오기에서 로컬 Magic Touch 세그멘터가 실행되고 저장 전에 전경 시드를 확인하거나 조정할 수 있습니다 — Gemini 호출 없음, 크레딧 없음. URL 가져오기는 항상 이 검토를 사용합니다.</string>
 
     <!-- 로컬 배경 제거 검토 화면 -->
-    <string name="local_bg_title">컷아웃 조정</string>
-    <string name="local_bg_hint">유지하려는 아이템 위로 십자선을 끌어 옮기세요.</string>
-    <string name="local_bg_recomputing">컷아웃 재계산 중…</string>
-    <string name="local_bg_apply">이 컷아웃 사용</string>
-    <string name="local_bg_skip">건너뛰기 (Gemini 사용)</string>
-    <string name="local_bg_failed">컷아웃을 계산할 수 없습니다 — 십자선을 옮겨 보세요.</string>
     <string name="settings_debug_similarity_toggle">유사도 디버그 미리보기 표시</string>
     <string name="settings_debug_similarity_desc">유사도 검색 결과를 열 때 기본 줌 이미지 대신 채널별 분석(세그먼트된 썸네일, 임베딩/히스토그램 코사인, 색조 히스토그램)을 표시합니다.</string>
 
     <!-- 매치 미리보기 대화상자 -->
-    <string name="dedupe_dialog_title">중복 가능</string>
-    <string name="dedupe_dialog_desc">이 사진과 매우 유사한 아이템을 옷장에서 %1$d개 찾았습니다.</string>
-    <string name="dedupe_dialog_import_anyway">그래도 가져오기</string>
-    <string name="dedupe_dialog_cancel">취소</string>
     <string name="dedupe_no_matches">매치 없음</string>
     <string name="dedupe_score">%1$d%% 일치</string>
 
     <!-- 사진으로 아이템 찾기 (옷장) -->
-    <string name="wardrobe_find_by_photo">사진으로 아이템 찾기</string>
-    <string name="wardrobe_find_by_photo_empty">유사한 아이템을 찾지 못했습니다.</string>
-    <string name="wardrobe_find_by_photo_searching">매치 검색 중…</string>
 
     <!-- 옷장 검색 (텍스트 또는 사진) -->
     <string name="wardrobe_search_title">옷장 검색</string>
     <string name="wardrobe_search_hint">찾는 것을 입력하거나 사진으로 검색하세요.</string>
     <string name="wardrobe_search_use_photo">대신 사진으로 검색</string>
-    <string name="wardrobe_search_text_results">검색 결과</string>
     <string name="action_search">검색</string>
 
     <!-- 복구 및 동기화 — 가능한 중복 섹션 -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">잔액: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">본인의 Gemini 키 사용 중 — 크레딧이 소모되지 않습니다.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">이 아이템을 사용하는 %d개의 코디도 삭제</string>
-    <string name="wardrobe_delete_cascade_tryons">이 아이템이 포함된 %d개의 가상 피팅도 삭제</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">나</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">고급 옵션</string>
     <string name="settings_retag_row">내 모든 옷 다시 태그하기</string>
     <string name="settings_retag_row_sub">AI에게 전부 다시 이름 짓고 분류하도록 요청합니다. 항목당 ~2크레딧.</string>
-    <string name="settings_rebg_row">배경 다시 제거</string>
     <string name="settings_rebg_row_sub">각 항목을 사진에서 다시 잘라냅니다. 항목당 ~6크레딧.</string>
-    <string name="settings_cutout_row">남은 배경 픽셀 고치기</string>
     <string name="settings_cutout_row_sub">잘라내기가 모서리를 놓친 항목을 찾습니다.</string>
     <string name="settings_advanced_byok_title">내 Gemini API 키</string>
     <string name="settings_advanced_byok_body">모든 AI는 사용자의 Gemini 키로 작동합니다. 무료 키는 태깅과 코디 추천을 지원하며, 가상 피팅과 배경 제거에는 결제가 활성화된 유료 키가 필요합니다. aistudio.google.com에서 받아 아래에 붙여넣으세요 — 이 기기에만 저장됩니다.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">이미지를 WebP로 변환</string>
     <string name="settings_convert_webp_row_sub">오래된 JPG/PNG 사진을 줄여 드라이브 공간을 절약하세요.</string>
-    <string name="settings_converting">변환 중 %1$d/%2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">유지 관리</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">세부 정보 불러오는 중 %1$d / %2$d</string>
     <string name="restore_finishing">마무리하는 중…</string>
-    <string name="wardrobe_sync_details">세부 정보 불러오는 중: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">마무리하는 중…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">아이템 추가</string>
-    <string name="sel_swap">교체</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

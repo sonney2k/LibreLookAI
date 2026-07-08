@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Gardrób</string>
     <string name="nav_shopping">Vásárlás</string>
     <string name="nav_travel">Utazás</string>
     <string name="nav_settings">Beállítások</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Gardrób statisztikák</string>
     <string name="insights_tab_costs">Költségek</string>
     <string name="costs_count_items">Darabok</string>
     <string name="costs_count_outfits">Szettek</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Hozzáadás linkkel</string>
-    <string name="wardrobe_url_import_title">Importálás webáruház linkjéről</string>
-    <string name="wardrobe_url_import_hint">Másold be egy termékoldal linkjét. Automatikusan lekérjük a termék képét.</string>
-    <string name="url_import_pick_title">Válaszd ki a termékképet</string>
-    <string name="url_import_pick_hint">Koppints a képre, amit importálni szeretnél. Ha egyik sem jó, nyisd meg az oldalt böngészőben.</string>
-    <string name="url_import_browser_title">Oldal megnyitása</string>
-    <string name="url_import_browser_hint">Koppints bármelyik képre az oldalon az importáláshoz.</string>
-    <string name="url_import_open_browser">Oldal megnyitása</string>
-    <string name="url_import_show_candidates">Jelöltek</string>
-    <string name="url_import_no_candidates">Nem találhatók képek. Nyisd meg az oldalt a böngészőben a választáshoz.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Szettek</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Mentés…</string>
     <string name="cd_ai_suggestion">AI javaslat</string>
     <string name="filter_location">Helyszín</string>
-    <string name="wardrobe_processing_photos">%1$d fotó feldolgozása…</string>
-    <string name="wardrobe_progress_uploading">Fotó feltöltése…</string>
-    <string name="wardrobe_progress_uploading_batch">Fotó feltöltése: %1$d / %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Háttér eltávolítása…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Háttér eltávolítása: %1$d / %2$d…</string>
-    <string name="wardrobe_progress_moving">Mozgatás új helyre…</string>
     <string name="action_select_all">Összes kijelölése</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Gardrób címkék</string>
     <string name="settings_data_tags_desc">Minden darab újraosztályozása a Gemini segítségével. Ez felülír minden manuális címkeszerkesztést.</string>
     <string name="settings_rescan_button">Minden címke újraelemzése</string>
-    <string name="settings_rescanning">Újraelemzés: %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">Újraelemzed az összes címkét?</string>
     <string name="settings_rescan_dialog_text">A Gemini újraosztályozza a gardróbod minden darabját. Ez felülírja a manuális szerkesztéseket és eltarthat egy ideig.</string>
     <string name="settings_rescan_confirm">Újraelemzés</string>
@@ -120,38 +102,14 @@
     <string name="settings_repair_done">Javítás kész. Gardrób frissítve.</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Gardrób visszaállítása: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d darab</string>
     <string name="wardrobe_filtered_count">%1$d / %2$d darab megjelenítve</string>
-    <string name="wardrobe_stats_total">Összesen %1$d darab</string>
-    <string name="wardrobe_stats_untagged">Címkézetlen</string>
-    <string name="wardrobe_empty">Még nincsenek darabok</string>
-    <string name="wardrobe_empty_hint">Készíts egy fotót vagy válassz a galériából</string>
     <string name="wardrobe_create_outfit">Szett létrehozása manuálisan</string>
     <string name="wardrobe_compose_ai">Összeállítás AI-val</string>
-    <string name="wardrobe_select_all_count">Összes kijelölése (%1$d)</string>
-    <string name="wardrobe_delete_title">Darabok törlése?</string>
-    <string name="wardrobe_delete_text">Biztosan törlöd a kijelölt %d darabot? Ezt nem lehet visszavonni.</string>
-    <string name="wardrobe_move_to">Mozgatás</string>
-    <string name="wardrobe_move_to_title">%d darab mozgatása ide:</string>
-    <string name="wardrobe_tag_detect">Címkék felismerése</string>
-    <string name="wardrobe_tag_remove_bg">Háttér törlése</string>
-    <string name="wardrobe_tag_re_remove_bg">Háttér újratörlése</string>
-    <string name="wardrobe_tag_rotate">Forgatás</string>
-    <string name="wardrobe_tag_edit">Címkék szerkesztése</string>
-    <string name="wardrobe_tag_sheet_title">Címkék szerkesztése</string>
-    <string name="wardrobe_tag_saved">Mentve</string>
-    <string name="wardrobe_tag_saving">Mentés…</string>
-    <string name="wardrobe_tag_unsaved">Mentetlen</string>
-    <string name="wardrobe_tag_redetect_ai">Címkék újrafelismerése MI-vel</string>
-    <string name="wardrobe_tag_not_set">Nincs beállítva</string>
     <string name="wardrobe_add_gallery">Galéria</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Hozzáadás ide: %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Hozzáadás a gardróbhoz</string>
-    <string name="tag_label">Név</string>
     <string name="tag_label_placeholder">pl. Sötétkék Chino, Fehér Oxford ing</string>
-    <string name="tag_add_custom">Egyéni hozzáadása…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -241,13 +199,6 @@
     <string name="ai_consider_weather_desc">Vegye figyelembe a mai hőmérsékletet és a viszonyokat.</string>
     <string name="ai_considerations_desc">Mit vegyen figyelembe az AI a szettek javaslásánál vagy összeállításánál. A módosítások a predikció-, összeállítás-, csomagolási- és gardróbhiány-promptokra is érvényesek.</string>
     <string name="ai_considerations_title">Alapértelmezett szempontok</string>
-    <string name="battery_exempt_action">Beállítások megnyitása</string>
-    <string name="battery_exempt_text">A LibreLookAI-nak korlátlan háttér-feldolgozásra van szüksége a fotók biztonságos importálásához, a háttér eltávolításához és a ruhák AI-val történő címkézéséhez.
-
-Ezen engedély nélkül az Android leállíthatja az appot folyamat közben, ami adatvesztést okozhat — részlegesen importált darabok, hiányzó címkék vagy sérült fájlok.
-
-Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folytatáshoz.</string>
-    <string name="battery_exempt_title">Háttér-feldolgozás szükséges</string>
     <string name="composer_add_selected">Kiválasztottak hozzáadása</string>
     <string name="composer_desc_placeholder">Rövid leírás (opcionális)</string>
     <string name="composer_discard_confirm">Elvetés</string>
@@ -281,10 +232,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Címkék (opcionális)</string>
     <string name="composer_targets_hint">Állítsd be, hány darabot vegyen fel az AI rétegenként. Hagyd 0-n, hogy az AI döntsön.</string>
-    <string name="dedupe_dialog_cancel">Mégse</string>
-    <string name="dedupe_dialog_desc">%1$d darabot találtunk a gardróbodban, amely nagyon hasonlít erre a fotóra.</string>
-    <string name="dedupe_dialog_import_anyway">Importálás mindenképp</string>
-    <string name="dedupe_dialog_title">Lehetséges duplikátum</string>
     <string name="dedupe_no_matches">Nincs találat</string>
     <string name="dedupe_score">%1$d%% egyezés</string>
     <string name="gap_description">Fedezd fel a 3 hiányzó darabot, amelyek a legtöbb új szettkombinációt nyitják meg a meglévő gardróbodból.</string>
@@ -300,12 +247,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="import_preview_select_all">Összes kijelölése</string>
     <string name="import_preview_similar_badge">Hasonló</string>
     <string name="import_preview_title">%1$d darab átnézése</string>
-    <string name="local_bg_apply">Ennek a kivágásnak a használata</string>
-    <string name="local_bg_failed">Nem sikerült kivágást számítani — próbáld áthelyezni a célkeresztet.</string>
-    <string name="local_bg_hint">Húzd a célkeresztet a megtartandó darabra.</string>
-    <string name="local_bg_recomputing">Kivágás újraszámítása…</string>
-    <string name="local_bg_skip">Kihagyás (Gemini használata)</string>
-    <string name="local_bg_title">Kivágás finomítása</string>
     <string name="outfit_mode_edit">Szerkesztés</string>
     <string name="outfit_mode_view">Megtekintés</string>
     <string name="outfits_description_placeholder">Leírás (opcionális)</string>
@@ -322,24 +263,12 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_bg_removal_desc">Az eszközön futó kivágó-szegmentáló hangolása, amelyet a felvétel, importálás és Vásárlási segéd használ. Alacsonyabb értékek több pixelt tartanak meg (lazább kivágás, hátteret tartalmazhat); magasabb értékek elutasítják a határeseti pixeleket (szorosabb kivágás, levághat a darabból).</string>
     <string name="settings_bg_removal_threshold">Előtér-küszöb: %1$d%%</string>
     <string name="settings_bg_removal_title">Háttéreltávolítás</string>
-    <string name="settings_cutoutfix_action_blackbg">Fekete háttér → átlátszó</string>
-    <string name="settings_cutoutfix_action_clearalpha">Alfa törlése (átlátszatlanná tétel)</string>
-    <string name="settings_cutoutfix_action_feather">Alfa szélek elmosása</string>
-    <string name="settings_cutoutfix_action_greenhalo">Zöld glória eltávolítása</string>
-    <string name="settings_cutoutfix_action_tightcrop">Szoros vágás &amp; méretkorlát</string>
-    <string name="settings_cutoutfix_badge_blackbg">fekete háttér</string>
-    <string name="settings_cutoutfix_badge_greenhalo">zöld glória</string>
     <string name="settings_cutoutfix_button">Kivágások vizsgálata</string>
     <string name="settings_cutoutfix_desc">Megvizsgálja a meglévő kivágásokat maradék fekete hátterek és zöld glóriák szempontjából, és helyben újra alkalmazza a maszkot. Nincs AI-hívás — a javított kivágások a Drive ID-jük megőrzésével töltődnek fel újra.</string>
-    <string name="settings_cutoutfix_dialog_subtitle">A kiválasztott kivágások helyben kerülnek újra feldolgozásra és újra feltöltésre. Koppints a váltáshoz.</string>
-    <string name="settings_cutoutfix_dialog_title">Kivágási hátterek javítása — Előnézet</string>
     <string name="settings_cutoutfix_done">%1$d kivágás javítva.</string>
-    <string name="settings_cutoutfix_fix_n">%1$d javítása</string>
     <string name="settings_cutoutfix_no_issues">Nem találhatók maradék háttérrel rendelkező kivágások.</string>
     <string name="settings_cutoutfix_processing">%1$d / %2$d kivágás javítása…</string>
     <string name="settings_cutoutfix_scanning">%1$d / %2$d kivágás vizsgálata…</string>
-    <string name="settings_cutoutfix_selected">%1$d / %2$d kiválasztva</string>
-    <string name="settings_cutoutfix_show_all">Minden kivágás mutatása (nem csak a jelöltek)</string>
     <string name="settings_cutoutfix_title">Kivágási hátterek javítása</string>
     <string name="settings_debug_similarity_desc">Hasonlóságkereső találat megnyitásakor a csatornánkénti felbontást mutatja (szegmentált miniatűrök, embedding/hisztogram koszinusz, árnyalat-hisztogramok) az alapértelmezett nagyítható kép helyett.</string>
     <string name="settings_debug_similarity_toggle">Hasonlóság debug-előnézetének mutatása</string>
@@ -409,13 +338,11 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_repair_clear_cache">Helyi gyorsítótár ürítése</string>
     <string name="settings_repair_clear_cache_desc">Az összes kép újratöltése a Drive-ról a futtatás után. Lassabb; csak akkor szükséges, ha a helyi fájlok elavultnak tűnnek.</string>
     <string name="settings_repair_preview_cost_total">Becsült költség: %1$d kredit</string>
-    <string name="settings_repair_preview_deselect_all">Összes kijelölés megszüntetése</string>
     <string name="settings_repair_preview_process_n">%1$d feldolgozása</string>
     <string name="settings_repair_preview_section_count">%1$d / %2$d kiválasztva</string>
     <string name="settings_repair_preview_section_orphaned">Háttéreltávolítás + címkék szükségesek</string>
     <string name="settings_repair_preview_section_raw">Nem felismert képek — háttéreltávolítás + címkék szükségesek</string>
     <string name="settings_repair_preview_section_sidecar">Csak címkék szükségesek</string>
-    <string name="settings_repair_preview_select_all">Összes kijelölése</string>
     <string name="settings_repair_preview_selected">%1$d / %2$d kiválasztva</string>
     <string name="settings_repair_preview_subtitle">A kiválasztott darabok kerülnek feldolgozásra. Koppints egy miniatűrre a kihagyáshoz.</string>
     <string name="settings_repair_preview_title">Javítás &amp; szinkron — Előnézet</string>
@@ -431,7 +358,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="shop_no_matches">Még nincs találat. Próbálj közelebbi, jobban megvilágított fotót.</string>
     <string name="shop_take_another">Másik fotó készítése</string>
     <string name="shop_take_photo">Fotó készítése</string>
-    <string name="shop_your_photo">A te fotód</string>
     <string name="tag_category_placeholder">felsők, alsók, felsőkabát, lábbeli, kiegészítők, ruha, öltöny</string>
     <string name="tag_type_placeholder">pl. Póló, Chinos, Tollkabát</string>
     <string name="travel_move_done">A darabok az Utazás helyszínre lettek áthelyezve</string>
@@ -456,25 +382,14 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="tryon_section_desc">Tölts fel egész alakos fotókat elölről, oldalról és hátulról. Az alkalmazás ezeket referenciaként használja a szett vagy gardróbdarab rólad készült felpróbálási előnézetének generálásához. A fotók a saját Drive-odon maradnak.</string>
     <string name="tryon_section_title">Felpróbálási fotók</string>
     <string name="tryon_use_outfit">Szett használata</string>
-    <string name="wardrobe_create_style">Szett létrehozása</string>
-    <string name="wardrobe_find_by_photo">Darab keresése fotó alapján</string>
-    <string name="wardrobe_find_by_photo_empty">Nincs hasonló darab.</string>
-    <string name="wardrobe_find_by_photo_searching">Találatok keresése…</string>
-    <string name="wardrobe_fix_cutout_bg">Kivágás hátterének javítása</string>
     <string name="wardrobe_fix_cutout_bg_clean">Nem észlelhető maradék háttér — nincs mit javítani.</string>
     <string name="wardrobe_fix_cutout_bg_done">A kivágás háttere javítva.</string>
-    <string name="wardrobe_imported_on">Importálva: %1$s</string>
     <string name="wardrobe_search_hint">Írd be, mit keresel, vagy keress fotó alapján.</string>
-    <string name="wardrobe_search_text_results">Keresési eredmények</string>
     <string name="wardrobe_search_title">Keresés a gardróbban</string>
     <string name="wardrobe_search_use_photo">Keresés fotó alapján</string>
     <string name="wardrobe_suggest_replacements">Alternatívák javaslása</string>
-    <string name="wardrobe_view_cutout">Kivágás megtekintése</string>
-    <string name="wardrobe_view_original">Eredeti megtekintése</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Törölj %d szettet is, amelyek ezeket a darabokat használják</string>
-    <string name="wardrobe_delete_cascade_tryons">Törölj %d felpróbálást is ezekkel a darabokkal</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Te</string>
@@ -515,9 +430,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_section_advanced_power">Speciális beállítások</string>
     <string name="settings_retag_row">Minden ruhám újracímkézése</string>
     <string name="settings_retag_row_sub">Kérd meg az AI-t, hogy mindent nevezzen át és kategorizáljon újra. Darabonként ~2 kredit.</string>
-    <string name="settings_rebg_row">Hátterek újraeltávolítása</string>
     <string name="settings_rebg_row_sub">Minden darabot újra kivág a fotójából. Darabonként ~6 kredit.</string>
-    <string name="settings_cutout_row">Maradék háttérpixelek javítása</string>
     <string name="settings_cutout_row_sub">Olyan darabokat keres, ahol a kivágás kihagyott egy sarkot.</string>
     <string name="settings_advanced_byok_title">A Gemini API-kulcsa</string>
     <string name="settings_advanced_byok_body">Minden AI a saját Gemini-kulcsával működik. Egy ingyenes kulcs fedezi a címkézést és az outfitjavaslatokat; a virtuális felpróbáláshoz és a háttér eltávolításához számlázással engedélyezett, fizetős kulcs kell. Szerezzen egyet az aistudio.google.com oldalon, és illessze be alább — csak ezen a telefonon tároljuk.</string>
@@ -623,10 +536,8 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Képek átalakítása WebP-re</string>
     <string name="settings_convert_webp_row_sub">Kicsinyítsd a régebbi JPG/PNG fotókat, hogy helyet spórolj a Drive-on.</string>
-    <string name="settings_converting">Átalakítás: %1$d / %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Karbantartás</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Részletek betöltése %1$d / %2$d</string>
     <string name="restore_finishing">Befejezés…</string>
-    <string name="wardrobe_sync_details">Részletek betöltése: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Befejezés…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Tárgy hozzáadása</string>
-    <string name="sel_swap">Csere</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

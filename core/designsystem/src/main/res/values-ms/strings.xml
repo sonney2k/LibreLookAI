@@ -230,4 +230,15 @@
     <string name="sel_move">Alih</string>
     <string name="tryon_outfit_picker_title">Pilih pakaian</string>
     <string name="tryon_outfit_picker_empty">Belum ada pakaian tersimpan. Cipta satu di tab Pakaian untuk digunakan di sini.</string>
+    <string name="battery_exempt_action">Buka Tetapan</string>
+    <string name="battery_exempt_text">LibreLookAI memerlukan pemprosesan latar belakang tanpa had untuk mengimport foto dengan selamat, membuang latar, dan men-tag pakaian anda dengan AI.
+
+Tanpa kebenaran ini, Android boleh menamatkan aplikasi semasa proses, yang boleh menyebabkan kehilangan data — item yang separa diimport, tag yang hilang, atau fail rosak.
+
+Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
+    <string name="battery_exempt_title">Pemprosesan latar belakang diperlukan</string>
+    <string name="nav_wardrobe">Almari</string>
+    <string name="shop_your_photo">Gambar anda</string>
+    <string name="wardrobe_fix_cutout_bg">Perbaiki latar potongan</string>
+    <string name="wardrobe_move_to_title">Pindah %d barangan ke</string>
 </resources>

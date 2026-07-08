@@ -230,4 +230,15 @@
     <string name="sel_move">منتقل کریں</string>
     <string name="tryon_outfit_picker_title">ملبوسات منتخب کریں</string>
     <string name="tryon_outfit_picker_empty">ابھی کوئی محفوظ ملبوسات نہیں۔ یہاں استعمال کے لیے ملبوسات ٹیب میں ایک بنائیں۔</string>
+    <string name="battery_exempt_action">ترتیبات کھولیں</string>
+    <string name="battery_exempt_text">LibreLookAI کو محفوظ طریقے سے تصاویر درآمد کرنے، پس منظر ہٹانے اور AI کے ساتھ آپ کے کپڑے ٹیگ کرنے کے لیے غیر محدود پس منظر پروسیسنگ درکار ہے۔
+
+اس اجازت کے بغیر، Android عمل کے درمیان ایپ کو بند کر سکتا ہے، جس سے ڈیٹا کا نقصان ہو سکتا ہے — جزوی طور پر درآمد شدہ آئٹمز، گمشدہ ٹیگ، یا خراب فائلیں۔
+
+جاری رکھنے کے لیے براہ کرم LibreLookAI کے لیے بیٹری آپٹیمائزیشن غیر فعال کریں۔</string>
+    <string name="battery_exempt_title">پس منظر پروسیسنگ درکار</string>
+    <string name="nav_wardrobe">وارڈروب</string>
+    <string name="shop_your_photo">آپ کی تصویر</string>
+    <string name="wardrobe_fix_cutout_bg">کٹ آؤٹ پس منظر درست کریں</string>
+    <string name="wardrobe_move_to_title">%d اشیاء یہاں بھیجیں</string>
 </resources>

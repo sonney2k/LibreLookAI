@@ -230,4 +230,11 @@
     <string name="sel_move">Verplaatsen</string>
     <string name="tryon_outfit_picker_title">Kies een outfit</string>
     <string name="tryon_outfit_picker_empty">Nog geen opgeslagen outfits. Maak er een in de Outfits-tab om hier te gebruiken.</string>
+    <string name="battery_exempt_action">Instellingen openen</string>
+    <string name="battery_exempt_text">LibreLookAI heeft onbeperkte achtergrondverwerking nodig om veilig foto\'s te importeren, achtergronden te verwijderen en je kleding met AI te taggen.\n\nZonder deze toestemming kan Android de app tijdens verwerking stoppen, wat kan leiden tot gegevensverlies — gedeeltelijk geïmporteerde items, ontbrekende tags of beschadigde bestanden.\n\nSchakel batterijoptimalisatie voor LibreLookAI uit om door te gaan.</string>
+    <string name="battery_exempt_title">Achtergrondverwerking vereist</string>
+    <string name="nav_wardrobe">Garderobe</string>
+    <string name="shop_your_photo">Je foto</string>
+    <string name="wardrobe_fix_cutout_bg">Uitsnede-achtergrond repareren</string>
+    <string name="wardrobe_move_to_title">%d item(s) verplaatsen naar</string>
 </resources>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- ナビゲーション -->
-    <string name="nav_wardrobe">クローゼット</string>
     <string name="nav_shopping">ショッピング</string>
     <string name="nav_travel">旅行</string>
     <string name="nav_settings">設定</string>
 
     <!-- インサイトタブ -->
-    <string name="insights_tab_wardrobe_stats">クローゼット統計</string>
     <string name="insights_tab_costs">コスト</string>
     <string name="costs_count_items">アイテム</string>
     <string name="costs_count_outfits">コーデ</string>
@@ -30,15 +28,6 @@
 
     <!-- URLインポート(クローゼット + ショッピングリスト) -->
     <string name="wardrobe_add_url">URLから追加</string>
-    <string name="wardrobe_url_import_title">ショッピングURLからインポート</string>
-    <string name="wardrobe_url_import_hint">ショッピングページのURLを貼り付けてください。商品画像を自動取得します。</string>
-    <string name="url_import_pick_title">商品画像を選択</string>
-    <string name="url_import_pick_hint">インポートしたい画像をタップしてください。適切なものがない場合はブラウザでページを開きます。</string>
-    <string name="url_import_browser_title">ページを開く</string>
-    <string name="url_import_browser_hint">ページ上の任意の画像をタップしてインポートできます。</string>
-    <string name="url_import_open_browser">ページを開く</string>
-    <string name="url_import_show_candidates">候補</string>
-    <string name="url_import_no_candidates">画像が見つかりません。ブラウザでページを開いて選択してください。</string>
 
     <!-- コーデサブタブ -->
     <string name="outfits_tab_outfits">コーデ</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">保存中…</string>
     <string name="cd_ai_suggestion">AIの提案</string>
     <string name="filter_location">場所</string>
-    <string name="wardrobe_processing_photos">%1$d 枚の写真を処理中…</string>
-    <string name="wardrobe_progress_uploading">写真をアップロード中…</string>
-    <string name="wardrobe_progress_uploading_batch">写真 %1$d / %2$d をアップロード中…</string>
-    <string name="wardrobe_progress_removing_bg">背景を削除中…</string>
-    <string name="wardrobe_progress_removing_bg_batch">背景削除 %1$d / %2$d…</string>
-    <string name="wardrobe_progress_moving">新しい場所へ移動中…</string>
     <string name="action_select_all">すべて選択</string>
 
     <!-- サインイン -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">クローゼットのタグ</string>
     <string name="settings_data_tags_desc">Gemini でクローゼットのすべてのアイテムを再分類します。手動で編集したタグは上書きされます。</string>
     <string name="settings_rescan_button">すべてのタグを再スキャン</string>
-    <string name="settings_rescanning">再スキャン中 %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">すべてのタグを再スキャンしますか?</string>
     <string name="settings_rescan_dialog_text">Gemini がクローゼットのすべてのアイテムを再分類します。手動で編集したタグは上書きされ、時間がかかる場合があります。</string>
     <string name="settings_rescan_confirm">再スキャン</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">タグのみ必要</string>
     <string name="settings_repair_preview_section_count">%1$d / %2$d 選択中</string>
     <string name="settings_repair_preview_selected">%1$d / %2$d 選択中</string>
-    <string name="settings_repair_preview_select_all">すべて選択</string>
-    <string name="settings_repair_preview_deselect_all">選択解除</string>
     <string name="settings_repair_preview_process_n">%1$d 件を処理</string>
     <string name="settings_cutoutfix_title">切り抜き背景の修正</string>
     <string name="settings_cutoutfix_desc">既存の切り抜きをスキャンして残った黒背景や緑のハローを検出し、ローカルでマット処理を再適用します。AI呼び出しなし — 修正された切り抜きは Drive ID を維持したまま再アップロードされます。</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">切り抜きをスキャン中 %1$d / %2$d…</string>
     <string name="settings_cutoutfix_processing">切り抜きを修正中 %1$d / %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d 件の切り抜きを修正しました。</string>
-    <string name="settings_cutoutfix_dialog_title">切り抜き背景の修正 — プレビュー</string>
-    <string name="settings_cutoutfix_dialog_subtitle">選択した切り抜きはローカルで再処理され、再アップロードされます。タップで切替できます。</string>
-    <string name="settings_cutoutfix_show_all">すべての切り抜きを表示(フラグ付きだけでなく)</string>
     <string name="settings_cutoutfix_no_issues">残留背景のある切り抜きは見つかりませんでした。</string>
-    <string name="settings_cutoutfix_badge_blackbg">黒背景</string>
-    <string name="settings_cutoutfix_badge_greenhalo">緑ハロー</string>
-    <string name="settings_cutoutfix_action_clearalpha">アルファをクリア(不透明化)</string>
-    <string name="settings_cutoutfix_action_blackbg">黒背景 → 透明</string>
-    <string name="settings_cutoutfix_action_greenhalo">緑ハローを除去</string>
-    <string name="settings_cutoutfix_action_feather">アルファの縁をぼかす</string>
-    <string name="settings_cutoutfix_action_tightcrop">タイトクロップとサイズ制限</string>
-    <string name="settings_cutoutfix_fix_n">%1$d 件を修正</string>
-    <string name="settings_cutoutfix_selected">%1$d / %2$d 選択中</string>
     <string name="settings_repair_preview_cost_total">推定コスト: %1$d クレジット</string>
     <string name="settings_repair_clear_cache">ローカルキャッシュをクリア</string>
     <string name="settings_repair_clear_cache_desc">実行後にすべての画像を Drive から再ダウンロードします。遅くなりますが、ローカルファイルが古い場合のみ必要です。</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">アクティブ</string>
 
     <!-- クローゼット -->
-    <string name="wardrobe_sync_progress">クローゼットを復元中: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d 件のアイテム</string>
     <string name="wardrobe_filtered_count">%2$d 件中 %1$d 件を表示</string>
-    <string name="wardrobe_stats_total">合計 %1$d 件</string>
-    <string name="wardrobe_stats_untagged">タグなし</string>
-    <string name="wardrobe_empty">アイテムがありません</string>
-    <string name="wardrobe_empty_hint">写真を撮るか、ギャラリーから選択してください</string>
     <string name="wardrobe_create_outfit">コーデを手動で作成</string>
     <string name="wardrobe_compose_ai">AIで構成</string>
-    <string name="wardrobe_select_all_count">すべて選択 (%1$d)</string>
-    <string name="wardrobe_delete_title">アイテムを削除しますか?</string>
-    <string name="wardrobe_delete_text">選択した %d 件のアイテムを削除しますか? この操作は取り消せません。</string>
-    <string name="wardrobe_move_to">移動先</string>
-    <string name="wardrobe_move_to_title">%d 件のアイテムを移動</string>
-    <string name="wardrobe_tag_detect">タグを検出</string>
-    <string name="wardrobe_tag_remove_bg">背景を削除</string>
-    <string name="wardrobe_tag_re_remove_bg">背景を再削除</string>
-    <string name="wardrobe_fix_cutout_bg">切り抜きの背景を修正</string>
     <string name="wardrobe_fix_cutout_bg_done">切り抜きの背景を修正しました。</string>
     <string name="wardrobe_fix_cutout_bg_clean">残留背景は検出されませんでした — 修正は不要です。</string>
-    <string name="wardrobe_tag_rotate">回転</string>
-    <string name="wardrobe_tag_edit">タグを編集</string>
-    <string name="wardrobe_tag_sheet_title">タグを編集</string>
-    <string name="wardrobe_tag_saved">保存しました</string>
-    <string name="wardrobe_tag_saving">保存中…</string>
-    <string name="wardrobe_tag_unsaved">未保存</string>
-    <string name="wardrobe_tag_redetect_ai">AIでタグを再検出</string>
-    <string name="wardrobe_tag_not_set">未設定</string>
     <string name="wardrobe_add_gallery">ギャラリー</string>
     <string name="wardrobe_add_camera">カメラ</string>
     <string name="wardrobe_add_to_closet">%1$s に追加</string>
-    <string name="wardrobe_add_to_closet_title">クローゼットに追加</string>
-    <string name="tag_label">名前</string>
     <string name="tag_label_placeholder">例: ネイビーチノパン、白オックスフォードシャツ</string>
-    <string name="tag_add_custom">カスタム追加…</string>
     <string name="tag_type_placeholder">例: Tシャツ、チノパン、ダウンジャケット</string>
     <string name="tag_category_placeholder">トップス、ボトムス、アウター、シューズ、アクセサリー、ドレス、スーツ</string>
 
@@ -314,9 +257,6 @@
 
     <!-- フォアグラウンドサービスの通知 -->
     <!-- バッテリー最適化除外ダイアログ -->
-    <string name="battery_exempt_title">バックグラウンド処理が必要です</string>
-    <string name="battery_exempt_text">LibreLookAI は写真のインポート、背景削除、AIによる衣類のタグ付けを安全に行うために、無制限のバックグラウンド処理を必要とします。\n\nこの権限がないと、Android が処理中にアプリを終了させてデータ損失が発生する可能性があります — 部分的にしかインポートされないアイテム、欠落したタグ、破損したファイルなど。\n\n続行するには LibreLookAI のバッテリー最適化を無効にしてください。</string>
-    <string name="battery_exempt_action">設定を開く</string>
 
     <!-- オフラインモード -->
     <string name="offline_banner">オフライン中 — 閲覧専用モード</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d アイテム</string>
     <string name="composer_factor_closets">%1$d クローゼット</string>
     <string name="composer_factor_composition">カスタム構成</string>
-    <string name="wardrobe_create_style">コーデを作成</string>
-    <string name="wardrobe_imported_on">%1$s にインポート</string>
-    <string name="wardrobe_view_original">オリジナルを表示</string>
-    <string name="wardrobe_view_cutout">切り抜きを表示</string>
     <!-- AI タブ -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">デフォルトの考慮事項</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">写真を撮る</string>
     <string name="shop_take_another">別の写真を撮る</string>
     <string name="shop_clear">クリア</string>
-    <string name="shop_your_photo">あなたの写真</string>
     <string name="shop_matching">クローゼットと照合中…</string>
     <string name="shop_matches_title">トップマッチ (%1$d)</string>
     <string name="shop_no_matches">まだマッチがありません。より近く、明るい写真を試してください。</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">有効にすると、カメラとギャラリーのインポートでローカルの Magic Touch セグメンターを実行し、保存前に前景のシードを確認・調整できます — Gemini 呼び出しなし、クレジット消費なし。URL インポートは常にこのレビューを使用します。</string>
 
     <!-- ローカル背景削除レビュー画面 -->
-    <string name="local_bg_title">切り抜きを調整</string>
-    <string name="local_bg_hint">十字を残したいアイテムにドラッグしてください。</string>
-    <string name="local_bg_recomputing">切り抜きを再計算中…</string>
-    <string name="local_bg_apply">この切り抜きを使用</string>
-    <string name="local_bg_skip">スキップ(Gemini を使用)</string>
-    <string name="local_bg_failed">切り抜きを計算できませんでした — 十字を動かしてみてください。</string>
     <string name="settings_debug_similarity_toggle">類似性デバッグプレビューを表示</string>
     <string name="settings_debug_similarity_desc">類似性検索の結果を開くときに、デフォルトのズーム画像の代わりにチャンネルごとの内訳(セグメンテーションサムネイル、埋め込み/ヒストグラムのコサイン、色相ヒストグラム)を表示します。</string>
 
     <!-- マッチプレビューダイアログ -->
-    <string name="dedupe_dialog_title">重複の可能性</string>
-    <string name="dedupe_dialog_desc">この写真と非常によく似たアイテムがクローゼットに %1$d 件見つかりました。</string>
-    <string name="dedupe_dialog_import_anyway">それでもインポート</string>
-    <string name="dedupe_dialog_cancel">キャンセル</string>
     <string name="dedupe_no_matches">マッチなし</string>
     <string name="dedupe_score">%1$d%% 一致</string>
 
     <!-- 写真でアイテム検索(クローゼット) -->
-    <string name="wardrobe_find_by_photo">写真でアイテム検索</string>
-    <string name="wardrobe_find_by_photo_empty">類似アイテムは見つかりませんでした。</string>
-    <string name="wardrobe_find_by_photo_searching">マッチを検索中…</string>
 
     <!-- クローゼット検索(テキストまたは写真) -->
     <string name="wardrobe_search_title">クローゼットを検索</string>
     <string name="wardrobe_search_hint">探しているものを入力するか、写真で検索してください。</string>
     <string name="wardrobe_search_use_photo">代わりに写真で検索</string>
-    <string name="wardrobe_search_text_results">検索結果</string>
     <string name="action_search">検索</string>
 
     <!-- 修復と同期 — 可能な重複セクション -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">残高: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">ご自身の Gemini キーを使用中 — クレジットは消費されません。</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">これらのアイテムを使う %d 件のコーデも削除</string>
-    <string name="wardrobe_delete_cascade_tryons">これらのアイテムを使った %d 件の試着も削除</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">あなた</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">詳細オプション</string>
     <string name="settings_retag_row">すべての服を再タグ付け</string>
     <string name="settings_retag_row_sub">AIにすべての名前付けと分類をやり直してもらいます。1点あたり約2クレジット。</string>
-    <string name="settings_rebg_row">背景を再削除</string>
     <string name="settings_rebg_row_sub">各アイテムを写真から切り抜き直します。1点あたり約6クレジット。</string>
-    <string name="settings_cutout_row">残った背景ピクセルを修正</string>
     <string name="settings_cutout_row_sub">切り抜きが角を取り逃したアイテムを探します。</string>
     <string name="settings_advanced_byok_title">あなたの Gemini API キー</string>
     <string name="settings_advanced_byok_body">すべての AI はあなた自身の Gemini キーで動作します。無料キーはタグ付けとコーディネート提案をカバーします。バーチャル試着と背景除去には、請求を有効にした有料キーが必要です。aistudio.google.com で取得し、下に貼り付けてください。キーはこの端末にのみ保存します。</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">画像を WebP に変換</string>
     <string name="settings_convert_webp_row_sub">古い JPG/PNG 写真を縮小して Drive の容量を節約します。</string>
-    <string name="settings_converting">変換中 %1$d/%2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">メンテナンス</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">詳細を読み込み中 %1$d / %2$d</string>
     <string name="restore_finishing">仕上げ中…</string>
-    <string name="wardrobe_sync_details">詳細を読み込み中: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">仕上げ中…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">アイテム追加</string>
-    <string name="sel_swap">入れ替え</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

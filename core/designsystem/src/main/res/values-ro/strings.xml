@@ -230,4 +230,15 @@
     <string name="sel_move">Mută</string>
     <string name="tryon_outfit_picker_title">Alege o ținută</string>
     <string name="tryon_outfit_picker_empty">Nicio ținută salvată încă. Creează una în tabul Ținute pentru a o folosi aici.</string>
+    <string name="battery_exempt_action">Deschide setările</string>
+    <string name="battery_exempt_text">LibreLookAI are nevoie de procesare nelimitată în fundal pentru a importa fotografii în siguranță, a elimina fundalurile și a eticheta hainele tale cu AI.
+
+Fără această permisiune, Android poate închide aplicația în timpul procesării, ceea ce poate duce la pierderi de date — articole importate parțial, etichete lipsă sau fișiere corupte.
+
+Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a continua.</string>
+    <string name="battery_exempt_title">Procesare în fundal necesară</string>
+    <string name="nav_wardrobe">Garderobă</string>
+    <string name="shop_your_photo">Fotografia ta</string>
+    <string name="wardrobe_fix_cutout_bg">Repară fundalul decupajului</string>
+    <string name="wardrobe_move_to_title">Mută %d articole în</string>
 </resources>

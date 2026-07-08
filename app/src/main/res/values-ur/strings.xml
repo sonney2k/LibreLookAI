@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">وارڈروب</string>
     <string name="nav_shopping">شاپنگ</string>
     <string name="nav_travel">سفر</string>
     <string name="nav_settings">ترتیبات</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">وارڈروب اعداد و شمار</string>
     <string name="insights_tab_costs">اخراجات</string>
     <string name="costs_count_items">اشیاء</string>
     <string name="costs_count_outfits">ملبوسات</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">لنک سے شامل کریں</string>
-    <string name="wardrobe_url_import_title">شاپنگ لنک سے درآمد کریں</string>
-    <string name="wardrobe_url_import_hint">شاپنگ پیج کا لنک پیسٹ کریں۔</string>
-    <string name="url_import_pick_title">پراڈکٹ کی تصویر منتخب کریں</string>
-    <string name="url_import_pick_hint">جس تصویر کو آپ شامل کرنا چاہتے ہیں اس پر ٹیپ کریں۔</string>
-    <string name="url_import_browser_title">صفحہ کھولیں</string>
-    <string name="url_import_browser_hint">شامل کرنے کے لیے کسی بھی تصویر پر ٹیپ کریں۔</string>
-    <string name="url_import_open_browser">براؤزر میں کھولیں</string>
-    <string name="url_import_show_candidates">امیدوار</string>
-    <string name="url_import_no_candidates">کوئی تصویر نہیں ملی۔</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">ملبوسات</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">محفوظ ہو رہا ہے…</string>
     <string name="cd_ai_suggestion">AI مشورہ</string>
     <string name="filter_location">مقام</string>
-    <string name="wardrobe_processing_photos">%1$d تصاویر پر کام ہو رہا ہے…</string>
-    <string name="wardrobe_progress_uploading">تصویر اپ لوڈ ہو رہی ہے…</string>
-    <string name="wardrobe_progress_uploading_batch">%2$d میں سے %1$d تصویر اپ لوڈ ہو رہی ہے…</string>
-    <string name="wardrobe_progress_removing_bg">پس منظر ہٹایا جا رہا ہے…</string>
-    <string name="wardrobe_progress_removing_bg_batch">%2$d میں سے %1$d کا پس منظر ہٹایا جا رہا ہے…</string>
-    <string name="wardrobe_progress_moving">نئے مقام پر منتقل ہو رہا ہے…</string>
     <string name="action_select_all">تمام منتخب کریں</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">وارڈروب ٹیگز</string>
     <string name="settings_data_tags_desc">Gemini کے ذریعے دوبارہ درجہ بندی کریں۔</string>
     <string name="settings_rescan_button">تمام ٹیگز دوبارہ اسکین کریں</string>
-    <string name="settings_rescanning">%2$d میں سے %1$d اسکین ہو رہا ہے…</string>
     <string name="settings_rescan_dialog_title">ٹیگز دوبارہ اسکین کریں؟</string>
     <string name="settings_rescan_dialog_text">Gemini آپ کے وارڈروب کی ہر شے کی دوبارہ درجہ بندی کرے گا۔</string>
     <string name="settings_rescan_confirm">دوبارہ اسکین کریں</string>
@@ -120,38 +102,14 @@
     <string name="settings_repair_done">مرمت مکمل۔ وارڈروب تازہ ہو گیا۔</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">وارڈروب بحال ہو رہا ہے: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d اشیاء</string>
     <string name="wardrobe_filtered_count">%2$d میں سے %1$d اشیاء دکھائی جا رہی ہیں</string>
-    <string name="wardrobe_stats_total">کل %1$d اشیاء</string>
-    <string name="wardrobe_stats_untagged">بغیر ٹیگ کے</string>
-    <string name="wardrobe_empty">ابھی تک کوئی شے نہیں</string>
-    <string name="wardrobe_empty_hint">تصویر لیں یا گیلری سے منتخب کریں</string>
     <string name="wardrobe_create_outfit">خود سے لباس تیار کریں</string>
     <string name="wardrobe_compose_ai">AI کے ساتھ تیار کریں</string>
-    <string name="wardrobe_select_all_count">تمام منتخب کریں (%1$d)</string>
-    <string name="wardrobe_delete_title">اشیاء حذف کریں؟</string>
-    <string name="wardrobe_delete_text">کیا آپ واقعی %d منتخب اشیاء حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں لیا جا سکتا۔</string>
-    <string name="wardrobe_move_to">یہاں بھیجیں</string>
-    <string name="wardrobe_move_to_title">%d اشیاء یہاں بھیجیں</string>
-    <string name="wardrobe_tag_detect">ٹیگز پہچانیں</string>
-    <string name="wardrobe_tag_remove_bg">BG ہٹائیں</string>
-    <string name="wardrobe_tag_re_remove_bg">BG دوبارہ ہٹائیں</string>
-    <string name="wardrobe_tag_rotate">گھمائیں</string>
-    <string name="wardrobe_tag_edit">ٹیگز میں ترمیم کریں</string>
-    <string name="wardrobe_tag_sheet_title">ٹیگز کی ترمیم</string>
-    <string name="wardrobe_tag_saved">محفوظ ہو گیا</string>
-    <string name="wardrobe_tag_saving">محفوظ کیا جا رہا ہے…</string>
-    <string name="wardrobe_tag_unsaved">غیر محفوظ</string>
-    <string name="wardrobe_tag_redetect_ai">AI سے ٹیگز دوبارہ پہچانیں</string>
-    <string name="wardrobe_tag_not_set">مقرر نہیں</string>
     <string name="wardrobe_add_gallery">گیلری</string>
     <string name="wardrobe_add_camera">کیمرہ</string>
     <string name="wardrobe_add_to_closet">%1$s میں شامل کریں</string>
-    <string name="wardrobe_add_to_closet_title">الماری میں شامل کریں</string>
-    <string name="tag_label">نام</string>
     <string name="tag_label_placeholder">مثلاً نیوی چینو، سفید آکسفورڈ شرٹ</string>
-    <string name="tag_add_custom">اپنی مرضی کا ٹیگ شامل کریں…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -241,13 +199,6 @@
     <string name="ai_consider_weather_desc">آج کا درجہ حرارت اور حالات شامل کریں۔</string>
     <string name="ai_considerations_desc">ملبوسات تجویز یا تشکیل دیتے وقت AI کو کیا مدنظر رکھنا چاہیے۔ تبدیلیاں پیش گوئی، تشکیل، سامان بندی اور وارڈروب گیپ پرومپٹس پر لاگو ہوتی ہیں۔</string>
     <string name="ai_considerations_title">پہلے سے طے شدہ معیارات</string>
-    <string name="battery_exempt_action">ترتیبات کھولیں</string>
-    <string name="battery_exempt_text">LibreLookAI کو محفوظ طریقے سے تصاویر درآمد کرنے، پس منظر ہٹانے اور AI کے ساتھ آپ کے کپڑے ٹیگ کرنے کے لیے غیر محدود پس منظر پروسیسنگ درکار ہے۔
-
-اس اجازت کے بغیر، Android عمل کے درمیان ایپ کو بند کر سکتا ہے، جس سے ڈیٹا کا نقصان ہو سکتا ہے — جزوی طور پر درآمد شدہ آئٹمز، گمشدہ ٹیگ، یا خراب فائلیں۔
-
-جاری رکھنے کے لیے براہ کرم LibreLookAI کے لیے بیٹری آپٹیمائزیشن غیر فعال کریں۔</string>
-    <string name="battery_exempt_title">پس منظر پروسیسنگ درکار</string>
     <string name="composer_add_selected">منتخب شدہ شامل کریں</string>
     <string name="composer_desc_placeholder">مختصر تفصیل (اختیاری)</string>
     <string name="composer_discard_confirm">ترک کریں</string>
@@ -281,10 +232,6 @@
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">ٹیگز (اختیاری)</string>
     <string name="composer_targets_hint">ہر پرت میں کتنی شامل کرنی ہیں طے کریں۔ AI کو فیصلہ کرنے دینے کے لیے 0 پر چھوڑیں۔</string>
-    <string name="dedupe_dialog_cancel">منسوخ کریں</string>
-    <string name="dedupe_dialog_desc">ہمیں آپ کے وارڈروب میں %1$d آئٹم ملے جو اس تصویر سے بہت ملتے جلتے ہیں۔</string>
-    <string name="dedupe_dialog_import_anyway">پھر بھی درآمد کریں</string>
-    <string name="dedupe_dialog_title">ممکنہ نقل</string>
     <string name="dedupe_no_matches">کوئی مماثلت نہیں</string>
     <string name="dedupe_score">%1$d%% مماثلت</string>
     <string name="gap_description">وہ 3 گمشدہ ٹکڑے دریافت کریں جو آپ کے موجودہ وارڈروب سے سب سے زیادہ نئے ملبوسات کے امتزاج کھولیں گے۔</string>
@@ -300,12 +247,6 @@
     <string name="import_preview_select_all">سب منتخب کریں</string>
     <string name="import_preview_similar_badge">مماثل</string>
     <string name="import_preview_title">%1$d آئٹمز کا جائزہ</string>
-    <string name="local_bg_apply">یہ کٹ آؤٹ استعمال کریں</string>
-    <string name="local_bg_failed">کٹ آؤٹ کا حساب نہیں ہو سکا — کراس ہیئر منتقل کریں۔</string>
-    <string name="local_bg_hint">جو آئٹم رکھنا چاہتے ہیں اس پر کراس ہیئر گھسیٹیں۔</string>
-    <string name="local_bg_recomputing">کٹ آؤٹ کا نیا حساب…</string>
-    <string name="local_bg_skip">چھوڑیں (Gemini استعمال کریں)</string>
-    <string name="local_bg_title">کٹ آؤٹ بہتر کریں</string>
     <string name="outfit_mode_edit">ترمیم</string>
     <string name="outfit_mode_view">دیکھیں</string>
     <string name="outfits_description_placeholder">تفصیل (اختیاری)</string>
@@ -322,24 +263,12 @@
     <string name="settings_bg_removal_desc">کیپچر، درآمد اور شاپنگ ہیلپر کے دوران استعمال ہونے والے آن ڈیوائس کٹ آؤٹ سیگمنٹر کو ترتیب دیتا ہے۔ کم اقدار زیادہ پکسلز رکھتی ہیں (ڈھیلا کٹ آؤٹ، پس منظر ہو سکتا ہے)؛ زیادہ اقدار حد سے باہر کے پکسل مسترد کرتی ہیں (تنگ کٹ آؤٹ، آئٹم کاٹ سکتا ہے)۔</string>
     <string name="settings_bg_removal_threshold">پیش منظر حد: %1$d%%</string>
     <string name="settings_bg_removal_title">پس منظر ہٹانا</string>
-    <string name="settings_cutoutfix_action_blackbg">سیاہ پس منظر → شفاف</string>
-    <string name="settings_cutoutfix_action_clearalpha">الفا صاف کریں (مبہم بنائیں)</string>
-    <string name="settings_cutoutfix_action_feather">الفا کنارے نرم کریں</string>
-    <string name="settings_cutoutfix_action_greenhalo">سبز ہالہ ہٹائیں</string>
-    <string name="settings_cutoutfix_action_tightcrop">تنگ کراپ &amp; سائز محدود</string>
-    <string name="settings_cutoutfix_badge_blackbg">سیاہ پس منظر</string>
-    <string name="settings_cutoutfix_badge_greenhalo">سبز ہالہ</string>
     <string name="settings_cutoutfix_button">کٹ آؤٹ اسکین</string>
     <string name="settings_cutoutfix_desc">موجودہ کٹ آؤٹس کو بقیہ سیاہ پس منظر یا سبز ہالہ کے لیے اسکین کرتا ہے اور مقامی طور پر دوبارہ ماسک لگاتا ہے۔ کوئی AI کال نہیں — درست شدہ کٹ آؤٹس اپنا Drive ID برقرار رکھتے ہوئے دوبارہ اپلوڈ ہوتے ہیں۔</string>
-    <string name="settings_cutoutfix_dialog_subtitle">منتخب کٹ آؤٹس مقامی طور پر دوبارہ پروسس اور دوبارہ اپلوڈ ہوں گے۔ ٹوگل کرنے کے لیے ٹیپ کریں۔</string>
-    <string name="settings_cutoutfix_dialog_title">کٹ آؤٹ پس منظر درست کریں — پیش نظارہ</string>
     <string name="settings_cutoutfix_done">%1$d کٹ آؤٹس درست کیے گئے۔</string>
-    <string name="settings_cutoutfix_fix_n">%1$d درست کریں</string>
     <string name="settings_cutoutfix_no_issues">بقیہ پس منظر والے کٹ آؤٹس نہیں ملے۔</string>
     <string name="settings_cutoutfix_processing">کٹ آؤٹ %1$d / %2$d درست ہو رہا ہے…</string>
     <string name="settings_cutoutfix_scanning">کٹ آؤٹ %1$d / %2$d اسکین ہو رہا ہے…</string>
-    <string name="settings_cutoutfix_selected">%2$d میں سے %1$d منتخب</string>
-    <string name="settings_cutoutfix_show_all">تمام کٹ آؤٹس دکھائیں (صرف نشان زدہ نہیں)</string>
     <string name="settings_cutoutfix_title">کٹ آؤٹ پس منظر درست کریں</string>
     <string name="settings_debug_similarity_desc">مماثلت تلاش کے نتیجے کھولنے پر فی چینل تجزیہ (سیگمنٹڈ تھمب نیلز، ایمبیڈنگ/ہسٹوگرام کوسائن، ہیو ہسٹوگرامز) دکھائیں بجائے ڈیفالٹ زوم ایبل تصویر کے۔</string>
     <string name="settings_debug_similarity_toggle">مماثلت ڈیبگ پیش نظارہ دکھائیں</string>
@@ -409,13 +338,11 @@
     <string name="settings_repair_clear_cache">مقامی کیش صاف کریں</string>
     <string name="settings_repair_clear_cache_desc">چلانے کے بعد Drive سے تمام تصاویر دوبارہ ڈاؤن لوڈ کریں۔ سست؛ صرف اس وقت ضروری جب مقامی فائلیں پرانی لگیں۔</string>
     <string name="settings_repair_preview_cost_total">تخمینہ لاگت: %1$d کریڈٹس</string>
-    <string name="settings_repair_preview_deselect_all">تمام کا انتخاب ختم</string>
     <string name="settings_repair_preview_process_n">%1$d پروسس کریں</string>
     <string name="settings_repair_preview_section_count">%2$d میں سے %1$d منتخب</string>
     <string name="settings_repair_preview_section_orphaned">پس منظر ہٹانا + ٹیگ درکار</string>
     <string name="settings_repair_preview_section_raw">نامعلوم تصاویر — پس منظر ہٹانا + ٹیگ درکار</string>
     <string name="settings_repair_preview_section_sidecar">صرف ٹیگ درکار</string>
-    <string name="settings_repair_preview_select_all">سب منتخب کریں</string>
     <string name="settings_repair_preview_selected">%2$d میں سے %1$d منتخب</string>
     <string name="settings_repair_preview_subtitle">منتخب آئٹمز پروسس ہوں گے۔ چھوڑنے کے لیے تھمب نیل ٹیپ کریں۔</string>
     <string name="settings_repair_preview_title">مرمت &amp; ہم آہنگ — پیش نظارہ</string>
@@ -431,7 +358,6 @@
     <string name="shop_no_matches">ابھی کوئی مماثلت نہیں۔ قریب اور بہتر روشنی والی تصویر آزمائیں۔</string>
     <string name="shop_take_another">مزید تصویر لیں</string>
     <string name="shop_take_photo">تصویر لیں</string>
-    <string name="shop_your_photo">آپ کی تصویر</string>
     <string name="tag_category_placeholder">اوپری، نچلے، اوپری لباس، جوتے، لوازم، گاؤن، سوٹ</string>
     <string name="tag_type_placeholder">مثلاً ٹی شرٹ، چینو، پفر جیکٹ</string>
     <string name="travel_move_done">آئٹمز سفر کے مقام پر منتقل</string>
@@ -456,25 +382,14 @@
     <string name="tryon_section_desc">سامنے، سائیڈ اور پیچھے سے پوری جسم کی تصاویر اپلوڈ کریں۔ ایپ ان کا حوالہ ملبوسات یا وارڈروب آئٹم کا آپ پر ٹرائی آن پیش نظارہ بناتے وقت استعمال کرتی ہے۔ تصاویر آپ کے اپنے Drive میں رہتی ہیں۔</string>
     <string name="tryon_section_title">ٹرائی آن کے لیے تصاویر</string>
     <string name="tryon_use_outfit">ملبوسات استعمال کریں</string>
-    <string name="wardrobe_create_style">ملبوسات بنائیں</string>
-    <string name="wardrobe_find_by_photo">تصویر سے آئٹم تلاش کریں</string>
-    <string name="wardrobe_find_by_photo_empty">کوئی ملتا جلتا آئٹم نہیں ملا۔</string>
-    <string name="wardrobe_find_by_photo_searching">مماثل تلاش ہو رہی ہے…</string>
-    <string name="wardrobe_fix_cutout_bg">کٹ آؤٹ پس منظر درست کریں</string>
     <string name="wardrobe_fix_cutout_bg_clean">بقیہ پس منظر نہیں ملا — کچھ درست کرنے کو نہیں۔</string>
     <string name="wardrobe_fix_cutout_bg_done">کٹ آؤٹ پس منظر درست ہو گیا۔</string>
-    <string name="wardrobe_imported_on">درآمد %1$s</string>
     <string name="wardrobe_search_hint">جو تلاش کر رہے ہیں ٹائپ کریں، یا تصویر سے تلاش کریں۔</string>
-    <string name="wardrobe_search_text_results">تلاش کے نتائج</string>
     <string name="wardrobe_search_title">وارڈروب میں تلاش</string>
     <string name="wardrobe_search_use_photo">تصویر سے تلاش کریں</string>
     <string name="wardrobe_suggest_replacements">متبادل تجویز کریں</string>
-    <string name="wardrobe_view_cutout">کٹ آؤٹ دیکھیں</string>
-    <string name="wardrobe_view_original">اصل دیکھیں</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">ان آئٹمز کو استعمال کرنے والے %d آؤٹ فٹ بھی حذف کریں</string>
-    <string name="wardrobe_delete_cascade_tryons">ان آئٹمز والی %d ٹرائی آن بھی حذف کریں</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">آپ</string>
@@ -515,9 +430,7 @@
     <string name="settings_section_advanced_power">اعلیٰ اختیارات</string>
     <string name="settings_retag_row">میرے تمام کپڑے دوبارہ ٹیگ کریں</string>
     <string name="settings_retag_row_sub">AI سے سب کچھ دوبارہ نام دینے اور درجہ بندی کرنے کو کہیں۔ فی شے ~2 کریڈٹس۔</string>
-    <string name="settings_rebg_row">پس منظر دوبارہ ہٹائیں</string>
     <string name="settings_rebg_row_sub">ہر شے کو اس کی تصویر سے دوبارہ کاٹیں۔ فی شے ~6 کریڈٹس۔</string>
-    <string name="settings_cutout_row">بچے ہوئے پس منظر پکسلز ٹھیک کریں</string>
     <string name="settings_cutout_row_sub">ایسی اشیاء تلاش کرتا ہے جہاں کٹاؤ ایک کونا چھوڑ گیا۔</string>
     <string name="settings_advanced_byok_title">آپ کی Gemini API کلید</string>
     <string name="settings_advanced_byok_body">تمام AI آپ کی اپنی Gemini کلید سے چلتا ہے۔ مفت کلید ٹیگنگ اور آؤٹ فٹ تجاویز کا احاطہ کرتی ہے؛ ورچوئل ٹرائی آن اور بیک گراؤنڈ ہٹانے کے لیے بلنگ فعال شدہ ادا شدہ کلید درکار ہے۔ aistudio.google.com سے ایک حاصل کریں اور نیچے پیسٹ کریں — ہم اسے صرف اسی فون پر محفوظ رکھتے ہیں۔</string>
@@ -623,10 +536,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">تصاویر کو WebP میں تبدیل کریں</string>
     <string name="settings_convert_webp_row_sub">Drive کی جگہ بچانے کے لیے پرانی JPG/PNG تصاویر چھوٹی کریں۔</string>
-    <string name="settings_converting">تبدیل ہو رہی ہیں %2$d میں سے %1$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">دیکھ بھال</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">تفصیلات لوڈ ہو رہی ہیں %1$d / %2$d</string>
     <string name="restore_finishing">مکمل ہو رہا ہے…</string>
-    <string name="wardrobe_sync_details">تفصیلات لوڈ ہو رہی ہیں: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">مکمل ہو رہا ہے…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">آئٹم شامل کریں</string>
-    <string name="sel_swap">تبدیل کریں</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

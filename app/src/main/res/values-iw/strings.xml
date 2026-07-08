@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">מלתחה</string>
     <string name="nav_shopping">קניות</string>
     <string name="nav_travel">נסיעות</string>
     <string name="nav_settings">הגדרות</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">סטטיסטיקות מלתחה</string>
     <string name="insights_tab_costs">עלויות</string>
     <string name="costs_count_items">פריטים</string>
     <string name="costs_count_outfits">אאוטפיטים</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">הוסף מכתובת אתר</string>
-    <string name="wardrobe_url_import_title">ייבוא מכתובת אתר קניות</string>
-    <string name="wardrobe_url_import_hint">הדבק כתובת אתר של דף קניות. אנו נמשוך את תמונת המוצר באופן אוטומטי.</string>
-    <string name="url_import_pick_title">בחר את תמונת המוצר</string>
-    <string name="url_import_pick_hint">הקש על התמונה שברצונך לייבא. אם אף אחת מהן לא נראית נכונה, פתח את הדף בדפדפן.</string>
-    <string name="url_import_browser_title">פתח דף</string>
-    <string name="url_import_browser_hint">הקש על כל תמונה בדף כדי לייבא אותה.</string>
-    <string name="url_import_open_browser">פתח דף</string>
-    <string name="url_import_show_candidates">מועמדים</string>
-    <string name="url_import_no_candidates">לא נמצאו תמונות. פתח את הדף בדפדפן כדי לבחור אחת.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">אאוטפיטים</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">שומר…</string>
     <string name="cd_ai_suggestion">הצעת בינה מלאכותית</string>
     <string name="filter_location">מיקום</string>
-    <string name="wardrobe_processing_photos">מעבד %1$d תמונות…</string>
-    <string name="wardrobe_progress_uploading">מעלה תמונה…</string>
-    <string name="wardrobe_progress_uploading_batch">מעלה תמונה %1$d מתוך %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">מסיר רקע…</string>
-    <string name="wardrobe_progress_removing_bg_batch">מסיר רקע %1$d מתוך %2$d…</string>
-    <string name="wardrobe_progress_moving">מעביר למיקום חדש…</string>
     <string name="action_select_all">בחר הכל</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">תגי מלתחה</string>
     <string name="settings_data_tags_desc">סווג מחדש כל פריט במלתחה שלך עם Gemini. פעולה זו תדרוס כל עריכת תג ידנית.</string>
     <string name="settings_rescan_button">סרוק מחדש את כל התגים</string>
-    <string name="settings_rescanning">סורק מחדש %1$d מתוך %2$d…</string>
     <string name="settings_rescan_dialog_title">לסרוק מחדש את כל התגים?</string>
     <string name="settings_rescan_dialog_text">Gemini יסווג מחדש כל פריט במלתחה שלך. זה עלול לקחת זמן.</string>
     <string name="settings_rescan_confirm">סרוק מחדש</string>
@@ -125,8 +107,6 @@
     <string name="settings_repair_preview_section_sidecar">זקוקים לתגיות בלבד</string>
     <string name="settings_repair_preview_section_count">%1$d מתוך %2$d נבחרו</string>
     <string name="settings_repair_preview_selected">%1$d מתוך %2$d נבחרו</string>
-    <string name="settings_repair_preview_select_all">בחר הכל</string>
-    <string name="settings_repair_preview_deselect_all">בטל בחירת הכל</string>
     <string name="settings_repair_preview_process_n">עבד %1$d</string>
     <string name="settings_cutoutfix_title">תקן רקע קט-אאוט</string>
     <string name="settings_cutoutfix_desc">סרוק קט-אאוטים קיימים ותקן אותם מקומית. ללא שימוש ב-AI.</string>
@@ -134,19 +114,7 @@
     <string name="settings_cutoutfix_scanning">סורק קט-אאוט %1$d מתוך %2$d…</string>
     <string name="settings_cutoutfix_processing">מתקן קט-אאוט %1$d מתוך %2$d…</string>
     <string name="settings_cutoutfix_done">תוקנו %1$d קט-אאוטים.</string>
-    <string name="settings_cutoutfix_dialog_title">תצוגה מקדימה של תיקון קט-אאוט</string>
-    <string name="settings_cutoutfix_dialog_subtitle">הקט-אאוטים שנבחרו יעובדו מחדש מקומית ויועלו.</string>
-    <string name="settings_cutoutfix_show_all">הצג את כל הקט-אאוטים</string>
     <string name="settings_cutoutfix_no_issues">לא נמצאו בעיות בקט-אאוטים.</string>
-    <string name="settings_cutoutfix_badge_blackbg">רקע שחור</string>
-    <string name="settings_cutoutfix_badge_greenhalo">הילה ירוקה</string>
-    <string name="settings_cutoutfix_action_clearalpha">נקה אלפא (הפוך לאטום)</string>
-    <string name="settings_cutoutfix_action_blackbg">רקע שחור ← שקוף</string>
-    <string name="settings_cutoutfix_action_greenhalo">הסר הילה ירוקה</string>
-    <string name="settings_cutoutfix_action_feather">רכך קצוות</string>
-    <string name="settings_cutoutfix_action_tightcrop">חיתוך צמוד והגבלת גודל</string>
-    <string name="settings_cutoutfix_fix_n">תקן %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d מתוך %2$d נבחרו</string>
     <string name="settings_repair_preview_cost_total">עלות משוערת: %1$d קרדיטים</string>
     <string name="settings_repair_clear_cache">נקה מטמון מקומי</string>
     <string name="settings_repair_clear_cache_desc">הורד מחדש את כל התמונות מ-Drive לאחר ההפעלה. איטי.</string>
@@ -203,38 +171,14 @@
     <string name="settings_location_active">פעיל</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">משחזר ארון בגדים: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d פריטים</string>
     <string name="wardrobe_filtered_count">מציג %1$d מתוך %2$d פריטים</string>
-    <string name="wardrobe_stats_total">סה\"כ %1$d פריטים</string>
-    <string name="wardrobe_stats_untagged">ללא תגיות</string>
-    <string name="wardrobe_empty">אין פריטים עדיין</string>
-    <string name="wardrobe_empty_hint">צלם תמונה או בחר מהגלריה שלך</string>
     <string name="wardrobe_create_outfit">צור אאוטפיט ידנית</string>
     <string name="wardrobe_compose_ai">צור באמצעות AI</string>
-    <string name="wardrobe_select_all_count">בחר הכל (%1$d)</string>
-    <string name="wardrobe_delete_title">למחוק פריטים?</string>
-    <string name="wardrobe_delete_text">האם אתה בטוח שברצונך למחוק את %d הפריטים שנבחרו? לא ניתן לבטל פעולה זו.</string>
-    <string name="wardrobe_move_to">העבר ל</string>
-    <string name="wardrobe_move_to_title">העבר %d פריטים ל</string>
-    <string name="wardrobe_tag_detect">זהה תגיות</string>
-    <string name="wardrobe_tag_remove_bg">הסר רקע</string>
-    <string name="wardrobe_tag_re_remove_bg">הסר רקע מחדש</string>
-    <string name="wardrobe_tag_rotate">סובב</string>
-    <string name="wardrobe_tag_edit">ערוך תגיות</string>
-    <string name="wardrobe_tag_sheet_title">עריכת תגיות</string>
-    <string name="wardrobe_tag_saved">נשמר</string>
-    <string name="wardrobe_tag_saving">שומר…</string>
-    <string name="wardrobe_tag_unsaved">לא נשמר</string>
-    <string name="wardrobe_tag_redetect_ai">זיהוי תגיות מחדש בעזרת AI</string>
-    <string name="wardrobe_tag_not_set">לא הוגדר</string>
     <string name="wardrobe_add_gallery">גלריה</string>
     <string name="wardrobe_add_camera">מצלמה</string>
     <string name="wardrobe_add_to_closet">הוסף ל-%1$s</string>
-    <string name="wardrobe_add_to_closet_title">הוסף לארון</string>
-    <string name="tag_label">שם</string>
     <string name="tag_label_placeholder">למשל צ\'ינו נייבי, חולצת אוקספורד לבנה</string>
-    <string name="tag_add_custom">הוסף מותאם אישית…</string>
     <string name="tag_type_placeholder">למשל חולצת טי, צ\'ינו, ג\'קט</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
@@ -310,9 +254,6 @@
 
     <!-- Foreground service notification -->
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">נדרש עיבוד ברקע</string>
-    <string name="battery_exempt_text">LibreLookAI זקוקה לעיבוד ברקע כדי לייבא תמונות ולהסיר רקעים בבטחה.</string>
-    <string name="battery_exempt_action">פתח הגדרות</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">אתה במצב לא מקוון — מצב צפייה בלבד</string>
@@ -387,10 +328,6 @@
     <string name="composer_factor_items">%1$d פריטים</string>
     <string name="composer_factor_closets">%1$d ארונות</string>
     <string name="composer_factor_composition">הרכב מותאם אישית</string>
-    <string name="wardrobe_create_style">צור אאוטפיט</string>
-    <string name="wardrobe_imported_on">יובא ב-%1$s</string>
-    <string name="wardrobe_view_original">צפה במקור</string>
-    <string name="wardrobe_view_cutout">צפה בקט-אאוט</string>
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">שיקולי ברירת מחדל</string>
@@ -409,7 +346,6 @@
     <string name="shop_take_photo">צלם תמונה</string>
     <string name="shop_take_another">צלם תמונה נוספת</string>
     <string name="shop_clear">נקה</string>
-    <string name="shop_your_photo">התמונה שלך</string>
     <string name="shop_matching">משווה מול המלתחה שלך…</string>
     <string name="shop_matches_title">התאמות מובילות (%1$d)</string>
     <string name="shop_no_matches">אין התאמות עדיין. נסה צילום קרוב יותר ובתאורה טובה יותר.</string>
@@ -430,33 +366,19 @@
     <string name="settings_local_bg_desc">כאשר אפשרות זו פעילה, ייבוא מהמצלמה ומהגלריה יפעיל את סגמנטציית Magic Touch המקומית ויאפשר לך לאשר או לשפר את בחירת הקדמה לפני השמירה — ללא קריאת Gemini וללא קרדיטים. ייבוא URL תמיד משתמש בבדיקה זו.</string>
 
     <!-- Local background-removal review screen -->
-    <string name="local_bg_title">שיפור קט-אאוט</string>
-    <string name="local_bg_hint">גרור את הכוונת על הפריט שברצונך לשמור.</string>
-    <string name="local_bg_recomputing">מחשב מחדש קט-אאוט…</string>
-    <string name="local_bg_apply">השתמש בקט-אאוט זה</string>
-    <string name="local_bg_skip">דלג (השתמש ב-Gemini)</string>
-    <string name="local_bg_failed">לא ניתן לחשב קט-אאוט — נסה להזיז את הכוונת.</string>
     <string name="settings_debug_similarity_toggle">הצג תצוגה מקדימה של ניפוי דמיון</string>
     <string name="settings_debug_similarity_desc">בעת פתיחת התאמה בחיפוש דומים, הצג פירוט לפי ערוץ (תמונות ממוזערות מסוגמנטות, קוסינוס הטבעה/היסטוגרמה, היסטוגרמות גוון) במקום התמונה הרגילה הניתנת להגדלה.</string>
 
     <!-- Match preview dialog -->
-    <string name="dedupe_dialog_title">כפילות אפשרית</string>
-    <string name="dedupe_dialog_desc">מצאנו %1$d פריטים במלתחה שלך שנראים דומים מאוד לתמונה זו.</string>
-    <string name="dedupe_dialog_import_anyway">ייבא בכל זאת</string>
-    <string name="dedupe_dialog_cancel">ביטול</string>
     <string name="dedupe_no_matches">אין התאמות</string>
     <string name="dedupe_score">התאמה של %1$d%%</string>
 
     <!-- Find item by photo (Wardrobe) -->
-    <string name="wardrobe_find_by_photo">מצא פריט לפי תמונה</string>
-    <string name="wardrobe_find_by_photo_empty">לא נמצאו פריטים דומים.</string>
-    <string name="wardrobe_find_by_photo_searching">מחפש התאמות…</string>
 
     <!-- Wardrobe search (text or photo) -->
     <string name="wardrobe_search_title">חפש במלתחה</string>
     <string name="wardrobe_search_hint">הקלד את מה שאתה מחפש, או חפש לפי תמונה.</string>
     <string name="wardrobe_search_use_photo">חפש לפי תמונה במקום זאת</string>
-    <string name="wardrobe_search_text_results">תוצאות חיפוש</string>
     <string name="action_search">חפש</string>
 
     <!-- Repair &amp; Sync — possible duplicates section -->
@@ -473,7 +395,6 @@
     <string name="import_preview_import">ייבא %1$d</string>
     <string name="import_preview_scanning">סורק %1$d / %2$d…</string>
     <string name="settings_rebg_dialog_text">זה יעבד כל פריט במלתחה הנוכחית שלך באמצעות Gemini. זה עשוי לקחת זמן מה ומשתמש בנקודות זכות משמעותיות של AI / מכסת API. פריטים שכבר יש להם את המקור שמור ב-Drive ישתמשו בו; אחרים ישתמשו בתמונה הנוכחית.</string>
-    <string name="wardrobe_fix_cutout_bg">תקן רקע של חיתוך</string>
     <string name="wardrobe_fix_cutout_bg_done">רקע החיתוך תוקן.</string>
     <string name="wardrobe_fix_cutout_bg_clean">לא זוהו שאריות רקע — אין מה לתקן.</string>
     <string name="composer_discard_title">לבטל את התלבושת?</string>
@@ -501,8 +422,6 @@
     <string name="composer_feedback_placeholder">ספר ל-AI מה לשנות או למה לכוון…</string>
     <string name="composer_feedback_history">%1$d בקשות קודמות נשמרות בהקשר</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">מחק גם %d לוקים שמשתמשים בפריטים האלה</string>
-    <string name="wardrobe_delete_cascade_tryons">מחק גם %d מדידות עם הפריטים האלה</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">אתה</string>
@@ -543,9 +462,7 @@
     <string name="settings_section_advanced_power">אפשרויות מתקדמות</string>
     <string name="settings_retag_row">תייג מחדש את כל הבגדים שלי</string>
     <string name="settings_retag_row_sub">בקש מ-AI לתת מחדש שם ולסווג הכול. עולה ~2 קרדיטים לפריט.</string>
-    <string name="settings_rebg_row">הסר רקעים מחדש</string>
     <string name="settings_rebg_row_sub">חתוך מחדש כל פריט מהתמונה שלו. עולה ~6 קרדיטים לפריט.</string>
-    <string name="settings_cutout_row">תקן פיקסלי רקע שנותרו</string>
     <string name="settings_cutout_row_sub">מחפש פריטים שבהם החיתוך פספס פינה.</string>
     <string name="settings_advanced_byok_title">מפתח Gemini API שלך</string>
     <string name="settings_advanced_byok_body">כל ה-AI פועל עם מפתח Gemini שלך. מפתח חינמי מכסה תיוג והצעות תלבושות; מדידה וירטואלית והסרת רקע דורשות מפתח בתשלום עם חיוב מופעל. קבל אחד ב-aistudio.google.com והדבק אותו למטה — אנחנו שומרים אותו רק בטלפון הזה.</string>
@@ -651,10 +568,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">המרת תמונות ל-WebP</string>
     <string name="settings_convert_webp_row_sub">כיווץ תמונות JPG/PNG ישנות כדי לחסוך מקום ב-Drive.</string>
-    <string name="settings_converting">ממיר %1$d מתוך %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">תחזוקה</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -676,8 +591,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">טוען פרטים %1$d / %2$d</string>
     <string name="restore_finishing">מסיים…</string>
-    <string name="wardrobe_sync_details">טוען פרטים: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">מסיים…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -697,8 +610,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">הוספת פריט</string>
-    <string name="sel_swap">החלפה</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

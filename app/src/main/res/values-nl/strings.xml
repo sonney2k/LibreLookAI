@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigatie -->
-    <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_shopping">Winkelen</string>
     <string name="nav_travel">Reis</string>
     <string name="nav_settings">Instellingen</string>
 
     <!-- Inzichten-tab -->
-    <string name="insights_tab_wardrobe_stats">Garderobestatistieken</string>
     <string name="insights_tab_costs">Kosten</string>
     <string name="costs_count_items">Stuks</string>
     <string name="costs_count_outfits">Outfits</string>
@@ -30,15 +28,6 @@
 
     <!-- URL-import (Garderobe + Winkellijst) -->
     <string name="wardrobe_add_url">Toevoegen via URL</string>
-    <string name="wardrobe_url_import_title">Importeren via winkel-URL</string>
-    <string name="wardrobe_url_import_hint">Plak de URL van een winkelpagina. Wij halen de productfoto automatisch op.</string>
-    <string name="url_import_pick_title">Kies de productfoto</string>
-    <string name="url_import_pick_hint">Tik op de foto die je wilt importeren. Als geen enkele past, open de pagina in de browser.</string>
-    <string name="url_import_browser_title">Pagina openen</string>
-    <string name="url_import_browser_hint">Tik op een afbeelding op de pagina om die te importeren.</string>
-    <string name="url_import_open_browser">Pagina openen</string>
-    <string name="url_import_show_candidates">Kandidaten</string>
-    <string name="url_import_no_candidates">Geen afbeeldingen gevonden. Open de pagina in de browser om er een te kiezen.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Opslaan…</string>
     <string name="cd_ai_suggestion">AI-suggestie</string>
     <string name="filter_location">Locatie</string>
-    <string name="wardrobe_processing_photos">%1$d foto(\'s) verwerken…</string>
-    <string name="wardrobe_progress_uploading">Foto uploaden…</string>
-    <string name="wardrobe_progress_uploading_batch">Foto %1$d van %2$d uploaden…</string>
-    <string name="wardrobe_progress_removing_bg">Achtergrond verwijderen…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Achtergrond %1$d van %2$d verwijderen…</string>
-    <string name="wardrobe_progress_moving">Verplaatsen naar nieuwe locatie…</string>
     <string name="action_select_all">Alles selecteren</string>
 
     <!-- Aanmelden -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Garderobetags</string>
     <string name="settings_data_tags_desc">Alle items in je garderobe opnieuw classificeren met Gemini. Hiermee worden handmatige tagbewerkingen overschreven.</string>
     <string name="settings_rescan_button">Alle tags opnieuw scannen</string>
-    <string name="settings_rescanning">Scannen %1$d van %2$d…</string>
     <string name="settings_rescan_dialog_title">Alle tags opnieuw scannen?</string>
     <string name="settings_rescan_dialog_text">Gemini classificeert elk item in je garderobe opnieuw. Handmatige tagbewerkingen worden overschreven en het kan even duren.</string>
     <string name="settings_rescan_confirm">Opnieuw scannen</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Hebben alleen tags nodig</string>
     <string name="settings_repair_preview_section_count">%1$d van %2$d geselecteerd</string>
     <string name="settings_repair_preview_selected">%1$d van %2$d geselecteerd</string>
-    <string name="settings_repair_preview_select_all">Alles selecteren</string>
-    <string name="settings_repair_preview_deselect_all">Niets selecteren</string>
     <string name="settings_repair_preview_process_n">%1$d verwerken</string>
     <string name="settings_cutoutfix_title">Uitsnede-achtergronden repareren</string>
     <string name="settings_cutoutfix_desc">Bestaande uitsneden controleren op overgebleven zwarte achtergrond of groene halo en lokaal opnieuw maskeren. Geen AI-aanroepen — gerepareerde uitsneden worden opnieuw geüpload met behoud van hun Drive-ID.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Uitsnede %1$d van %2$d controleren…</string>
     <string name="settings_cutoutfix_processing">Uitsnede %1$d van %2$d repareren…</string>
     <string name="settings_cutoutfix_done">%1$d uitsnede(s) gerepareerd.</string>
-    <string name="settings_cutoutfix_dialog_title">Uitsnede-achtergronden repareren — voorbeeld</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Geselecteerde uitsneden worden lokaal opnieuw verwerkt en geüpload. Tik om aan/uit te zetten.</string>
-    <string name="settings_cutoutfix_show_all">Alle uitsneden tonen (niet alleen gemarkeerde)</string>
     <string name="settings_cutoutfix_no_issues">Geen uitsneden met restachtergrond gevonden.</string>
-    <string name="settings_cutoutfix_badge_blackbg">zwarte bg</string>
-    <string name="settings_cutoutfix_badge_greenhalo">groene halo</string>
-    <string name="settings_cutoutfix_action_clearalpha">Alpha wissen (dekkend maken)</string>
-    <string name="settings_cutoutfix_action_blackbg">Zwarte achtergrond → transparant</string>
-    <string name="settings_cutoutfix_action_greenhalo">Groene halo wegwerken</string>
-    <string name="settings_cutoutfix_action_feather">Alpha-randen verzachten</string>
-    <string name="settings_cutoutfix_action_tightcrop">Strak bijsnijden &amp; grootte beperken</string>
-    <string name="settings_cutoutfix_fix_n">%1$d repareren</string>
-    <string name="settings_cutoutfix_selected">%1$d van %2$d geselecteerd</string>
     <string name="settings_repair_preview_cost_total">Geschatte kosten: %1$d credits</string>
     <string name="settings_repair_clear_cache">Lokale cache wissen</string>
     <string name="settings_repair_clear_cache_desc">Na de run alle afbeeldingen opnieuw van Drive laden. Trager; alleen nodig als lokale bestanden verouderd lijken.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Actief</string>
 
     <!-- Garderobe -->
-    <string name="wardrobe_sync_progress">Garderobe herstellen: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d items</string>
     <string name="wardrobe_filtered_count">%1$d van %2$d items getoond</string>
-    <string name="wardrobe_stats_total">%1$d items totaal</string>
-    <string name="wardrobe_stats_untagged">Zonder tags</string>
-    <string name="wardrobe_empty">Nog geen items</string>
-    <string name="wardrobe_empty_hint">Maak een foto of kies uit je galerij</string>
     <string name="wardrobe_create_outfit">Outfit handmatig maken</string>
     <string name="wardrobe_compose_ai">Samenstellen met AI</string>
-    <string name="wardrobe_select_all_count">Alles selecteren (%1$d)</string>
-    <string name="wardrobe_delete_title">Items verwijderen?</string>
-    <string name="wardrobe_delete_text">Weet je zeker dat je %d geselecteerde items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.</string>
-    <string name="wardrobe_move_to">Verplaatsen naar</string>
-    <string name="wardrobe_move_to_title">%d item(s) verplaatsen naar</string>
-    <string name="wardrobe_tag_detect">Tags detecteren</string>
-    <string name="wardrobe_tag_remove_bg">Achtergrond verwijderen</string>
-    <string name="wardrobe_tag_re_remove_bg">Achtergrond opnieuw verwijderen</string>
-    <string name="wardrobe_fix_cutout_bg">Uitsnede-achtergrond repareren</string>
     <string name="wardrobe_fix_cutout_bg_done">Uitsnede-achtergrond gerepareerd.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Geen restachtergrond gedetecteerd — niets te repareren.</string>
-    <string name="wardrobe_tag_rotate">Draaien</string>
-    <string name="wardrobe_tag_edit">Tags bewerken</string>
-    <string name="wardrobe_tag_sheet_title">Tags bewerken</string>
-    <string name="wardrobe_tag_saved">Opgeslagen</string>
-    <string name="wardrobe_tag_saving">Opslaan…</string>
-    <string name="wardrobe_tag_unsaved">Niet opgeslagen</string>
-    <string name="wardrobe_tag_redetect_ai">Tags opnieuw detecteren met AI</string>
-    <string name="wardrobe_tag_not_set">Niet ingesteld</string>
     <string name="wardrobe_add_gallery">Galerij</string>
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Toevoegen aan %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Toevoegen aan kast</string>
-    <string name="tag_label">Naam</string>
     <string name="tag_label_placeholder">bv. Marineblauwe chino, Wit Oxford-overhemd</string>
-    <string name="tag_add_custom">Aangepast toevoegen…</string>
     <string name="tag_type_placeholder">bv. T-shirt, chino, donsjack</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Foreground service notification -->
     <!-- Batterijoptimalisatie-vrijstellingsdialoog -->
-    <string name="battery_exempt_title">Achtergrondverwerking vereist</string>
-    <string name="battery_exempt_text">LibreLookAI heeft onbeperkte achtergrondverwerking nodig om veilig foto\'s te importeren, achtergronden te verwijderen en je kleding met AI te taggen.\n\nZonder deze toestemming kan Android de app tijdens verwerking stoppen, wat kan leiden tot gegevensverlies — gedeeltelijk geïmporteerde items, ontbrekende tags of beschadigde bestanden.\n\nSchakel batterijoptimalisatie voor LibreLookAI uit om door te gaan.</string>
-    <string name="battery_exempt_action">Instellingen openen</string>
 
     <!-- Offline modus -->
     <string name="offline_banner">Je bent offline — alleen-lezenmodus</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d items</string>
     <string name="composer_factor_closets">%1$d kasten</string>
     <string name="composer_factor_composition">Aangepaste compositie</string>
-    <string name="wardrobe_create_style">Outfit maken</string>
-    <string name="wardrobe_imported_on">Geïmporteerd op %1$s</string>
-    <string name="wardrobe_view_original">Origineel bekijken</string>
-    <string name="wardrobe_view_cutout">Uitsnede bekijken</string>
     <!-- AI-tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Standaardoverwegingen</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Foto maken</string>
     <string name="shop_take_another">Nog een foto maken</string>
     <string name="shop_clear">Wissen</string>
-    <string name="shop_your_photo">Je foto</string>
     <string name="shop_matching">Vergelijken met je garderobe…</string>
     <string name="shop_matches_title">Topmatches (%1$d)</string>
     <string name="shop_no_matches">Nog geen matches. Probeer een dichterbije, beter belichte foto.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Indien ingeschakeld voeren camera- en galerij-imports de lokale Magic Touch-segmenter uit en kun je het voorgrond-zaadje vóór opslaan bevestigen of verfijnen — geen Gemini-aanroep, geen credits. URL-imports gebruiken deze controle altijd.</string>
 
     <!-- Lokale achtergrondverwijderings-controleweergave -->
-    <string name="local_bg_title">Uitsnede verfijnen</string>
-    <string name="local_bg_hint">Sleep het dradenkruis op het item dat je wilt behouden.</string>
-    <string name="local_bg_recomputing">Uitsnede opnieuw berekenen…</string>
-    <string name="local_bg_apply">Deze uitsnede gebruiken</string>
-    <string name="local_bg_skip">Overslaan (Gemini gebruiken)</string>
-    <string name="local_bg_failed">Kon geen uitsnede berekenen — probeer het dradenkruis te verplaatsen.</string>
     <string name="settings_debug_similarity_toggle">Gelijkenis-debugvoorbeeld tonen</string>
     <string name="settings_debug_similarity_desc">Bij het openen van een Gelijkenis-zoeker-match de per-kanaal-uitsplitsing tonen (gesegmenteerde miniaturen, embedding/histogram-cosinus, hue-histogrammen) in plaats van de standaard zoombare afbeelding.</string>
 
     <!-- Matchvoorbeeld-dialoog -->
-    <string name="dedupe_dialog_title">Mogelijk duplicaat</string>
-    <string name="dedupe_dialog_desc">We vonden %1$d item(s) in je garderobe die erg op deze foto lijken.</string>
-    <string name="dedupe_dialog_import_anyway">Toch importeren</string>
-    <string name="dedupe_dialog_cancel">Annuleren</string>
     <string name="dedupe_no_matches">Geen matches</string>
     <string name="dedupe_score">%1$d%% match</string>
 
     <!-- Item zoeken via foto (garderobe) -->
-    <string name="wardrobe_find_by_photo">Item zoeken via foto</string>
-    <string name="wardrobe_find_by_photo_empty">Geen gelijkende items gevonden.</string>
-    <string name="wardrobe_find_by_photo_searching">Matches zoeken…</string>
 
     <!-- Garderobe doorzoeken (tekst of foto) -->
     <string name="wardrobe_search_title">Garderobe doorzoeken</string>
     <string name="wardrobe_search_hint">Typ waar je naar zoekt, of zoek via foto.</string>
     <string name="wardrobe_search_use_photo">In plaats daarvan via foto zoeken</string>
-    <string name="wardrobe_search_text_results">Zoekresultaten</string>
     <string name="action_search">Zoeken</string>
 
     <!-- Reparatie &amp; Sync — sectie mogelijke duplicaten -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Eigen Gemini-sleutel — er worden geen credits gebruikt.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Verwijder ook %d outfit(s) die deze items gebruiken</string>
-    <string name="wardrobe_delete_cascade_tryons">Verwijder ook %d try-on(s) met deze items</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Jij</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Geavanceerde opties</string>
     <string name="settings_retag_row">Al mijn kleding opnieuw taggen</string>
     <string name="settings_retag_row_sub">Laat de AI alles opnieuw benoemen en categoriseren. Kost ~2 credits per item.</string>
-    <string name="settings_rebg_row">Achtergronden opnieuw verwijderen</string>
     <string name="settings_rebg_row_sub">Knipt elk item opnieuw uit de foto. Kost ~6 credits per item.</string>
-    <string name="settings_cutout_row">Resterende achtergrondpixels corrigeren</string>
     <string name="settings_cutout_row_sub">Zoekt naar items waarbij de uitsnede een hoek heeft gemist.</string>
     <string name="settings_advanced_byok_title">Jouw Gemini API-sleutel</string>
     <string name="settings_advanced_byok_body">Alle AI draait op je eigen Gemini-sleutel. Een gratis sleutel dekt taggen en outfitsuggesties; virtueel passen en achtergrond verwijderen vereisen een betaalde sleutel met facturering ingeschakeld. Haal er een op via aistudio.google.com en plak hem hieronder — we bewaren hem alleen op deze telefoon.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Afbeeldingen omzetten naar WebP</string>
     <string name="settings_convert_webp_row_sub">Verklein oudere JPG/PNG-foto\'s om Drive-ruimte te besparen.</string>
-    <string name="settings_converting">Bezig met omzetten %1$d van %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Onderhoud</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Details laden %1$d / %2$d</string>
     <string name="restore_finishing">Afronden…</string>
-    <string name="wardrobe_sync_details">Details laden: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Afronden…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Item toevoegen</string>
-    <string name="sel_swap">Wisselen</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

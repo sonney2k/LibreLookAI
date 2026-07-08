@@ -230,4 +230,11 @@
     <string name="sel_move">העברה</string>
     <string name="tryon_outfit_picker_title">בחר אאוטפיט</string>
     <string name="tryon_outfit_picker_empty">אין אאוטפיטים.</string>
+    <string name="battery_exempt_action">פתח הגדרות</string>
+    <string name="battery_exempt_text">LibreLookAI זקוקה לעיבוד ברקע כדי לייבא תמונות ולהסיר רקעים בבטחה.</string>
+    <string name="battery_exempt_title">נדרש עיבוד ברקע</string>
+    <string name="nav_wardrobe">מלתחה</string>
+    <string name="shop_your_photo">התמונה שלך</string>
+    <string name="wardrobe_fix_cutout_bg">תקן רקע של חיתוך</string>
+    <string name="wardrobe_move_to_title">העבר %d פריטים ל</string>
 </resources>

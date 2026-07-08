@@ -230,4 +230,11 @@
     <string name="sel_move">Sposta</string>
     <string name="tryon_outfit_picker_title">Scegli un outfit</string>
     <string name="tryon_outfit_picker_empty">Nessun outfit salvato. Creane uno nella scheda Outfit per usarlo qui.</string>
+    <string name="battery_exempt_action">Apri impostazioni</string>
+    <string name="battery_exempt_text">LibreLookAI necessita di elaborazione in background non limitata per importare foto, rimuovere sfondi ed etichettare i tuoi vestiti con l\'IA in sicurezza.\n\nSenza questa autorizzazione, Android può chiudere l\'app durante il processo, causando perdita di dati — capi importati parzialmente, etichette mancanti o file corrotti.\n\nDisattiva l\'ottimizzazione della batteria per LibreLookAI per continuare.</string>
+    <string name="battery_exempt_title">Elaborazione in background richiesta</string>
+    <string name="nav_wardrobe">Guardaroba</string>
+    <string name="shop_your_photo">La tua foto</string>
+    <string name="wardrobe_fix_cutout_bg">Correggi sfondo ritaglio</string>
+    <string name="wardrobe_move_to_title">Sposta %d capo/i in</string>
 </resources>

@@ -184,6 +184,7 @@ internal fun ItemViewerDestination(
                 else locationState.locations,
             processingImageId = if (isShopping) shoppingState.processingImageId
                 else wardrobeState.processingImageId,
+            powerFeatures = com.librelookai.util.FeatureFlags.powerFeatures,
         )
     }
 

@@ -230,4 +230,11 @@
     <string name="sel_move">Ilipat</string>
     <string name="tryon_outfit_picker_title">Pumili ng outfit</string>
     <string name="tryon_outfit_picker_empty">Wala pang naka-save na outfit. Gumawa ng isa sa Outfits tab para magamit dito.</string>
+    <string name="battery_exempt_action">Buksan ang Settings</string>
+    <string name="battery_exempt_text">Kailangan ng LibreLookAI ang walang restriction na background processing para ligtas na mag-import ng larawan, mag-alis ng background, at mag-tag ng iyong damit gamit ang AI.\n\nKung walang permission na ito, maaaring patayin ng Android ang app sa kalagitnaan ng proseso, na maaaring magresulta sa pagkawala ng data — mga bahagyang na-import na item, nawawalang tag, o sirang file.\n\nMangyaring i-disable ang battery optimization para sa LibreLookAI para magpatuloy.</string>
+    <string name="battery_exempt_title">Kinakailangan ang background processing</string>
+    <string name="nav_wardrobe">Wardrobe</string>
+    <string name="shop_your_photo">Iyong larawan</string>
+    <string name="wardrobe_fix_cutout_bg">Ayusin ang cutout BG</string>
+    <string name="wardrobe_move_to_title">Ilipat ang %d item sa</string>
 </resources>

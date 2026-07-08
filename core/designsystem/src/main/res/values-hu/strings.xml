@@ -230,4 +230,15 @@
     <string name="sel_move">Áthelyezés</string>
     <string name="tryon_outfit_picker_title">Válassz szettet</string>
     <string name="tryon_outfit_picker_empty">Még nincs mentett szett. Hozz létre egyet a Szettek lapon, hogy itt használhasd.</string>
+    <string name="battery_exempt_action">Beállítások megnyitása</string>
+    <string name="battery_exempt_text">A LibreLookAI-nak korlátlan háttér-feldolgozásra van szüksége a fotók biztonságos importálásához, a háttér eltávolításához és a ruhák AI-val történő címkézéséhez.
+
+Ezen engedély nélkül az Android leállíthatja az appot folyamat közben, ami adatvesztést okozhat — részlegesen importált darabok, hiányzó címkék vagy sérült fájlok.
+
+Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folytatáshoz.</string>
+    <string name="battery_exempt_title">Háttér-feldolgozás szükséges</string>
+    <string name="nav_wardrobe">Gardrób</string>
+    <string name="shop_your_photo">A te fotód</string>
+    <string name="wardrobe_fix_cutout_bg">Kivágás hátterének javítása</string>
+    <string name="wardrobe_move_to_title">%d darab mozgatása ide:</string>
 </resources>

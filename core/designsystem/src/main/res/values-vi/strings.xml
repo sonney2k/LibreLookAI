@@ -230,4 +230,15 @@
     <string name="sel_move">Chuyển</string>
     <string name="tryon_outfit_picker_title">Chọn một trang phục</string>
     <string name="tryon_outfit_picker_empty">Chưa có trang phục nào được lưu. Hãy tạo trong tab Trang phục để dùng ở đây.</string>
+    <string name="battery_exempt_action">Mở Cài đặt</string>
+    <string name="battery_exempt_text">LibreLookAI cần xử lý nền không hạn chế để nhập ảnh an toàn, xóa nền và gắn thẻ quần áo bằng AI.
+
+Không có quyền này, Android có thể tắt ứng dụng giữa chừng, dẫn đến mất dữ liệu — món nhập một phần, thẻ thiếu, hoặc tệp hỏng.
+
+Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
+    <string name="battery_exempt_title">Cần xử lý nền</string>
+    <string name="nav_wardrobe">Tủ đồ</string>
+    <string name="shop_your_photo">Ảnh của bạn</string>
+    <string name="wardrobe_fix_cutout_bg">Sửa nền phần cắt</string>
+    <string name="wardrobe_move_to_title">Chuyển %d món đồ đến</string>
 </resources>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Garderobă</string>
     <string name="nav_shopping">Cumpărături</string>
     <string name="nav_travel">Călătorie</string>
     <string name="nav_settings">Setări</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Statistici Garderobă</string>
     <string name="insights_tab_costs">Costuri</string>
     <string name="costs_count_items">Articole</string>
     <string name="costs_count_outfits">Ținute</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Adaugă din URL</string>
-    <string name="wardrobe_url_import_title">Importă din URL produs</string>
-    <string name="wardrobe_url_import_hint">Lipește URL-ul unei pagini de produs. Vom prelua imaginea automat.</string>
-    <string name="url_import_pick_title">Alege imaginea produsului</string>
-    <string name="url_import_pick_hint">Apasă pe imaginea pe care vrei să o imporți.</string>
-    <string name="url_import_browser_title">Deschide pagina</string>
-    <string name="url_import_browser_hint">Apasă pe orice imagine din pagină pentru a o importa.</string>
-    <string name="url_import_open_browser">Deschide pagina</string>
-    <string name="url_import_show_candidates">Candidate</string>
-    <string name="url_import_no_candidates">Nu s-au găsit imagini. Deschide pagina în browser.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Ținute</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Se salvează…</string>
     <string name="cd_ai_suggestion">Sugestie AI</string>
     <string name="filter_location">Locație</string>
-    <string name="wardrobe_processing_photos">Se procesează %1$d poze…</string>
-    <string name="wardrobe_progress_uploading">Se încarcă poza…</string>
-    <string name="wardrobe_progress_uploading_batch">Încărcare poza %1$d din %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Se elimină fundalul…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Eliminare fundal %1$d din %2$d…</string>
-    <string name="wardrobe_progress_moving">Se mută în locație nouă…</string>
     <string name="action_select_all">Selectează tot</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Etichete Garderobă</string>
     <string name="settings_data_tags_desc">Reclasifică fiecare articol cu Gemini. Aceasta va suprascrie editările manuale.</string>
     <string name="settings_rescan_button">Rescanează Etichete</string>
-    <string name="settings_rescanning">Rescanare %1$d din %2$d…</string>
     <string name="settings_rescan_dialog_title">Rescanezi toate etichetele?</string>
     <string name="settings_rescan_dialog_text">Gemini va reclasifica fiecare articol. Procesul poate dura ceva timp.</string>
     <string name="settings_rescan_confirm">Rescanează</string>
@@ -119,38 +101,14 @@
     <string name="settings_repair_done">Reparare finalizată. Garderobă reîmprospătată.</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Restaurare garderobă: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d articole</string>
     <string name="wardrobe_filtered_count">Se afișează %1$d din %2$d articole</string>
-    <string name="wardrobe_stats_total">Total %1$d articole</string>
-    <string name="wardrobe_stats_untagged">Fără etichete</string>
-    <string name="wardrobe_empty">Niciun articol încă</string>
-    <string name="wardrobe_empty_hint">Fă o poză sau alege din galerie</string>
     <string name="wardrobe_create_outfit">Creează ținută manual</string>
     <string name="wardrobe_compose_ai">Compune cu AI</string>
-    <string name="wardrobe_select_all_count">Selectează tot (%1$d)</string>
-    <string name="wardrobe_delete_title">Ștergi articolele?</string>
-    <string name="wardrobe_delete_text">Ești sigur că vrei să ștergi cele %d articole selectate? Acțiunea este ireversibilă.</string>
-    <string name="wardrobe_move_to">Mută în</string>
-    <string name="wardrobe_move_to_title">Mută %d articole în</string>
-    <string name="wardrobe_tag_detect">Detectează etichete</string>
-    <string name="wardrobe_tag_remove_bg">Elimină fundal</string>
-    <string name="wardrobe_tag_re_remove_bg">Re-elimină fundal</string>
-    <string name="wardrobe_tag_rotate">Rotește</string>
-    <string name="wardrobe_tag_edit">Editează etichete</string>
-    <string name="wardrobe_tag_sheet_title">Editare Etichete</string>
-    <string name="wardrobe_tag_saved">Salvat</string>
-    <string name="wardrobe_tag_saving">Se salvează…</string>
-    <string name="wardrobe_tag_unsaved">Nesalvat</string>
-    <string name="wardrobe_tag_redetect_ai">Redetectează etichetele cu AI</string>
-    <string name="wardrobe_tag_not_set">Nesetat</string>
     <string name="wardrobe_add_gallery">Galerie</string>
     <string name="wardrobe_add_camera">Cameră</string>
     <string name="wardrobe_add_to_closet">Adaugă în %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Adaugă în garderobă</string>
-    <string name="tag_label">Nume</string>
     <string name="tag_label_placeholder">ex. Chinos bleumarin, Cămașă Oxford albă</string>
-    <string name="tag_add_custom">Adaugă personalizat…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -240,13 +198,6 @@
     <string name="ai_consider_weather_desc">Include temperatura și condițiile de azi.</string>
     <string name="ai_considerations_desc">Ce trebuie să ia în considerare AI atunci când sugerează sau compune ținute. Modificările se aplică la predicție, compunere, bagaje și prompturile pentru lipsuri în garderobă.</string>
     <string name="ai_considerations_title">Criterii implicite</string>
-    <string name="battery_exempt_action">Deschide setările</string>
-    <string name="battery_exempt_text">LibreLookAI are nevoie de procesare nelimitată în fundal pentru a importa fotografii în siguranță, a elimina fundalurile și a eticheta hainele tale cu AI.
-
-Fără această permisiune, Android poate închide aplicația în timpul procesării, ceea ce poate duce la pierderi de date — articole importate parțial, etichete lipsă sau fișiere corupte.
-
-Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a continua.</string>
-    <string name="battery_exempt_title">Procesare în fundal necesară</string>
     <string name="composer_add_selected">Adaugă selecția</string>
     <string name="composer_desc_placeholder">Descriere scurtă (opțional)</string>
     <string name="composer_discard_confirm">Renunță</string>
@@ -280,10 +231,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Etichete (opțional)</string>
     <string name="composer_targets_hint">Setează câte din fiecare strat să fie incluse. Lasă la 0 pentru ca AI să decidă.</string>
-    <string name="dedupe_dialog_cancel">Anulează</string>
-    <string name="dedupe_dialog_desc">Am găsit %1$d articol(e) în garderoba ta care arată foarte similar cu această fotografie.</string>
-    <string name="dedupe_dialog_import_anyway">Importă oricum</string>
-    <string name="dedupe_dialog_title">Posibil duplicat</string>
     <string name="dedupe_no_matches">Nicio potrivire</string>
     <string name="dedupe_score">%1$d%% potrivire</string>
     <string name="gap_description">Descoperă cele 3 piese lipsă care ți-ar deschide cele mai multe combinații noi din garderoba existentă.</string>
@@ -299,12 +246,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="import_preview_select_all">Selectează tot</string>
     <string name="import_preview_similar_badge">Similar</string>
     <string name="import_preview_title">Verifică %1$d articol(e)</string>
-    <string name="local_bg_apply">Folosește acest decupaj</string>
-    <string name="local_bg_failed">Nu s-a putut calcula decupajul — încearcă să muți reticulul.</string>
-    <string name="local_bg_hint">Trage reticulul pe articolul pe care vrei să-l păstrezi.</string>
-    <string name="local_bg_recomputing">Se recalculează decupajul…</string>
-    <string name="local_bg_skip">Omite (folosește Gemini)</string>
-    <string name="local_bg_title">Rafinează decupajul</string>
     <string name="outfit_mode_edit">Editare</string>
     <string name="outfit_mode_view">Vizualizare</string>
     <string name="outfits_description_placeholder">Descriere (opțional)</string>
@@ -321,24 +262,12 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_bg_removal_desc">Reglează segmentatorul de decupare de pe dispozitiv folosit la captură, import și asistentul de cumpărături. Valorile mai mici păstrează mai mulți pixeli (decupaj mai larg, poate include fundal); valorile mai mari resping pixelii la limită (decupaj mai strâns, poate tăia din articol).</string>
     <string name="settings_bg_removal_threshold">Prag prim-plan: %1$d%%</string>
     <string name="settings_bg_removal_title">Eliminare fundal</string>
-    <string name="settings_cutoutfix_action_blackbg">Fundal negru → transparent</string>
-    <string name="settings_cutoutfix_action_clearalpha">Șterge alfa (fă opac)</string>
-    <string name="settings_cutoutfix_action_feather">Atenuează marginile alfa</string>
-    <string name="settings_cutoutfix_action_greenhalo">Elimină halo-ul verde</string>
-    <string name="settings_cutoutfix_action_tightcrop">Decupaj strâns &amp; limitare dimensiune</string>
-    <string name="settings_cutoutfix_badge_blackbg">fundal negru</string>
-    <string name="settings_cutoutfix_badge_greenhalo">halo verde</string>
     <string name="settings_cutoutfix_button">Scanează decupajele</string>
     <string name="settings_cutoutfix_desc">Scanează decupajele existente după fundaluri negre rămase sau halouri verzi și reaplică masca local. Fără apeluri AI — decupajele corectate se reîncarcă păstrând ID-ul Drive.</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Decupajele selectate vor fi reprocesate local și reîncărcate. Atinge pentru a comuta.</string>
-    <string name="settings_cutoutfix_dialog_title">Repară fundalurile decupajelor — Previzualizare</string>
     <string name="settings_cutoutfix_done">%1$d decupaj(e) reparate.</string>
-    <string name="settings_cutoutfix_fix_n">Repară %1$d</string>
     <string name="settings_cutoutfix_no_issues">Nu s-au găsit decupaje cu fundal rămas.</string>
     <string name="settings_cutoutfix_processing">Se repară decupajul %1$d din %2$d…</string>
     <string name="settings_cutoutfix_scanning">Se scanează decupajul %1$d din %2$d…</string>
-    <string name="settings_cutoutfix_selected">%1$d din %2$d selectate</string>
-    <string name="settings_cutoutfix_show_all">Arată toate decupajele (nu doar cele marcate)</string>
     <string name="settings_cutoutfix_title">Repară fundalurile decupajelor</string>
     <string name="settings_debug_similarity_desc">La deschiderea unei potriviri din Asistentul de cumpărături, arată descompunerea pe canale (miniaturi segmentate, cosinus pentru embedding/histogramă, histograme de nuanță) în loc de imaginea zoom-abilă implicită.</string>
     <string name="settings_debug_similarity_toggle">Arată previzualizarea de debug pentru similaritate</string>
@@ -409,13 +338,11 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_repair_clear_cache">Șterge cache-ul local</string>
     <string name="settings_repair_clear_cache_desc">Redescarcă toate imaginile din Drive după rulare. Mai lent; necesar doar dacă fișierele locale par neactualizate.</string>
     <string name="settings_repair_preview_cost_total">Cost estimat: %1$d credite</string>
-    <string name="settings_repair_preview_deselect_all">Deselectează tot</string>
     <string name="settings_repair_preview_process_n">Procesează %1$d</string>
     <string name="settings_repair_preview_section_count">%1$d din %2$d selectate</string>
     <string name="settings_repair_preview_section_orphaned">Necesită eliminare fundal + etichete</string>
     <string name="settings_repair_preview_section_raw">Imagini nerecunoscute — necesită eliminare fundal + etichete</string>
     <string name="settings_repair_preview_section_sidecar">Necesită doar etichete</string>
-    <string name="settings_repair_preview_select_all">Selectează tot</string>
     <string name="settings_repair_preview_selected">%1$d din %2$d selectate</string>
     <string name="settings_repair_preview_subtitle">Articolele selectate vor fi procesate. Atinge o miniatură pentru a o omite.</string>
     <string name="settings_repair_preview_title">Reparare &amp; Sincronizare — Previzualizare</string>
@@ -431,7 +358,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="shop_no_matches">Nicio potrivire încă. Încearcă o fotografie mai apropiată și mai bine iluminată.</string>
     <string name="shop_take_another">Fă altă fotografie</string>
     <string name="shop_take_photo">Fă o fotografie</string>
-    <string name="shop_your_photo">Fotografia ta</string>
     <string name="tag_category_placeholder">topuri, inferioare, geci, încălțăminte, accesorii, rochie, costum</string>
     <string name="tag_type_placeholder">ex. Tricou, Chinos, Geacă matlasată</string>
     <string name="travel_move_done">Articolele au fost mutate în locația Travel</string>
@@ -456,25 +382,14 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="tryon_section_desc">Încarcă fotografii la corp întreg din față, lateral și spate. Aplicația le folosește ca referință la generarea unei probe a unei ținute sau a unui articol pe tine. Fotografiile rămân în propriul tău Drive.</string>
     <string name="tryon_section_title">Fotografii pentru probă</string>
     <string name="tryon_use_outfit">Folosește o ținută</string>
-    <string name="wardrobe_create_style">Creează ținută</string>
-    <string name="wardrobe_find_by_photo">Găsește articol după fotografie</string>
-    <string name="wardrobe_find_by_photo_empty">Nu s-au găsit articole similare.</string>
-    <string name="wardrobe_find_by_photo_searching">Se caută potriviri…</string>
-    <string name="wardrobe_fix_cutout_bg">Repară fundalul decupajului</string>
     <string name="wardrobe_fix_cutout_bg_clean">Niciun fundal rămas detectat — nimic de reparat.</string>
     <string name="wardrobe_fix_cutout_bg_done">Fundalul decupajului a fost reparat.</string>
-    <string name="wardrobe_imported_on">Importat %1$s</string>
     <string name="wardrobe_search_hint">Scrie ce cauți sau caută după fotografie.</string>
-    <string name="wardrobe_search_text_results">Rezultate căutare</string>
     <string name="wardrobe_search_title">Caută în garderobă</string>
     <string name="wardrobe_search_use_photo">Caută după fotografie</string>
     <string name="wardrobe_suggest_replacements">Sugerează alternative</string>
-    <string name="wardrobe_view_cutout">Vezi decupajul</string>
-    <string name="wardrobe_view_original">Vezi originalul</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Șterge și %d ținută/ținute care folosesc aceste articole</string>
-    <string name="wardrobe_delete_cascade_tryons">Șterge și %d probă/probe cu aceste articole</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Tu</string>
@@ -515,9 +430,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_section_advanced_power">Opțiuni avansate</string>
     <string name="settings_retag_row">Reetichetează toate hainele mele</string>
     <string name="settings_retag_row_sub">Cere AI să redenumească și să recategorizeze tot. Costă ~2 credite per articol.</string>
-    <string name="settings_rebg_row">Reelimină fundalurile</string>
     <string name="settings_rebg_row_sub">Decupează din nou fiecare articol din poza sa. Costă ~6 credite per articol.</string>
-    <string name="settings_cutout_row">Repară pixelii de fundal rămași</string>
     <string name="settings_cutout_row_sub">Caută articole la care decuparea a ratat un colț.</string>
     <string name="settings_advanced_byok_title">Cheia ta API Gemini</string>
     <string name="settings_advanced_byok_body">Toată inteligența artificială funcționează cu propria ta cheie Gemini. O cheie gratuită acoperă etichetarea și sugestiile de ținute; proba virtuală și eliminarea fundalului necesită o cheie plătită cu facturarea activată. Obține una de pe aistudio.google.com și lipește-o mai jos — o păstrăm doar pe acest telefon.</string>
@@ -623,10 +536,8 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Convertește imaginile în WebP</string>
     <string name="settings_convert_webp_row_sub">Micșorează fotografiile JPG/PNG mai vechi ca să economisești spațiu pe Drive.</string>
-    <string name="settings_converting">Se convertește %1$d din %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Întreținere</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Se încarcă detaliile %1$d / %2$d</string>
     <string name="restore_finishing">Se finalizează…</string>
-    <string name="wardrobe_sync_details">Se încarcă detaliile: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Se finalizează…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Adaugă articol</string>
-    <string name="sel_swap">Schimbă</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

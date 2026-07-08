@@ -230,4 +230,11 @@
     <string name="sel_move">Move</string>
     <string name="tryon_outfit_picker_title">Pick an outfit</string>
     <string name="tryon_outfit_picker_empty">No saved outfits yet. Create one in the Outfits tab to use it here.</string>
+    <string name="battery_exempt_action">Open Settings</string>
+    <string name="battery_exempt_text">LibreLookAI needs unrestricted background processing to safely import photos, remove backgrounds, and tag your clothes with AI.\n\nWithout this permission, Android may kill the app mid-process, which can lead to data loss — partially imported items, missing tags, or corrupted files.\n\nPlease disable battery optimisation for LibreLookAI to continue.</string>
+    <string name="battery_exempt_title">Background processing required</string>
+    <string name="nav_wardrobe">Wardrobe</string>
+    <string name="shop_your_photo">Your photo</string>
+    <string name="wardrobe_fix_cutout_bg">Fix cutout BG</string>
+    <string name="wardrobe_move_to_title">Move %d item(s) to</string>
 </resources>

@@ -230,4 +230,11 @@
     <string name="sel_move">이동</string>
     <string name="tryon_outfit_picker_title">코디 선택</string>
     <string name="tryon_outfit_picker_empty">아직 저장된 코디가 없습니다. 코디 탭에서 생성하여 여기서 사용하세요.</string>
+    <string name="battery_exempt_action">설정 열기</string>
+    <string name="battery_exempt_text">LibreLookAI는 사진을 안전하게 가져오고, 배경을 제거하고, AI로 옷에 태그를 지정하기 위해 제한 없는 백그라운드 처리가 필요합니다.\n\n이 권한이 없으면 Android가 처리 중에 앱을 종료할 수 있어 데이터 손실이 발생할 수 있습니다 — 부분적으로 가져온 아이템, 누락된 태그 또는 손상된 파일.\n\n계속하려면 LibreLookAI의 배터리 최적화를 비활성화하세요.</string>
+    <string name="battery_exempt_title">백그라운드 처리 필요</string>
+    <string name="nav_wardrobe">옷장</string>
+    <string name="shop_your_photo">내 사진</string>
+    <string name="wardrobe_fix_cutout_bg">컷아웃 배경 수정</string>
+    <string name="wardrobe_move_to_title">%d개 아이템 이동</string>
 </resources>

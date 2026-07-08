@@ -230,4 +230,11 @@
     <string name="sel_move">Přesunout</string>
     <string name="tryon_outfit_picker_title">Vybrat outfit</string>
     <string name="tryon_outfit_picker_empty">Zatím žádné uložené outfity. Vytvořte si jeden na kartě Outfity, abyste jej mohli použít zde.</string>
+    <string name="battery_exempt_action">Otevřít Nastavení</string>
+    <string name="battery_exempt_text">LibreLookAI potřebuje neomezené zpracování na pozadí, aby mohl bezpečně importovat fotografie, odstraňovat pozadí a označovat vaše oblečení pomocí AI.\n\nBez tohoto povolení může Android aplikaci uprostřed procesu ukončit, což může vést ke ztrátě dat — částečně importovaným položkám, chybějícím štítkům nebo poškozeným souborům.\n\nZakažte prosím optimalizaci baterie pro LibreLookAI, abyste mohli pokračovat.</string>
+    <string name="battery_exempt_title">Vyžadováno zpracování na pozadí</string>
+    <string name="nav_wardrobe">Šatník</string>
+    <string name="shop_your_photo">Vaše fotografie</string>
+    <string name="wardrobe_fix_cutout_bg">Opravit pozadí výřezu</string>
+    <string name="wardrobe_move_to_title">Přesunout %d položek do</string>
 </resources>

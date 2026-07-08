@@ -63,7 +63,7 @@ internal fun AppNavBar(
     data class NavItem(val tab: Int, val labelRes: Int, val icon: ImageVector)
     val leftItems = listOf(
         NavItem(0, DsR.string.nav_styles,   Icons.Default.Style),
-        NavItem(1, R.string.nav_wardrobe, Icons.Default.Checkroom),
+        NavItem(1, DsR.string.nav_wardrobe, Icons.Default.Checkroom),
     )
     val rightItems = listOf(
         NavItem(2, R.string.nav_shopping, Icons.Default.ShoppingBag),

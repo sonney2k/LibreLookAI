@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Gardırop</string>
     <string name="nav_shopping">Alışveriş</string>
     <string name="nav_travel">Seyahat</string>
     <string name="nav_settings">Ayarlar</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Gardırop İstatistikleri</string>
     <string name="insights_tab_costs">Maliyetler</string>
     <string name="costs_count_items">Eşyalar</string>
     <string name="costs_count_outfits">Kombinler</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">URL\'den ekle</string>
-    <string name="wardrobe_url_import_title">Alışveriş URL\'sinden içe aktar</string>
-    <string name="wardrobe_url_import_hint">Bir alışveriş sayfasının URL\'sini yapıştırın. Ürün resmini otomatik olarak çekeceğiz.</string>
-    <string name="url_import_pick_title">Ürün resmini seçin</string>
-    <string name="url_import_pick_hint">İçe aktarmak istediğiniz resme dokunun. Hiçbiri doğru görünmüyorsa, sayfayı tarayıcıda açın.</string>
-    <string name="url_import_browser_title">Sayfayı aç</string>
-    <string name="url_import_browser_hint">Sayfadaki herhangi bir resme dokunarak içe aktarın.</string>
-    <string name="url_import_open_browser">Sayfayı aç</string>
-    <string name="url_import_show_candidates">Adaylar</string>
-    <string name="url_import_no_candidates">Resim bulunamadı. Birini seçmek için sayfayı tarayıcıda açın.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Kombinler</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Kaydediliyor…</string>
     <string name="cd_ai_suggestion">Yapay zeka önerisi</string>
     <string name="filter_location">Konum</string>
-    <string name="wardrobe_processing_photos">%1$d fotoğraf işleniyor…</string>
-    <string name="wardrobe_progress_uploading">Fotoğraf yükleniyor…</string>
-    <string name="wardrobe_progress_uploading_batch">Fotoğraf yükleniyor: %1$d / %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Arka plan kaldırılıyor…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Arka plan kaldırılıyor: %1$d / %2$d…</string>
-    <string name="wardrobe_progress_moving">Yeni konuma taşınıyor…</string>
     <string name="action_select_all">Tümünü seç</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Gardırop Etiketleri</string>
     <string name="settings_data_tags_desc">Gardırobunuzdaki her öğeyi Gemini ile yeniden sınıflandırın. Bu, manuel etiket düzenlemelerinin üzerine yazar.</string>
     <string name="settings_rescan_button">Tüm Etiketleri Yeniden Tara</string>
-    <string name="settings_rescanning">Yeniden taranıyor: %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">Tüm etiketler yeniden taransın mı?</string>
     <string name="settings_rescan_dialog_text">Gemini, gardırobunuzdaki her öğeyi yeniden sınıflandıracaktır. Bu, manuel etiket düzenlemelerinin üzerine yazacak ve biraz zaman alabilir.</string>
     <string name="settings_rescan_confirm">Yeniden Tara</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Yalnızca etiketleme gerekiyor</string>
     <string name="settings_repair_preview_section_count">%1$d / %2$d seçildi</string>
     <string name="settings_repair_preview_selected">%1$d / %2$d seçildi</string>
-    <string name="settings_repair_preview_select_all">Tümünü seç</string>
-    <string name="settings_repair_preview_deselect_all">Seçimi kaldır</string>
     <string name="settings_repair_preview_process_n">%1$d İşle</string>
     <string name="settings_cutoutfix_title">Kesit arka planlarını düzelt</string>
     <string name="settings_cutoutfix_desc">Mevcut kesitleri kalan siyah arka planlar veya yeşil haleler için tara ve maskeyi yerel olarak yeniden uygula. Yapay zeka çağrısı yapılmaz — düzeltilen kesitler Drive kimlikleri korunarak yeniden yüklenir.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Kesit taranıyor: %1$d / %2$d…</string>
     <string name="settings_cutoutfix_processing">Kesit düzeltiliyor: %1$d / %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d kesit düzeltildi.</string>
-    <string name="settings_cutoutfix_dialog_title">Kesit arka planlarını düzelt — Önizleme</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Seçilen kesitler yerel olarak yeniden işlenecek ve yeniden yüklenecektir. Değiştirmek için dokunun.</string>
-    <string name="settings_cutoutfix_show_all">Tüm kesitleri göster (yalnızca işaretlenenleri değil)</string>
     <string name="settings_cutoutfix_no_issues">Kalan arka planları olan kesit bulunamadı.</string>
-    <string name="settings_cutoutfix_badge_blackbg">siyah arka plan</string>
-    <string name="settings_cutoutfix_badge_greenhalo">yeşil hale</string>
-    <string name="settings_cutoutfix_action_clearalpha">Alfayı temizle (opak yap)</string>
-    <string name="settings_cutoutfix_action_blackbg">Siyah arka plan → şeffaf</string>
-    <string name="settings_cutoutfix_action_greenhalo">Yeşil haleyi gider</string>
-    <string name="settings_cutoutfix_action_feather">Alfa kenarlarını yumuşat</string>
-    <string name="settings_cutoutfix_action_tightcrop">Sıkı kırp ve boyutu sınırla</string>
-    <string name="settings_cutoutfix_fix_n">%1$d Düzelt</string>
-    <string name="settings_cutoutfix_selected">%1$d / %2$d seçildi</string>
     <string name="settings_repair_preview_cost_total">Tahmini maliyet: %1$d kredi</string>
     <string name="settings_repair_clear_cache">Yerel önbelleği temizle</string>
     <string name="settings_repair_clear_cache_desc">İşlemden sonra tüm resimleri Drive\'dan yeniden indir. Daha yavaştır; yalnızca yerel dosyalar güncel görünmüyorsa gereklidir.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Aktif</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Gardırop geri yükleniyor: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d öge</string>
     <string name="wardrobe_filtered_count">%1$d / %2$d öge gösteriliyor</string>
-    <string name="wardrobe_stats_total">Toplam %1$d öge</string>
-    <string name="wardrobe_stats_untagged">Etiketlenmemiş</string>
-    <string name="wardrobe_empty">Henüz öge yok</string>
-    <string name="wardrobe_empty_hint">Bir fotoğraf çekin veya galerinizden seçin</string>
     <string name="wardrobe_create_outfit">Manuel kombin oluştur</string>
     <string name="wardrobe_compose_ai">Yapay zeka ile oluştur</string>
-    <string name="wardrobe_select_all_count">Tümünü seç (%1$d)</string>
-    <string name="wardrobe_delete_title">Ögeler silinsin mi?</string>
-    <string name="wardrobe_delete_text">Seçili %d ögeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
-    <string name="wardrobe_move_to">Şuraya taşı</string>
-    <string name="wardrobe_move_to_title">%d ögeyi şuraya taşı</string>
-    <string name="wardrobe_tag_detect">Etiketleri algıla</string>
-    <string name="wardrobe_tag_remove_bg">Arka planı kaldır</string>
-    <string name="wardrobe_tag_re_remove_bg">Arka planı yeniden kaldır</string>
-    <string name="wardrobe_fix_cutout_bg">Kesit arka planını düzelt</string>
     <string name="wardrobe_fix_cutout_bg_done">Kesit arka planı düzeltildi.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Kalan arka plan algılanmadı — düzeltilecek bir şey yok.</string>
-    <string name="wardrobe_tag_rotate">Döndür</string>
-    <string name="wardrobe_tag_edit">Etiketleri düzenle</string>
-    <string name="wardrobe_tag_sheet_title">Etiketleri Düzenle</string>
-    <string name="wardrobe_tag_saved">Kaydedildi</string>
-    <string name="wardrobe_tag_saving">Kaydediliyor…</string>
-    <string name="wardrobe_tag_unsaved">Kaydedilmedi</string>
-    <string name="wardrobe_tag_redetect_ai">Yapay zekâ ile etiketleri yeniden algıla</string>
-    <string name="wardrobe_tag_not_set">Ayarlanmadı</string>
     <string name="wardrobe_add_gallery">Galeri</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">%1$s\'ye ekle</string>
-    <string name="wardrobe_add_to_closet_title">Gardıroba ekle</string>
-    <string name="tag_label">İsim</string>
     <string name="tag_label_placeholder">örn. Lacivert Kanvas Pantolon, Beyaz Oxford Gömlek</string>
-    <string name="tag_add_custom">Özel ekle…</string>
     <string name="tag_type_placeholder">örn. Tişört, Kanvas pantolon, Şişme ceket</string>
     <string name="tag_category_placeholder">üst giyim, alt giyim, dış giyim, ayakkabı, aksesuar, elbise, takım elbise</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Foreground service notification -->
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">Arka plan işleme gerekli</string>
-    <string name="battery_exempt_text">LibreLookAI\'nın fotoğrafları güvenle içe aktarması, arka planları kaldırması ve kıyafetlerinizi yapay zeka ile etiketlemesi için kısıtlanmamış arka plan işlemeye ihtiyacı vardır.\n\nBu izin olmadan, Android uygulamayı işlem ortasında kapatabilir, bu da veri kaybına (kısmen içe aktarılmış ögeler, eksik etiketler veya bozuk dosyalar) neden olabilir.\n\nDevam etmek için lütfen LibreLookAI için pil optimizasyonunu devre dışı bırakın.</string>
-    <string name="battery_exempt_action">Ayarları Aç</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">Çevrimdışısınız — yalnızca görüntüleme modu</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d öge</string>
     <string name="composer_factor_closets">%1$d gardırop</string>
     <string name="composer_factor_composition">Özel kompozisyon</string>
-    <string name="wardrobe_create_style">Kombin oluştur</string>
-    <string name="wardrobe_imported_on">%1$s tarihinde içe aktarıldı</string>
-    <string name="wardrobe_view_original">Orijinali görüntüle</string>
-    <string name="wardrobe_view_cutout">Kesiti görüntüle</string>
     <!-- AI tab -->
     <string name="settings_tab_ai">Yapay Zeka</string>
     <string name="ai_considerations_title">Varsayılan hususlar</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Fotoğraf çek</string>
     <string name="shop_take_another">Başka bir fotoğraf çek</string>
     <string name="shop_clear">Temizle</string>
-    <string name="shop_your_photo">Fotoğrafınız</string>
     <string name="shop_matching">Gardırobunuzla eşleştiriliyor…</string>
     <string name="shop_matches_title">En iyi eşleşmeler (%1$d)</string>
     <string name="shop_no_matches">Henüz eşleşme yok. Daha yakından, daha iyi aydınlatılmış bir fotoğraf deneyin.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Etkinleştirildiğinde, kamera ve galeri içe aktarmaları yerel Magic Touch segmenterini çalıştırır ve kaydetmeden önce ön plan tohumunu onaylamanıza veya iyileştirmenize olanak tanır — Gemini çağrısı yok, kredi yok. URL içe aktarmaları her zaman bu incelemeyi kullanır.</string>
 
     <!-- Local background-removal review screen -->
-    <string name="local_bg_title">Kesiti iyileştir</string>
-    <string name="local_bg_hint">Artı işaretini tutmak istediğiniz ögenin üzerine sürükleyin.</string>
-    <string name="local_bg_recomputing">Kesit yeniden hesaplanıyor…</string>
-    <string name="local_bg_apply">Bu kesiti kullan</string>
-    <string name="local_bg_skip">Atla (Gemini kullan)</string>
-    <string name="local_bg_failed">Bir kesit hesaplanamadı — artı işaretini hareket ettirmeyi deneyin.</string>
     <string name="settings_debug_similarity_toggle">Benzerlik hata ayıklama önizlemesini göster</string>
     <string name="settings_debug_similarity_desc">Bir Benzerlik Bulucu eşleşmesini açarken, varsayılan yakınlaştırılabilir resim yerine kanal başına dökümü (kesitli küçük resimler, yerleştirme/histogram kosinüsü, ton histogramları) gösterin.</string>
 
     <!-- Match preview dialog -->
-    <string name="dedupe_dialog_title">Olası kopya</string>
-    <string name="dedupe_dialog_desc">Gardırobunuzda bu fotoğrafa çok benzeyen %1$d öge bulduk.</string>
-    <string name="dedupe_dialog_import_anyway">Yine de içe aktar</string>
-    <string name="dedupe_dialog_cancel">İptal</string>
     <string name="dedupe_no_matches">Eşleşme yok</string>
     <string name="dedupe_score">%%%1$d eşleşme</string>
 
     <!-- Find item by photo (Wardrobe) -->
-    <string name="wardrobe_find_by_photo">Fotoğraf ile öge bul</string>
-    <string name="wardrobe_find_by_photo_empty">Benzer öge bulunamadı.</string>
-    <string name="wardrobe_find_by_photo_searching">Eşleşmeler aranıyor…</string>
 
     <!-- Wardrobe search (text or photo) -->
     <string name="wardrobe_search_title">Gardıropta ara</string>
     <string name="wardrobe_search_hint">Aradığınızı yazın veya fotoğraf ile arayın.</string>
     <string name="wardrobe_search_use_photo">Bunun yerine fotoğraf ile ara</string>
-    <string name="wardrobe_search_text_results">Arama sonuçları</string>
     <string name="action_search">Ara</string>
 
     <!-- Repair &amp; Sync — possible duplicates section -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Bakiye: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Kendi Gemini anahtarınızı kullanıyorsunuz — kredi harcanmaz.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Bu parçaları kullanan %d kombini de sil</string>
-    <string name="wardrobe_delete_cascade_tryons">Bu parçaların olduğu %d provayı da sil</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Sen</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Gelişmiş seçenekler</string>
     <string name="settings_retag_row">Tüm kıyafetlerimi yeniden etiketle</string>
     <string name="settings_retag_row_sub">AI’dan her şeyi yeniden adlandırmasını ve kategorilere ayırmasını iste. Parça başına ~2 krediye mal olur.</string>
-    <string name="settings_rebg_row">Arka planları yeniden kaldır</string>
     <string name="settings_rebg_row_sub">Her parçayı fotoğrafından yeniden kes. Parça başına ~6 krediye mal olur.</string>
-    <string name="settings_cutout_row">Kalan arka plan piksellerini düzelt</string>
     <string name="settings_cutout_row_sub">Kesimin bir köşeyi kaçırdığı parçaları arar.</string>
     <string name="settings_advanced_byok_title">Gemini API anahtarınız</string>
     <string name="settings_advanced_byok_body">Tüm yapay zekâ kendi Gemini anahtarınızla çalışır. Ücretsiz anahtar etiketleme ve kıyafet önerilerini kapsar; sanal deneme ve arka plan kaldırma, faturalandırması etkin ücretli bir anahtar gerektirir. aistudio.google.com adresinden bir tane alıp aşağıya yapıştırın — yalnızca bu telefonda saklarız.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Görüntüleri WebP\'ye dönüştür</string>
     <string name="settings_convert_webp_row_sub">Drive alanından tasarruf etmek için eski JPG/PNG fotoğrafları küçült.</string>
-    <string name="settings_converting">Dönüştürülüyor %1$d / %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Bakım</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Ayrıntılar yükleniyor %1$d / %2$d</string>
     <string name="restore_finishing">Tamamlanıyor…</string>
-    <string name="wardrobe_sync_details">Ayrıntılar yükleniyor: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Tamamlanıyor…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Parça ekle</string>
-    <string name="sel_swap">Değiştir</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

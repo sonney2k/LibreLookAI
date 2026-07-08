@@ -230,4 +230,11 @@
     <string name="sel_move">Przenieś</string>
     <string name="tryon_outfit_picker_title">Wybierz stylizację</string>
     <string name="tryon_outfit_picker_empty">Brak zapisanych stylizacji. Utwórz jedną w zakładce Stylizacje, aby jej tu użyć.</string>
+    <string name="battery_exempt_action">Otwórz ustawienia</string>
+    <string name="battery_exempt_text">LibreLookAI potrzebuje nieograniczonego przetwarzania w tle, aby bezpiecznie importować zdjęcia, usuwać tła i tagować ubrania z AI.\n\nBez tego uprawnienia Android może zabić aplikację w trakcie pracy, co może prowadzić do utraty danych — częściowo zaimportowanych elementów, brakujących tagów lub uszkodzonych plików.\n\nWyłącz optymalizację baterii dla LibreLookAI, aby kontynuować.</string>
+    <string name="battery_exempt_title">Wymagane przetwarzanie w tle</string>
+    <string name="nav_wardrobe">Garderoba</string>
+    <string name="shop_your_photo">Twoje zdjęcie</string>
+    <string name="wardrobe_fix_cutout_bg">Napraw tło wycinka</string>
+    <string name="wardrobe_move_to_title">Przenieś %d elementów do</string>
 </resources>

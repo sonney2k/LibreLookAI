@@ -417,6 +417,14 @@ internal fun AppContent(
                                 tokens = tokens,
                             )
                         },
+                        // Wardrobe per-item cost badge (bg-removal skip / re-detect tags) — same
+                        // feature/billing bridge; the token estimate is derived from the file path.
+                        com.librelookai.wardrobe.LocalWardrobeCostBadge provides { action, filePath ->
+                            val tokens = if (action == com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND)
+                                com.librelookai.billing.rememberRemoveBgCostTokens(filePath)
+                            else com.librelookai.billing.rememberClassifyCostTokens(filePath)
+                            com.librelookai.billing.CostBadge(action, tokens = tokens)
+                        },
                         LocalStartTour provides { showOnboarding = true },
                     ) { LibreLookAITheme(
                         paletteId = profileState.preferences.wardrobeTheme,
@@ -446,8 +454,8 @@ internal fun AppContent(
                             val batteryContext = LocalContext.current
                             AlertDialog(
                                 onDismissRequest = { /* non-dismissable */ },
-                                title = { Text(stringResource(R.string.battery_exempt_title)) },
-                                text = { Text(stringResource(R.string.battery_exempt_text)) },
+                                title = { Text(stringResource(DsR.string.battery_exempt_title)) },
+                                text = { Text(stringResource(DsR.string.battery_exempt_text)) },
                                 confirmButton = {
                                     TextButton(
                                         onClick = {
@@ -473,7 +481,7 @@ internal fun AppContent(
                                                 },
                                             )
                                         }
-                                    ) { Text(stringResource(R.string.battery_exempt_action)) }
+                                    ) { Text(stringResource(DsR.string.battery_exempt_action)) }
                                 },
                             )
                         } else {
@@ -699,6 +707,7 @@ internal fun AppContent(
                                             locationError = locationState.error,
                                             onSetActiveLocation = locationViewModel::setActiveLocation,
                                             creditsBalance = wardrobeCreditsState.balance,
+                                            powerFeatures = com.librelookai.util.FeatureFlags.powerFeatures,
                                             onCreateOutfitFromSelection = { itemIds ->
                                                 Analytics.action("Wardrobe", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
                                                 outfitGenerationViewModel.openComposer(
@@ -1519,7 +1528,7 @@ internal fun AppContent(
                             RestoreProgressOverlay(
                                 categories = listOf(
                                     RestoreCategory(
-                                        label = stringResource(R.string.nav_wardrobe),
+                                        label = stringResource(DsR.string.nav_wardrobe),
                                         loading = restoreWardrobe.isLoading,
                                         // Name the sub-step so a fresh restore doesn't appear to hang
                                         // at "196/196" while sidecars download and caches are written.

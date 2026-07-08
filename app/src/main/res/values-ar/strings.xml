@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">خزانة الملابس</string>
     <string name="nav_shopping">التسوق</string>
     <string name="nav_travel">السفر</string>
     <string name="nav_settings">الإعدادات</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">إحصائيات الخزانة</string>
     <string name="insights_tab_costs">التكاليف</string>
     <string name="costs_count_items">الأصناف</string>
     <string name="costs_count_outfits">الأطقم</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">إضافة من رابط</string>
-    <string name="wardrobe_url_import_title">استيراد من رابط تسوق</string>
-    <string name="wardrobe_url_import_hint">الصق رابط صفحة التسوق. سنقوم بسحب صورة المنتج تلقائيًا.</string>
-    <string name="url_import_pick_title">اختر صورة المنتج</string>
-    <string name="url_import_pick_hint">اضغط على الصورة التي تريد استيرادها. إذا لم تبدو أي منها مناسبة، افتح الصفحة في المتصفح.</string>
-    <string name="url_import_browser_title">افتح الصفحة</string>
-    <string name="url_import_browser_hint">اضغط على أي صورة في الصفحة لاستيرادها.</string>
-    <string name="url_import_open_browser">افتح الصفحة</string>
-    <string name="url_import_show_candidates">المرشحون</string>
-    <string name="url_import_no_candidates">لم يتم العثور على صور. افتح الصفحة في المتصفح لاختيار صورة.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">الأطقم</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">جاري الحفظ…</string>
     <string name="cd_ai_suggestion">اقتراح ذكاء اصطناعي</string>
     <string name="filter_location">الموقع</string>
-    <string name="wardrobe_processing_photos">جاري معالجة %1$d صورة…</string>
-    <string name="wardrobe_progress_uploading">جاري رفع الصورة…</string>
-    <string name="wardrobe_progress_uploading_batch">جاري رفع الصورة %1$d من %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">جاري إزالة الخلفية…</string>
-    <string name="wardrobe_progress_removing_bg_batch">جاري إزالة الخلفية %1$d من %2$d…</string>
-    <string name="wardrobe_progress_moving">جاري النقل إلى موقع جديد…</string>
     <string name="action_select_all">تحديد الكل</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">وسوم الخزانة</string>
     <string name="settings_data_tags_desc">أعد تصنيف كل صنف في خزانة ملابسك باستخدام Gemini. سيؤدي هذا إلى الكتابة فوق أي تعديلات يدوية للوسوم.</string>
     <string name="settings_rescan_button">إعادة مسح جميع الوسوم</string>
-    <string name="settings_rescanning">جاري إعادة المسح %1$d من %2$d…</string>
     <string name="settings_rescan_dialog_title">إعادة مسح جميع الوسوم؟</string>
     <string name="settings_rescan_dialog_text">سيقوم Gemini بإعادة تصنيف كل صنف في خزانة ملابسك. سيؤدي هذا إلى الكتابة فوق أي تعديلات يدوية للوسوم وقد يستغرق بعض الوقت.</string>
     <string name="settings_rescan_confirm">إعادة مسح</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">تحتاج وسوم فقط</string>
     <string name="settings_repair_preview_section_count">تم اختيار %1$d من %2$d</string>
     <string name="settings_repair_preview_selected">تم اختيار %1$d من %2$d</string>
-    <string name="settings_repair_preview_select_all">تحديد الكل</string>
-    <string name="settings_repair_preview_deselect_all">إلغاء تحديد الكل</string>
     <string name="settings_repair_preview_process_n">معالجة %1$d</string>
     <string name="settings_cutoutfix_title">إصلاح خلفيات القصات</string>
     <string name="settings_cutoutfix_desc">مسح القصات الحالية بحثًا عن خلفيات سوداء متبقية أو هالات خضراء وإعادة تطبيق القناع محليًا. لا توجد مكالمات ذكاء اصطناعي — يتم إعادة رفع القصات المصححة مع الحفاظ على معرف Drive الخاص بها.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">جاري مسح القصة %1$d من %2$d…</string>
     <string name="settings_cutoutfix_processing">جاري إصلاح القصة %1$d من %2$d…</string>
     <string name="settings_cutoutfix_done">تم إصلاح %1$d قصة(قصات).</string>
-    <string name="settings_cutoutfix_dialog_title">إصلاح خلفيات القصات — معاينة</string>
-    <string name="settings_cutoutfix_dialog_subtitle">سيتم إعادة معالجة القصات المختارة محليًا وإعادة رفعها. اضغط للتبديل.</string>
-    <string name="settings_cutoutfix_show_all">إظهار جميع القصات (وليس فقط التي تم تحديدها)</string>
     <string name="settings_cutoutfix_no_issues">لم يتم العثور على قصات بها خلفيات متبقية.</string>
-    <string name="settings_cutoutfix_badge_blackbg">خلفية سوداء</string>
-    <string name="settings_cutoutfix_badge_greenhalo">هالة خضراء</string>
-    <string name="settings_cutoutfix_action_clearalpha">مسح ألفا (جعلها معتمة)</string>
-    <string name="settings_cutoutfix_action_blackbg">خلفية سوداء ← شفافة</string>
-    <string name="settings_cutoutfix_action_greenhalo">إزالة الهالة الخضراء</string>
-    <string name="settings_cutoutfix_action_feather">تنعيم حواف ألفا</string>
-    <string name="settings_cutoutfix_action_tightcrop">قص محكم وتحديد الحجم</string>
-    <string name="settings_cutoutfix_fix_n">إصلاح %1$d</string>
-    <string name="settings_cutoutfix_selected">تم اختيار %1$d من %2$d</string>
     <string name="settings_repair_preview_cost_total">التكلفة المتوقعة: %1$d رصيد</string>
     <string name="settings_repair_clear_cache">مسح ذاكرة التخزين المؤقت المحلية</string>
     <string name="settings_repair_clear_cache_desc">إعادة تحميل جميع الصور من Drive بعد التشغيل. أبطأ؛ مطلوب فقط إذا بدت الملفات المحلية قديمة.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">نشط</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">جاري استعادة الخزانة: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d صنف</string>
     <string name="wardrobe_filtered_count">عرض %1$d من %2$d صنف</string>
-    <string name="wardrobe_stats_total">%1$d صنف إجمالي</string>
-    <string name="wardrobe_stats_untagged">غير موسوم</string>
-    <string name="wardrobe_empty">لا توجد أصناف بعد</string>
-    <string name="wardrobe_empty_hint">التقط صورة أو اختر من المعرض</string>
     <string name="wardrobe_create_outfit">إنشاء طقم يدويًا</string>
     <string name="wardrobe_compose_ai">تكوين بالذكاء الاصطناعي</string>
-    <string name="wardrobe_select_all_count">تحديد الكل (%1$d)</string>
-    <string name="wardrobe_delete_title">حذف الأصناف؟</string>
-    <string name="wardrobe_delete_text">هل أنت متأكد من رغبتك في حذف %d صنف مختار؟ لا يمكن التراجع عن هذا الإجراء.</string>
-    <string name="wardrobe_move_to">نقل إلى</string>
-    <string name="wardrobe_move_to_title">نقل %d صنف إلى</string>
-    <string name="wardrobe_tag_detect">اكتشاف الوسوم</string>
-    <string name="wardrobe_tag_remove_bg">إزالة الخلفية</string>
-    <string name="wardrobe_tag_re_remove_bg">إعادة إزالة الخلفية</string>
-    <string name="wardrobe_fix_cutout_bg">إصلاح خلفية القصة</string>
     <string name="wardrobe_fix_cutout_bg_done">تم إصلاح خلفية القصة.</string>
     <string name="wardrobe_fix_cutout_bg_clean">لم يتم اكتشاف خلفية متبقية — لا يوجد شيء لإصلاحه.</string>
-    <string name="wardrobe_tag_rotate">تدوير</string>
-    <string name="wardrobe_tag_edit">تعديل الوسوم</string>
-    <string name="wardrobe_tag_sheet_title">تعديل الوسوم</string>
-    <string name="wardrobe_tag_saved">تم الحفظ</string>
-    <string name="wardrobe_tag_saving">جاري الحفظ…</string>
-    <string name="wardrobe_tag_unsaved">غير محفوظ</string>
-    <string name="wardrobe_tag_redetect_ai">إعادة اكتشاف الوسوم بالذكاء</string>
-    <string name="wardrobe_tag_not_set">غير محدد</string>
     <string name="wardrobe_add_gallery">المعرض</string>
     <string name="wardrobe_add_camera">الكاميرا</string>
     <string name="wardrobe_add_to_closet">إضافة إلى %1$s</string>
-    <string name="wardrobe_add_to_closet_title">إضافة إلى الخزانة</string>
-    <string name="tag_label">الاسم</string>
     <string name="tag_label_placeholder">مثلاً: بنطال تشينو كحلي، قميص أكسفورد أبيض</string>
-    <string name="tag_add_custom">إضافة مخصص…</string>
     <string name="tag_type_placeholder">مثلاً: تي شيرت، بنطال تشينو، سترة منفوخة</string>
     <string name="tag_category_placeholder">بلايز، بناطيل، ملابس خارجية، أحذية، إكسسوارات، فساتين، بدل</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Foreground service notification -->
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">المعالجة الخلفية مطلوبة</string>
-    <string name="battery_exempt_text">يحتاج LibreLookAI إلى معالجة خلفية غير مقيدة لاستيراد الصور وإزالة الخلفيات ووسم ملابسك بالذكاء الاصطناعي بأمان.\n\nبدون هذا الإذن، قد يقوم أندرويد بإغلاق التطبيق في منتصف العملية، مما قد يؤدي إلى فقدان البيانات — أصناف مستوردة جزئيًا، أو وسوم مفقودة، أو ملفات تالفة.\n\nيرجى تعطيل تحسين البطارية لـ LibreLookAI للمتابعة.</string>
-    <string name="battery_exempt_action">افتح الإعدادات</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">أنت غير متصل بالإنترنت — وضع العرض فقط</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d أصناف</string>
     <string name="composer_factor_closets">%1$d خزائن</string>
     <string name="composer_factor_composition">تكوين مخصص</string>
-    <string name="wardrobe_create_style">إنشاء طقم</string>
-    <string name="wardrobe_imported_on">تم الاستيراد في %1$s</string>
-    <string name="wardrobe_view_original">عرض الأصل</string>
-    <string name="wardrobe_view_cutout">عرض القصة</string>
     <!-- AI tab -->
     <string name="settings_tab_ai">ذكاء اصطناعي</string>
     <string name="ai_considerations_title">اعتبارات افتراضية</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">التقاط صورة</string>
     <string name="shop_take_another">التقاط صورة أخرى</string>
     <string name="shop_clear">مسح</string>
-    <string name="shop_your_photo">صورتك</string>
     <string name="shop_matching">جاري المطابقة مع خزانة ملابسك…</string>
     <string name="shop_matches_title">أفضل المطابقات (%1$d)</string>
     <string name="shop_no_matches">لا توجد مطابقات بعد. جرب صورة أقرب وبإضاءة أفضل.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">عند التفعيل، تعمل استيرادات الكاميرا والمعرض باستخدام مجزئ Magic Touch المحلي وتسمح لك بتأكيد أو تحسين بذرة المقدمة قبل الحفظ — لا توجد مكالمة Gemini، ولا أرصدة. استيرادات الرابط تستخدم دائمًا هذه المراجعة.</string>
 
     <!-- Local background-removal review screen -->
-    <string name="local_bg_title">تحسين القصة</string>
-    <string name="local_bg_hint">اسحب علامة التقاطع فوق الصنف الذي تريد الاحتفاظ به.</string>
-    <string name="local_bg_recomputing">جاري إعادة حساب القصة…</string>
-    <string name="local_bg_apply">استخدام هذه القصة</string>
-    <string name="local_bg_skip">تخطي (استخدام Gemini)</string>
-    <string name="local_bg_failed">تعذر حساب القصة — حاول تحريك علامة التقاطع.</string>
     <string name="settings_debug_similarity_toggle">إظهار معاينة تصحيح التشابه</string>
     <string name="settings_debug_similarity_desc">عند فتح مطابقة في البحث عن شبيه، اظهر التفصيل لكل قناة (مصغرات مقصوصة، جيب تمام التضمين/المدرج التكراري، مدرجات تكرار درجة اللون) بدلاً من الصورة الافتراضية القابلة للتكبير.</string>
 
     <!-- Match preview dialog -->
-    <string name="dedupe_dialog_title">مكرر محتمل</string>
-    <string name="dedupe_dialog_desc">وجدنا %1$d صنف(أصناف) في خزانة ملابسك تبدو مشابهة جدًا لهذه الصورة.</string>
-    <string name="dedupe_dialog_import_anyway">استيراد على أي حال</string>
-    <string name="dedupe_dialog_cancel">إلغاء</string>
     <string name="dedupe_no_matches">لا توجد مطابقات</string>
     <string name="dedupe_score">مطابقة بنسبة %1$d%%</string>
 
     <!-- Find item by photo (Wardrobe) -->
-    <string name="wardrobe_find_by_photo">بحث عن صنف بالصورة</string>
-    <string name="wardrobe_find_by_photo_empty">لم يتم العثور على أصناف مشابهة.</string>
-    <string name="wardrobe_find_by_photo_searching">جاري البحث عن مطابقات…</string>
 
     <!-- Wardrobe search (text or photo) -->
     <string name="wardrobe_search_title">البحث في الخزانة</string>
     <string name="wardrobe_search_hint">اكتب ما تبحث عنه، أو ابحث بالصورة.</string>
     <string name="wardrobe_search_use_photo">البحث بالصورة بدلاً من ذلك</string>
-    <string name="wardrobe_search_text_results">نتائج البحث</string>
     <string name="action_search">بحث</string>
 
     <!-- Repair &amp; Sync — possible duplicates section -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">الرصيد: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">تستخدم مفتاح Gemini الخاص بك — لا يتم إنفاق أي أرصدة.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">احذف أيضًا %d إطلالة تستخدم هذه العناصر</string>
-    <string name="wardrobe_delete_cascade_tryons">احذف أيضًا %d تجربة تحتوي على هذه العناصر</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">أنت</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">خيارات متقدمة</string>
     <string name="settings_retag_row">إعادة وسم كل ملابسي</string>
     <string name="settings_retag_row_sub">اطلب من الذكاء الاصطناعي إعادة تسمية كل شيء وتصنيفه. يكلّف ~2 رصيد لكل عنصر.</string>
-    <string name="settings_rebg_row">إعادة إزالة الخلفيات</string>
     <string name="settings_rebg_row_sub">إعادة قص كل عنصر من صورته. يكلّف ~6 رصيد لكل عنصر.</string>
-    <string name="settings_cutout_row">إصلاح بكسلات الخلفية المتبقية</string>
     <string name="settings_cutout_row_sub">يبحث عن العناصر التي أغفل القص فيها زاوية.</string>
     <string name="settings_advanced_byok_title">مفتاح Gemini API الخاص بك</string>
     <string name="settings_advanced_byok_body">يعمل كل الذكاء الاصطناعي بمفتاح Gemini الخاص بك. المفتاح المجاني يغطي الوسم واقتراحات الإطلالات؛ أما التجربة الافتراضية وإزالة الخلفية فتتطلبان مفتاحًا مدفوعًا مع تفعيل الفوترة. احصل على واحد من aistudio.google.com والصقه أدناه — نخزّنه على هذا الهاتف فقط.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">تحويل الصور إلى WebP</string>
     <string name="settings_convert_webp_row_sub">تصغير صور JPG/PNG القديمة لتوفير مساحة Drive.</string>
-    <string name="settings_converting">جارٍ التحويل %1$d من %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">الصيانة</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">تحميل التفاصيل %1$d / %2$d</string>
     <string name="restore_finishing">جارٍ الإنهاء…</string>
-    <string name="wardrobe_sync_details">تحميل التفاصيل: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">جارٍ الإنهاء…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">إضافة قطعة</string>
-    <string name="sel_swap">استبدال</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

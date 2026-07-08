@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Wardrobe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Travel</string>
     <string name="nav_settings">Settings</string>
@@ -14,7 +13,6 @@
     <string name="restore_finishing">Finishing up…</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Wardrobe Stats</string>
     <string name="insights_tab_costs">Costs</string>
     <string name="costs_count_items">Items</string>
     <string name="costs_count_outfits">Outfits</string>
@@ -37,15 +35,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Add from URL</string>
-    <string name="wardrobe_url_import_title">Import from shopping URL</string>
-    <string name="wardrobe_url_import_hint">Paste the URL of a shopping page. We will pull the product image automatically.</string>
-    <string name="url_import_pick_title">Pick the product image</string>
-    <string name="url_import_pick_hint">Tap the image you want to import. If none look right, open the page in the browser.</string>
-    <string name="url_import_browser_title">Open page</string>
-    <string name="url_import_browser_hint">Tap any image on the page to import it.</string>
-    <string name="url_import_open_browser">Open page</string>
-    <string name="url_import_show_candidates">Candidates</string>
-    <string name="url_import_no_candidates">No images found. Open the page in the browser to pick one.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>
@@ -68,12 +57,6 @@
     <string name="ai_dismiss">Dismiss</string>
     <string name="cd_ai_suggestion">AI suggestion</string>
     <string name="filter_location">Location</string>
-    <string name="wardrobe_processing_photos">Processing %1$d photo(s)…</string>
-    <string name="wardrobe_progress_uploading">Uploading photo…</string>
-    <string name="wardrobe_progress_uploading_batch">Uploading photo %1$d of %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Removing background…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Removing background %1$d of %2$d…</string>
-    <string name="wardrobe_progress_moving">Moving to new location…</string>
     <string name="action_select_all">Select all</string>
 
     <!-- Sign In -->
@@ -110,8 +93,6 @@
     <string name="settings_data_tags_title">Wardrobe Tags</string>
     <string name="settings_data_tags_desc">Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.</string>
     <string name="settings_rescan_button">Re-scan All Tags</string>
-    <string name="settings_rescanning">Re-scanning %1$d of %2$d…</string>
-    <string name="settings_converting">Converting %1$d of %2$d…</string>
     <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
     <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
     <string name="settings_rescan_confirm">Re-scan</string>
@@ -147,8 +128,6 @@
     <string name="settings_repair_preview_section_sidecar">Need tags only</string>
     <string name="settings_repair_preview_section_count">%1$d of %2$d selected</string>
     <string name="settings_repair_preview_selected">%1$d of %2$d selected</string>
-    <string name="settings_repair_preview_select_all">Select all</string>
-    <string name="settings_repair_preview_deselect_all">Deselect all</string>
     <string name="settings_repair_preview_process_n">Process %1$d</string>
     <string name="settings_cutoutfix_title">Fix cutout backgrounds</string>
     <string name="settings_cutoutfix_desc">Scan existing cutouts for leftover black backgrounds or green halos and re-apply the matte locally. No AI calls — fixed cutouts are re-uploaded preserving their Drive ID.</string>
@@ -156,19 +135,7 @@
     <string name="settings_cutoutfix_scanning">Scanning cutout %1$d of %2$d…</string>
     <string name="settings_cutoutfix_processing">Fixing cutout %1$d of %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d cutout(s) fixed.</string>
-    <string name="settings_cutoutfix_dialog_title">Fix cutout backgrounds — Preview</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Selected cutouts will be re-processed locally and re-uploaded. Tap to toggle.</string>
-    <string name="settings_cutoutfix_show_all">Show all cutouts (not just flagged)</string>
     <string name="settings_cutoutfix_no_issues">No cutouts with leftover backgrounds were found.</string>
-    <string name="settings_cutoutfix_badge_blackbg">black bg</string>
-    <string name="settings_cutoutfix_badge_greenhalo">green halo</string>
-    <string name="settings_cutoutfix_action_clearalpha">Clear alpha (make opaque)</string>
-    <string name="settings_cutoutfix_action_blackbg">Black background → transparent</string>
-    <string name="settings_cutoutfix_action_greenhalo">Despill green halo</string>
-    <string name="settings_cutoutfix_action_feather">Feather alpha edges</string>
-    <string name="settings_cutoutfix_action_tightcrop">Tight-crop &amp; cap size</string>
-    <string name="settings_cutoutfix_fix_n">Fix %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d of %2$d selected</string>
     <string name="settings_repair_preview_cost_total">Estimated cost: %1$d credits</string>
     <string name="settings_repair_clear_cache">Clear local cache</string>
     <string name="settings_repair_clear_cache_desc">Re-download all images from Drive after the run. Slower; only needed if local files look out of date.</string>
@@ -225,45 +192,16 @@
     <string name="settings_location_active">Active</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Restoring wardrobe: %1$d / %2$d</string>
-    <string name="wardrobe_sync_details">Loading details: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Finishing up…</string>
     <string name="wardrobe_item_count">%1$d items</string>
     <string name="wardrobe_filtered_count">Showing %1$d of %2$d items</string>
-    <string name="wardrobe_stats_total">%1$d items total</string>
-    <string name="wardrobe_stats_untagged">Untagged</string>
-    <string name="wardrobe_empty">No items yet</string>
-    <string name="wardrobe_empty_hint">Take a photo or pick from your gallery</string>
     <string name="wardrobe_create_outfit">Create outfit manually</string>
     <string name="wardrobe_compose_ai">Compose with AI</string>
-    <string name="wardrobe_select_all_count">Select all (%1$d)</string>
-    <string name="wardrobe_delete_title">Delete items?</string>
-    <string name="wardrobe_delete_text">Are you sure you want to delete %d selected items? This cannot be undone.</string>
-    <string name="wardrobe_delete_cascade_outfits">Also delete %d outfit(s) that use these items</string>
-    <string name="wardrobe_delete_cascade_tryons">Also delete %d try-on(s) with these items</string>
-    <string name="wardrobe_move_to">Move to</string>
-    <string name="wardrobe_move_to_title">Move %d item(s) to</string>
-    <string name="wardrobe_tag_detect">Detect tags</string>
-    <string name="wardrobe_tag_remove_bg">Remove BG</string>
-    <string name="wardrobe_tag_re_remove_bg">Re-remove BG</string>
-    <string name="wardrobe_fix_cutout_bg">Fix cutout BG</string>
     <string name="wardrobe_fix_cutout_bg_done">Cutout background fixed.</string>
     <string name="wardrobe_fix_cutout_bg_clean">No leftover background detected — nothing to fix.</string>
-    <string name="wardrobe_tag_rotate">Rotate</string>
-    <string name="wardrobe_tag_edit">Edit tags</string>
-    <string name="wardrobe_tag_sheet_title">Edit Tags</string>
-    <string name="wardrobe_tag_saved">Saved</string>
-    <string name="wardrobe_tag_saving">Saving…</string>
-    <string name="wardrobe_tag_unsaved">Unsaved</string>
-    <string name="wardrobe_tag_redetect_ai">Re-detect tags with AI</string>
-    <string name="wardrobe_tag_not_set">Not set</string>
     <string name="wardrobe_add_gallery">Gallery</string>
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Add to %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Add to closet</string>
-    <string name="tag_label">Name</string>
     <string name="tag_label_placeholder">e.g. Navy Chinos, White Oxford Shirt</string>
-    <string name="tag_add_custom">Add custom…</string>
     <string name="tag_type_placeholder">e.g. T-shirt, Chinos, Puffer jacket</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
@@ -346,9 +284,6 @@
 
     <!-- Foreground service notification -->
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">Background processing required</string>
-    <string name="battery_exempt_text">LibreLookAI needs unrestricted background processing to safely import photos, remove backgrounds, and tag your clothes with AI.\n\nWithout this permission, Android may kill the app mid-process, which can lead to data loss — partially imported items, missing tags, or corrupted files.\n\nPlease disable battery optimization for LibreLookAI to continue.</string>
-    <string name="battery_exempt_action">Open Settings</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">You are offline — view-only mode</string>
@@ -454,10 +389,6 @@
     <string name="composer_factor_items">%1$d items</string>
     <string name="composer_factor_closets">%1$d closets</string>
     <string name="composer_factor_composition">Custom composition</string>
-    <string name="wardrobe_create_style">Create outfit</string>
-    <string name="wardrobe_imported_on">Imported %1$s</string>
-    <string name="wardrobe_view_original">View original</string>
-    <string name="wardrobe_view_cutout">View cutout</string>
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Default considerations</string>
@@ -477,7 +408,6 @@
     <string name="shop_take_photo">Take photo</string>
     <string name="shop_take_another">Take another photo</string>
     <string name="shop_clear">Clear</string>
-    <string name="shop_your_photo">Your photo</string>
     <string name="shop_matching">Matching against your wardrobe…</string>
     <string name="shop_matches_title">Top matches (%1$d)</string>
     <string name="shop_no_matches">No matches yet. Try a closer, better-lit photo.</string>
@@ -498,33 +428,19 @@
     <string name="settings_local_bg_desc">When enabled, camera and gallery imports run the local Magic Touch segmenter and let you confirm or refine the foreground seed before saving — no Gemini call, no credits. URL imports always use this review.</string>
 
     <!-- Local background-removal review screen -->
-    <string name="local_bg_title">Refine cutout</string>
-    <string name="local_bg_hint">Drag the crosshair onto the item you want to keep.</string>
-    <string name="local_bg_recomputing">Recomputing cutout…</string>
-    <string name="local_bg_apply">Use this cutout</string>
-    <string name="local_bg_skip">Skip (use Gemini)</string>
-    <string name="local_bg_failed">Could not compute a cutout — try moving the crosshair.</string>
     <string name="settings_debug_similarity_toggle">Show similarity debug preview</string>
     <string name="settings_debug_similarity_desc">When opening a Similarity Finder match, show the per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) instead of the default zoomable image.</string>
 
     <!-- Match preview dialog -->
-    <string name="dedupe_dialog_title">Possible duplicate</string>
-    <string name="dedupe_dialog_desc">We found %1$d item(s) in your wardrobe that look very similar to this photo.</string>
-    <string name="dedupe_dialog_import_anyway">Import anyway</string>
-    <string name="dedupe_dialog_cancel">Cancel</string>
     <string name="dedupe_no_matches">No matches</string>
     <string name="dedupe_score">%1$d%% match</string>
 
     <!-- Find item by photo (Wardrobe) -->
-    <string name="wardrobe_find_by_photo">Find item by photo</string>
-    <string name="wardrobe_find_by_photo_empty">No similar items found.</string>
-    <string name="wardrobe_find_by_photo_searching">Looking for matches…</string>
 
     <!-- Wardrobe search (text or photo) -->
     <string name="wardrobe_search_title">Search wardrobe</string>
     <string name="wardrobe_search_hint">Type what you\'re looking for, or search by photo.</string>
     <string name="wardrobe_search_use_photo">Search by photo instead</string>
-    <string name="wardrobe_search_text_results">Search results</string>
     <string name="action_search">Search</string>
 
     <!-- Repair &amp; Sync — possible duplicates section -->
@@ -605,9 +521,7 @@
     <string name="settings_section_advanced_power">Power options</string>
     <string name="settings_retag_row">Re-tag all my clothes</string>
     <string name="settings_retag_row_sub">Ask AI to re-name and re-categorize everything. Costs ~2 credits per item.</string>
-    <string name="settings_rebg_row">Re-remove backgrounds</string>
     <string name="settings_rebg_row_sub">Re-cut every item from its photo. Costs ~6 credits per item.</string>
-    <string name="settings_cutout_row">Fix leftover background pixels</string>
     <string name="settings_cutout_row_sub">Scan for items where the cutout missed a corner.</string>
     <string name="settings_advanced_byok_title">Your Gemini API key</string>
     <string name="settings_advanced_byok_body">All AI runs on your own Gemini key. A free key covers tagging and outfit suggestions; virtual try-on and background removal need a billing-enabled (paid) key. Get one at aistudio.google.com and paste it below — we store it only on this phone.</string>
@@ -684,7 +598,6 @@
     <string name="settings_image_quality_maximum_desc">Lossless, largest files (~350 kB)</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Maintenance</string>
 
     <!-- Shared / generic error messages surfaced in dialogs -->
     <string name="error_import_failed_item">Import failed for %1$s: %2$s</string>
@@ -692,6 +605,4 @@
     <string name="error_add_items_first">Add items to your wardrobe first.</string>
     <string name="error_trips_folder_not_ready">Trips folder not ready.</string>
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Add item</string>
-    <string name="sel_swap">Swap</string>
 </resources>

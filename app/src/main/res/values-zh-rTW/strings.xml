@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">衣櫥</string>
     <string name="nav_shopping">購物</string>
     <string name="nav_travel">旅行</string>
     <string name="nav_settings">設定</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">衣櫥統計</string>
     <string name="insights_tab_costs">成本</string>
     <string name="costs_count_items">單品</string>
     <string name="costs_count_outfits">穿搭</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">從連結添加</string>
-    <string name="wardrobe_url_import_title">從購物連結匯入</string>
-    <string name="wardrobe_url_import_hint">貼上購物頁面的連結。我們將自動獲取產品圖片。</string>
-    <string name="url_import_pick_title">選擇產品圖片</string>
-    <string name="url_import_pick_hint">點擊您要匯入的圖片。如果都不正確，請在瀏覽器中開啟頁面。</string>
-    <string name="url_import_browser_title">開啟頁面</string>
-    <string name="url_import_browser_hint">點擊頁面上的任何圖片進行匯入。</string>
-    <string name="url_import_open_browser">開啟頁面</string>
-    <string name="url_import_show_candidates">候補圖片</string>
-    <string name="url_import_no_candidates">找不到圖片。請在瀏覽器中開啟以選擇。</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">穿搭</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">儲存中…</string>
     <string name="cd_ai_suggestion">AI 建議</string>
     <string name="filter_location">位置</string>
-    <string name="wardrobe_processing_photos">正在處理 %1$d 張照片…</string>
-    <string name="wardrobe_progress_uploading">正在上傳照片…</string>
-    <string name="wardrobe_progress_uploading_batch">正在上傳第 %1$d / %2$d 張照片…</string>
-    <string name="wardrobe_progress_removing_bg">正在移除背景…</string>
-    <string name="wardrobe_progress_removing_bg_batch">正在移除第 %1$d / %2$d 張照片的背景…</string>
-    <string name="wardrobe_progress_moving">正在移至新位置…</string>
     <string name="action_select_all">全選</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">衣櫥標籤</string>
     <string name="settings_data_tags_desc">使用 Gemini 重新分類衣櫥中的每一件單品。這將覆蓋任何手動編輯的標籤。</string>
     <string name="settings_rescan_button">重新掃描所有標籤</string>
-    <string name="settings_rescanning">正在重新掃描第 %1$d / %2$d 個…</string>
     <string name="settings_rescan_dialog_title">重新掃描所有標籤？</string>
     <string name="settings_rescan_dialog_text">Gemini 將重新分類衣櫥中的每一件單品。這可能需要一些時間。</string>
     <string name="settings_rescan_confirm">重新掃描</string>
@@ -120,38 +102,14 @@
     <string name="settings_repair_done">修復完成。衣櫥已重新整理。</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">正在恢復衣櫥：%1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d 件單品</string>
     <string name="wardrobe_filtered_count">顯示第 %1$d / %2$d 件單品</string>
-    <string name="wardrobe_stats_total">共 %1$d 件單品</string>
-    <string name="wardrobe_stats_untagged">未標記</string>
-    <string name="wardrobe_empty">目前沒有單品</string>
-    <string name="wardrobe_empty_hint">拍照或從相簿中選擇</string>
     <string name="wardrobe_create_outfit">手動建立穿搭</string>
     <string name="wardrobe_compose_ai">使用 AI 組合</string>
-    <string name="wardrobe_select_all_count">全選 (%1$d)</string>
-    <string name="wardrobe_delete_title">刪除單品？</string>
-    <string name="wardrobe_delete_text">您確定要刪除 %d 件選擇的單品嗎？此操作無法撤銷。</string>
-    <string name="wardrobe_move_to">移至</string>
-    <string name="wardrobe_move_to_title">將 %d 件單品移至</string>
-    <string name="wardrobe_tag_detect">自動偵測標籤</string>
-    <string name="wardrobe_tag_remove_bg">移除背景</string>
-    <string name="wardrobe_tag_re_remove_bg">重新移除背景</string>
-    <string name="wardrobe_tag_rotate">旋轉</string>
-    <string name="wardrobe_tag_edit">編輯標籤</string>
-    <string name="wardrobe_tag_sheet_title">編輯標籤</string>
-    <string name="wardrobe_tag_saved">已儲存</string>
-    <string name="wardrobe_tag_saving">儲存中…</string>
-    <string name="wardrobe_tag_unsaved">未儲存</string>
-    <string name="wardrobe_tag_redetect_ai">使用 AI 重新偵測標籤</string>
-    <string name="wardrobe_tag_not_set">未設定</string>
     <string name="wardrobe_add_gallery">相簿</string>
     <string name="wardrobe_add_camera">相機</string>
     <string name="wardrobe_add_to_closet">添加到 %1$s</string>
-    <string name="wardrobe_add_to_closet_title">添加到衣櫥</string>
-    <string name="tag_label">名稱</string>
     <string name="tag_label_placeholder">例如：海軍藍卡其褲、白色牛津襯衫</string>
-    <string name="tag_add_custom">添加自定義…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -241,13 +199,6 @@
     <string name="ai_consider_weather_desc">納入今日的氣溫與狀況。</string>
     <string name="ai_considerations_desc">AI 在建議或組合穿搭時應考慮的內容。變更會套用至預測、組合、打包與衣櫥缺口提示。</string>
     <string name="ai_considerations_title">預設考慮項目</string>
-    <string name="battery_exempt_action">開啟設定</string>
-    <string name="battery_exempt_text">LibreLookAI 需要不受限制的背景處理權限，以便安全地匯入相片、去背並用 AI 標籤你的衣物。
-
-沒有此權限，Android 可能在處理中途終止 App，導致資料遺失——部分匯入的單品、缺失的標籤或檔案損毀。
-
-請關閉 LibreLookAI 的電池最佳化以繼續。</string>
-    <string name="battery_exempt_title">需要背景處理權限</string>
     <string name="composer_add_selected">新增已選</string>
     <string name="composer_desc_placeholder">簡短描述（選填）</string>
     <string name="composer_discard_confirm">捨棄</string>
@@ -281,10 +232,6 @@
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">標籤（選填）</string>
     <string name="composer_targets_hint">設定每一層的件數。設為 0 則由 AI 決定。</string>
-    <string name="dedupe_dialog_cancel">取消</string>
-    <string name="dedupe_dialog_desc">我們在你的衣櫥中找到 %1$d 件看起來與這張相片非常相似的單品。</string>
-    <string name="dedupe_dialog_import_anyway">仍要匯入</string>
-    <string name="dedupe_dialog_title">可能重複</string>
     <string name="dedupe_no_matches">無相符項目</string>
     <string name="dedupe_score">相似度 %1$d%%</string>
     <string name="gap_description">找出那 3 件能為你的衣櫥開啟最多新穿搭組合的缺口單品。</string>
@@ -300,12 +247,6 @@
     <string name="import_preview_select_all">全選</string>
     <string name="import_preview_similar_badge">相似</string>
     <string name="import_preview_title">檢視 %1$d 件單品</string>
-    <string name="local_bg_apply">使用此剪裁</string>
-    <string name="local_bg_failed">無法計算剪裁——請試著移動十字準星。</string>
-    <string name="local_bg_hint">將十字準星拖曳到你想保留的單品上。</string>
-    <string name="local_bg_recomputing">重新計算剪裁中…</string>
-    <string name="local_bg_skip">跳過（使用 Gemini）</string>
-    <string name="local_bg_title">調整剪裁</string>
     <string name="outfit_mode_edit">編輯</string>
     <string name="outfit_mode_view">檢視</string>
     <string name="outfits_description_placeholder">描述（選填）</string>
@@ -322,24 +263,12 @@
     <string name="settings_bg_removal_desc">調整裝置上用於拍攝、匯入與「購物助手」的剪裁分割器。較低的值保留更多像素（剪裁較寬鬆，可能含背景）；較高的值排除邊緣像素（剪裁較緊，可能切到單品）。</string>
     <string name="settings_bg_removal_threshold">前景門檻：%1$d%%</string>
     <string name="settings_bg_removal_title">去除背景</string>
-    <string name="settings_cutoutfix_action_blackbg">黑色背景 → 透明</string>
-    <string name="settings_cutoutfix_action_clearalpha">清除 alpha（設為不透明）</string>
-    <string name="settings_cutoutfix_action_feather">羽化 alpha 邊緣</string>
-    <string name="settings_cutoutfix_action_greenhalo">去除綠色光暈</string>
-    <string name="settings_cutoutfix_action_tightcrop">緊湊裁切 &amp; 限制大小</string>
-    <string name="settings_cutoutfix_badge_blackbg">黑色背景</string>
-    <string name="settings_cutoutfix_badge_greenhalo">綠色光暈</string>
     <string name="settings_cutoutfix_button">掃描剪裁</string>
     <string name="settings_cutoutfix_desc">掃描現有剪裁是否有殘留的黑色背景或綠色光暈，並於本機重新套用遮罩。不會呼叫 AI——修復後的剪裁會保留 Drive ID 重新上傳。</string>
-    <string name="settings_cutoutfix_dialog_subtitle">選取的剪裁將於本機重新處理並重新上傳。點擊以切換。</string>
-    <string name="settings_cutoutfix_dialog_title">修復剪裁背景——預覽</string>
     <string name="settings_cutoutfix_done">已修復 %1$d 個剪裁。</string>
-    <string name="settings_cutoutfix_fix_n">修復 %1$d 個</string>
     <string name="settings_cutoutfix_no_issues">未發現殘留背景的剪裁。</string>
     <string name="settings_cutoutfix_processing">修復剪裁 %1$d／%2$d…</string>
     <string name="settings_cutoutfix_scanning">掃描剪裁 %1$d／%2$d…</string>
-    <string name="settings_cutoutfix_selected">已選 %1$d／%2$d</string>
-    <string name="settings_cutoutfix_show_all">顯示所有剪裁（不限標記的）</string>
     <string name="settings_cutoutfix_title">修復剪裁背景</string>
     <string name="settings_debug_similarity_desc">開啟「相似搜尋」匹配時，顯示逐通道分解（分割縮圖、嵌入／直方圖餘弦、色相直方圖）而非預設的可縮放圖像。</string>
     <string name="settings_debug_similarity_toggle">顯示相似度除錯預覽</string>
@@ -409,13 +338,11 @@
     <string name="settings_repair_clear_cache">清除本機快取</string>
     <string name="settings_repair_clear_cache_desc">執行後重新從 Drive 下載所有圖片。較慢；僅在本機檔案看起來過時時才需要。</string>
     <string name="settings_repair_preview_cost_total">預估費用：%1$d 點</string>
-    <string name="settings_repair_preview_deselect_all">全部取消</string>
     <string name="settings_repair_preview_process_n">處理 %1$d 件</string>
     <string name="settings_repair_preview_section_count">已選 %1$d／%2$d</string>
     <string name="settings_repair_preview_section_orphaned">需要去背 + 標籤</string>
     <string name="settings_repair_preview_section_raw">未辨識的圖片——需要去背 + 標籤</string>
     <string name="settings_repair_preview_section_sidecar">僅需標籤</string>
-    <string name="settings_repair_preview_select_all">全選</string>
     <string name="settings_repair_preview_selected">已選 %1$d／%2$d</string>
     <string name="settings_repair_preview_subtitle">所選單品將會被處理。點擊縮圖即可跳過。</string>
     <string name="settings_repair_preview_title">修復 &amp; 同步——預覽</string>
@@ -431,7 +358,6 @@
     <string name="shop_no_matches">目前沒有相符項。試試更近、光線更好的照片。</string>
     <string name="shop_take_another">再拍一張</string>
     <string name="shop_take_photo">拍照</string>
-    <string name="shop_your_photo">你的相片</string>
     <string name="tag_category_placeholder">上身、下身、外套、鞋款、配件、洋裝、套裝</string>
     <string name="tag_type_placeholder">例如：T 恤、Chino 褲、鋪棉外套</string>
     <string name="travel_move_done">單品已移至「旅行」地點</string>
@@ -456,25 +382,14 @@
     <string name="tryon_section_desc">上傳正面、側面、背面的全身相片。App 會以此作為生成你身上穿搭或單品試穿時的參考。相片只會留在你自己的 Drive 上。</string>
     <string name="tryon_section_title">試穿相片</string>
     <string name="tryon_use_outfit">使用穿搭</string>
-    <string name="wardrobe_create_style">建立穿搭</string>
-    <string name="wardrobe_find_by_photo">以相片尋找單品</string>
-    <string name="wardrobe_find_by_photo_empty">找不到相似的單品。</string>
-    <string name="wardrobe_find_by_photo_searching">尋找相符項目中…</string>
-    <string name="wardrobe_fix_cutout_bg">修復剪裁背景</string>
     <string name="wardrobe_fix_cutout_bg_clean">未偵測到殘留背景——無需修復。</string>
     <string name="wardrobe_fix_cutout_bg_done">剪裁背景已修復。</string>
-    <string name="wardrobe_imported_on">匯入時間 %1$s</string>
     <string name="wardrobe_search_hint">輸入你要找的東西，或以相片搜尋。</string>
-    <string name="wardrobe_search_text_results">搜尋結果</string>
     <string name="wardrobe_search_title">搜尋衣櫥</string>
     <string name="wardrobe_search_use_photo">改以相片搜尋</string>
     <string name="wardrobe_suggest_replacements">建議替代方案</string>
-    <string name="wardrobe_view_cutout">檢視剪裁</string>
-    <string name="wardrobe_view_original">檢視原圖</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">同時刪除使用這些單品的 %d 套穿搭</string>
-    <string name="wardrobe_delete_cascade_tryons">同時刪除含這些單品的 %d 次試穿</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">你</string>
@@ -515,9 +430,7 @@
     <string name="settings_section_advanced_power">進階選項</string>
     <string name="settings_retag_row">重新標記我所有的衣服</string>
     <string name="settings_retag_row_sub">請 AI 重新命名並重新分類所有項目。每件約 2 點數。</string>
-    <string name="settings_rebg_row">重新去背</string>
     <string name="settings_rebg_row_sub">重新從照片裁切每件項目。每件約 6 點數。</string>
-    <string name="settings_cutout_row">修正殘留的背景像素</string>
     <string name="settings_cutout_row_sub">尋找裁切時漏掉角落的項目。</string>
     <string name="settings_advanced_byok_title">你的 Gemini API 金鑰</string>
     <string name="settings_advanced_byok_body">所有 AI 都使用你自己的 Gemini 金鑰。免費金鑰涵蓋標記與穿搭建議；虛擬試穿與背景移除需要已啟用帳單的付費金鑰。請到 aistudio.google.com 取得並貼到下方 — 我們只會儲存在這支手機上。</string>
@@ -623,10 +536,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">將圖片轉換為 WebP</string>
     <string name="settings_convert_webp_row_sub">縮小較舊的 JPG/PNG 相片以節省雲端硬碟空間。</string>
-    <string name="settings_converting">轉換中 %1$d / %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">維護</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">正在載入詳細資料 %1$d / %2$d</string>
     <string name="restore_finishing">正在完成…</string>
-    <string name="wardrobe_sync_details">正在載入詳細資料: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">正在完成…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">新增單品</string>
-    <string name="sel_swap">替換</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

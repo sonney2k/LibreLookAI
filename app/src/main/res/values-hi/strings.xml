@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">वॉर्डरोब</string>
     <string name="nav_shopping">शॉपिंग</string>
     <string name="nav_travel">यात्रा</string>
     <string name="nav_settings">सेटिंग्स</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">वॉर्डरोब आंकड़े</string>
     <string name="insights_tab_costs">लागत</string>
     <string name="costs_count_items">आइटम</string>
     <string name="costs_count_outfits">आउटफ़िट</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">URL से जोड़ें</string>
-    <string name="wardrobe_url_import_title">शॉपिंग URL से इंपोर्ट करें</string>
-    <string name="wardrobe_url_import_hint">शॉपिंग पेज का URL पेस्ट करें। हम उत्पाद की छवि अपने आप निकाल लेंगे।</string>
-    <string name="url_import_pick_title">उत्पाद की छवि चुनें</string>
-    <string name="url_import_pick_hint">उस छवि पर टैप करें जिसे आप इंपोर्ट करना चाहते हैं। यदि कोई भी सही नहीं लगती है, तो ब्राउज़र में पेज खोलें।</string>
-    <string name="url_import_browser_title">पेज खोलें</string>
-    <string name="url_import_browser_hint">इंपोर्ट करने के लिए पेज पर किसी भी छवि पर टैप करें।</string>
-    <string name="url_import_open_browser">पेज खोलें</string>
-    <string name="url_import_show_candidates">उम्मीदवार</string>
-    <string name="url_import_no_candidates">कोई छवि नहीं मिली। चुनने के लिए ब्राउज़र में पेज खोलें।</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">आउटफ़िट</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">सहेजा जा रहा है…</string>
     <string name="cd_ai_suggestion">AI सुझाव</string>
     <string name="filter_location">स्थान</string>
-    <string name="wardrobe_processing_photos">%1$d फ़ोटो प्रोसेस किए जा रहे हैं…</string>
-    <string name="wardrobe_progress_uploading">फ़ोटो अपलोड हो रहा है…</string>
-    <string name="wardrobe_progress_uploading_batch">%2$d में से %1$d फ़ोटो अपलोड हो रहा है…</string>
-    <string name="wardrobe_progress_removing_bg">बैकग्राउंड हटाया जा रहा है…</string>
-    <string name="wardrobe_progress_removing_bg_batch">%2$d में से %1$d का बैकग्राउंड हटाया जा रहा है…</string>
-    <string name="wardrobe_progress_moving">नए स्थान पर भेजा जा रहा है…</string>
     <string name="action_select_all">सभी चुनें</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">वॉर्डरोब टैग</string>
     <string name="settings_data_tags_desc">Gemini के साथ अपने वॉर्डरोब के हर आइटम को फिर से वर्गीकृत करें। यह किसी भी मैन्युअल टैग संपादन को अधिलेखित कर देगा।</string>
     <string name="settings_rescan_button">सभी टैग फिर से स्कैन करें</string>
-    <string name="settings_rescanning">%2$d में से %1$d स्कैन किया जा रहा है…</string>
     <string name="settings_rescan_dialog_title">सभी टैग फिर से स्कैन करें?</string>
     <string name="settings_rescan_dialog_text">Gemini आपके वॉर्डरोब के हर आइटम को फिर से वर्गीकृत करेगा। इसमें समय लग सकता है।</string>
     <string name="settings_rescan_confirm">फिर से स्कैन करें</string>
@@ -120,38 +102,14 @@
     <string name="settings_repair_done">मरम्मत पूरी हुई। वॉर्डरोब ताज़ा किया गया।</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">वॉर्डरोब बहाल किया जा रहा है: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d आइटम</string>
     <string name="wardrobe_filtered_count">%2$d में से %1$d आइटम दिखाए जा रहे हैं</string>
-    <string name="wardrobe_stats_total">कुल %1$d आइटम</string>
-    <string name="wardrobe_stats_untagged">बिना टैग के</string>
-    <string name="wardrobe_empty">अभी तक कोई आइटम नहीं</string>
-    <string name="wardrobe_empty_hint">फ़ोटो लें या अपनी गैलरी से चुनें</string>
     <string name="wardrobe_create_outfit">मैन्युअल रूप से आउटफ़िट बनाएं</string>
     <string name="wardrobe_compose_ai">AI के साथ बनाएं</string>
-    <string name="wardrobe_select_all_count">सभी चुनें (%1$d)</string>
-    <string name="wardrobe_delete_title">आइटम हटाएं?</string>
-    <string name="wardrobe_delete_text">क्या आप वाकई %d चयनित आइटम हटाना चाहते हैं? इसे वापस नहीं लिया जा सकता।</string>
-    <string name="wardrobe_move_to">यहाँ भेजें</string>
-    <string name="wardrobe_move_to_title">%d आइटम यहाँ भेजें</string>
-    <string name="wardrobe_tag_detect">टैग पहचानें</string>
-    <string name="wardrobe_tag_remove_bg">BG हटाएं</string>
-    <string name="wardrobe_tag_re_remove_bg">BG फिर से हटाएं</string>
-    <string name="wardrobe_tag_rotate">घुमाएं</string>
-    <string name="wardrobe_tag_edit">टैग संपादित करें</string>
-    <string name="wardrobe_tag_sheet_title">टैग संपादित करें</string>
-    <string name="wardrobe_tag_saved">सहेजा गया</string>
-    <string name="wardrobe_tag_saving">सहेजा जा रहा है…</string>
-    <string name="wardrobe_tag_unsaved">सहेजा नहीं गया</string>
-    <string name="wardrobe_tag_redetect_ai">AI से टैग फिर से पहचानें</string>
-    <string name="wardrobe_tag_not_set">निर्धारित नहीं</string>
     <string name="wardrobe_add_gallery">गैलरी</string>
     <string name="wardrobe_add_camera">कैमरा</string>
     <string name="wardrobe_add_to_closet">%1$s में जोड़ें</string>
-    <string name="wardrobe_add_to_closet_title">क्लोसेट में जोड़ें</string>
-    <string name="tag_label">नाम</string>
     <string name="tag_label_placeholder">जैसे नेवी चिनोस, व्हाइट ऑक्सफ़ोर्ड शर्ट</string>
-    <string name="tag_add_custom">कस्टम जोड़ें…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -241,13 +199,6 @@
     <string name="ai_consider_weather_desc">आज का तापमान और स्थितियाँ शामिल करें।</string>
     <string name="ai_considerations_desc">आउटफ़िट सुझाने या बनाने पर AI को क्या ध्यान में रखना चाहिए। परिवर्तन प्रेडिक्शन, कंपोज़िशन, पैकिंग, और वॉर्डरोब-गैप प्रॉम्प्ट पर लागू होते हैं।</string>
     <string name="ai_considerations_title">डिफ़ॉल्ट विचार</string>
-    <string name="battery_exempt_action">सेटिंग्स खोलें</string>
-    <string name="battery_exempt_text">LibreLookAI को सुरक्षित रूप से तस्वीरें आयात करने, बैकग्राउंड हटाने और AI से कपड़ों को टैग करने के लिए असीमित बैकग्राउंड प्रोसेसिंग की आवश्यकता है।
-
-इस अनुमति के बिना Android प्रक्रिया के बीच में ऐप को बंद कर सकता है, जिससे डेटा हानि हो सकती है — आंशिक रूप से आयातित आइटम, गायब टैग या भ्रष्ट फ़ाइलें।
-
-जारी रखने के लिए कृपया LibreLookAI के लिए बैटरी ऑप्टिमाइज़ेशन अक्षम करें।</string>
-    <string name="battery_exempt_title">बैकग्राउंड प्रोसेसिंग आवश्यक</string>
     <string name="composer_add_selected">चयनित जोड़ें</string>
     <string name="composer_desc_placeholder">संक्षिप्त विवरण (वैकल्पिक)</string>
     <string name="composer_discard_confirm">त्यागें</string>
@@ -281,10 +232,6 @@
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">टैग्स (वैकल्पिक)</string>
     <string name="composer_targets_hint">प्रत्येक परत में कितने शामिल करने हैं, सेट करें। AI को निर्णय लेने देने के लिए 0 पर छोड़ें।</string>
-    <string name="dedupe_dialog_cancel">रद्द करें</string>
-    <string name="dedupe_dialog_desc">हमें आपके वॉर्डरोब में %1$d आइटम मिले जो इस फ़ोटो से बहुत मिलते-जुलते हैं।</string>
-    <string name="dedupe_dialog_import_anyway">फिर भी आयात करें</string>
-    <string name="dedupe_dialog_title">संभावित डुप्लिकेट</string>
     <string name="dedupe_no_matches">कोई मिलान नहीं</string>
     <string name="dedupe_score">%1$d%% मिलान</string>
     <string name="gap_description">उन 3 गायब टुकड़ों को खोजें जो आपके मौजूदा वॉर्डरोब से सबसे अधिक नए आउटफ़िट संयोजन खोलेंगे।</string>
@@ -300,12 +247,6 @@
     <string name="import_preview_select_all">सभी चुनें</string>
     <string name="import_preview_similar_badge">समान</string>
     <string name="import_preview_title">%1$d आइटम की समीक्षा करें</string>
-    <string name="local_bg_apply">यह कटआउट उपयोग करें</string>
-    <string name="local_bg_failed">कटआउट गणना नहीं हो सकी — क्रॉसहेयर खिसकाकर देखें।</string>
-    <string name="local_bg_hint">जिस आइटम को रखना चाहते हैं उस पर क्रॉसहेयर खींचें।</string>
-    <string name="local_bg_recomputing">कटआउट पुनः गणना…</string>
-    <string name="local_bg_skip">छोड़ें (Gemini उपयोग करें)</string>
-    <string name="local_bg_title">कटआउट परिष्कृत करें</string>
     <string name="outfit_mode_edit">संपादन</string>
     <string name="outfit_mode_view">देखें</string>
     <string name="outfits_description_placeholder">विवरण (वैकल्पिक)</string>
@@ -322,24 +263,12 @@
     <string name="settings_bg_removal_desc">कैप्चर, आयात और शॉपिंग हेल्पर के दौरान उपयोग होने वाला ऑन-डिवाइस कटआउट सेगमेंटर समायोजित करता है। कम मान अधिक पिक्सेल रखते हैं (ढीला कटआउट, बैकग्राउंड शामिल हो सकता है); अधिक मान सीमा पिक्सेल अस्वीकार करते हैं (तंग कटआउट, आइटम कट सकता है)।</string>
     <string name="settings_bg_removal_threshold">फ़ोरग्राउंड थ्रेशोल्ड: %1$d%%</string>
     <string name="settings_bg_removal_title">बैकग्राउंड हटाना</string>
-    <string name="settings_cutoutfix_action_blackbg">काला बैकग्राउंड → पारदर्शी</string>
-    <string name="settings_cutoutfix_action_clearalpha">अल्फा साफ़ करें (अपारदर्शी बनाएं)</string>
-    <string name="settings_cutoutfix_action_feather">अल्फा किनारे नरम करें</string>
-    <string name="settings_cutoutfix_action_greenhalo">हरा हेलो हटाएं</string>
-    <string name="settings_cutoutfix_action_tightcrop">टाइट क्रॉप &amp; आकार सीमा</string>
-    <string name="settings_cutoutfix_badge_blackbg">काला बैकग्राउंड</string>
-    <string name="settings_cutoutfix_badge_greenhalo">हरा हेलो</string>
     <string name="settings_cutoutfix_button">कटआउट स्कैन करें</string>
     <string name="settings_cutoutfix_desc">बचे काले बैकग्राउंड या हरे हेलो के लिए मौजूदा कटआउट स्कैन करता है और स्थानीय रूप से मैट पुनः लागू करता है। कोई AI कॉल नहीं — सुधारे कटआउट उनकी Drive ID बनाए रखकर पुनः अपलोड होते हैं।</string>
-    <string name="settings_cutoutfix_dialog_subtitle">चयनित कटआउट स्थानीय रूप से पुनः प्रोसेस होंगे और पुनः अपलोड किए जाएंगे। टॉगल के लिए टैप करें।</string>
-    <string name="settings_cutoutfix_dialog_title">कटआउट बैकग्राउंड ठीक करें — पूर्वावलोकन</string>
     <string name="settings_cutoutfix_done">%1$d कटआउट ठीक किए गए।</string>
-    <string name="settings_cutoutfix_fix_n">%1$d ठीक करें</string>
     <string name="settings_cutoutfix_no_issues">बचे बैकग्राउंड वाले कटआउट नहीं मिले।</string>
     <string name="settings_cutoutfix_processing">कटआउट %1$d / %2$d ठीक हो रहे हैं…</string>
     <string name="settings_cutoutfix_scanning">कटआउट %1$d / %2$d स्कैन हो रहे हैं…</string>
-    <string name="settings_cutoutfix_selected">%2$d में से %1$d चयनित</string>
-    <string name="settings_cutoutfix_show_all">सभी कटआउट दिखाएं (केवल चिह्नित नहीं)</string>
     <string name="settings_cutoutfix_title">कटआउट बैकग्राउंड ठीक करें</string>
     <string name="settings_debug_similarity_desc">समानता खोज मिलान खोलने पर डिफ़ॉल्ट ज़ूम-योग्य छवि के बजाय प्रति-चैनल विश्लेषण (सेगमेंटेड थंबनेल, एम्बेडिंग/हिस्टोग्राम कोसाइन, ह्यू हिस्टोग्राम) दिखाएं।</string>
     <string name="settings_debug_similarity_toggle">समानता डीबग पूर्वावलोकन दिखाएं</string>
@@ -409,13 +338,11 @@
     <string name="settings_repair_clear_cache">लोकल कैश साफ़ करें</string>
     <string name="settings_repair_clear_cache_desc">चलने के बाद Drive से सभी छवियाँ पुनः डाउनलोड करें। धीमा; केवल तब आवश्यक जब लोकल फ़ाइलें पुरानी लगती हैं।</string>
     <string name="settings_repair_preview_cost_total">अनुमानित लागत: %1$d क्रेडिट</string>
-    <string name="settings_repair_preview_deselect_all">सभी अचयनित करें</string>
     <string name="settings_repair_preview_process_n">%1$d प्रोसेस करें</string>
     <string name="settings_repair_preview_section_count">%2$d में से %1$d चयनित</string>
     <string name="settings_repair_preview_section_orphaned">बैकग्राउंड हटाना + टैग चाहिए</string>
     <string name="settings_repair_preview_section_raw">अपहचानी छवियाँ — बैकग्राउंड हटाना + टैग चाहिए</string>
     <string name="settings_repair_preview_section_sidecar">केवल टैग चाहिए</string>
-    <string name="settings_repair_preview_select_all">सभी चुनें</string>
     <string name="settings_repair_preview_selected">%2$d में से %1$d चयनित</string>
     <string name="settings_repair_preview_subtitle">चयनित आइटम प्रोसेस होंगे। छोड़ने के लिए किसी थंबनेल पर टैप करें।</string>
     <string name="settings_repair_preview_title">मरम्मत &amp; सिंक — पूर्वावलोकन</string>
@@ -431,7 +358,6 @@
     <string name="shop_no_matches">अभी कोई मिलान नहीं। पास से और बेहतर रोशनी वाली फ़ोटो आज़माएँ।</string>
     <string name="shop_take_another">और फ़ोटो लें</string>
     <string name="shop_take_photo">फ़ोटो लें</string>
-    <string name="shop_your_photo">आपकी फ़ोटो</string>
     <string name="tag_category_placeholder">ऊपर के कपड़े, नीचे के कपड़े, ऊपरी कपड़े, जूते, एक्सेसरीज़, ड्रेस, सूट</string>
     <string name="tag_type_placeholder">उदा. टी-शर्ट, चिनो, पफ़र जैकेट</string>
     <string name="travel_move_done">आइटम Travel स्थान पर ले जाए गए</string>
@@ -456,25 +382,14 @@
     <string name="tryon_section_desc">सामने, बगल और पीछे से पूरी लंबाई की तस्वीरें अपलोड करें। ऐप उन्हें आउटफ़िट या वॉर्डरोब आइटम के ट्राय-ऑन पूर्वावलोकन जेनरेट करते समय संदर्भ के रूप में उपयोग करता है। तस्वीरें आपके अपने Drive में रहती हैं।</string>
     <string name="tryon_section_title">ट्राय-ऑन फ़ोटो</string>
     <string name="tryon_use_outfit">आउटफ़िट उपयोग करें</string>
-    <string name="wardrobe_create_style">आउटफ़िट बनाएं</string>
-    <string name="wardrobe_find_by_photo">फ़ोटो से आइटम खोजें</string>
-    <string name="wardrobe_find_by_photo_empty">कोई समान आइटम नहीं मिला।</string>
-    <string name="wardrobe_find_by_photo_searching">मिलान खोजे जा रहे हैं…</string>
-    <string name="wardrobe_fix_cutout_bg">कटआउट बैकग्राउंड ठीक करें</string>
     <string name="wardrobe_fix_cutout_bg_clean">कोई बचा बैकग्राउंड नहीं — कुछ ठीक करने को नहीं।</string>
     <string name="wardrobe_fix_cutout_bg_done">कटआउट बैकग्राउंड ठीक किया गया।</string>
-    <string name="wardrobe_imported_on">आयात %1$s</string>
     <string name="wardrobe_search_hint">जो खोज रहे हैं वह लिखें, या फ़ोटो से खोजें।</string>
-    <string name="wardrobe_search_text_results">खोज परिणाम</string>
     <string name="wardrobe_search_title">वॉर्डरोब में खोजें</string>
     <string name="wardrobe_search_use_photo">फ़ोटो से खोजें</string>
     <string name="wardrobe_suggest_replacements">विकल्प सुझाएं</string>
-    <string name="wardrobe_view_cutout">कटआउट देखें</string>
-    <string name="wardrobe_view_original">मूल देखें</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">इन आइटम का उपयोग करने वाले %d आउटफ़िट भी हटाएं</string>
-    <string name="wardrobe_delete_cascade_tryons">इन आइटम वाली %d ट्राय-ऑन भी हटाएं</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">आप</string>
@@ -515,9 +430,7 @@
     <string name="settings_section_advanced_power">उन्नत विकल्प</string>
     <string name="settings_retag_row">मेरे सभी कपड़े फिर से टैग करें</string>
     <string name="settings_retag_row_sub">AI से सब कुछ फिर से नाम और श्रेणी देने को कहें। प्रति आइटम ~2 क्रेडिट।</string>
-    <string name="settings_rebg_row">बैकग्राउंड फिर से हटाएँ</string>
     <string name="settings_rebg_row_sub">हर आइटम को उसकी फ़ोटो से फिर से काटें। प्रति आइटम ~6 क्रेडिट।</string>
-    <string name="settings_cutout_row">बचे हुए बैकग्राउंड पिक्सेल ठीक करें</string>
     <string name="settings_cutout_row_sub">उन आइटम खोजता है जहाँ कटआउट ने कोई कोना छोड़ दिया।</string>
     <string name="settings_advanced_byok_title">आपकी Gemini API कुंजी</string>
     <string name="settings_advanced_byok_body">सारा AI आपकी अपनी Gemini कुंजी से चलता है। मुफ़्त कुंजी टैगिंग और आउटफिट सुझावों को कवर करती है; वर्चुअल ट्राई-ऑन और बैकग्राउंड हटाने के लिए बिलिंग सक्षम वाली सशुल्क कुंजी चाहिए। aistudio.google.com से एक प्राप्त करें और नीचे चिपकाएँ — हम इसे केवल इसी फ़ोन पर रखते हैं।</string>
@@ -623,10 +536,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">इमेज को WebP में बदलें</string>
     <string name="settings_convert_webp_row_sub">Drive में जगह बचाने के लिए पुरानी JPG/PNG फ़ोटो छोटी करें.</string>
-    <string name="settings_converting">%2$d में से %1$d बदल रहे हैं…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">रखरखाव</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">विवरण लोड हो रहे हैं %1$d / %2$d</string>
     <string name="restore_finishing">पूरा हो रहा है…</string>
-    <string name="wardrobe_sync_details">विवरण लोड हो रहे हैं: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">पूरा हो रहा है…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">आइटम जोड़ें</string>
-    <string name="sel_swap">बदलें</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

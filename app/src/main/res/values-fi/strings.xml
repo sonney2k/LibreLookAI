@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigointi -->
-    <string name="nav_wardrobe">Vaatekaappi</string>
     <string name="nav_shopping">Ostokset</string>
     <string name="nav_travel">Matka</string>
     <string name="nav_settings">Asetukset</string>
 
     <!-- Näkemykset-välilehti -->
-    <string name="insights_tab_wardrobe_stats">Vaatekaappitilastot</string>
     <string name="insights_tab_costs">Kustannukset</string>
     <string name="costs_count_items">Vaatteita</string>
     <string name="costs_count_outfits">Asuja</string>
@@ -30,15 +28,6 @@
 
     <!-- URL-tuonti (Vaatekaappi + Ostoslista) -->
     <string name="wardrobe_add_url">Lisää URL:sta</string>
-    <string name="wardrobe_url_import_title">Tuo ostos-URL:sta</string>
-    <string name="wardrobe_url_import_hint">Liitä ostossivun URL. Haemme tuotekuvan automaattisesti.</string>
-    <string name="url_import_pick_title">Valitse tuotekuva</string>
-    <string name="url_import_pick_hint">Napauta kuvaa, jonka haluat tuoda. Jos mikään ei sovi, avaa sivu selaimessa.</string>
-    <string name="url_import_browser_title">Avaa sivu</string>
-    <string name="url_import_browser_hint">Napauta mitä tahansa kuvaa sivulla tuodaksesi sen.</string>
-    <string name="url_import_open_browser">Avaa sivu</string>
-    <string name="url_import_show_candidates">Ehdokkaat</string>
-    <string name="url_import_no_candidates">Kuvia ei löytynyt. Avaa sivu selaimessa valitaksesi yhden.</string>
 
     <!-- Asut alivälilehdet -->
     <string name="outfits_tab_outfits">Asut</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Tallennetaan…</string>
     <string name="cd_ai_suggestion">Tekoälyehdotus</string>
     <string name="filter_location">Sijainti</string>
-    <string name="wardrobe_processing_photos">Käsitellään %1$d kuva(a)…</string>
-    <string name="wardrobe_progress_uploading">Ladataan kuvaa…</string>
-    <string name="wardrobe_progress_uploading_batch">Ladataan kuvaa %1$d / %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Poistetaan taustaa…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Poistetaan taustaa %1$d / %2$d…</string>
-    <string name="wardrobe_progress_moving">Siirretään uuteen sijaintiin…</string>
     <string name="action_select_all">Valitse kaikki</string>
 
     <!-- Kirjautuminen -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Vaatekaappitunnisteet</string>
     <string name="settings_data_tags_desc">Luokittele jokainen vaatekaappisi vaate uudelleen Geminillä. Tämä korvaa kaikki manuaaliset tunnistemuokkaukset.</string>
     <string name="settings_rescan_button">Skannaa kaikki tunnisteet uudelleen</string>
-    <string name="settings_rescanning">Skannataan %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">Skannataanko kaikki tunnisteet uudelleen?</string>
     <string name="settings_rescan_dialog_text">Gemini luokittelee uudelleen jokaisen vaatekaappisi vaatteen. Tämä korvaa manuaaliset tunnistemuokkaukset ja voi viedä hetken.</string>
     <string name="settings_rescan_confirm">Skannaa uudelleen</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Tarvitsee vain tunnisteet</string>
     <string name="settings_repair_preview_section_count">%1$d / %2$d valittu</string>
     <string name="settings_repair_preview_selected">%1$d / %2$d valittu</string>
-    <string name="settings_repair_preview_select_all">Valitse kaikki</string>
-    <string name="settings_repair_preview_deselect_all">Poista valinnat</string>
     <string name="settings_repair_preview_process_n">Käsittele %1$d</string>
     <string name="settings_cutoutfix_title">Korjaa leikkaustaustat</string>
     <string name="settings_cutoutfix_desc">Skannaa olemassa olevat leikkaukset jäljellä olevien mustien taustojen tai vihreiden halojen varalta ja lisää matta paikallisesti uudelleen. Ei tekoälykutsuja — korjatut leikkaukset ladataan uudelleen säilyttäen Drive-tunnuksensa.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Skannataan leikkausta %1$d / %2$d…</string>
     <string name="settings_cutoutfix_processing">Korjataan leikkausta %1$d / %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d leikkaus(ta) korjattu.</string>
-    <string name="settings_cutoutfix_dialog_title">Korjaa leikkaustaustat — esikatselu</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Valitut leikkaukset käsitellään paikallisesti uudelleen ja ladataan uudelleen. Napauta vaihtaaksesi.</string>
-    <string name="settings_cutoutfix_show_all">Näytä kaikki leikkaukset (ei vain merkityt)</string>
     <string name="settings_cutoutfix_no_issues">Leikkauksia, joissa on jäljellä olevia taustoja, ei löytynyt.</string>
-    <string name="settings_cutoutfix_badge_blackbg">musta tausta</string>
-    <string name="settings_cutoutfix_badge_greenhalo">vihreä halo</string>
-    <string name="settings_cutoutfix_action_clearalpha">Tyhjennä alfa (tee peittäväksi)</string>
-    <string name="settings_cutoutfix_action_blackbg">Musta tausta → läpinäkyvä</string>
-    <string name="settings_cutoutfix_action_greenhalo">Poista vihreä halo</string>
-    <string name="settings_cutoutfix_action_feather">Pehmennä alfareunoja</string>
-    <string name="settings_cutoutfix_action_tightcrop">Tiukka rajaus &amp; rajoita kokoa</string>
-    <string name="settings_cutoutfix_fix_n">Korjaa %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d / %2$d valittu</string>
     <string name="settings_repair_preview_cost_total">Arvioitu hinta: %1$d krediittiä</string>
     <string name="settings_repair_clear_cache">Tyhjennä paikallinen välimuisti</string>
     <string name="settings_repair_clear_cache_desc">Lataa kaikki kuvat uudelleen Drivesta ajon jälkeen. Hitaampi; tarvitaan vain, jos paikalliset tiedostot näyttävät vanhentuneilta.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Aktiivinen</string>
 
     <!-- Vaatekaappi -->
-    <string name="wardrobe_sync_progress">Palautetaan vaatekaappia: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d vaatetta</string>
     <string name="wardrobe_filtered_count">Näytetään %1$d / %2$d vaatetta</string>
-    <string name="wardrobe_stats_total">%1$d vaatetta yhteensä</string>
-    <string name="wardrobe_stats_untagged">Ilman tunnisteita</string>
-    <string name="wardrobe_empty">Ei vielä vaatteita</string>
-    <string name="wardrobe_empty_hint">Ota kuva tai valitse galleriastasi</string>
     <string name="wardrobe_create_outfit">Luo asu manuaalisesti</string>
     <string name="wardrobe_compose_ai">Suunnittele tekoälyllä</string>
-    <string name="wardrobe_select_all_count">Valitse kaikki (%1$d)</string>
-    <string name="wardrobe_delete_title">Poistetaanko vaatteet?</string>
-    <string name="wardrobe_delete_text">Haluatko varmasti poistaa %d valittua vaatetta? Tätä ei voi peruuttaa.</string>
-    <string name="wardrobe_move_to">Siirrä</string>
-    <string name="wardrobe_move_to_title">Siirrä %d vaate(tta)</string>
-    <string name="wardrobe_tag_detect">Tunnista tunnisteet</string>
-    <string name="wardrobe_tag_remove_bg">Poista tausta</string>
-    <string name="wardrobe_tag_re_remove_bg">Poista tausta uudelleen</string>
-    <string name="wardrobe_fix_cutout_bg">Korjaa leikkaustausta</string>
     <string name="wardrobe_fix_cutout_bg_done">Leikkaustausta korjattu.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Jäljellä olevaa taustaa ei havaittu — ei korjattavaa.</string>
-    <string name="wardrobe_tag_rotate">Kierrä</string>
-    <string name="wardrobe_tag_edit">Muokkaa tunnisteita</string>
-    <string name="wardrobe_tag_sheet_title">Muokkaa tunnisteita</string>
-    <string name="wardrobe_tag_saved">Tallennettu</string>
-    <string name="wardrobe_tag_saving">Tallennetaan…</string>
-    <string name="wardrobe_tag_unsaved">Tallentamaton</string>
-    <string name="wardrobe_tag_redetect_ai">Tunnista tagit uudelleen tekoälyllä</string>
-    <string name="wardrobe_tag_not_set">Ei asetettu</string>
     <string name="wardrobe_add_gallery">Galleria</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Lisää kohteeseen %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Lisää vaatekaappiin</string>
-    <string name="tag_label">Nimi</string>
     <string name="tag_label_placeholder">esim. Tummansininen chinot, Valkoinen Oxford-paita</string>
-    <string name="tag_add_custom">Lisää mukautettu…</string>
     <string name="tag_type_placeholder">esim. T-paita, chinot, untuvatakki</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Etualapalvelun ilmoitus -->
     <!-- Akun optimoinnin poikkeusvalintaikkuna -->
-    <string name="battery_exempt_title">Taustakäsittely vaaditaan</string>
-    <string name="battery_exempt_text">LibreLookAI tarvitsee rajoittamattoman taustakäsittelyn voidakseen tuoda kuvat turvallisesti, poistaa taustoja ja merkitä vaatteet tekoälyllä.\n\nIlman tätä lupaa Android voi sulkea sovelluksen kesken käsittelyn, mikä voi johtaa tietojen menetykseen — osittain tuotuihin vaatteisiin, puuttuviin tunnisteisiin tai vahingoittuneisiin tiedostoihin.\n\nPoista akun optimointi käytöstä LibreLookAI:lle jatkaaksesi.</string>
-    <string name="battery_exempt_action">Avaa asetukset</string>
 
     <!-- Offline-tila -->
     <string name="offline_banner">Olet offline-tilassa — vain katselutila</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d vaatetta</string>
     <string name="composer_factor_closets">%1$d vaatekaappia</string>
     <string name="composer_factor_composition">Mukautettu koostumus</string>
-    <string name="wardrobe_create_style">Luo asu</string>
-    <string name="wardrobe_imported_on">Tuotu %1$s</string>
-    <string name="wardrobe_view_original">Näytä alkuperäinen</string>
-    <string name="wardrobe_view_cutout">Näytä leikkaus</string>
     <!-- Tekoäly-välilehti -->
     <string name="settings_tab_ai">Tekoäly</string>
     <string name="ai_considerations_title">Oletushuomioon otettavat</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Ota kuva</string>
     <string name="shop_take_another">Ota toinen kuva</string>
     <string name="shop_clear">Tyhjennä</string>
-    <string name="shop_your_photo">Kuvasi</string>
     <string name="shop_matching">Verrataan vaatekaappiisi…</string>
     <string name="shop_matches_title">Parhaat osumat (%1$d)</string>
     <string name="shop_no_matches">Ei vielä osumia. Kokeile lähempänä, paremmin valaistua kuvaa.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Käytössä ollessaan kamera- ja galleria-tuonnit ajavat paikallisen Magic Touch -segmentterin ja antavat sinun vahvistaa tai tarkentaa etualan siemenen ennen tallennusta — ei Gemini-kutsua, ei krediittejä. URL-tuonnit käyttävät aina tätä tarkistusta.</string>
 
     <!-- Paikallisen taustanpoiston tarkistusnäyttö -->
-    <string name="local_bg_title">Tarkenna leikkausta</string>
-    <string name="local_bg_hint">Vedä ristikko vaatteen päälle, jonka haluat säilyttää.</string>
-    <string name="local_bg_recomputing">Lasketaan leikkausta uudelleen…</string>
-    <string name="local_bg_apply">Käytä tätä leikkausta</string>
-    <string name="local_bg_skip">Ohita (käytä Geminiä)</string>
-    <string name="local_bg_failed">Leikkausta ei voitu laskea — yritä siirtää ristikkoa.</string>
     <string name="settings_debug_similarity_toggle">Näytä samankaltaisuuden debug-esikatselu</string>
     <string name="settings_debug_similarity_desc">Kun Samankaltaisuushaun osuma avataan, näytä kanavakohtainen erittely (segmentoidut pikkukuvat, embedding/histogrammi-kosini, sävyhistogrammit) oletusarvoisen zoomattavan kuvan sijaan.</string>
 
     <!-- Osuman esikatseluvalintaikkuna -->
-    <string name="dedupe_dialog_title">Mahdollinen kaksoiskappale</string>
-    <string name="dedupe_dialog_desc">Löysimme %1$d vaate(tta) vaatekaapistasi, jotka näyttävät hyvin samankaltaisilta tämän kuvan kanssa.</string>
-    <string name="dedupe_dialog_import_anyway">Tuo silti</string>
-    <string name="dedupe_dialog_cancel">Peruuta</string>
     <string name="dedupe_no_matches">Ei osumia</string>
     <string name="dedupe_score">%1$d%% osuma</string>
 
     <!-- Etsi vaate kuvalla (Vaatekaappi) -->
-    <string name="wardrobe_find_by_photo">Etsi vaate kuvalla</string>
-    <string name="wardrobe_find_by_photo_empty">Samankaltaisia vaatteita ei löytynyt.</string>
-    <string name="wardrobe_find_by_photo_searching">Etsitään osumia…</string>
 
     <!-- Vaatekaappihaku (teksti tai kuva) -->
     <string name="wardrobe_search_title">Etsi vaatekaapista</string>
     <string name="wardrobe_search_hint">Kirjoita mitä etsit, tai etsi kuvalla.</string>
     <string name="wardrobe_search_use_photo">Etsi kuvalla sen sijaan</string>
-    <string name="wardrobe_search_text_results">Hakutulokset</string>
     <string name="action_search">Etsi</string>
 
     <!-- Korjaa &amp; synkronoi — mahdollisten kaksoiskappaleiden osio -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Käytät omaa Gemini-avaintasi — krediittejä ei kuluteta.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Poista myös %d asu(a), jotka käyttävät näitä vaatteita</string>
-    <string name="wardrobe_delete_cascade_tryons">Poista myös %d sovitus(ta), joissa on näitä vaatteita</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Sinä</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Tehoasetukset</string>
     <string name="settings_retag_row">Merkitse kaikki vaatteeni uudelleen</string>
     <string name="settings_retag_row_sub">Pyydä tekoälyä nimeämään ja luokittelemaan kaikki uudelleen. Maksaa ~2 krediittiä per vaate.</string>
-    <string name="settings_rebg_row">Poista taustat uudelleen</string>
     <string name="settings_rebg_row_sub">Leikkaa jokainen vaate kuvastaan uudelleen. Maksaa ~6 krediittiä per vaate.</string>
-    <string name="settings_cutout_row">Korjaa jäljelle jääneet taustapikselit</string>
     <string name="settings_cutout_row_sub">Etsii vaatteita, joiden leikkauksesta jäi kulma.</string>
     <string name="settings_advanced_byok_title">Gemini API -avaimesi</string>
     <string name="settings_advanced_byok_body">Kaikki tekoäly toimii omalla Gemini-avaimellasi. Ilmainen avain kattaa merkinnät ja asukokonaisuusehdotukset; virtuaalinen sovitus ja taustanpoisto vaativat maksullisen avaimen, jossa laskutus on käytössä. Hanki sellainen osoitteesta aistudio.google.com ja liitä se alle — tallennamme sen vain tähän puhelimeen.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Muunna kuvat WebP-muotoon</string>
     <string name="settings_convert_webp_row_sub">Pienennä vanhempia JPG/PNG-kuvia ja säästä Drive-tilaa.</string>
-    <string name="settings_converting">Muunnetaan %1$d/%2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Ylläpito</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Ladataan tietoja %1$d / %2$d</string>
     <string name="restore_finishing">Viimeistellään…</string>
-    <string name="wardrobe_sync_details">Ladataan tietoja: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Viimeistellään…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Lisää vaate</string>
-    <string name="sel_swap">Vaihda</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

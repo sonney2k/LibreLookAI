@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Lemari</string>
     <string name="nav_shopping">Belanja</string>
     <string name="nav_travel">Wisata</string>
     <string name="nav_settings">Pengaturan</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Statistik Lemari</string>
     <string name="insights_tab_costs">Biaya</string>
     <string name="costs_count_items">Item</string>
     <string name="costs_count_outfits">Setelan</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Tambah dari URL</string>
-    <string name="wardrobe_url_import_title">Impor dari URL belanja</string>
-    <string name="wardrobe_url_import_hint">Tempel URL halaman belanja. Kami akan mengambil gambar produk secara otomatis.</string>
-    <string name="url_import_pick_title">Pilih gambar produk</string>
-    <string name="url_import_pick_hint">Ketuk gambar yang ingin diimpor. Jika tidak ada yang cocok, buka halaman di browser.</string>
-    <string name="url_import_browser_title">Buka halaman</string>
-    <string name="url_import_browser_hint">Ketuk gambar apa pun di halaman untuk mengimpornya.</string>
-    <string name="url_import_open_browser">Buka halaman</string>
-    <string name="url_import_show_candidates">Kandidat</string>
-    <string name="url_import_no_candidates">Tidak ada gambar ditemukan. Buka browser untuk memilih.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Setelan</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Menyimpan…</string>
     <string name="cd_ai_suggestion">Saran AI</string>
     <string name="filter_location">Lokasi</string>
-    <string name="wardrobe_processing_photos">Memproses %1$d foto…</string>
-    <string name="wardrobe_progress_uploading">Mengunggah foto…</string>
-    <string name="wardrobe_progress_uploading_batch">Mengunggah foto %1$d dari %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Menghapus latar belakang…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Menghapus latar belakang %1$d dari %2$d…</string>
-    <string name="wardrobe_progress_moving">Pindah ke lokasi baru…</string>
     <string name="action_select_all">Pilih semua</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Tag Lemari</string>
     <string name="settings_data_tags_desc">Klasifikasi ulang setiap item di lemari dengan Gemini. Ini menimpa edit manual.</string>
     <string name="settings_rescan_button">Pindai Ulang Semua Tag</string>
-    <string name="settings_rescanning">Memindai ulang %1$d dari %2$d…</string>
     <string name="settings_rescan_dialog_title">Pindai ulang semua tag?</string>
     <string name="settings_rescan_dialog_text">Gemini akan mengklasifikasi ulang setiap item. Ini akan menimpa edit manual.</string>
     <string name="settings_rescan_confirm">Pindai Ulang</string>
@@ -120,38 +102,14 @@
     <string name="settings_repair_done">Perbaikan selesai. Lemari disegarkan.</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Memulihkan lemari: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d item</string>
     <string name="wardrobe_filtered_count">Menampilkan %1$d dari %2$d item</string>
-    <string name="wardrobe_stats_total">Total %1$d item</string>
-    <string name="wardrobe_stats_untagged">Tanpa tag</string>
-    <string name="wardrobe_empty">Belum ada item</string>
-    <string name="wardrobe_empty_hint">Ambil foto atau pilih dari galeri</string>
     <string name="wardrobe_create_outfit">Buat setelan manual</string>
     <string name="wardrobe_compose_ai">Susun dengan AI</string>
-    <string name="wardrobe_select_all_count">Pilih semua (%1$d)</string>
-    <string name="wardrobe_delete_title">Hapus item?</string>
-    <string name="wardrobe_delete_text">Anda yakin ingin menghapus %d item terpilih? Ini tidak bisa dibatalkan.</string>
-    <string name="wardrobe_move_to">Pindah ke</string>
-    <string name="wardrobe_move_to_title">Pindah %d item ke</string>
-    <string name="wardrobe_tag_detect">Deteksi tag</string>
-    <string name="wardrobe_tag_remove_bg">Hapus BG</string>
-    <string name="wardrobe_tag_re_remove_bg">Hapus ulang BG</string>
-    <string name="wardrobe_tag_rotate">Putar</string>
-    <string name="wardrobe_tag_edit">Edit tag</string>
-    <string name="wardrobe_tag_sheet_title">Edit Tag</string>
-    <string name="wardrobe_tag_saved">Tersimpan</string>
-    <string name="wardrobe_tag_saving">Menyimpan…</string>
-    <string name="wardrobe_tag_unsaved">Belum tersimpan</string>
-    <string name="wardrobe_tag_redetect_ai">Deteksi ulang tag dengan AI</string>
-    <string name="wardrobe_tag_not_set">Belum diatur</string>
     <string name="wardrobe_add_gallery">Galeri</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Tambah ke %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Tambah ke lemari</string>
-    <string name="tag_label">Nama</string>
     <string name="tag_label_placeholder">mis: Chino Navy, Kemeja Oxford Putih</string>
-    <string name="tag_add_custom">Tambah kustom…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -241,13 +199,6 @@
     <string name="ai_consider_weather_desc">Sertakan suhu dan kondisi hari ini.</string>
     <string name="ai_considerations_desc">Apa yang harus dipertimbangkan AI saat menyarankan atau menyusun setelan. Perubahan berlaku untuk prediksi, penyusunan, daftar bawaan, dan prompt kekurangan lemari.</string>
     <string name="ai_considerations_title">Pertimbangan default</string>
-    <string name="battery_exempt_action">Buka Pengaturan</string>
-    <string name="battery_exempt_text">LibreLookAI butuh pemrosesan latar tak terbatas untuk mengimpor foto dengan aman, menghapus latar, dan men-tag pakaianmu dengan AI.
-
-Tanpa izin ini, Android dapat menghentikan app di tengah proses, yang dapat menyebabkan kehilangan data — item yang terimpor sebagian, tag yang hilang, atau file rusak.
-
-Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</string>
-    <string name="battery_exempt_title">Pemrosesan latar diperlukan</string>
     <string name="composer_add_selected">Tambah yang dipilih</string>
     <string name="composer_desc_placeholder">Deskripsi singkat (opsional)</string>
     <string name="composer_discard_confirm">Buang</string>
@@ -281,10 +232,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Tag (opsional)</string>
     <string name="composer_targets_hint">Atur jumlah setiap lapisan yang ingin disertakan. Biarkan 0 agar AI yang memutuskan.</string>
-    <string name="dedupe_dialog_cancel">Batal</string>
-    <string name="dedupe_dialog_desc">Kami menemukan %1$d item di lemarimu yang sangat mirip dengan foto ini.</string>
-    <string name="dedupe_dialog_import_anyway">Tetap impor</string>
-    <string name="dedupe_dialog_title">Mungkin duplikat</string>
     <string name="dedupe_no_matches">Tidak ada yang cocok</string>
     <string name="dedupe_score">%1$d%% kecocokan</string>
     <string name="gap_description">Temukan 3 item yang kurang yang membuka paling banyak kombinasi setelan baru dari lemarimu.</string>
@@ -300,12 +247,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="import_preview_select_all">Pilih semua</string>
     <string name="import_preview_similar_badge">Mirip</string>
     <string name="import_preview_title">Tinjau %1$d item</string>
-    <string name="local_bg_apply">Pakai potongan ini</string>
-    <string name="local_bg_failed">Tidak bisa menghitung potongan — coba pindahkan crosshair.</string>
-    <string name="local_bg_hint">Seret crosshair ke item yang ingin disimpan.</string>
-    <string name="local_bg_recomputing">Menghitung ulang potongan…</string>
-    <string name="local_bg_skip">Lewati (pakai Gemini)</string>
-    <string name="local_bg_title">Perbaiki potongan</string>
     <string name="outfit_mode_edit">Edit</string>
     <string name="outfit_mode_view">Lihat</string>
     <string name="outfits_description_placeholder">Deskripsi (opsional)</string>
@@ -322,24 +263,12 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_bg_removal_desc">Mengatur segmen potongan di perangkat yang dipakai saat ambil foto, impor, dan Asisten Belanja. Nilai lebih rendah menyimpan lebih banyak piksel (potongan lebih longgar, bisa memuat latar); nilai lebih tinggi menolak piksel batas (potongan lebih ketat, bisa memotong item).</string>
     <string name="settings_bg_removal_threshold">Ambang foreground: %1$d%%</string>
     <string name="settings_bg_removal_title">Penghapusan latar</string>
-    <string name="settings_cutoutfix_action_blackbg">Latar hitam → transparan</string>
-    <string name="settings_cutoutfix_action_clearalpha">Bersihkan alpha (buat opak)</string>
-    <string name="settings_cutoutfix_action_feather">Haluskan tepi alpha</string>
-    <string name="settings_cutoutfix_action_greenhalo">Hilangkan halo hijau</string>
-    <string name="settings_cutoutfix_action_tightcrop">Crop ketat &amp; batas ukuran</string>
-    <string name="settings_cutoutfix_badge_blackbg">latar hitam</string>
-    <string name="settings_cutoutfix_badge_greenhalo">halo hijau</string>
     <string name="settings_cutoutfix_button">Pindai potongan</string>
     <string name="settings_cutoutfix_desc">Memindai potongan yang ada untuk sisa latar hitam atau halo hijau dan menerapkan ulang masker secara lokal. Tanpa panggilan AI — potongan yang diperbaiki diunggah ulang dengan ID Drive tetap.</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Potongan terpilih akan diproses ulang secara lokal dan diunggah ulang. Ketuk untuk beralih.</string>
-    <string name="settings_cutoutfix_dialog_title">Perbaiki latar potongan — Pratinjau</string>
     <string name="settings_cutoutfix_done">%1$d potongan diperbaiki.</string>
-    <string name="settings_cutoutfix_fix_n">Perbaiki %1$d</string>
     <string name="settings_cutoutfix_no_issues">Tidak ditemukan potongan dengan sisa latar.</string>
     <string name="settings_cutoutfix_processing">Memperbaiki potongan %1$d dari %2$d…</string>
     <string name="settings_cutoutfix_scanning">Memindai potongan %1$d dari %2$d…</string>
-    <string name="settings_cutoutfix_selected">%1$d dari %2$d dipilih</string>
-    <string name="settings_cutoutfix_show_all">Tampilkan semua potongan (bukan hanya yang ditandai)</string>
     <string name="settings_cutoutfix_title">Perbaiki latar potongan</string>
     <string name="settings_debug_similarity_desc">Saat membuka kecocokan di Asisten Belanja, tampilkan rincian per kanal (thumbnail tersegmentasi, kosinus embedding/histogram, histogram hue) alih-alih gambar dapat-zoom default.</string>
     <string name="settings_debug_similarity_toggle">Tampilkan pratinjau debug similarity</string>
@@ -409,13 +338,11 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_repair_clear_cache">Bersihkan cache lokal</string>
     <string name="settings_repair_clear_cache_desc">Unduh ulang semua gambar dari Drive setelah berjalan. Lebih lambat; hanya perlu jika file lokal terlihat usang.</string>
     <string name="settings_repair_preview_cost_total">Perkiraan biaya: %1$d kredit</string>
-    <string name="settings_repair_preview_deselect_all">Batalkan pilih semua</string>
     <string name="settings_repair_preview_process_n">Proses %1$d</string>
     <string name="settings_repair_preview_section_count">%1$d dari %2$d dipilih</string>
     <string name="settings_repair_preview_section_orphaned">Butuh penghapusan latar + tag</string>
     <string name="settings_repair_preview_section_raw">Gambar tak dikenal — butuh penghapusan latar + tag</string>
     <string name="settings_repair_preview_section_sidecar">Hanya butuh tag</string>
-    <string name="settings_repair_preview_select_all">Pilih semua</string>
     <string name="settings_repair_preview_selected">%1$d dari %2$d dipilih</string>
     <string name="settings_repair_preview_subtitle">Item terpilih akan diproses. Ketuk thumbnail untuk melewatkan.</string>
     <string name="settings_repair_preview_title">Perbaikan &amp; Sinkron — Pratinjau</string>
@@ -431,7 +358,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="shop_no_matches">Belum ada yang cocok. Coba foto lebih dekat dan pencahayaan lebih baik.</string>
     <string name="shop_take_another">Ambil foto lain</string>
     <string name="shop_take_photo">Ambil foto</string>
-    <string name="shop_your_photo">Fotomu</string>
     <string name="tag_category_placeholder">atasan, bawahan, outerwear, alas kaki, aksesori, dress, setelan jas</string>
     <string name="tag_type_placeholder">mis. Kaos, Chinos, Jaket puffer</string>
     <string name="travel_move_done">Item dipindahkan ke lokasi Perjalanan</string>
@@ -456,25 +382,14 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="tryon_section_desc">Unggah foto seluruh badan dari depan, samping, dan belakang. App memakainya sebagai referensi saat membuat pratinjau coba-pakai sebuah setelan atau item di kamu. Foto tetap di Drive milikmu.</string>
     <string name="tryon_section_title">Foto coba-pakai</string>
     <string name="tryon_use_outfit">Pakai setelan</string>
-    <string name="wardrobe_create_style">Buat setelan</string>
-    <string name="wardrobe_find_by_photo">Cari item lewat foto</string>
-    <string name="wardrobe_find_by_photo_empty">Tidak ada item mirip yang ditemukan.</string>
-    <string name="wardrobe_find_by_photo_searching">Mencari yang cocok…</string>
-    <string name="wardrobe_fix_cutout_bg">Perbaiki latar potongan</string>
     <string name="wardrobe_fix_cutout_bg_clean">Tidak terdeteksi sisa latar — tidak ada yang perlu diperbaiki.</string>
     <string name="wardrobe_fix_cutout_bg_done">Latar potongan diperbaiki.</string>
-    <string name="wardrobe_imported_on">Diimpor %1$s</string>
     <string name="wardrobe_search_hint">Ketik yang kamu cari, atau cari lewat foto.</string>
-    <string name="wardrobe_search_text_results">Hasil pencarian</string>
     <string name="wardrobe_search_title">Cari di lemari</string>
     <string name="wardrobe_search_use_photo">Cari lewat foto</string>
     <string name="wardrobe_suggest_replacements">Sarankan alternatif</string>
-    <string name="wardrobe_view_cutout">Lihat potongan</string>
-    <string name="wardrobe_view_original">Lihat asli</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Hapus juga %d outfit yang memakai item ini</string>
-    <string name="wardrobe_delete_cascade_tryons">Hapus juga %d coba-pakai dengan item ini</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Anda</string>
@@ -515,9 +430,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_section_advanced_power">Opsi lanjutan</string>
     <string name="settings_retag_row">Tandai ulang semua pakaian saya</string>
     <string name="settings_retag_row_sub">Minta AI menamai dan mengategorikan ulang semuanya. Biaya ~2 kredit per item.</string>
-    <string name="settings_rebg_row">Hapus ulang latar</string>
     <string name="settings_rebg_row_sub">Potong ulang setiap item dari fotonya. Biaya ~6 kredit per item.</string>
-    <string name="settings_cutout_row">Perbaiki piksel latar yang tersisa</string>
     <string name="settings_cutout_row_sub">Memindai item yang potongannya melewatkan sudut.</string>
     <string name="settings_advanced_byok_title">Kunci API Gemini Anda</string>
     <string name="settings_advanced_byok_body">Semua AI berjalan dengan kunci Gemini Anda sendiri. Kunci gratis mencakup penandaan dan saran outfit; coba-pakai virtual dan penghapusan latar memerlukan kunci berbayar dengan penagihan aktif. Dapatkan satu di aistudio.google.com lalu tempel di bawah — kami menyimpannya hanya di ponsel ini.</string>
@@ -623,10 +536,8 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Konversi gambar ke WebP</string>
     <string name="settings_convert_webp_row_sub">Perkecil foto JPG/PNG lama untuk menghemat ruang Drive.</string>
-    <string name="settings_converting">Mengonversi %1$d dari %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Pemeliharaan</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Memuat detail %1$d / %2$d</string>
     <string name="restore_finishing">Menyelesaikan…</string>
-    <string name="wardrobe_sync_details">Memuat detail: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Menyelesaikan…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Tambah item</string>
-    <string name="sel_swap">Tukar</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

@@ -230,4 +230,15 @@
     <string name="sel_move">ले जाएँ</string>
     <string name="tryon_outfit_picker_title">आउटफ़िट चुनें</string>
     <string name="tryon_outfit_picker_empty">अभी तक कोई सहेजा आउटफ़िट नहीं। यहाँ उपयोग के लिए आउटफ़िट टैब में बनाएं।</string>
+    <string name="battery_exempt_action">सेटिंग्स खोलें</string>
+    <string name="battery_exempt_text">LibreLookAI को सुरक्षित रूप से तस्वीरें आयात करने, बैकग्राउंड हटाने और AI से कपड़ों को टैग करने के लिए असीमित बैकग्राउंड प्रोसेसिंग की आवश्यकता है।
+
+इस अनुमति के बिना Android प्रक्रिया के बीच में ऐप को बंद कर सकता है, जिससे डेटा हानि हो सकती है — आंशिक रूप से आयातित आइटम, गायब टैग या भ्रष्ट फ़ाइलें।
+
+जारी रखने के लिए कृपया LibreLookAI के लिए बैटरी ऑप्टिमाइज़ेशन अक्षम करें।</string>
+    <string name="battery_exempt_title">बैकग्राउंड प्रोसेसिंग आवश्यक</string>
+    <string name="nav_wardrobe">वॉर्डरोब</string>
+    <string name="shop_your_photo">आपकी फ़ोटो</string>
+    <string name="wardrobe_fix_cutout_bg">कटआउट बैकग्राउंड ठीक करें</string>
+    <string name="wardrobe_move_to_title">%d आइटम यहाँ भेजें</string>
 </resources>

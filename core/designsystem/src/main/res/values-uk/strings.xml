@@ -230,4 +230,15 @@
     <string name="sel_move">Перемістити</string>
     <string name="tryon_outfit_picker_title">Оберіть образ</string>
     <string name="tryon_outfit_picker_empty">Збережених образів поки немає. Створіть один у вкладці Образи, щоб використати його тут.</string>
+    <string name="battery_exempt_action">Відкрити налаштування</string>
+    <string name="battery_exempt_text">LibreLookAI потребує необмеженої фонової обробки для безпечного імпорту фото, видалення фону та тегування одягу за допомогою ШІ.
+
+Без цього дозволу Android може зупинити додаток посеред процесу, що може призвести до втрати даних — частково імпортованих речей, відсутніх тегів або пошкоджених файлів.
+
+Вимкніть оптимізацію батареї для LibreLookAI, щоб продовжити.</string>
+    <string name="battery_exempt_title">Потрібна фонова обробка</string>
+    <string name="nav_wardrobe">Гардероб</string>
+    <string name="shop_your_photo">Ваше фото</string>
+    <string name="wardrobe_fix_cutout_bg">Виправити фон вирізання</string>
+    <string name="wardrobe_move_to_title">Перемістити %d речей до</string>
 </resources>

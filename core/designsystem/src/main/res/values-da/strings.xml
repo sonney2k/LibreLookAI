@@ -230,4 +230,11 @@
     <string name="sel_move">Flyt</string>
     <string name="tryon_outfit_picker_title">Vælg et outfit</string>
     <string name="tryon_outfit_picker_empty">Ingen gemte outfits endnu. Opret et i Outfits-fanen for at bruge det her.</string>
+    <string name="battery_exempt_action">Åbn indstillinger</string>
+    <string name="battery_exempt_text">LibreLookAI har brug for ubegrænset baggrundsbehandling for sikkert at importere fotos, fjerne baggrunde og tagge dit tøj med AI.\n\nUden denne tilladelse kan Android lukke appen midt i behandlingen, hvilket kan føre til tab af data — delvist importerede stykker, manglende tags eller beskadigede filer.\n\nDeaktivér batterioptimering for LibreLookAI for at fortsætte.</string>
+    <string name="battery_exempt_title">Baggrundsbehandling påkrævet</string>
+    <string name="nav_wardrobe">Garderobe</string>
+    <string name="shop_your_photo">Dit foto</string>
+    <string name="wardrobe_fix_cutout_bg">Reparér udklipsbg</string>
+    <string name="wardrobe_move_to_title">Flyt %d stykke(r) til</string>
 </resources>

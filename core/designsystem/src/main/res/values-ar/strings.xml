@@ -230,4 +230,11 @@
     <string name="sel_move">نقل</string>
     <string name="tryon_outfit_picker_title">اختر طقمًا</string>
     <string name="tryon_outfit_picker_empty">لا توجد أطقم محفوظة بعد. أنشئ واحدًا في تبويب الأطقم لاستخدامه هنا.</string>
+    <string name="battery_exempt_action">افتح الإعدادات</string>
+    <string name="battery_exempt_text">يحتاج LibreLookAI إلى معالجة خلفية غير مقيدة لاستيراد الصور وإزالة الخلفيات ووسم ملابسك بالذكاء الاصطناعي بأمان.\n\nبدون هذا الإذن، قد يقوم أندرويد بإغلاق التطبيق في منتصف العملية، مما قد يؤدي إلى فقدان البيانات — أصناف مستوردة جزئيًا، أو وسوم مفقودة، أو ملفات تالفة.\n\nيرجى تعطيل تحسين البطارية لـ LibreLookAI للمتابعة.</string>
+    <string name="battery_exempt_title">المعالجة الخلفية مطلوبة</string>
+    <string name="nav_wardrobe">خزانة الملابس</string>
+    <string name="shop_your_photo">صورتك</string>
+    <string name="wardrobe_fix_cutout_bg">إصلاح خلفية القصة</string>
+    <string name="wardrobe_move_to_title">نقل %d صنف إلى</string>
 </resources>

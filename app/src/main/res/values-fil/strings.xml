@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Wardrobe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Biyahe</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Stats ng Wardrobe</string>
     <string name="insights_tab_costs">Gastos</string>
     <string name="costs_count_items">Mga item</string>
     <string name="costs_count_outfits">Mga outfit</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Idagdag mula sa URL</string>
-    <string name="wardrobe_url_import_title">I-import mula sa shopping URL</string>
-    <string name="wardrobe_url_import_hint">I-paste ang URL ng shopping page. Awtomatiko naming kukunin ang larawan ng produkto.</string>
-    <string name="url_import_pick_title">Piliin ang larawan ng produkto</string>
-    <string name="url_import_pick_hint">I-tap ang larawang gusto mong i-import. Kung walang tama, buksan ang page sa browser.</string>
-    <string name="url_import_browser_title">Buksan ang page</string>
-    <string name="url_import_browser_hint">I-tap ang anumang larawan sa page para i-import.</string>
-    <string name="url_import_open_browser">Buksan ang page</string>
-    <string name="url_import_show_candidates">Mga kandidato</string>
-    <string name="url_import_no_candidates">Walang nakitang larawan. Buksan ang page sa browser para pumili.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Sina-save…</string>
     <string name="cd_ai_suggestion">Mungkahi ng AI</string>
     <string name="filter_location">Lokasyon</string>
-    <string name="wardrobe_processing_photos">Pinoproseso ang %1$d na larawan…</string>
-    <string name="wardrobe_progress_uploading">Ina-upload ang larawan…</string>
-    <string name="wardrobe_progress_uploading_batch">Ina-upload ang larawan %1$d ng %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Inaalis ang background…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Inaalis ang background %1$d ng %2$d…</string>
-    <string name="wardrobe_progress_moving">Inililipat sa bagong lokasyon…</string>
     <string name="action_select_all">Piliin lahat</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Mga Tag ng Wardrobe</string>
     <string name="settings_data_tags_desc">I-classify muli ang bawat item sa iyong wardrobe gamit ang Gemini. Mababago nito ang anumang manu-manong tag edits.</string>
     <string name="settings_rescan_button">I-rescan ang Lahat ng Tag</string>
-    <string name="settings_rescanning">Nire-rescan ang %1$d ng %2$d…</string>
     <string name="settings_rescan_dialog_title">I-rescan ang lahat ng tag?</string>
     <string name="settings_rescan_dialog_text">I-cla-classify muli ng Gemini ang bawat item sa iyong wardrobe. Ito ay magbabago sa anumang manu-manong tag edits at maaaring tumagal.</string>
     <string name="settings_rescan_confirm">I-rescan</string>
@@ -126,8 +108,6 @@
     <string name="settings_repair_preview_section_sidecar">Nangangailangan lamang ng tags</string>
     <string name="settings_repair_preview_section_count">%1$d ng %2$d ang napili</string>
     <string name="settings_repair_preview_selected">%1$d ng %2$d ang napili</string>
-    <string name="settings_repair_preview_select_all">Piliin lahat</string>
-    <string name="settings_repair_preview_deselect_all">Alisin sa pagpili</string>
     <string name="settings_repair_preview_process_n">Iproseso ang %1$d</string>
     <string name="settings_cutoutfix_title">Ayusin ang cutout backgrounds</string>
     <string name="settings_cutoutfix_desc">I-scan ang mga umiiral na cutout para sa natitirang itim na background o berdeng halo at i-apply muli ang matte lokal. Walang AI calls — ang mga naayos na cutout ay ina-upload muli na pinapanatili ang Drive ID.</string>
@@ -135,19 +115,7 @@
     <string name="settings_cutoutfix_scanning">Sini-scan ang cutout %1$d ng %2$d…</string>
     <string name="settings_cutoutfix_processing">Inaayos ang cutout %1$d ng %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d cutout ang naayos.</string>
-    <string name="settings_cutoutfix_dialog_title">Ayusin ang cutout backgrounds — Preview</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Ang mga napiling cutout ay muling ipoproseso lokal at ia-upload muli. I-tap para i-toggle.</string>
-    <string name="settings_cutoutfix_show_all">Ipakita lahat ng cutout (hindi lang flagged)</string>
     <string name="settings_cutoutfix_no_issues">Walang nakitang cutout na may natitirang background.</string>
-    <string name="settings_cutoutfix_badge_blackbg">itim na bg</string>
-    <string name="settings_cutoutfix_badge_greenhalo">berdeng halo</string>
-    <string name="settings_cutoutfix_action_clearalpha">I-clear ang alpha (gawing opaque)</string>
-    <string name="settings_cutoutfix_action_blackbg">Itim na background → transparent</string>
-    <string name="settings_cutoutfix_action_greenhalo">Despill berdeng halo</string>
-    <string name="settings_cutoutfix_action_feather">Feather alpha edges</string>
-    <string name="settings_cutoutfix_action_tightcrop">Tight-crop at i-cap ang sukat</string>
-    <string name="settings_cutoutfix_fix_n">Ayusin %1$d</string>
-    <string name="settings_cutoutfix_selected">%1$d ng %2$d ang napili</string>
     <string name="settings_repair_preview_cost_total">Tinatayang gastos: %1$d credits</string>
     <string name="settings_repair_clear_cache">I-clear ang local cache</string>
     <string name="settings_repair_clear_cache_desc">Muling i-download ang lahat ng larawan mula sa Drive pagkatapos ng pagtakbo. Mas mabagal; kailangan lamang kung ang mga local file ay tila luma na.</string>
@@ -204,41 +172,16 @@
     <string name="settings_location_active">Aktibo</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Ibinabalik ang wardrobe: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d item</string>
     <string name="wardrobe_filtered_count">Ipinapakita ang %1$d ng %2$d item</string>
-    <string name="wardrobe_stats_total">%1$d item sa kabuuan</string>
-    <string name="wardrobe_stats_untagged">Walang tag</string>
-    <string name="wardrobe_empty">Walang item pa</string>
-    <string name="wardrobe_empty_hint">Kumuha ng larawan o pumili mula sa iyong gallery</string>
     <string name="wardrobe_create_outfit">Gumawa ng outfit manually</string>
     <string name="wardrobe_compose_ai">Bumuo gamit ang AI</string>
-    <string name="wardrobe_select_all_count">Piliin lahat (%1$d)</string>
-    <string name="wardrobe_delete_title">Tanggalin ang mga item?</string>
-    <string name="wardrobe_delete_text">Sigurado ka bang gusto mong tanggalin ang %d napiling item? Hindi ito mababawi.</string>
-    <string name="wardrobe_move_to">Ilipat sa</string>
-    <string name="wardrobe_move_to_title">Ilipat ang %d item sa</string>
-    <string name="wardrobe_tag_detect">Tuklasin ang mga tag</string>
-    <string name="wardrobe_tag_remove_bg">Alisin ang BG</string>
-    <string name="wardrobe_tag_re_remove_bg">Alisin muli ang BG</string>
-    <string name="wardrobe_fix_cutout_bg">Ayusin ang cutout BG</string>
     <string name="wardrobe_fix_cutout_bg_done">Naayos ang cutout background.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Walang nakitang natitirang background — walang aayusin.</string>
-    <string name="wardrobe_tag_rotate">Iikot</string>
-    <string name="wardrobe_tag_edit">I-edit ang mga tag</string>
-    <string name="wardrobe_tag_sheet_title">I-edit ang Mga Tag</string>
-    <string name="wardrobe_tag_saved">Naka-save</string>
-    <string name="wardrobe_tag_saving">Sini-save…</string>
-    <string name="wardrobe_tag_unsaved">Hindi naka-save</string>
-    <string name="wardrobe_tag_redetect_ai">I-detect muli ang tags gamit ang AI</string>
-    <string name="wardrobe_tag_not_set">Walang itinakda</string>
     <string name="wardrobe_add_gallery">Gallery</string>
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Idagdag sa %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Idagdag sa closet</string>
-    <string name="tag_label">Pangalan</string>
     <string name="tag_label_placeholder">hal. Navy Chinos, White Oxford Shirt</string>
-    <string name="tag_add_custom">Magdagdag ng custom…</string>
     <string name="tag_type_placeholder">hal. T-shirt, Chinos, Puffer jacket</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
@@ -314,9 +257,6 @@
 
     <!-- Foreground service notification -->
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">Kinakailangan ang background processing</string>
-    <string name="battery_exempt_text">Kailangan ng LibreLookAI ang walang restriction na background processing para ligtas na mag-import ng larawan, mag-alis ng background, at mag-tag ng iyong damit gamit ang AI.\n\nKung walang permission na ito, maaaring patayin ng Android ang app sa kalagitnaan ng proseso, na maaaring magresulta sa pagkawala ng data — mga bahagyang na-import na item, nawawalang tag, o sirang file.\n\nMangyaring i-disable ang battery optimization para sa LibreLookAI para magpatuloy.</string>
-    <string name="battery_exempt_action">Buksan ang Settings</string>
 
     <!-- Offline mode -->
     <string name="offline_banner">Offline ka — view-only mode</string>
@@ -406,10 +346,6 @@
     <string name="composer_factor_items">%1$d item</string>
     <string name="composer_factor_closets">%1$d closet</string>
     <string name="composer_factor_composition">Custom na komposisyon</string>
-    <string name="wardrobe_create_style">Gumawa ng outfit</string>
-    <string name="wardrobe_imported_on">Na-import noong %1$s</string>
-    <string name="wardrobe_view_original">Tingnan ang orihinal</string>
-    <string name="wardrobe_view_cutout">Tingnan ang cutout</string>
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Mga default na konsiderasyon</string>
@@ -428,7 +364,6 @@
     <string name="shop_take_photo">Kumuha ng larawan</string>
     <string name="shop_take_another">Kumuha ng isa pang larawan</string>
     <string name="shop_clear">I-clear</string>
-    <string name="shop_your_photo">Iyong larawan</string>
     <string name="shop_matching">Itinutugma sa iyong wardrobe…</string>
     <string name="shop_matches_title">Pinakamagagandang tugma (%1$d)</string>
     <string name="shop_no_matches">Walang tugma. Subukan ang mas malapit, mas magandang ilaw na larawan.</string>
@@ -449,33 +384,19 @@
     <string name="settings_local_bg_desc">Kapag pinagana, ang camera at gallery imports ay nagpapatakbo ng local Magic Touch segmenter at hahayaan kang kumpirmahin o pinuhin ang foreground seed bago mag-save — walang Gemini call, walang credit. Ang URL imports ay laging gumagamit ng review na ito.</string>
 
     <!-- Local background-removal review screen -->
-    <string name="local_bg_title">Pinuhin ang cutout</string>
-    <string name="local_bg_hint">I-drag ang crosshair papunta sa item na gusto mong panatilihin.</string>
-    <string name="local_bg_recomputing">Kinakalkula muli ang cutout…</string>
-    <string name="local_bg_apply">Gamitin ang cutout na ito</string>
-    <string name="local_bg_skip">Laktawan (gamitin ang Gemini)</string>
-    <string name="local_bg_failed">Hindi makalkula ang cutout — subukang ilipat ang crosshair.</string>
     <string name="settings_debug_similarity_toggle">Ipakita ang similarity debug preview</string>
     <string name="settings_debug_similarity_desc">Kapag binubuksan ang Similarity Finder match, ipakita ang per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) sa halip ng default na zoomable image.</string>
 
     <!-- Match preview dialog -->
-    <string name="dedupe_dialog_title">Posibleng duplicate</string>
-    <string name="dedupe_dialog_desc">Nakakita kami ng %1$d item sa iyong wardrobe na mukhang katulad ng larawang ito.</string>
-    <string name="dedupe_dialog_import_anyway">I-import pa rin</string>
-    <string name="dedupe_dialog_cancel">Kanselahin</string>
     <string name="dedupe_no_matches">Walang tugma</string>
     <string name="dedupe_score">%1$d%% tugma</string>
 
     <!-- Find item by photo (Wardrobe) -->
-    <string name="wardrobe_find_by_photo">Hanapin ang item sa pamamagitan ng larawan</string>
-    <string name="wardrobe_find_by_photo_empty">Walang nakitang katulad na item.</string>
-    <string name="wardrobe_find_by_photo_searching">Naghahanap ng mga tugma…</string>
 
     <!-- Wardrobe search (text or photo) -->
     <string name="wardrobe_search_title">Maghanap sa wardrobe</string>
     <string name="wardrobe_search_hint">I-type ang hinahanap mo, o maghanap gamit ang larawan.</string>
     <string name="wardrobe_search_use_photo">Maghanap gamit ang larawan</string>
-    <string name="wardrobe_search_text_results">Mga resulta ng paghahanap</string>
     <string name="action_search">Hanapin</string>
 
     <!-- Repair &amp; Sync — possible duplicates section -->
@@ -497,8 +418,6 @@
     <string name="coins_balance_label">Balanse: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Ginagamit ang sarili mong Gemini key — walang ginagastos na credit.</string>
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Tanggalin din ang %d (na) outfit na gumagamit ng mga item na ito</string>
-    <string name="wardrobe_delete_cascade_tryons">Tanggalin din ang %d (na) try-on na may mga item na ito</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Ikaw</string>
@@ -539,9 +458,7 @@
     <string name="settings_section_advanced_power">Mga advanced na opsyon</string>
     <string name="settings_retag_row">I-tag muli ang lahat ng damit ko</string>
     <string name="settings_retag_row_sub">Hilingin sa AI na pangalanan at ikategorya muli ang lahat. ~2 credit kada item.</string>
-    <string name="settings_rebg_row">Alisin muli ang mga background</string>
     <string name="settings_rebg_row_sub">Gupitin muli ang bawat item mula sa larawan nito. ~6 credit kada item.</string>
-    <string name="settings_cutout_row">Ayusin ang natirang background pixels</string>
     <string name="settings_cutout_row_sub">Naghahanap ng item na may sulok na nakaligtaan ng cutout.</string>
     <string name="settings_advanced_byok_title">Ang iyong Gemini API key</string>
     <string name="settings_advanced_byok_body">Lahat ng AI ay gumagana sa sarili mong Gemini key. Sapat ang libreng key para sa pag-tag at mga suhestiyon sa outfit; ang virtual try-on at pag-alis ng background ay nangangailangan ng bayad na key na may naka-enable na billing. Kumuha ng isa sa aistudio.google.com at i-paste sa ibaba — sa telepono lang ito naka-imbak.</string>
@@ -647,10 +564,8 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">I-convert ang mga larawan sa WebP</string>
     <string name="settings_convert_webp_row_sub">Paliitin ang mga lumang JPG/PNG para makatipid sa Drive.</string>
-    <string name="settings_converting">Kino-convert %1$d ng %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Pagpapanatili</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -672,8 +587,6 @@
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Naglo-load ng mga detalye %1$d / %2$d</string>
     <string name="restore_finishing">Tinatapos…</string>
-    <string name="wardrobe_sync_details">Naglo-load ng mga detalye: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Tinatapos…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -693,8 +606,6 @@
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Magdagdag</string>
-    <string name="sel_swap">Palitan</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 

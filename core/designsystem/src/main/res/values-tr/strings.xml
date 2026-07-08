@@ -230,4 +230,11 @@
     <string name="sel_move">Taşı</string>
     <string name="tryon_outfit_picker_title">Bir kombin seçin</string>
     <string name="tryon_outfit_picker_empty">Henüz kaydedilmiş kombin yok. Burada kullanmak için Kombinler sekmesinde bir tane oluşturun.</string>
+    <string name="battery_exempt_action">Ayarları Aç</string>
+    <string name="battery_exempt_text">LibreLookAI\'nın fotoğrafları güvenle içe aktarması, arka planları kaldırması ve kıyafetlerinizi yapay zeka ile etiketlemesi için kısıtlanmamış arka plan işlemeye ihtiyacı vardır.\n\nBu izin olmadan, Android uygulamayı işlem ortasında kapatabilir, bu da veri kaybına (kısmen içe aktarılmış ögeler, eksik etiketler veya bozuk dosyalar) neden olabilir.\n\nDevam etmek için lütfen LibreLookAI için pil optimizasyonunu devre dışı bırakın.</string>
+    <string name="battery_exempt_title">Arka plan işleme gerekli</string>
+    <string name="nav_wardrobe">Gardırop</string>
+    <string name="shop_your_photo">Fotoğrafınız</string>
+    <string name="wardrobe_fix_cutout_bg">Kesit arka planını düzelt</string>
+    <string name="wardrobe_move_to_title">%d ögeyi şuraya taşı</string>
 </resources>

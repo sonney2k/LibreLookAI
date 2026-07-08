@@ -230,4 +230,11 @@
     <string name="sel_move">Siirrä</string>
     <string name="tryon_outfit_picker_title">Valitse asu</string>
     <string name="tryon_outfit_picker_empty">Ei vielä tallennettuja asuja. Luo sellainen Asut-välilehdellä käyttääksesi sitä täällä.</string>
+    <string name="battery_exempt_action">Avaa asetukset</string>
+    <string name="battery_exempt_text">LibreLookAI tarvitsee rajoittamattoman taustakäsittelyn voidakseen tuoda kuvat turvallisesti, poistaa taustoja ja merkitä vaatteet tekoälyllä.\n\nIlman tätä lupaa Android voi sulkea sovelluksen kesken käsittelyn, mikä voi johtaa tietojen menetykseen — osittain tuotuihin vaatteisiin, puuttuviin tunnisteisiin tai vahingoittuneisiin tiedostoihin.\n\nPoista akun optimointi käytöstä LibreLookAI:lle jatkaaksesi.</string>
+    <string name="battery_exempt_title">Taustakäsittely vaaditaan</string>
+    <string name="nav_wardrobe">Vaatekaappi</string>
+    <string name="shop_your_photo">Kuvasi</string>
+    <string name="wardrobe_fix_cutout_bg">Korjaa leikkaustausta</string>
+    <string name="wardrobe_move_to_title">Siirrä %d vaate(tta)</string>
 </resources>

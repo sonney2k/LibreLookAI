@@ -293,7 +293,7 @@ private fun QueryCard(queryPath: String) {
             .padding(horizontal = 16.dp, vertical = 4.dp),
     ) {
         Text(
-            stringResource(R.string.shop_your_photo),
+            stringResource(DsR.string.shop_your_photo),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(bottom = 6.dp),

@@ -230,4 +230,15 @@
     <string name="sel_move">ย้าย</string>
     <string name="tryon_outfit_picker_title">เลือกชุด</string>
     <string name="tryon_outfit_picker_empty">ยังไม่มีชุดที่บันทึก สร้างหนึ่งในแท็บชุดเพื่อใช้ที่นี่</string>
+    <string name="battery_exempt_action">เปิดการตั้งค่า</string>
+    <string name="battery_exempt_text">LibreLookAI ต้องการการประมวลผลพื้นหลังแบบไม่จำกัดเพื่อนำเข้ารูปอย่างปลอดภัย ลบพื้นหลัง และแท็กเสื้อผ้าด้วย AI
+
+หากไม่มีสิทธิ์นี้ Android อาจปิดแอปกลางคัน ซึ่งอาจทำให้ข้อมูลสูญหาย — รายการที่นำเข้าบางส่วน แท็กที่ขาด หรือไฟล์เสีย
+
+กรุณาปิดการปรับให้แบตเตอรี่เหมาะสมสำหรับ LibreLookAI เพื่อดำเนินการต่อ</string>
+    <string name="battery_exempt_title">ต้องการการประมวลผลพื้นหลัง</string>
+    <string name="nav_wardrobe">ตู้เสื้อผ้า</string>
+    <string name="shop_your_photo">ภาพของคุณ</string>
+    <string name="wardrobe_fix_cutout_bg">แก้พื้นหลังการตัด</string>
+    <string name="wardrobe_move_to_title">ย้าย %d รายการไปที่</string>
 </resources>

@@ -51,6 +51,7 @@ MODULE_RES_DIRS = {
     "travel": os.path.join(REPO_ROOT, "feature", "travel", "src", "main", "res"),
     "shopping": os.path.join(REPO_ROOT, "feature", "shopping", "src", "main", "res"),
     "outfit": os.path.join(REPO_ROOT, "feature", "outfit", "src", "main", "res"),
+    "wardrobe": os.path.join(REPO_ROOT, "feature", "wardrobe", "src", "main", "res"),
 }
 
 

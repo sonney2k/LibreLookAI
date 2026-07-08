@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="nav_wardrobe">Tủ đồ</string>
     <string name="nav_shopping">Mua sắm</string>
     <string name="nav_travel">Du lịch</string>
     <string name="nav_settings">Cài đặt</string>
 
     <!-- Insights tab -->
-    <string name="insights_tab_wardrobe_stats">Thống kê tủ đồ</string>
     <string name="insights_tab_costs">Chi phí</string>
     <string name="costs_count_items">Món đồ</string>
     <string name="costs_count_outfits">Bộ đồ</string>
@@ -30,15 +28,6 @@
 
     <!-- URL import (Wardrobe + Shopping List) -->
     <string name="wardrobe_add_url">Thêm từ URL</string>
-    <string name="wardrobe_url_import_title">Nhập từ URL mua sắm</string>
-    <string name="wardrobe_url_import_hint">Dán URL trang mua sắm vào đây.</string>
-    <string name="url_import_pick_title">Chọn ảnh sản phẩm</string>
-    <string name="url_import_pick_hint">Chạm vào ảnh bạn muốn nhập vào.</string>
-    <string name="url_import_browser_title">Mở trang web</string>
-    <string name="url_import_browser_hint">Chạm vào bất kỳ ảnh nào trên trang để nhập.</string>
-    <string name="url_import_open_browser">Mở trang web</string>
-    <string name="url_import_show_candidates">Ứng cử viên</string>
-    <string name="url_import_no_candidates">Không tìm thấy ảnh.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Trang phục</string>
@@ -48,12 +37,6 @@
     <string name="action_saving">Đang lưu…</string>
     <string name="cd_ai_suggestion">Gợi ý từ AI</string>
     <string name="filter_location">Vị trí</string>
-    <string name="wardrobe_processing_photos">Đang xử lý %1$d ảnh…</string>
-    <string name="wardrobe_progress_uploading">Đang tải ảnh lên…</string>
-    <string name="wardrobe_progress_uploading_batch">Tải ảnh %1$d / %2$d…</string>
-    <string name="wardrobe_progress_removing_bg">Đang xóa nền…</string>
-    <string name="wardrobe_progress_removing_bg_batch">Xóa nền %1$d / %2$d…</string>
-    <string name="wardrobe_progress_moving">Đang chuyển đến vị trí mới…</string>
     <string name="action_select_all">Chọn tất cả</string>
 
     <!-- Sign In -->
@@ -90,7 +73,6 @@
     <string name="settings_data_tags_title">Thẻ tủ đồ</string>
     <string name="settings_data_tags_desc">Phân loại lại mọi món đồ bằng Gemini. Việc này sẽ ghi đè các chỉnh sửa thủ công.</string>
     <string name="settings_rescan_button">Quét lại toàn bộ thẻ</string>
-    <string name="settings_rescanning">Đang quét lại %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">Quét lại tất cả các thẻ?</string>
     <string name="settings_rescan_dialog_text">Gemini sẽ phân loại lại mọi món đồ trong tủ đồ của bạn.</string>
     <string name="settings_rescan_confirm">Quét lại</string>
@@ -120,38 +102,14 @@
     <string name="settings_repair_done">Đã sửa xong. Tủ đồ đã làm mới.</string>
 
     <!-- Wardrobe -->
-    <string name="wardrobe_sync_progress">Đang khôi phục tủ đồ: %1$d / %2$d</string>
     <string name="wardrobe_item_count">%1$d món đồ</string>
     <string name="wardrobe_filtered_count">Đang hiện %1$d / %2$d món đồ</string>
-    <string name="wardrobe_stats_total">Tổng cộng %1$d món đồ</string>
-    <string name="wardrobe_stats_untagged">Chưa gắn thẻ</string>
-    <string name="wardrobe_empty">Chưa có món đồ nào</string>
-    <string name="wardrobe_empty_hint">Chụp ảnh hoặc chọn từ thư viện của bạn</string>
     <string name="wardrobe_create_outfit">Tạo bộ đồ thủ công</string>
     <string name="wardrobe_compose_ai">Phối đồ bằng AI</string>
-    <string name="wardrobe_select_all_count">Chọn tất cả (%1$d)</string>
-    <string name="wardrobe_delete_title">Xóa món đồ?</string>
-    <string name="wardrobe_delete_text">Bạn có chắc muốn xóa %d món đồ đã chọn? Thao tác này không thể hoàn tác.</string>
-    <string name="wardrobe_move_to">Chuyển đến</string>
-    <string name="wardrobe_move_to_title">Chuyển %d món đồ đến</string>
-    <string name="wardrobe_tag_detect">Nhận diện thẻ</string>
-    <string name="wardrobe_tag_remove_bg">Xóa nền</string>
-    <string name="wardrobe_tag_re_remove_bg">Xóa lại nền</string>
-    <string name="wardrobe_tag_rotate">Xoay</string>
-    <string name="wardrobe_tag_edit">Sửa thẻ</string>
-    <string name="wardrobe_tag_sheet_title">Sửa thẻ</string>
-    <string name="wardrobe_tag_saved">Đã lưu</string>
-    <string name="wardrobe_tag_saving">Đang lưu…</string>
-    <string name="wardrobe_tag_unsaved">Chưa lưu</string>
-    <string name="wardrobe_tag_redetect_ai">Phát hiện lại thẻ bằng AI</string>
-    <string name="wardrobe_tag_not_set">Chưa đặt</string>
     <string name="wardrobe_add_gallery">Thư viện</string>
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Thêm vào %1$s</string>
-    <string name="wardrobe_add_to_closet_title">Thêm vào tủ đồ</string>
-    <string name="tag_label">Tên</string>
     <string name="tag_label_placeholder">vd: Quần Chino xanh navy, Áo sơ mi Oxford trắng</string>
-    <string name="tag_add_custom">Thêm thẻ tùy chỉnh…</string>
 
     <!-- Tag values -->
     <!-- Outfits -->
@@ -241,13 +199,6 @@
     <string name="ai_consider_weather_desc">Cân nhắc nhiệt độ và điều kiện hôm nay.</string>
     <string name="ai_considerations_desc">Những gì AI nên cân nhắc khi gợi ý hoặc tạo trang phục. Thay đổi áp dụng cho dự đoán, sáng tạo, đóng gói và phân tích thiếu trong tủ.</string>
     <string name="ai_considerations_title">Tiêu chí mặc định</string>
-    <string name="battery_exempt_action">Mở Cài đặt</string>
-    <string name="battery_exempt_text">LibreLookAI cần xử lý nền không hạn chế để nhập ảnh an toàn, xóa nền và gắn thẻ quần áo bằng AI.
-
-Không có quyền này, Android có thể tắt ứng dụng giữa chừng, dẫn đến mất dữ liệu — món nhập một phần, thẻ thiếu, hoặc tệp hỏng.
-
-Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
-    <string name="battery_exempt_title">Cần xử lý nền</string>
     <string name="composer_add_selected">Thêm món đã chọn</string>
     <string name="composer_desc_placeholder">Mô tả ngắn (tùy chọn)</string>
     <string name="composer_discard_confirm">Bỏ</string>
@@ -281,10 +232,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Thẻ (tùy chọn)</string>
     <string name="composer_targets_hint">Đặt số món của mỗi lớp được dùng. Để 0 để AI tự quyết.</string>
-    <string name="dedupe_dialog_cancel">Hủy</string>
-    <string name="dedupe_dialog_desc">Chúng tôi tìm thấy %1$d món trong tủ trông rất giống ảnh này.</string>
-    <string name="dedupe_dialog_import_anyway">Vẫn nhập</string>
-    <string name="dedupe_dialog_title">Có thể trùng</string>
     <string name="dedupe_no_matches">Không tìm thấy</string>
     <string name="dedupe_score">%1$d%% trùng</string>
     <string name="gap_description">Tìm 3 món còn thiếu sẽ mở ra nhiều tổ hợp trang phục mới nhất từ tủ đồ hiện có của bạn.</string>
@@ -300,12 +247,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="import_preview_select_all">Chọn tất cả</string>
     <string name="import_preview_similar_badge">Tương tự</string>
     <string name="import_preview_title">Xem lại %1$d món</string>
-    <string name="local_bg_apply">Dùng phần cắt này</string>
-    <string name="local_bg_failed">Không thể tính phần cắt — thử di chuyển dấu chữ thập.</string>
-    <string name="local_bg_hint">Kéo dấu chữ thập lên món bạn muốn giữ.</string>
-    <string name="local_bg_recomputing">Đang tính lại phần cắt…</string>
-    <string name="local_bg_skip">Bỏ qua (dùng Gemini)</string>
-    <string name="local_bg_title">Tinh chỉnh phần cắt</string>
     <string name="outfit_mode_edit">Chỉnh sửa</string>
     <string name="outfit_mode_view">Xem</string>
     <string name="outfits_description_placeholder">Mô tả (tùy chọn)</string>
@@ -322,24 +263,12 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_bg_removal_desc">Điều chỉnh bộ phân đoạn cắt nền trên thiết bị dùng cho chụp, nhập và Trợ lý mua sắm. Giá trị thấp giữ nhiều pixel hơn (cắt lỏng, có thể bao gồm nền); giá trị cao loại bỏ pixel biên (cắt chặt, có thể cắt mất món).</string>
     <string name="settings_bg_removal_threshold">Ngưỡng tiền cảnh: %1$d%%</string>
     <string name="settings_bg_removal_title">Xóa nền</string>
-    <string name="settings_cutoutfix_action_blackbg">Nền đen → trong suốt</string>
-    <string name="settings_cutoutfix_action_clearalpha">Xóa alpha (làm đặc)</string>
-    <string name="settings_cutoutfix_action_feather">Làm mềm biên alpha</string>
-    <string name="settings_cutoutfix_action_greenhalo">Xóa quầng xanh</string>
-    <string name="settings_cutoutfix_action_tightcrop">Cắt sát &amp; giới hạn kích thước</string>
-    <string name="settings_cutoutfix_badge_blackbg">nền đen</string>
-    <string name="settings_cutoutfix_badge_greenhalo">quầng xanh</string>
     <string name="settings_cutoutfix_button">Quét phần cắt</string>
     <string name="settings_cutoutfix_desc">Quét các phần cắt hiện có để tìm nền đen còn sót hoặc quầng xanh và áp dụng lại lớp che cục bộ. Không gọi AI — phần cắt đã sửa được tải lại với ID Drive giữ nguyên.</string>
-    <string name="settings_cutoutfix_dialog_subtitle">Các phần cắt đã chọn sẽ được xử lý lại cục bộ và tải lại. Chạm để chuyển.</string>
-    <string name="settings_cutoutfix_dialog_title">Sửa nền phần cắt — Xem trước</string>
     <string name="settings_cutoutfix_done">Đã sửa %1$d phần cắt.</string>
-    <string name="settings_cutoutfix_fix_n">Sửa %1$d</string>
     <string name="settings_cutoutfix_no_issues">Không có phần cắt nào còn sót nền.</string>
     <string name="settings_cutoutfix_processing">Đang sửa phần cắt %1$d trên %2$d…</string>
     <string name="settings_cutoutfix_scanning">Đang quét phần cắt %1$d trên %2$d…</string>
-    <string name="settings_cutoutfix_selected">Đã chọn %1$d trên %2$d</string>
-    <string name="settings_cutoutfix_show_all">Hiện tất cả phần cắt (không chỉ phần được đánh dấu)</string>
     <string name="settings_cutoutfix_title">Sửa nền phần cắt</string>
     <string name="settings_debug_similarity_desc">Khi mở kết quả Tìm tương tự, hiển thị phân tích theo kênh (thumbnail đã phân đoạn, cosine embedding/histogram, histogram sắc độ) thay vì hình có thể phóng to mặc định.</string>
     <string name="settings_debug_similarity_toggle">Hiện xem trước gỡ lỗi tương đồng</string>
@@ -409,13 +338,11 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_repair_clear_cache">Xóa cache cục bộ</string>
     <string name="settings_repair_clear_cache_desc">Tải lại tất cả ảnh từ Drive sau khi chạy. Chậm hơn; chỉ cần khi tệp cục bộ có vẻ cũ.</string>
     <string name="settings_repair_preview_cost_total">Chi phí ước tính: %1$d điểm</string>
-    <string name="settings_repair_preview_deselect_all">Bỏ chọn tất cả</string>
     <string name="settings_repair_preview_process_n">Xử lý %1$d</string>
     <string name="settings_repair_preview_section_count">%1$d trên %2$d đã chọn</string>
     <string name="settings_repair_preview_section_orphaned">Cần xóa nền + thẻ</string>
     <string name="settings_repair_preview_section_raw">Ảnh không xác định — cần xóa nền + thẻ</string>
     <string name="settings_repair_preview_section_sidecar">Chỉ cần thẻ</string>
-    <string name="settings_repair_preview_select_all">Chọn tất cả</string>
     <string name="settings_repair_preview_selected">%1$d trên %2$d đã chọn</string>
     <string name="settings_repair_preview_subtitle">Các món đã chọn sẽ được xử lý. Chạm thumbnail để bỏ qua.</string>
     <string name="settings_repair_preview_title">Sửa &amp; Đồng bộ — Xem trước</string>
@@ -431,7 +358,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="shop_no_matches">Chưa có kết quả khớp. Thử ảnh gần hơn và sáng hơn.</string>
     <string name="shop_take_another">Chụp ảnh khác</string>
     <string name="shop_take_photo">Chụp ảnh</string>
-    <string name="shop_your_photo">Ảnh của bạn</string>
     <string name="tag_category_placeholder">áo trên, áo dưới, áo khoác, giày dép, phụ kiện, đầm, vest</string>
     <string name="tag_type_placeholder">vd. Áo thun, Quần Chinos, Áo phao</string>
     <string name="travel_move_done">Đã chuyển các món vào vị trí Du lịch</string>
@@ -456,25 +382,14 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="tryon_section_desc">Tải lên ảnh toàn thân từ phía trước, bên hông và phía sau. Ứng dụng dùng chúng làm tham chiếu khi tạo ảnh thử đồ của một trang phục hoặc món trên người bạn. Ảnh vẫn nằm trong Drive của bạn.</string>
     <string name="tryon_section_title">Ảnh thử đồ</string>
     <string name="tryon_use_outfit">Dùng trang phục</string>
-    <string name="wardrobe_create_style">Tạo trang phục</string>
-    <string name="wardrobe_find_by_photo">Tìm món bằng ảnh</string>
-    <string name="wardrobe_find_by_photo_empty">Không tìm thấy món tương tự.</string>
-    <string name="wardrobe_find_by_photo_searching">Đang tìm kết quả khớp…</string>
-    <string name="wardrobe_fix_cutout_bg">Sửa nền phần cắt</string>
     <string name="wardrobe_fix_cutout_bg_clean">Không phát hiện nền còn sót — không cần sửa.</string>
     <string name="wardrobe_fix_cutout_bg_done">Đã sửa nền phần cắt.</string>
-    <string name="wardrobe_imported_on">Nhập ngày %1$s</string>
     <string name="wardrobe_search_hint">Nhập điều bạn muốn tìm, hoặc tìm bằng ảnh.</string>
-    <string name="wardrobe_search_text_results">Kết quả tìm kiếm</string>
     <string name="wardrobe_search_title">Tìm trong tủ</string>
     <string name="wardrobe_search_use_photo">Tìm bằng ảnh</string>
     <string name="wardrobe_suggest_replacements">Gợi ý phương án thay</string>
-    <string name="wardrobe_view_cutout">Xem phần cắt</string>
-    <string name="wardrobe_view_original">Xem ảnh gốc</string>
 
     <!-- Trips -->
-    <string name="wardrobe_delete_cascade_outfits">Cũng xóa %d trang phục dùng các món này</string>
-    <string name="wardrobe_delete_cascade_tryons">Cũng xóa %d lần thử đồ có các món này</string>
 
     <!-- Settings redesign (V1) -->
     <string name="settings_hero_default_name">Bạn</string>
@@ -515,9 +430,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_section_advanced_power">Tùy chọn nâng cao</string>
     <string name="settings_retag_row">Gắn thẻ lại toàn bộ quần áo</string>
     <string name="settings_retag_row_sub">Yêu cầu AI đặt tên và phân loại lại mọi thứ. Tốn ~2 tín dụng mỗi món.</string>
-    <string name="settings_rebg_row">Xóa lại nền</string>
     <string name="settings_rebg_row_sub">Cắt lại từng món khỏi ảnh của nó. Tốn ~6 tín dụng mỗi món.</string>
-    <string name="settings_cutout_row">Sửa pixel nền còn sót</string>
     <string name="settings_cutout_row_sub">Quét các món mà phần cắt bỏ sót một góc.</string>
     <string name="settings_advanced_byok_title">Khóa API Gemini của bạn</string>
     <string name="settings_advanced_byok_body">Toàn bộ AI chạy bằng khóa Gemini của riêng bạn. Khóa miễn phí bao gồm gắn thẻ và gợi ý trang phục; thử đồ ảo và xóa nền cần khóa trả phí có bật thanh toán. Lấy một khóa tại aistudio.google.com và dán bên dưới — chúng tôi chỉ lưu trên điện thoại này.</string>
@@ -623,10 +536,8 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Chuyển ảnh sang WebP</string>
     <string name="settings_convert_webp_row_sub">Thu nhỏ ảnh JPG/PNG cũ để tiết kiệm dung lượng Drive.</string>
-    <string name="settings_converting">Đang chuyển %1$d trên %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
-    <string name="wardrobe_maintenance_menu">Bảo trì</string>
 
     <!-- Calendar move/copy outfit between days -->
 
@@ -648,8 +559,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Sync/save progress labelling -->
     <string name="restore_details_progress">Đang tải chi tiết %1$d / %2$d</string>
     <string name="restore_finishing">Đang hoàn tất…</string>
-    <string name="wardrobe_sync_details">Đang tải chi tiết: %1$d / %2$d</string>
-    <string name="wardrobe_sync_finishing">Đang hoàn tất…</string>
 
     <!-- Try-on generation failed dialog -->
 
@@ -669,8 +578,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Calendar add-to-day title -->
 
     <!-- Shared FAB system (AppFab + SelectionActionBar) -->
-    <string name="fab_wardrobe_add">Thêm món</string>
-    <string name="sel_swap">Đổi</string>
 
     <!-- Calendar in-grid date pick (wear/move/copy) -->
 
