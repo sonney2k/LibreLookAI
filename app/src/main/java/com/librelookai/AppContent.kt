@@ -86,6 +86,7 @@ import com.librelookai.wardrobe.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.SettingsScreen
 import com.librelookai.shopping.ShoppingClosetViewModel
+import com.librelookai.shopping.importQuery
 import com.librelookai.shopping.ShoppingHelperViewModel
 import com.librelookai.travel.TravelScreen
 import com.librelookai.travel.TravelViewModel
@@ -679,14 +680,25 @@ internal fun AppContent(
                                         }
                                         composable<WardrobeTabRoute> {
                                         CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        val wardrobeOutfitEventsState by outfitEventsViewModel.state.collectAsState()
+                                        val wardrobeOutfitsState by stylesViewModel.state.collectAsState()
+                                        val wardrobeTryOnState by tryOnHistoryViewModel.state.collectAsState()
+                                        val wardrobeCreditsState by creditsViewModel.state.collectAsState()
                                         WardrobeScreen(
                                             viewModel = wardrobeViewModel,
-                                            outfitEventsViewModel = outfitEventsViewModel,
-                                            stylesViewModel = stylesViewModel,
-                                            locationViewModel = locationViewModel,
-                                            shoppingClosetViewModel = shoppingClosetViewModel,
-                                            profileViewModel = profileViewModel,
-                                            tryOnHistoryViewModel = tryOnHistoryViewModel,
+                                            outfitEvents = wardrobeOutfitEventsState.events,
+                                            outfits = wardrobeOutfitsState.outfits,
+                                            onDeleteOutfitsByIds = stylesViewModel::deleteOutfitsByIds,
+                                            tryOnHistory = wardrobeTryOnState.history,
+                                            onDeleteTryOns = tryOnHistoryViewModel::deleteTryOns,
+                                            onImportQuery = shoppingClosetViewModel::importQuery,
+                                            preferences = profileState.preferences,
+                                            locations = locationState.locations,
+                                            activeLocationId = locationState.activeLocationId,
+                                            locationLoading = locationState.isLoading,
+                                            locationError = locationState.error,
+                                            onSetActiveLocation = locationViewModel::setActiveLocation,
+                                            creditsBalance = wardrobeCreditsState.balance,
                                             onCreateOutfitFromSelection = { itemIds ->
                                                 Analytics.action("Wardrobe", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
                                                 outfitGenerationViewModel.openComposer(

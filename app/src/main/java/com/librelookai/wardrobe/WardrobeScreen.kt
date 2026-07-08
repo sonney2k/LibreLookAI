@@ -32,27 +32,34 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.R
 import com.librelookai.core.designsystem.R as DsR
-import com.librelookai.billing.CreditsViewModel
-import com.librelookai.outfit.OutfitEventsViewModel
-import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.data.model.Location
+import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.OutfitEvent
+import com.librelookai.data.model.TryOn
+import com.librelookai.settings.UserPreferences
 import com.librelookai.settings.DestructiveAction
 import com.librelookai.settings.DestructiveConfirmDialog
-import com.librelookai.settings.ProfileViewModel
-import com.librelookai.shopping.ShoppingClosetViewModel
-import com.librelookai.shopping.importQuery
-import com.librelookai.tryon.TryOnViewModel
 import com.librelookai.util.Analytics
 
 @Composable
 fun WardrobeScreen(
     viewModel: WardrobeViewModel = viewModel(),
-    outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
-    stylesViewModel: OutfitsViewModel = viewModel(),
-    locationViewModel: LocationViewModel = viewModel(),
-    shoppingClosetViewModel: ShoppingClosetViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = viewModel(),
-    tryOnHistoryViewModel: com.librelookai.tryon.TryOnHistoryViewModel = viewModel(),
-    creditsViewModel: CreditsViewModel = viewModel(),
+    // Cross-feature data + callbacks threaded from the shell (feature modules never import
+    // another feature's VM — § 1 slice 6 narrowing precedent). WardrobeScreen is cross-cutting
+    // because deleting a wardrobe item cascades into outfits / try-ons.
+    outfitEvents: List<OutfitEvent> = emptyList(),
+    outfits: List<Outfit> = emptyList(),
+    onDeleteOutfitsByIds: (List<String>) -> Unit = {},
+    tryOnHistory: List<TryOn> = emptyList(),
+    onDeleteTryOns: (List<TryOn>) -> Unit = {},
+    onImportQuery: (String) -> Unit = {},
+    preferences: UserPreferences = UserPreferences(),
+    locations: List<Location> = emptyList(),
+    activeLocationId: String = "",
+    locationLoading: Boolean = false,
+    locationError: String? = null,
+    onSetActiveLocation: (String) -> Unit = {},
+    creditsBalance: Int = 0,
     onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
     onSuggestReplacements: (Set<String>) -> Unit = {},
@@ -66,12 +73,6 @@ fun WardrobeScreen(
     val ingestion     by viewModel.ingestionProgress.collectAsState()
     val retag         by viewModel.retagProgress.collectAsState()
     val convert       by viewModel.convertProgress.collectAsState()
-    val outfitEventsState  by outfitEventsViewModel.state.collectAsState()
-    val outfitsState   by stylesViewModel.state.collectAsState()
-    val tryOnState    by tryOnHistoryViewModel.state.collectAsState()
-    val locationState by locationViewModel.state.collectAsState()
-    val profileState  by profileViewModel.state.collectAsState()
-    val creditsState  by creditsViewModel.state.collectAsState()
     val context = LocalContext.current
 
     // Power-feature bulk maintenance ops (re-remove backgrounds / fix leftover cutout pixels),
@@ -82,12 +83,12 @@ fun WardrobeScreen(
         DestructiveConfirmDialog(
             action = action,
             itemCount = state.images.size,
-            balance = creditsState.balance,
+            balance = creditsBalance,
             onConfirm = {
                 when (action) {
                     DestructiveAction.REMOVE_BG -> viewModel.removeAllBackgrounds()
                     DestructiveAction.CUTOUT_FIX ->
-                        viewModel.startCutoutBgFixScan(locationState.locations.map { it.folderId })
+                        viewModel.startCutoutBgFixScan(locations.map { it.folderId })
                     else -> Unit
                 }
                 pendingMaintenance = null
@@ -98,10 +99,10 @@ fun WardrobeScreen(
     }
 
     // driveId → number of calendar wear events that include this item
-    val popularityMap = remember(outfitEventsState.events, outfitsState.outfits) {
-        val outfitWearCount = outfitEventsState.events.groupingBy { it.outfitId }.eachCount()
+    val popularityMap = remember(outfitEvents, outfits) {
+        val outfitWearCount = outfitEvents.groupingBy { it.outfitId }.eachCount()
         val itemCount = mutableMapOf<String, Int>()
-        outfitsState.outfits.forEach { style ->
+        outfits.forEach { style ->
             val count = outfitWearCount[style.id] ?: 0
             if (count > 0) style.itemIds.forEach { id -> itemCount[id] = (itemCount[id] ?: 0) + count }
         }
@@ -132,8 +133,8 @@ fun WardrobeScreen(
     var showUrlImportDialog by remember { mutableStateOf(false) }
     var showGalleryClosetPicker by remember { mutableStateOf(false) }
     val openGallery: () -> Unit = {
-        Analytics.action("Wardrobe", "open_gallery", mapOf("locations" to locationState.locations.size.toString()))
-        if (locationState.locations.size >= 2) showGalleryClosetPicker = true
+        Analytics.action("Wardrobe", "open_gallery", mapOf("locations" to locations.size.toString()))
+        if (locations.size >= 2) showGalleryClosetPicker = true
         else galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
     val openUrlImport: () -> Unit = {
@@ -144,7 +145,7 @@ fun WardrobeScreen(
     ingestion.duplicateCheck?.let { check ->
         DuplicateCheckSheet(
             check = check,
-            debugSimilarityPreview = profileState.preferences.debugSimilarityPreview,
+            debugSimilarityPreview = preferences.debugSimilarityPreview,
             onConfirm = viewModel::confirmDuplicateImport,
             onCancel = viewModel::cancelDuplicateImport,
             onShowMatchInWardrobe = { image ->
@@ -152,7 +153,7 @@ fun WardrobeScreen(
                 viewModel.requestScrollToImage(image.driveId)
             },
             onAddQueryToShoppingList = { queryPath ->
-                shoppingClosetViewModel.importQuery(queryPath)
+                onImportQuery(queryPath)
                 viewModel.cancelDuplicateImport()
             },
         )
@@ -165,8 +166,8 @@ fun WardrobeScreen(
             retag = retag,
             convert = convert,
             popularityMap = popularityMap,
-            locations = locationState.locations,
-            activeLocationId = locationState.activeLocationId,
+            locations = locations,
+            activeLocationId = activeLocationId,
             onOpenCamera = {
                 if (hasCameraPermission) viewModel.openCapture()
                 else {
@@ -181,12 +182,12 @@ fun WardrobeScreen(
             onSelectAll = viewModel::selectAll,
             onClearSelection = viewModel::clearSelection,
             onDeleteItems = viewModel::deleteItems,
-            outfits = outfitsState.outfits,
-            tryOns = tryOnState.history,
-            onDeleteOutfits = { ids -> stylesViewModel.deleteOutfitsByIds(ids) },
-            onDeleteTryOns = { tryOns -> tryOnHistoryViewModel.deleteTryOns(tryOns) },
+            outfits = outfits,
+            tryOns = tryOnHistory,
+            onDeleteOutfits = { ids -> onDeleteOutfitsByIds(ids) },
+            onDeleteTryOns = { tryOns -> onDeleteTryOns(tryOns) },
             onMoveToLocation = viewModel::moveItemsToLocation,
-            onSetActiveLocation = locationViewModel::setActiveLocation,
+            onSetActiveLocation = onSetActiveLocation,
             onCreateOutfitFromSelection = onCreateOutfitFromSelection,
             onTryOnSelection = onTryOnSelection,
             onSuggestReplacements = onSuggestReplacements,
@@ -194,8 +195,8 @@ fun WardrobeScreen(
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
             onSetImportTarget = viewModel::setDefaultImportFolderId,
             processingImageId = state.processingImageId,
-            isLocationLoading = locationState.isLoading,
-            locationError = locationState.error,
+            isLocationLoading = locationLoading,
+            locationError = locationError,
             onOpenItemViewer = onOpenItemViewer,
             onSettingsClick = onSettingsClick,
             onBulkRemoveBackgrounds = { pendingMaintenance = DestructiveAction.REMOVE_BG },
@@ -211,14 +212,14 @@ fun WardrobeScreen(
             onTextFilter = viewModel::fuzzyFilterByText,
             onDismissFindByPhoto = viewModel::dismissFindByPhoto,
             scrollEvents = viewModel.events,
-            onAddMatchToShoppingList = shoppingClosetViewModel::importQuery,
-            debugSimilarityPreview = profileState.preferences.debugSimilarityPreview,
+            onAddMatchToShoppingList = onImportQuery,
+            debugSimilarityPreview = preferences.debugSimilarityPreview,
             modifier = modifier,
         )
         WardrobeView.CAPTURE -> CaptureScreen(
             onPhotoTaken = viewModel::uploadPhoto,
             onCancel = viewModel::closeCapture,
-            locations = locationState.locations,
+            locations = locations,
             importTargetFolderId = state.importTargetFolderId,
             onSetImportTarget = viewModel::setDefaultImportFolderId,
             onOpenGallery = {
@@ -238,8 +239,8 @@ fun WardrobeScreen(
 
     if (showUrlImportDialog) {
         UrlImportDialog(
-            locations = locationState.locations,
-            initialFolderId = state.importTargetFolderId ?: locationState.locations.firstOrNull()?.folderId,
+            locations = locations,
+            initialFolderId = state.importTargetFolderId ?: locations.firstOrNull()?.folderId,
             onSubmit = { url, folderId ->
                 folderId?.let { viewModel.setDefaultImportFolderId(it) }
                 showUrlImportDialog = false
@@ -260,14 +261,14 @@ fun WardrobeScreen(
     }
 
     if (showGalleryClosetPicker) {
-        val initialFolderId = state.importTargetFolderId ?: locationState.locations.firstOrNull()?.folderId
+        val initialFolderId = state.importTargetFolderId ?: locations.firstOrNull()?.folderId
         var selectedFolderId by remember { mutableStateOf(initialFolderId) }
         AlertDialog(
             onDismissRequest = { showGalleryClosetPicker = false },
             title = { Text(stringResource(R.string.wardrobe_add_to_closet_title)) },
             text = {
                 Column {
-                    locationState.locations.sortedBy { it.name }.forEach { loc ->
+                    locations.sortedBy { it.name }.forEach { loc ->
                         val selected = loc.folderId == selectedFolderId
                         Row(
                             modifier = Modifier

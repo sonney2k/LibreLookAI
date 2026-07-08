@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tune
 import com.librelookai.ui.components.AppFab
+import com.librelookai.data.session.ClosetSession
 import com.librelookai.ui.components.SelectionAction
 import com.librelookai.ui.components.SelectionActionBar
 import com.librelookai.ui.components.rememberFabExpanded
@@ -688,7 +689,7 @@ internal fun GridContent(
                 // pending-scroll LaunchedEffect retries when [displayedImages] updates, so the
                 // highlight lands on the right tile either way.
                 val matchFolder = image.folderId
-                val viewingAll = activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
+                val viewingAll = activeLocationId == ClosetSession.ALL_LOCATIONS_ID
                 if (!viewingAll && matchFolder.isNotEmpty() && matchFolder != activeLocationId) {
                     onSetActiveLocation(matchFolder)
                 }
