@@ -15,7 +15,7 @@ import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.AiClient
 import com.librelookai.gemini.getOrNull
-import com.librelookai.ml.EmbeddingService
+import com.librelookai.ml.SimilarityService
 import com.librelookai.service.JobLock
 import com.librelookai.settings.AppLanguage
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -104,6 +104,7 @@ class ItemIngestionPipeline @Inject constructor(
     private val session: ClosetSessionHolder,
     prefsRepo: UserPreferencesRepository,
     private val jobLock: JobLock,
+    private val similarity: SimilarityService,
 ) {
     companion object { private const val TAG = "ItemIngestion" }
 
@@ -164,15 +165,15 @@ class ItemIngestionPipeline @Inject constructor(
         forceLocalReview: Boolean = false,
         source: AddSource = AddSource.CAMERA,
     ) {
-        if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
+        if (dedupeOnImport && similarity.isModelAvailable()) {
             scope.launch {
                 _progress.update { it.copy(isUploading = true, gridReturnTick = it.gridReturnTick + 1) }
                 _errors.emit(null)
                 // The cross-closet snapshot is a store read over the session's snapshot scope
                 // (§ 5 slice 4a made the store always current).
                 val crossClosetImages = crossClosetImages()
-                EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
-                val sim = EmbeddingService.findSimilarWithDebug(
+                similarity.syncIndex(crossClosetImages, drive.cacheDir)
+                val sim = similarity.findSimilarWithDebug(
                     file = rawFile,
                     threshold = dedupeThreshold,
                     topK = if (debugSimilarityPreview) 50 else 8,
@@ -218,7 +219,7 @@ class ItemIngestionPipeline @Inject constructor(
         source: AddSource,
     ) {
         val shouldReview = (force || preferLocalBgRemoval) &&
-            EmbeddingService.segmenter.isAvailable()
+            similarity.isSegmenterAvailable()
         if (shouldReview) {
             _progress.update { it.copy(
                 isUploading = false,
@@ -342,7 +343,7 @@ class ItemIngestionPipeline @Inject constructor(
         // When local-bg review is enabled, route each gallery item through the same ingest
         // pipeline so it is enqueued for the review screen one at a time. Otherwise stick with
         // the original direct-upload path (faster, no per-item user interaction).
-        if (preferLocalBgRemoval && EmbeddingService.segmenter.isAvailable()) {
+        if (preferLocalBgRemoval && similarity.isSegmenterAvailable()) {
             scope.launch {
                 _progress.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true) }
                 _errors.emit(null)

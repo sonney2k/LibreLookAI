@@ -23,7 +23,7 @@ import com.librelookai.wardrobe.DriveImage
  * the service. After that, use [findSimilar] for off-disk queries (segments + embeds) and
  * [syncIndex] to keep the wardrobe index up to date.
  */
-object EmbeddingService {
+object EmbeddingService : SimilarityService {
 
     private lateinit var embedderImpl: EmbeddingRepository
     private lateinit var segmenterImpl: SegmentationRepository
@@ -53,7 +53,9 @@ object EmbeddingService {
     val segmenter: SegmentationRepository get() { check(initialized) { "EmbeddingService.init() not called" }; return segmenterImpl }
     val index: EmbeddingIndex get() { check(initialized) { "EmbeddingService.init() not called" }; return indexImpl }
 
-    fun isModelAvailable(): Boolean = initialized && embedderImpl.isAvailable()
+    override fun isModelAvailable(): Boolean = initialized && embedderImpl.isAvailable()
+
+    override fun isSegmenterAvailable(): Boolean = initialized && segmenterImpl.isAvailable()
 
     val indexSize: Int get() = if (initialized) indexImpl.size else 0
 
@@ -118,10 +120,10 @@ object EmbeddingService {
      * Ensures every cutout in [images] that has a local file has an embedding in the index.
      * Drops index entries for items not in [images]. Safe to call repeatedly.
      */
-    suspend fun syncIndex(
+    override suspend fun syncIndex(
         images: List<DriveImage>,
         cacheDir: File,
-        onProgress: ((done: Int, total: Int) -> Unit)? = null,
+        onProgress: ((done: Int, total: Int) -> Unit)?,
     ): Int {
         if (!isModelAvailable()) return 0
         indexImpl.load()
@@ -208,12 +210,12 @@ object EmbeddingService {
      * [processedOutputDir] is non-null the processed bitmap is also written there so the
      * caller can show it in the debug breakdown.
      */
-    suspend fun findSimilarWithDebug(
+    override suspend fun findSimilarWithDebug(
         file: File,
         threshold: Float,
-        excludeIds: Set<String> = emptySet(),
-        topK: Int = 20,
-        processedOutputDir: File? = null,
+        excludeIds: Set<String>,
+        topK: Int,
+        processedOutputDir: File?,
     ): SimilarityResult? = withContext(Dispatchers.IO) {
         if (!isModelAvailable()) return@withContext null
         val raw = decodeUpright(file) ?: return@withContext null

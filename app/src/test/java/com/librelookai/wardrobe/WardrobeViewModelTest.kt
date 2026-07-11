@@ -14,6 +14,7 @@ import com.librelookai.service.JobLock
 import com.librelookai.testing.FakeAiClient
 import com.librelookai.testing.FakeDriveService
 import com.librelookai.testing.FakeMutationStore
+import com.librelookai.testing.FakeSimilarityService
 import com.librelookai.testing.FakeWardrobeItemStore
 import com.librelookai.util.NetworkMonitor
 import java.io.File
@@ -68,7 +69,7 @@ class WardrobeViewModelTest {
         )
         return WardrobeViewModel(
             app, drive,
-            ItemIngestionPipeline(app, drive, gemini, itemStore, session, prefsRepo, jobLock),
+            ItemIngestionPipeline(app, drive, gemini, itemStore, session, prefsRepo, jobLock, FakeSimilarityService()),
             WardrobeItemOps(app, drive, gemini, itemStore, sidecarQueue, itemVersions, jobLock, prefsRepo),
             repo, jobLock,
             WardrobeMoveSyncHandler(drive, itemStore),

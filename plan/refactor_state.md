@@ -1,6 +1,6 @@
 # Refactor — state (resume here)
 
-**Updated 2026-07-11** (originally parked 2026-06-15). The full blueprint + per-slice status
+**Updated 2026-07-12** (originally parked 2026-06-15). The full blueprint + per-slice status
 detail lives in `plan/refactor.md`; this is the short "where we left off" note.
 
 ## TL;DR (2026-07-11)
@@ -24,9 +24,10 @@ Manual regression checklist: closet switch, offline mode, capture + import batch
 move/rollback, reinstall-restore, calendar pick mode, and the overlay destinations
 (trip/outfit/item viewers, both composers, try-on feed/detail).
 
-Known recorded gap (fine to leave): § 8's only untested branches are the
-`EmbeddingService`-dependent ingestion paths (dedupe gate / local-bg review) — they need an
-ML seam first; revisit only if that code churns.
+The last § 8 gap is closed (2026-07-12): the `SimilarityService` seam (`core/ml`, Hilt
+`@Provides` → the `EmbeddingService` object) made `ItemIngestionPipeline`'s dedupe-gate /
+local-bg-review branches fake-testable — 10 new tests in `ItemIngestionPipelineTest` over
+`testing/FakeSimilarityService`.
 
 ---
 
