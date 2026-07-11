@@ -14,11 +14,13 @@ hosts lifted to the shell in slice 3 — so a module would add a boundary with e
 consumer. `./gradlew :app:assembleDebug testDebugUnitTest` re-verified green on
 `refactor-phase5-rest` (2026-07-11).
 
-**What remains before this branch merges to `main` (not architecture work):**
+**Merged to `main` 2026-07-12** (fast-forward to `d806c51`, local only — `origin/main` is
+still at v2.4.0 / `a2c50bf`; `refactor-phase5-rest` and `main` now point at the same commit).
 
-1. **Manual regression pass** (the checklist below) on a device build.
-2. Merge `refactor-phase5-rest` → `main` (fast-forward or merge commit — user's call), then
-   the normal release process when ready.
+**What remains before pushing / releasing (not architecture work):**
+
+1. **Manual regression pass** (the checklist below) on a device build cut from `main`.
+2. `git push` + the normal release process when ready.
 
 Manual regression checklist: closet switch, offline mode, capture + import batch,
 move/rollback, reinstall-restore, calendar pick mode, and the overlay destinations
