@@ -1,19 +1,32 @@
 # Refactor — state (resume here)
 
-**Updated 2026-07-08** (originally parked 2026-06-15). The full blueprint + per-slice status
+**Updated 2026-07-11** (originally parked 2026-06-15). The full blueprint + per-slice status
 detail lives in `plan/refactor.md`; this is the short "where we left off" note.
 
-## TL;DR (2026-07-08)
+## TL;DR (2026-07-11)
 
-**§§ 2–8 are all done. The only open architecture section is § 1 (multi-module).** Within § 1,
-slices 1–5 landed and slice 6 is extracting features leaf-first: `feature:onboarding`,
-`feature:tryon`, `feature:travel` (+ the `core:outfit`/`SharedChrome` enablers),
-**`feature:shopping`** and **`feature:outfit`** (both 2026-07-08) have all landed.
-**Remaining feature extractions: `feature:wardrobe` → `feature:settings`** (settings last —
-it hosts the cross-feature reporting surfaces + the VMs everything narrows against). Each repeats the
-template: measure edges → narrow VM params to data+callbacks → sink shared composables/strings
-to designsystem → move the package + Hilt modules → res split → visibility bumps → verify+docs.
-`./gradlew :app:assembleDebug testDebugUnitTest` is green on `refactor-phase5-rest`.
+**All eight architecture sections (§§ 1–8) are closed.** § 1 finished 2026-07-08 with the
+`feature:wardrobe` extraction (`1938707` enabler + `08c6b57`) — every feature is now a
+`core/*`-only leaf module (8 feature modules, 10 core modules). **`feature:settings` was
+dropped by recorded decision** (see the § 1 slice-6 notes in `refactor.md`): settings is
+shell-shaped — no feature→settings edge exists, its types sank to core, its cross-feature
+hosts lifted to the shell in slice 3 — so a module would add a boundary with exactly one
+consumer. `./gradlew :app:assembleDebug testDebugUnitTest` re-verified green on
+`refactor-phase5-rest` (2026-07-11).
+
+**What remains before this branch merges to `main` (not architecture work):**
+
+1. **Manual regression pass** (the checklist below) on a device build.
+2. Merge `refactor-phase5-rest` → `main` (fast-forward or merge commit — user's call), then
+   the normal release process when ready.
+
+Manual regression checklist: closet switch, offline mode, capture + import batch,
+move/rollback, reinstall-restore, calendar pick mode, and the overlay destinations
+(trip/outfit/item viewers, both composers, try-on feed/detail).
+
+Known recorded gap (fine to leave): § 8's only untested branches are the
+`EmbeddingService`-dependent ingestion paths (dedupe gate / local-bg review) — they need an
+ML seam first; revisit only if that code churns.
 
 ---
 
