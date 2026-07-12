@@ -2,9 +2,12 @@ package com.librelookai
 
 import android.Manifest
 import com.librelookai.core.designsystem.R as DsR
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings as AndroidSettings
@@ -196,19 +199,16 @@ internal fun AppContent(
                         val onboardingLanguage = profileState.preferences.language
                         val onboardingBaseContext = LocalContext.current
                         val onboardingContext = remember(onboardingLanguage) {
-                            val locale = AppLanguage.toLocale(onboardingLanguage)
-                            val config = Configuration(onboardingBaseContext.resources.configuration)
-                            config.setLocale(locale)
-                            onboardingBaseContext.createConfigurationContext(config)
+                            onboardingBaseContext.localizedWrapper(onboardingLanguage)
                         }
                         CompositionLocalProvider(
                             LocalContext provides onboardingContext,
                             LocalConfiguration provides onboardingContext.resources.configuration,
-                            // Overriding LocalContext above breaks the default
-                            // ActivityResultRegistryOwner/back-dispatcher lookup (it walks the
-                            // context chain to the activity, which the config context no longer
-                            // reaches), so re-provide them — same as the main-app branch. Without
-                            // this OnboardingScreen's rememberLauncherForActivityResult crashes.
+                            // The localizedWrapper keeps the activity reachable through the
+                            // context chain, but re-provide the registry/back-dispatcher owners
+                            // explicitly anyway — same as the main-app branch — so
+                            // OnboardingScreen's rememberLauncherForActivityResult can't regress
+                            // if the wrapper ever changes.
                             LocalActivityResultRegistryOwner provides activity,
                             LocalOnBackPressedDispatcherOwner provides activity,
                         ) {
@@ -344,10 +344,7 @@ internal fun AppContent(
                     val language = profileState.preferences.language
                     val baseContext = LocalContext.current
                     val localizedContext = remember(language) {
-                        val locale = AppLanguage.toLocale(language)
-                        val config = Configuration(baseContext.resources.configuration)
-                        config.setLocale(locale)
-                        baseContext.createConfigurationContext(config)
+                        baseContext.localizedWrapper(language)
                     }
 
                     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
@@ -1570,6 +1567,22 @@ internal fun AppContent(
                     } }
                     } // else -> arm (signed in + onboarding complete)
                 } // when
+    }
+}
+
+/**
+ * Locale-overridden context for the `LocalContext` provides. Must stay a [ContextWrapper] whose
+ * base chain reaches the activity: `hiltViewModel(entry)` (the destination-scoped VMs) and the
+ * activity-result/back-dispatcher lookups all unwrap `LocalContext` to find the activity, and the
+ * raw `ContextImpl` returned by `createConfigurationContext` breaks that chain (crash on any
+ * viewer/trip destination). Only resources resolve through the localized config context.
+ */
+private fun Context.localizedWrapper(language: String): Context {
+    val config = Configuration(resources.configuration)
+    config.setLocale(AppLanguage.toLocale(language))
+    val localized = createConfigurationContext(config)
+    return object : ContextWrapper(this) {
+        override fun getResources(): Resources = localized.resources
     }
 }
 
