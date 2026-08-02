@@ -1,8 +1,14 @@
-### LibreLookAI v2.4.1 Release Notes
+### LibreLookAI v2.5.0 Release Notes
 
-#### What's new
-- A smoother, branded startup — the app now shows its icon while it loads instead of a progress screen.
-- Long-press any day in the calendar to select it, then add, copy, move or remove outfits from a bottom action bar.
-- Jump straight back to the current month with the new "Today" button.
-#### Improvements
-- The calendar's last week row stays fully visible and tappable above the selection bar and weather badge.
+#### More reliable, especially offline
+- Changes you make while offline — tag edits, moves, deletes, saved outfits, calendar wears, trips and try-ons — are now queued and retried automatically, and they survive closing the app.
+- A move or delete that fails no longer strands items or leaves them showing in two closets.
+#### Faster and steadier
+- Your wardrobe, outfits, wishlist and trips now load from a local database, so lists appear instantly and stay consistent across screens.
+- Changing an item or outfit updates it everywhere at once.
+#### Back button works everywhere
+- Item, outfit and trip details, the outfit composer, virtual try-on and past try-ons are now real screens — Back takes you exactly one step back instead of closing everything.
+#### Privacy
+- Your Gemini API key is now stored encrypted on your device.
+#### Fixes
+- In an item's detail view, the edit actions no longer sit under the button that opens them, including at large system font sizes.
