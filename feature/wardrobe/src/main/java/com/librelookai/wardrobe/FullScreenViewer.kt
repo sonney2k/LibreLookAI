@@ -39,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -360,14 +362,24 @@ fun FullScreenViewer(
                     },
                 )
             }
+            // The FAB is raised to clear the bar, so it needs the bar's *real* height: a large
+            // system font scale (or a taller wrapped row) makes the bar outgrow any hardcoded
+            // guess and the FAB ends up sitting on top of it. Measure it (the OutfitCalendarTab
+            // selection-bar precedent); the row estimate stays only as the first-frame fallback,
+            // before the bar has been laid out (and while it's hidden, reporting 0).
+            var barHeightPx by remember { mutableIntStateOf(0) }
             val rows = (actions.size + 3) / 4 // ceil(count / 4)
-            val barHeight = 67.dp + ((rows - 1) * 54).dp + effectiveBottom
+            val estimatedBarHeight = 67.dp + ((rows - 1) * 54).dp + effectiveBottom
+            val barHeight = if (barHeightPx > 0) with(density) { barHeightPx.toDp() }
+                else estimatedBarHeight
             DetailActionBar(
                 actions = actions,
                 visible = showEditMenu,
                 bottomInset = effectiveBottom,
                 maxItemsPerRow = 4,
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .onSizeChanged { barHeightPx = it.height },
             )
             ExtendedFloatingActionButton(
                 onClick = { showEditMenu = !showEditMenu },
